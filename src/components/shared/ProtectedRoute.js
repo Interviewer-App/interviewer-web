@@ -1,0 +1,38 @@
+'use client'
+import { useEffect } from 'react';
+
+import { useAuth } from '../../context/AuthContext';
+import { useRouter,useLocation  } from 'next/navigation';
+
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  if (loading) return <div>Loading...</div>;
+
+  useEffect(() => {
+    debugger
+    if (!user) {
+      router.push('/login');
+    }
+
+    if (!allowedRoles.includes(user.role)) {
+        router.push('/');
+        return null;
+      }
+  }, [user])
+
+
+//   if (!user) {
+//     router.push('/login');
+//     return null;
+//   }
+
+//   if (!allowedRoles.includes(user.role)) {
+//     router.push('/');
+//     return null;
+//   }
+
+  return <>{children}</>;
+};
+
+export default ProtectedRoute;

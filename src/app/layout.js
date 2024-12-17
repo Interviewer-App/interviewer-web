@@ -1,4 +1,4 @@
-import localFont from "next/font/local";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 
@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
       <body
         className={`antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
