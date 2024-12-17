@@ -2,15 +2,16 @@
 import { useEffect } from 'react';
 
 import { useAuth } from '../../context/AuthContext';
-import { useRouter,useLocation  } from 'next/navigation';
+import { useRouter, useLocation } from 'next/navigation';
 
 const ProtectedRoute = ({ allowedRoles, children }) => {
   const { user, loading } = useAuth();
   const router = useRouter();
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
 
   useEffect(() => {
-    debugger
+    if (loading) return;
+
     if (!user) {
       router.push('/login');
     }
@@ -19,8 +20,9 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
         router.push('/');
         return null;
       }
-  }, [user])
+  }, [user]);
 
+  
 
 //   if (!user) {
 //     router.push('/login');
@@ -31,6 +33,8 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
 //     router.push('/');
 //     return null;
 //   }
+
+  if (loading) return <div>Loading...</div>;
 
   return <>{children}</>;
 };
