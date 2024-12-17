@@ -10,6 +10,7 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
   // if (loading) return <div>Loading...</div>;
 
   useEffect(() => {
+    
     if (loading) return;
 
     if (!user) {
@@ -17,7 +18,7 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     }
 
     if (!allowedRoles.includes(user.role)) {
-        router.push('/panel');
+        router.push('/');
         return;
       }
   }, [user]);

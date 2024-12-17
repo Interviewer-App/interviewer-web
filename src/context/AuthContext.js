@@ -33,10 +33,12 @@ export const AuthProvider = ({ children }) => {
     const { token, user } = response.data;
     localStorage.setItem('token', token);
     setUser(user);
-    if (response.role === 'ADMIN') {
+    if (response.role === 'COMPANY') {
         router.push('/dashboard');
-    } else {
+    } else if (response.role === 'CANDIDATE') {
         router.push('/panel');
+    } else{
+      router.push('/');
     }
   };
 
