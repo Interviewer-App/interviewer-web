@@ -17,8 +17,8 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     }
 
     if (!allowedRoles.includes(user.role)) {
-        router.push('/');
-        return null;
+        router.push('/panel');
+        return;
       }
   }, [user]);
 
