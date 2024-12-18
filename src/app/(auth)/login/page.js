@@ -9,12 +9,25 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(email, password);
     } catch (err) {
-      console.error("Login failed", err);
+      if (err.response) {
+        const { data } = err.response;
+        if (data && data.message) {
+          console.error("Login failed:", data.message);
+          alert(`Login failed: ${data.message}`);
+        } else {
+          console.error("An unexpected error occurred:", err.response);
+          alert("An unexpected error occurred. Please try again.");
+        }
+      } else {
+        console.error("An unexpected error occurred:", err);
+        alert("An unexpected error occurred. Please check your network and try again.");
+      }
     }
   };
 
