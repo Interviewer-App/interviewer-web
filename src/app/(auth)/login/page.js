@@ -20,7 +20,7 @@ const LoginPage = () => {
 
   return (
     <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full">
-      <div className=" h-lvh md:h-fit w-full md:w-[30%] bg-gradient-to-br from-[#1f2126] to-[#17191d] p-4 md:p-8 md:rounded-3xl flex flex-col justify-center">
+      <div className="h-fit w-[90%] md:w[50%] lg:w-[40%] max-w-[450px] bg-gradient-to-br from-[#1f2126] to-[#17191d] p-5 sm:p-7 md:p-8 rounded-3xl flex flex-col justify-center">
         <h1 className=" text-2xl font-semibold text-[#f3f3f3]">Sign In</h1>
         <form
           onSubmit={handleSubmit}
@@ -44,7 +44,7 @@ const LoginPage = () => {
           />
           <button
             type="submit"
-            className=" h-12 w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-full text-center text-base text-white font-semibold mt-8"
+            className=" h-12 min-w-[150px] w-[50%] md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-full text-center text-base text-white font-semibold mt-8"
           >
             Sign In
           </button>
