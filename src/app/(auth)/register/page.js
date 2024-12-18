@@ -10,32 +10,69 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordconf, setPasswordconf] = useState("");
-  const [role, setRole] = useState("CLIENT");
+  const [role, setRole] = useState("CANDIDATE");
   const { login } = useAuth();
   const router = useRouter();
+  // console.log(/[A-Z]/.test('1ssss'));
+
+  const [isValidPassword, setIsValidPassword] = useState(false);
+  const [isPasswordMissMatch, setIsPasswordMissMatch] = useState(false);
+
+  const passwordValidation = (password, passwordconf) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
+    if (password !== passwordconf) {
+      setIsPasswordMissMatch(true);
+      return false;
+    }
+
+    if (passwordRegex.test(password) && password.length >= 6) {
+      setIsPasswordMissMatch(false);
+      setIsValidPassword(false);
+      return true;
+    }
+    
+    setIsValidPassword(true);
+    return false
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const userData = { name, email, password, role, passwordconf };
-      const response = await register(userData);
-
-      if (response) {
-        router.push("/login");
+      if (passwordValidation(password, passwordconf)) {
+        const userData = { name, email, password, role, passwordconf };
+        const response = await register(userData);
+  
+        if (response) {
+          router.push("/login");
+        }
+  
+        // Log in the user after successful registration
+        // login({ email: response.email, role: response.role, token: response.token });
+  
+        // // Redirect based on role
+        // if (response.role === 'ADMIN') {
+        //   router.push('/admin/dashboard');
+        // } else {
+        //   router.push('/candidate/dashboard');
+        // }
+        // Call your registration API
       }
-
-      // Log in the user after successful registration
-      // login({ email: response.email, role: response.role, token: response.token });
-
-      // // Redirect based on role
-      // if (response.role === 'ADMIN') {
-      //   router.push('/admin/dashboard');
-      // } else {
-      //   router.push('/candidate/dashboard');
-      // }
-      // Call your registration API
     } catch (err) {
-      console.error("Registration failed", err);
+      if (err.response) {
+        const { data } = err.response;
+  
+        if (data && data.message) {
+          console.error("Registration failed:", data.message);
+          alert(`Registration failed: ${data.message}`);
+        } else {
+          console.error("An unexpected error occurred:", err.response);
+          alert("An unexpected error occurred. Please try again.");
+        }
+      } else {
+        console.error("An unexpected error occurred:", err);
+        alert("An unexpected error occurred. Please check your network and try again.");
+      }
     }
   };
 
@@ -68,17 +105,21 @@ const RegisterPage = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onClick={() => setIsValidPassword(false)}
             required
-            className=" h-[52px] w-full rounded-full text-base border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-6"
+            className={` h-[52px] w-full rounded-full text-base border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-6 ${isValidPassword ? ' border-2 border-lightred' : ''}`}
           />
+          {isValidPassword && <span className=" text-lightred text-xs text-left w-full pt-1">* Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long.</span>}
           <input
             type="password"
             placeholder="Confirme Password"
             value={passwordconf}
             onChange={(e) => setPasswordconf(e.target.value)}
+            onClick={() => {setIsPasswordMissMatch(false)}}
             required
-            className=" h-[52px] w-full rounded-full text-base border-0 bg-[#32353b] placeholder-[#737883] px-6 mt-6"
+            className={` h-[52px] w-full rounded-full text-base border-0 bg-[#32353b] px-6 py-2 mt-6 appearance-none ${isPasswordMissMatch ? ' border-2 border-lightred' : ''}`}
           />
+          {isPasswordMissMatch && <span className=" text-lightred text-xs text-left w-full pt-1">* Passwords do not match.</span>}
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
