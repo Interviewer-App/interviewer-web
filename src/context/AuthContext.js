@@ -29,17 +29,22 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const response = await api.post('/auth/login', { email, password });
-    const { token, user } = response.data;
-    localStorage.setItem('token', token);
-    setUser(user);
-    if (user.role === 'COMPANY') {
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      setUser(user);
+      if (user.role === 'COMPANY') {
         router.push('/dashboard');
-    } else if (user.role === 'CANDIDATE') {
+      } else if (user.role === 'CANDIDATE') {
         router.push('/panel');
-    } else{
-      router.push('/');
+      } else{
+        router.push('/');
+      }
+    }catch (err){
+      alert('Invalid email or password');
     }
+
   };
 
   const logout = () => {
