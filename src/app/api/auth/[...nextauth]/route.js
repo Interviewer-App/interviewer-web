@@ -13,7 +13,7 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ account, profile, user }) {
+    async signIn({ account, profile }) {
 
       if (!account || !profile) {
         throw new Error("Missing account or profile data.");

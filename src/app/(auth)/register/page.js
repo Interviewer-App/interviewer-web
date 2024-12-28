@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
 import { register } from "@/lib/api/authentication";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { signIn } from "next-auth/react";
@@ -13,7 +12,6 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [passwordconf, setPasswordconf] = useState("");
   const [role, setRole] = useState("CANDIDATE");
-  const { login } = useAuth();
   const router = useRouter();
 
   const [isValidPassword, setIsValidPassword] = useState(false);
@@ -80,7 +78,7 @@ const RegisterPage = () => {
   };
 
   const handleLoginSuccess = async () => {
-    signIn("google", {
+    await signIn("google", {
       // callbackUrl: `${
       //   window.location.origin
       // }/auth-callback?redirect=${encodeURIComponent(redirects)}`,
@@ -165,7 +163,7 @@ const RegisterPage = () => {
         </form>
         <div className=" flex items-center justify-center mt-3">
           <img
-            src="https://th.bing.com/th/id/R.0fa3fe04edf6c0202970f2088edea9e7?rik=joOK76LOMJlBPw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fgoogle-logo-png-open-2000.png&ehk=0PJJlqaIxYmJ9eOIp9mYVPA4KwkGo5Zob552JPltDMw%3d&risl=&pid=ImgRaw&r=0"
+            src='https://th.bing.com/th/id/R.0fa3fe04edf6c0202970f2088edea9e7?rik=joOK76LOMJlBPw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fgoogle-logo-png-open-2000.png&ehk=0PJJlqaIxYmJ9eOIp9mYVPA4KwkGo5Zob552JPltDMw%3d&risl=&pid=ImgRaw&r=0'
             alt="google logo"
             onClick={handleLoginSuccess}
             className=" rounded-lg h-8 w-8"
