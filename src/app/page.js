@@ -88,12 +88,12 @@ export default function Home() {
           <div>
             <Link href="/login">
               <button className=" bg-white/15 py-2 md:py-3 px-5 md:px-8 rounded-xl mr-1 md:mr-3 text-sm md:text-base font-medium">
-                sign In
+                Sign In
               </button>
             </Link>
             <Link href="/register">
               <button className=" bg-white/15 py-2 md:py-3 px-5 md:px-8 rounded-xl text-sm md:text-base font-medium">
-                sign Up
+                Sign Up
               </button>
             </Link>
           </div>
