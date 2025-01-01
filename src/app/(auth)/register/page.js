@@ -62,14 +62,11 @@ const RegisterPage = () => {
         const { data } = err.response;
 
         if (data && data.message) {
-          console.error("Registration failed:", data.message);
           alert(`Registration failed: ${data.message}`);
         } else {
-          console.error("An unexpected error occurred:", err.response);
           alert("An unexpected error occurred. Please try again.");
         }
       } else {
-        console.error("An unexpected error occurred:", err);
         alert(
           "An unexpected error occurred. Please check your network and try again."
         );
