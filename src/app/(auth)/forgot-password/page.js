@@ -48,14 +48,16 @@ const ForgotPasswordPage = () => {
               </Link>
             </label>
           </div>
-          <Link href="/reset-password">
-            <button
-              type="submit"
-              className=" h-12 min-w-[170px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
-            >
-              Reset Password
-            </button>
-          </Link>
+          <div className=" w-full flex justify-center items-center mt-7">
+            <Link href="/reset-password">
+              <button
+                type="submit"
+                className=" h-12 min-w-[170px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              >
+                Reset Password
+              </button>
+            </Link>
+          </div>
         </form>
       </div>
     </div>

@@ -273,17 +273,15 @@ const RegisterPage = () => {
                 </Link>
               </label>
             </div>
-            <div className=" w-full mt-5">
               <button
                 type="submit"
-                className=" h-12 min-w-[150px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+                className=" h-12 min-w-[150px] mt-5 w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
               >
                 Register
               </button>
-            </div>
           </form>
           <div className="mt-5 w-full">
-            <p className=" text-[#808080] text-sm">
+            <p className=" text-[#808080] text-sm text-center">
               Got an account?{" "}
               <Link
                 href="/login"
