@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '../lib/api/auth';
+import { SessionProvider } from 'next-auth/react'
 
 const AuthContext = createContext();
 
@@ -34,13 +35,15 @@ export const AuthProvider = ({ children }) => {
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
-      if (user.role === 'COMPANY') {
-        router.push('/dashboard');
-      } else if (user.role === 'CANDIDATE') {
-        router.push('/panel');
-      } else{
-        router.push('/');
-      }
+      console.log("response", response);
+      return response.data;
+      // if (user.role === 'COMPANY') {
+      //   router.push('/dashboard');
+      // } else if (user.role === 'CANDIDATE') {
+      //   router.push('/panel');
+      // } else{
+      //   router.push('/');
+      // }
     }catch (err){
       alert('Invalid email or password');
     }
@@ -55,7 +58,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {children}
+       <SessionProvider>{children}</SessionProvider>
     </AuthContext.Provider>
   );
 };

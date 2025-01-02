@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams, redirect } from "next/navigation";
 
 //assets
 import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
@@ -11,16 +12,43 @@ import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
 //icons
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { signIn ,useSession , signOut,getSession} from "next-auth/react";
 
 const LoginPage = () => {
   const { login } = useAuth();
+  // const { data: session,status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, password);
+      // await login(email, password);
+      const res = await signIn("credentials", {
+        email: email,
+        password: password,
+        redirect: false,
+      });
+
+      if (res.ok) {
+        debugger
+        const session = await getSession();
+        const userRole = session?.user?.role;
+
+        if (userRole === 'COMPANY') {
+          router.push('/dashboard');
+        } else if (userRole === 'CANDIDATE') {
+          router.push('/panel');
+        } else {
+          router.push('/');
+        }
+
+
+      } else {
+        console.error("Login failed");
+      }
     } catch (err) {
       if (err.response) {
         const { data } = err.response;
