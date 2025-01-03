@@ -98,7 +98,7 @@ const RegisterPage = () => {
       callbackUrl: "/panel",
     });
   };
-  
+
   const handleGithubLoginSuccess = async () => {
     await signIn("github", {
       callbackUrl: "/panel",
@@ -253,12 +253,12 @@ const RegisterPage = () => {
               </div>
             </div>
             {isPasswordMissMatch && (
-              <span className=" text-lightred text-xs text-left w-full pt-1">
+              <span className=" text-lightred text-xs text-left w-full -mt-5">
                 * Passwords do not match.
               </span>
             )}
             {isValidPassword && (
-              <span className=" text-lightred text-xs text-left w-full pt-1">
+              <span className=" text-lightred text-xs text-left w-full -mt-5">
                 * Password must contain at least one uppercase letter, one
                 lowercase letter, one number, and be at least 6 characters long.
               </span>
