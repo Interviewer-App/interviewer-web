@@ -1,16 +1,32 @@
-import axios from 'axios';
+import api from './api';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api'; // Replace with your API URL
+export async function signUp(data) {
+  try {
+      const response = await api.post(`/auth/register`,data)
+      return response.data;
+  } catch (error) {
+      console.error('Login failed:');
+      throw error;
+  }
+}
 
-/**
- * Registers a new user
- * @param {Object} userData - The user data to send to the API
- * @param {string} userData.email - The user's email
- * @param {string} userData.password - The user's password
- * @param {string} userData.role - The user's role (ADMIN or CLIENT)
- * @returns {Promise<Object>} The response from the API
- */
-export const register = async (userData) => {
-  const response = await axios.post(`${BASE_URL}/auth/register`, userData);
-  return response.data;
-};
+export async function checkUserAvailability(email) {
+  try {
+      const response = await api.get(`/auth/check-user-availability/${email}`)
+      return response;
+  } catch (error) {
+      console.error('Login failed:');
+      throw error;
+  }
+}
+
+
+export async function providerRegistration(userdata) {
+  try {
+      const response = await api.post(`/auth/provider-register`,userdata)
+      return response.data;
+  } catch (error) {
+      console.error('Login failed:');
+      throw error;
+  }
+}

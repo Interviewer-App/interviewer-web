@@ -3,8 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { useAuth } from "@/context/AuthContext";
 import CredentialsProvider from 'next-auth/providers/credentials'
-import api from '../../../../lib/api/auth';
-
+import api from '@/lib/api/api';
+import { checkUserAvailability, signUp ,providerRegistration} from '@/lib/api/authentication';
 
 const handler = NextAuth({
   pages: {
@@ -62,17 +62,36 @@ const handler = NextAuth({
       //   throw new Error("Missing account or profile data.");
       // }
 
-      if (account.provider === "google") {
+      if (account.provider === "google" || account.provider === "github") {
         try {
-          const googleId = user.id;
+          const providerid = user.id;
           const provider = account.provider;
           const image = user.image;
           const { name, email } = user;
-          console.log("googleId", googleId);
-          console.log("Name:", name);
-          console.log("Email:", email);
-          console.log("Profile Picture:", image);
-          console.log("Account provider:", provider);
+
+          const firstname = name.split(" ")[0];
+          const lastname = name.split(" ")[1];
+
+          const userData = {
+            firstname,
+            lastname,
+            email,
+            provider,
+            providerAccountId: providerid,
+            role: "CANDIDATE",
+          };
+
+
+          const newUser = await providerRegistration(userData);
+          console.log("newUser", newUser);
+          if (newUser.token) {
+            user.accessToken = newUser.token;
+            user.role = newUser.user.role
+            user.email = newUser.user.email
+            user.id  = newUser.user.userID
+          }
+          
+
           // const res = await login({ name, email, provider, googleId, image });
 
           // if (res) {

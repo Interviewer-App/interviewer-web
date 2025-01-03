@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { register } from "@/lib/api/authentication";
+import { signUp } from "@/lib/api/authentication";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -56,7 +56,7 @@ const RegisterPage = () => {
           passwordconf,
           companyname,
         };
-        const response = await register(userData);
+        const response = await signUp(userData);
 
         if (response) {
           router.push("/login");
@@ -95,7 +95,7 @@ const RegisterPage = () => {
       // callbackUrl: `${
       //   window.location.origin
       // }/auth-callback?redirect=${encodeURIComponent(redirects)}`,
-      callbackUrl: "/login",
+      callbackUrl: "/panel",
     });
   };
 
