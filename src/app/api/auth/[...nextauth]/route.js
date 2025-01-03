@@ -35,7 +35,6 @@ const handler = NextAuth({
           // const res = await Login(loginData);
           const res = await api.post(`/auth/login`, loginData);
           // const res = await login({email, password});
-          console.log("res", res);
           // const { token, user } = res.data;
           if (res.data.token) {
             console.log("Login successful");
@@ -82,7 +81,6 @@ const handler = NextAuth({
 
 
           const newUser = await providerRegistration(userData);
-          console.log("newUser", newUser);
           if (newUser.token) {
             user.accessToken = newUser.token;
             user.role = newUser.user.role
