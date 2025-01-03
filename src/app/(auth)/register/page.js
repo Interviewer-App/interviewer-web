@@ -90,13 +90,20 @@ const RegisterPage = () => {
     }
   };
 
-  const handleLoginSuccess = async () => {
+  const handleGoogleLoginSuccess = async () => {
     await signIn("google", {
       // callbackUrl: `${
       //   window.location.origin
       // }/auth-callback?redirect=${encodeURIComponent(redirects)}`,
       callbackUrl: "/panel",
     });
+  };
+  
+  const handleGithubLoginSuccess = async () => {
+    await signIn("github", {
+      callbackUrl: "/panel",
+    });
+
   };
 
   const userRoleHandler = (role) => {
@@ -141,13 +148,13 @@ const RegisterPage = () => {
           </h1>
           <div className=" mt-5 clear-start flex flex-col md:flex-row items-start justify-between">
             <button
-              onClick={handleLoginSuccess}
+              onClick={handleGoogleLoginSuccess}
               className=" w-full md:w-[45%] bg-white h-[45px] text-black font-normal rounded-lg text-sm "
             >
               <FcGoogle className=" mr-2 inline-block text-xl" />
               Sign in with Google
             </button>
-            <button className=" w-full mt-6 md:mt-0 md:w-[48%] bg-black h-[45px] text-white font-medium rounded-lg text-sm border-0">
+            <button onClick={handleGithubLoginSuccess} className=" w-full mt-6 md:mt-0 md:w-[48%] bg-black h-[45px] text-white font-medium rounded-lg text-sm border-0">
               <FaGithub className=" text-white mr-2 inline-block text-xl" />
               Sign in with Github
             </button>
