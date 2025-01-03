@@ -33,17 +33,17 @@ const handler = NextAuth({
         const loginData = { email, password };
         try {
           // const res = await Login(loginData);
-          const res = await api.post(`/auth/login`,data)
+          const res = await api.post(`/auth/login`, loginData);
           // const res = await login({email, password});
           console.log("res", res);
           // const { token, user } = res.data;
-          if (res.token) {
+          if (res.data.token) {
             console.log("Login successful");
             return {
-              accessToken: res.token,
-              role: res.user.role,
-              email: res.user.email,
-              id: res.user.userID,
+              accessToken: res.data.token,
+              role: res.data.user.role,
+              email: res.data.user.email,
+              id: res.data.user.userID,
             };
 
           } 
@@ -101,7 +101,8 @@ const handler = NextAuth({
           //   user.country = data.country;
           // }
         } catch (error) {
-          console.error(error);
+          // console.error(error);
+          console.log(error);
         }
         return Promise.resolve(user);
       }
