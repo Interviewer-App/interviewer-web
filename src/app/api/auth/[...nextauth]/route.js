@@ -4,7 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 import { useAuth } from "@/context/AuthContext";
 import CredentialsProvider from 'next-auth/providers/credentials'
 import api from '@/lib/api/api';
-import { checkUserAvailability, signUp ,providerRegistration} from '@/lib/api/authentication';
+import { checkUserAvailability, signUp ,providerRegistration,Login} from '@/lib/api/authentication';
 
 const handler = NextAuth({
   pages: {
@@ -30,27 +30,26 @@ const handler = NextAuth({
         // const provider = credentials.provider;
         const email = credentials.email;
         const password = credentials.password;
-
+        const loginData = { email, password };
         try {
-          const res = await api.post('/auth/login', { email, password });
+          // const res = await Login(loginData);
+          const res = await api.post(`/auth/login`,data)
           // const res = await login({email, password});
           console.log("res", res);
-          const { token, user } = res.data;
-          if (token) {
+          // const { token, user } = res.data;
+          if (res.token) {
             console.log("Login successful");
             return {
-              accessToken: token,
-              role: user.role,
-              email: user.email,
-              id: user.userID,
+              accessToken: res.token,
+              role: res.user.role,
+              email: res.user.email,
+              id: res.user.userID,
             };
 
-          } else {
-            console.error("Login failed");
-          }
+          } 
 
         } catch (e) {
-          return null;
+          alert("Invalid email or password");
         }
       },
     }),

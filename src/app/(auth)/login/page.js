@@ -33,7 +33,7 @@ const LoginPage = () => {
       });
 
       if (res.ok) {
-        debugger
+        
         const session = await getSession();
         const userRole = session?.user?.role;
 
@@ -47,21 +47,24 @@ const LoginPage = () => {
 
 
       } else {
-        console.error("Login failed");
+        alert("Invalid email or password");
+        // console.error("Login failed:", res.error);
       }
     } catch (err) {
-      if (err.response) {
-        const { data } = err.response;
-        if (data && data.message) {
-          alert(`Login failed: ${data.message}`);
-        } else {
-          alert("An unexpected error occurred. Please try again.");
-        }
-      } else {
-        alert(
-          "An unexpected error occurred. Please check your network and try again."
-        );
-      }
+      alert("An unexpected error occurred. Please try again.");
+      // console.error("Error during login:", error);
+      // if (err.response) {
+      //   const { data } = err.response;
+      //   if (data && data.message) {
+      //     alert(`Login failed: ${data.message}`);
+      //   } else {
+      //     alert("An unexpected error occurred. Please try again.");
+      //   }
+      // } else {
+      //   alert(
+      //     "An unexpected error occurred. Please check your network and try again."
+      //   );
+      // }
     }
   };
 
