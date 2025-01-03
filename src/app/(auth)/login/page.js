@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams, redirect } from "next/navigation";
+import { signIn ,useSession , signOut, getSession} from "next-auth/react";
 
 //assets
 import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
@@ -12,7 +13,6 @@ import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
 //icons
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { signIn ,useSession , signOut,getSession} from "next-auth/react";
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -68,6 +68,19 @@ const LoginPage = () => {
     }
   };
 
+    const handleGoogleLoginSuccess = async () => {
+      await signIn("google", {
+        callbackUrl: "/panel",
+      });
+    };
+    
+    const handleGithubLoginSuccess = async () => {
+      await signIn("github", {
+        callbackUrl: "/panel",
+      });
+  
+    };
+
   return (
     <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full">
       <div className="h-fit max-h-[670px] w-[90%] md:w-[50%] lg:w-[70%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
@@ -81,11 +94,11 @@ const LoginPage = () => {
         <div className=" w-full lg:w-[60%] py-10 px-14">
           <h1 className=" text-2xl font-semibold text-[#f3f3f3]">Sign In</h1>
           <div className=" mt-8 clear-start flex flex-col items-start justify-between">
-            <button className=" bg-white h-[45px] w-full text-black font-normal rounded-lg text-sm ">
+            <button onClick={handleGoogleLoginSuccess} className=" bg-white h-[45px] w-full text-black font-normal rounded-lg text-sm ">
               <FcGoogle className=" mr-2 inline-block text-xl" />
               Sign in with Google
             </button>
-            <button className=" bg-black h-[45px] text-white w-full font-medium rounded-lg text-sm border-0 mt-5">
+            <button onClick={handleGithubLoginSuccess} className=" bg-black h-[45px] text-white w-full font-medium rounded-lg text-sm border-0 mt-5">
               <FaGithub className=" text-white mr-2 inline-block text-xl" />
               Sign in with Github
             </button>
