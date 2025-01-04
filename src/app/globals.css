@@ -4,7 +4,7 @@
 
 :root {
   --background: #14161a;
-  --foreground: #ffffff;
+    --foreground: #ededed;
   --lightred: #b81e2a;
   --darkred: #6b1218;
 }
@@ -19,7 +19,11 @@
 }  */
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
 }
