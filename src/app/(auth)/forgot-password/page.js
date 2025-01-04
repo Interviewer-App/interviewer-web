@@ -6,7 +6,7 @@ const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
 
   return (
-    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full">
+    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full text-white">
       <div className="h-fit max-h-[670px] max-w-[600px] w-[90%] md:w-[50%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg p-14">
         <h1 className=" text-xl md:text-2xl lg:text-3xl font-semibold text-[#f3f3f3]">
           Forgot your password?
