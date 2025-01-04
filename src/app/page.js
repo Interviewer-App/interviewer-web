@@ -62,7 +62,8 @@ export default function Home() {
   ];
 
   return (
-    <div className=" w-full">
+    <div className=" relative w-full text-white  overflow-hidden">
+       <div className="absolute inset-0 bg-background -z-20"></div>
       <Image
         src={bgGrid}
         alt="bg"
