@@ -1,5 +1,5 @@
-import { SidebarMenu } from '@/app/components/SideBar';
-import NavbarComponent from '@/app/components/NavBar';
+import { SidebarMenu } from '@/components/SideBar';
+import NavbarComponent from '@/components/NavBar';
 const menus = [
   {
     label: "Discover",
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     <>
       <div>
         <NavbarComponent menus={menus} />
-        <div className="flex">
+        <div className="flex bg-background">
           <div className="hidden sm:block">
             <SidebarMenu menus={menus} />
           </div>
