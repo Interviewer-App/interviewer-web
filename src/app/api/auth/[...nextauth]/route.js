@@ -48,7 +48,7 @@ const handler = NextAuth({
           } 
 
         } catch (e) {
-          alert("Invalid email or password");
+          console.log("Invalid email or password");
         }
       },
     }),
@@ -99,7 +99,6 @@ const handler = NextAuth({
           //   user.country = data.country;
           // }
         } catch (error) {
-          // console.error(error);
           console.log(error);
         }
         return Promise.resolve(user);
