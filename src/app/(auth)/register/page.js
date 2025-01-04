@@ -12,6 +12,10 @@ import sideImage from "@/assets/register/register-side-image.jpg";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
+//shadcn components
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+
 const RegisterPage = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
@@ -25,11 +29,19 @@ const RegisterPage = () => {
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [isPasswordMissMatch, setIsPasswordMissMatch] = useState(false);
 
+  const { toast } = useToast();
+
   const passwordValidation = (password, passwordconf) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
     if (password !== passwordconf) {
       setIsPasswordMissMatch(true);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Passwords do not match.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
       return false;
     }
 
@@ -40,6 +52,12 @@ const RegisterPage = () => {
     }
 
     setIsValidPassword(true);
+    toast({
+      variant: "destructive",
+      title: "Uh oh! Something went wrong.",
+      description: "Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long.",
+      action: <ToastAction altText="Try again">Try again</ToastAction>,
+    })
     return false;
   };
 
@@ -78,23 +96,33 @@ const RegisterPage = () => {
         const { data } = err.response;
 
         if (data && data.message) {
-          alert(`Registration failed: ${data.message}`);
+          toast({
+                  variant: "destructive",
+                  title: "Uh oh! Something went wrong.",
+                  description: `Registration failed: ${data.message}`,
+                  action: <ToastAction altText="Try again">Try again</ToastAction>,
+                })
         } else {
-          alert("An unexpected error occurred. Please try again.");
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          })
         }
       } else {
-        alert(
-          "An unexpected error occurred. Please check your network and try again."
-        );
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        })
       }
     }
   };
 
   const handleGoogleLoginSuccess = async () => {
     await signIn("google", {
-      // callbackUrl: `${
-      //   window.location.origin
-      // }/auth-callback?redirect=${encodeURIComponent(redirects)}`,
       callbackUrl: "/panel",
     });
   };
@@ -111,7 +139,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full">
+    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full text-white">
       <div className="h-fit md:max-h-[670px] w-[90%] md:w-[50%] lg:w-[70%] lg:max-w-[1000px] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
         <div className=" hidden lg:block w-[40%] h-full relative">
           <Image
