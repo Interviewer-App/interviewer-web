@@ -9,6 +9,8 @@ import { signIn ,useSession , signOut, getSession} from "next-auth/react";
 
 //assets
 import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
+import bgGrid from "@/assets/grid-bg.svg";
+import bgGrain from "@/assets/grain-bg.svg";
 
 //icons
 import { FcGoogle } from "react-icons/fc";
@@ -84,7 +86,18 @@ const LoginPage = () => {
     };
 
   return (
-    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full text-white">
+    <div className=" relative bg-cover overflow-hidden flex flex-col items-center justify-center h-lvh w-full text-white">
+      <div className="absolute inset-0 bg-background -z-20"></div>
+            <Image
+              src={bgGrid}
+              alt="bg"
+              className=" absolute w-full  top-0 left-0 -z-10 "
+            />
+            <Image
+              src={bgGrain}
+              alt="bg"
+              className=" absolute w-full top-0 left-0 -z-10 "
+            />
       <div className="h-fit max-h-[670px] w-[90%] md:w-[50%] lg:w-[70%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
         <div className=" hidden lg:block w-[40%] h-full relative">
           <Image
