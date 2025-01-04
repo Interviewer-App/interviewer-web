@@ -9,6 +9,10 @@ import { signIn } from "next-auth/react";
 
 //assets
 import sideImage from "@/assets/register/register-side-image.jpg";
+import bgGrid from "@/assets/grid-bg.svg";
+import bgGrain from "@/assets/grain-bg.svg";
+
+//icons
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
@@ -44,7 +48,7 @@ const RegisterPage = () => {
         title: "Uh oh! Something went wrong.",
         description: "Passwords do not match.",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
+      });
       return false;
     }
 
@@ -58,9 +62,10 @@ const RegisterPage = () => {
     toast({
       variant: "destructive",
       title: "Uh oh! Something went wrong.",
-      description: "Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long.",
+      description:
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long.",
       action: <ToastAction altText="Try again">Try again</ToastAction>,
-    })
+    });
     return false;
   };
 
@@ -100,26 +105,27 @@ const RegisterPage = () => {
 
         if (data && data.message) {
           toast({
-                  variant: "destructive",
-                  title: "Uh oh! Something went wrong.",
-                  description: `Registration failed: ${data.message}`,
-                  action: <ToastAction altText="Try again">Try again</ToastAction>,
-                })
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Registration failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
         } else {
           toast({
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
             description: "An unexpected error occurred. Please try again.",
             action: <ToastAction altText="Try again">Try again</ToastAction>,
-          })
+          });
         }
       } else {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "An unexpected error occurred. Please check your network and try again.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
+        });
       }
     }
   };
@@ -134,7 +140,6 @@ const RegisterPage = () => {
     await signIn("github", {
       callbackUrl: "/panel",
     });
-
   };
 
   const userRoleHandler = (role) => {
@@ -142,7 +147,18 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full text-white">
+    <div className=" relative overflow-hidden bg-cover flex flex-col items-center justify-center h-lvh w-full text-white">
+      <div className="absolute inset-0 bg-background -z-20"></div>
+      <Image
+        src={bgGrid}
+        alt="bg"
+        className=" absolute w-full  top-0 left-0 -z-10 "
+      />
+      <Image
+        src={bgGrain}
+        alt="bg"
+        className=" absolute w-full top-0 left-0 -z-10 "
+      />
       <div className="h-fit md:max-h-[670px] w-[90%] md:w-[50%] lg:w-[70%] lg:max-w-[1000px] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
         <div className=" hidden lg:block w-[40%] h-full relative">
           <Image
@@ -185,7 +201,10 @@ const RegisterPage = () => {
               <FcGoogle className=" mr-2 inline-block text-xl" />
               Sign in with Google
             </button>
-            <button onClick={handleGithubLoginSuccess} className=" w-full mt-6 md:mt-0 md:w-[48%] bg-black h-[45px] text-white font-medium rounded-lg text-sm border-0">
+            <button
+              onClick={handleGithubLoginSuccess}
+              className=" w-full mt-6 md:mt-0 md:w-[48%] bg-black h-[45px] text-white font-medium rounded-lg text-sm border-0"
+            >
               <FaGithub className=" text-white mr-2 inline-block text-xl" />
               Sign in with Github
             </button>
@@ -216,7 +235,9 @@ const RegisterPage = () => {
                   value={firstname}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
-                  className={` h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 ${role === "COMPANY"? '' : 'mb-6'}`}
+                  className={` h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 ${
+                    role === "COMPANY" ? "" : "mb-6"
+                  }`}
                 />
               </div>
               <div className={` ${role == "COMPANY" ? "w-[48%]" : "w-full"}  `}>
@@ -227,7 +248,9 @@ const RegisterPage = () => {
                   value={lastname}
                   onChange={(e) => setLastName(e.target.value)}
                   required
-                  className={`h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 ${role === "COMPANY"? '' : 'mb-6'}`}
+                  className={`h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 ${
+                    role === "COMPANY" ? "" : "mb-6"
+                  }`}
                 />
               </div>
             </div>
@@ -265,7 +288,17 @@ const RegisterPage = () => {
                     isValidPassword ? " border-2 border-lightred" : ""
                   }`}
                 />
-                {showPassword ? <IoEye onClick={() => setShowPassword(!showPassword)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" /> : <IoEyeOff onClick={() => setShowPassword(!showPassword)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" />}
+                {showPassword ? (
+                  <IoEye
+                    onClick={() => setShowPassword(!showPassword)}
+                    className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                  />
+                ) : (
+                  <IoEyeOff
+                    onClick={() => setShowPassword(!showPassword)}
+                    className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                  />
+                )}
               </div>
               <div className=" w-[48%] relative">
                 <input
@@ -282,7 +315,17 @@ const RegisterPage = () => {
                     isPasswordMissMatch ? " border-2 border-lightred" : ""
                   }`}
                 />
-                {showPasswordConf ? <IoEye onClick={() => setShowPasswordConf(!showPasswordConf)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" /> : <IoEyeOff onClick={() => setShowPasswordConf(!showPasswordConf)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" />}
+                {showPasswordConf ? (
+                  <IoEye
+                    onClick={() => setShowPasswordConf(!showPasswordConf)}
+                    className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                  />
+                ) : (
+                  <IoEyeOff
+                    onClick={() => setShowPasswordConf(!showPasswordConf)}
+                    className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                  />
+                )}
               </div>
             </div>
             {isPasswordMissMatch && (
@@ -313,12 +356,12 @@ const RegisterPage = () => {
                 </Link>
               </label>
             </div>
-              <button
-                type="submit"
-                className=" h-12 min-w-[150px] mt-5 w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
-              >
-                Register
-              </button>
+            <button
+              type="submit"
+              className=" h-12 min-w-[150px] mt-5 w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+            >
+              Register
+            </button>
           </form>
           <div className="mt-5 w-full">
             <p className=" text-[#808080] text-sm text-center">
