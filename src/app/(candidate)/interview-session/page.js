@@ -55,7 +55,7 @@ const InterviewSession = () => {
         </h1>
         <div className=" rounded-lg w-full ">
           {(isListening || transcript) && (
-            <div className="w-full m-auto min-h-[100px] rounded-lg px-6 py-5 bg-gradient-to-br from-[#2e3036] to-[#282a2e]">
+            <div className="w-full m-auto min-h-[100px] rounded-lg px-6 py-5 bg-gradient-to-br from-[#2e3036] to-[#282a2e] text-white">
               <div className="flex-1 flex w-full justify-between">
                 <div className="space-y-1">
                   <p className="text-sm font-medium leading-none text-white pb-1">
