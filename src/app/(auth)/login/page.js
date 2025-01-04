@@ -14,18 +14,21 @@ import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
+import { useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+
+
 const LoginPage = () => {
   const { login } = useAuth();
-  // const { data: session,status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { toast } = useToast()
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // await login(email, password);
       const res = await signIn("credentials", {
         email: email,
         password: password,
@@ -47,23 +50,20 @@ const LoginPage = () => {
 
 
       } else {
-        alert("Invalid email or password");
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Invalid email or password",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        })
       }
     } catch (err) {
-      alert("An unexpected error occurred. Please try again.");
-      // console.error("Error during login:", error);
-      // if (err.response) {
-      //   const { data } = err.response;
-      //   if (data && data.message) {
-      //     alert(`Login failed: ${data.message}`);
-      //   } else {
-      //     alert("An unexpected error occurred. Please try again.");
-      //   }
-      // } else {
-      //   alert(
-      //     "An unexpected error occurred. Please check your network and try again."
-      //   );
-      // }
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "An unexpected error occurred. Please try again.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
     }
   };
 
@@ -81,7 +81,7 @@ const LoginPage = () => {
     };
 
   return (
-    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full">
+    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full text-white">
       <div className="h-fit max-h-[670px] w-[90%] md:w-[50%] lg:w-[70%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
         <div className=" hidden lg:block w-[40%] h-full relative">
           <Image
