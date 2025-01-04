@@ -20,6 +20,8 @@ export default function RecordingView() {
         setIsRecording(true);
         // Create a new SpeechRecognition instance and configure it
         recognitionRef.current = new window.webkitSpeechRecognition();
+        recognitionRef.grammars = new window.webkitSpeechGrammarList();
+
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = true;
     
