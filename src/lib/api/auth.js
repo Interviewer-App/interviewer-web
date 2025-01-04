@@ -4,7 +4,7 @@ export const getToken = async () => {
       return token;
       
   } catch (error) {
-      console.error('Error retrieving token:', error);
+      console.log('Error retrieving token:', error);
       return null;
   }
 };
@@ -14,7 +14,7 @@ export const setToken = (token) => {
       localStorage.setItem('accessToken', token);
       
   } catch (error) {
-      console.error('Error storing token:', error);
+      console.log('Error storing token:', error);
   }
 };
 
@@ -22,6 +22,6 @@ export const removeToken = () => {
   try {
       localStorage.removeItem('accessToken');
   } catch (error) {
-      console.error('Error removing token:', error);
+      console.log('Error removing token:', error);
   }
 };
