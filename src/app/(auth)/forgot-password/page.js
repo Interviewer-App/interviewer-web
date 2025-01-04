@@ -1,12 +1,28 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import Image from "next/image";
+
+//assets
+import bgGrid from "@/assets/grid-bg.svg";
+import bgGrain from "@/assets/grain-bg.svg";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
 
   return (
-    <div className=" bg-background flex flex-col items-center justify-center h-lvh w-full text-white">
+    <div className=" relative bg-cover overflow-hidden flex flex-col items-center justify-center h-lvh w-full text-white">
+      <div className="absolute inset-0 bg-background -z-20"></div>
+      <Image
+        src={bgGrid}
+        alt="bg"
+        className=" absolute w-full  top-0 left-0 -z-10 "
+      />
+      <Image
+        src={bgGrain}
+        alt="bg"
+        className=" absolute w-full top-0 left-0 -z-10 "
+      />
       <div className="h-fit max-h-[670px] max-w-[600px] w-[90%] md:w-[50%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg p-14">
         <h1 className=" text-xl md:text-2xl lg:text-3xl font-semibold text-[#f3f3f3]">
           Forgot your password?
