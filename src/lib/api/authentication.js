@@ -5,7 +5,7 @@ export async function Login(data) {
       const response = await api.post(`/auth/login`,data)
       return response.data;
   } catch (error) {
-      console.error('Login failed:');
+      console.log('Login failed:');
       throw error;
   }
 }
@@ -15,7 +15,7 @@ export async function signUp(data) {
       const response = await api.post(`/auth/register`,data)
       return response.data;
   } catch (error) {
-      console.error('Login failed:');
+      console.log('Login failed:');
       throw error;
   }
 }
@@ -25,7 +25,7 @@ export async function checkUserAvailability(email) {
       const response = await api.get(`/auth/check-user-availability/${email}`)
       return response;
   } catch (error) {
-      console.error('Login failed:');
+      console.log('Login failed:');
       throw error;
   }
 }
@@ -36,7 +36,7 @@ export async function providerRegistration(userdata) {
       const response = await api.post(`/auth/provider-register`,userdata)
       return response.data;
   } catch (error) {
-      console.error('Login failed:');
+      console.log('Login failed:');
       throw error;
   }
 }
