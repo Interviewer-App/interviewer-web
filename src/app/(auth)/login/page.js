@@ -13,6 +13,8 @@ import sideImage from "@/assets/signin/sign-in-side-mage.jpg";
 //icons
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
+import { IoEyeOff } from "react-icons/io5";
 
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
@@ -22,6 +24,7 @@ const LoginPage = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast()
 
@@ -122,8 +125,9 @@ const LoginPage = () => {
               required
               className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
             />
+            <div className=" w-full relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               name="password"
               value={password}
@@ -131,6 +135,8 @@ const LoginPage = () => {
               required
               className=" h-[45px] w-full rounded-lg text-base border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
             />
+            {showPassword ? <IoEye onClick={() => setShowPassword(!showPassword)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" /> : <IoEyeOff onClick={() => setShowPassword(!showPassword)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" />}
+            </div>
             <div className=" w-full flex justify-between items-center mt-5">
               <div>
                 <input

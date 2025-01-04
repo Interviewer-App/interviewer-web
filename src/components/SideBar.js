@@ -9,7 +9,7 @@ import Link from "next/link";
 import * as React from "react";
 
 export function SidebarMenu({ menus }) {
-  const uniqueLabels = Array.from(new Set(menus.map(menu => menu.label)));
+  const uniqueLabels = Array.from(new Set(menus.map((menu) => menu.label)));
 
   return (
     <ScrollArea className="h-screen lg:w-48 sm:w-full rounded-md">
@@ -26,8 +26,8 @@ export function SidebarMenu({ menus }) {
               </p>
             )}
             {menus
-              .filter(menu => menu.label === label)
-              .map(menu => (
+              .filter((menu) => menu.label === label)
+              .map((menu) => (
                 <React.Fragment key={menu.name}>
                   {menu.submenu && menu.submenu.length > 0 ? (
                     <Accordion
@@ -40,20 +40,18 @@ export function SidebarMenu({ menus }) {
                         className="m-0 p-0 font-normal"
                       >
                         <AccordionTrigger>
-                          <a
-                            className="w-full flex justify-start text-xs font-normal h-10 bg-background my-2 items-center p-4 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-background rounded-md"
-                          >
+                          <a className="w-full flex justify-start text-xs font-normal h-10 bg-background my-2 items-center p-4 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-background rounded-md">
                             <div className="flex justify-between w-full">
                               <div className="flex">{menu.name}</div>
                             </div>
                           </a>
                         </AccordionTrigger>
                         <AccordionContent>
-                          {menu.submenu.map(submenu => (
+                          {menu.submenu.map((submenu) => (
                             <Link
                               key={submenu.name}
-href={submenu.href}
-  className="text-xs h-10 bg-background dark:bg-background dark:hover:bg-primary dark:hover:text-white hover:text-white my-2 flex items-center p-4 rounded-md"
+                              href={submenu.href}
+                              className="text-xs h-10 bg-background dark:bg-background dark:hover:bg-primary dark:hover:text-white hover:text-white my-2 flex items-center p-4 rounded-md"
                             >
                               {submenu.name}
                             </Link>
@@ -64,8 +62,8 @@ href={submenu.href}
                   ) : (
                     <div>
                       <Link
-  href={menu.href}
-  className="text-xs h-10 bg-background dark:bg-background dark:hover:bg-primary hover:text-white dark:hover:text-white my-2 flex items-center p-4 rounded-md text-white"
+                        href={menu.href}
+                        className="text-xs h-10 bg-background dark:bg-background dark:hover:bg-primary hover:text-white dark:hover:text-white my-2 flex items-center p-4 rounded-md text-white"
                       >
                         {menu.name}
                       </Link>

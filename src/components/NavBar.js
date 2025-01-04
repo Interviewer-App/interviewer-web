@@ -13,7 +13,7 @@ import { SidebarMenu } from "./SideBar";
 
 export default function NavbarComponent({ menus }) {
   return (
-    <header className="sticky top-0 z-50 flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-primary dark:bg-background dark:text-white text-sm py-4 dark:border-gray-600 border-b border-gray-600">
+    <header className="sticky top-0 z-50 flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-primary bg-background text-white text-sm py-4 dark:border-gray-600 border-b border-gray-600">
       <nav className="max-w-full w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between" aria-label="Global">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">

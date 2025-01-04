@@ -15,6 +15,7 @@ import { FaGithub } from "react-icons/fa";
 //shadcn components
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const RegisterPage = () => {
   const [firstname, setFirstName] = useState("");
@@ -28,6 +29,8 @@ const RegisterPage = () => {
 
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [isPasswordMissMatch, setIsPasswordMissMatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConf, setShowPasswordConf] = useState(false);
 
   const { toast } = useToast();
 
@@ -249,9 +252,9 @@ const RegisterPage = () => {
               className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-6"
             />
             <div className=" w-full flex items-start justify-between mb-6">
-              <div className=" w-[48%]">
+              <div className=" w-[48%] relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   name="password"
                   value={password}
@@ -262,10 +265,11 @@ const RegisterPage = () => {
                     isValidPassword ? " border-2 border-lightred" : ""
                   }`}
                 />
+                {showPassword ? <IoEye onClick={() => setShowPassword(!showPassword)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" /> : <IoEyeOff onClick={() => setShowPassword(!showPassword)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" />}
               </div>
-              <div className=" w-[48%]">
+              <div className=" w-[48%] relative">
                 <input
-                  type="password"
+                  type={showPasswordConf ? "text" : "password"}
                   placeholder="Confirme Password"
                   name="passwordconf"
                   value={passwordconf}
@@ -278,6 +282,7 @@ const RegisterPage = () => {
                     isPasswordMissMatch ? " border-2 border-lightred" : ""
                   }`}
                 />
+                {showPasswordConf ? <IoEye onClick={() => setShowPasswordConf(!showPasswordConf)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" /> : <IoEyeOff onClick={() => setShowPasswordConf(!showPasswordConf)} className=" absolute right-4 top-4 text-[#737883] cursor-pointer" />}
               </div>
             </div>
             {isPasswordMissMatch && (

@@ -5,6 +5,7 @@ import Image from "next/image";
 
 //assets
 import sideImage from "@/assets/reset-password/reset-password.jpg";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const ResetPasswordPage = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,8 @@ const ResetPasswordPage = () => {
 
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [isPasswordMissMatch, setIsPasswordMissMatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConf, setShowPasswordConf] = useState(false);
 
   const passwordValidation = (password, passwordconf) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
@@ -78,18 +81,31 @@ const ResetPasswordPage = () => {
             >
               Your Password
             </label>
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onClick={() => setIsValidPassword(false)}
-              required
-              className={` h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 ${
-                isValidPassword ? " border-2 border-lightred" : ""
-              }`}
-            />
+            <div className=" w-full relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onClick={() => setIsValidPassword(false)}
+                required
+                className={` h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 ${
+                  isValidPassword ? " border-2 border-lightred" : ""
+                }`}
+              />
+              {showPassword ? (
+                <IoEye
+                  onClick={() => setShowPassword(!showPassword)}
+                  className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                />
+              ) : (
+                <IoEyeOff
+                  onClick={() => setShowPassword(!showPassword)}
+                  className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                />
+              )}
+            </div>
             {isValidPassword && (
               <span className=" text-lightred text-xs text-left w-full pt-1">
                 * Password must contain at least one uppercase letter, one
@@ -103,20 +119,33 @@ const ResetPasswordPage = () => {
             >
               Confirme Password
             </label>
-            <input
-              type="password"
-              placeholder="Confirme Password"
-              name="passwordconf"
-              value={passwordconf}
-              onChange={(e) => setPasswordconf(e.target.value)}
-              onClick={() => {
-                setIsPasswordMissMatch(false);
-              }}
-              required
-              className={` h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] px-6 py-2 appearance-none ${
-                isPasswordMissMatch ? " border-2 border-lightred" : ""
-              }`}
-            />
+            <div className=" w-full relative">
+              <input
+                type={showPasswordConf ? "text" : "password"}
+                placeholder="Confirme Password"
+                name="passwordconf"
+                value={passwordconf}
+                onChange={(e) => setPasswordconf(e.target.value)}
+                onClick={() => {
+                  setIsPasswordMissMatch(false);
+                }}
+                required
+                className={` h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] px-6 py-2 appearance-none ${
+                  isPasswordMissMatch ? " border-2 border-lightred" : ""
+                }`}
+              />
+              {showPasswordConf ? (
+                <IoEye
+                  onClick={() => setShowPasswordConf(!showPasswordConf)}
+                  className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                />
+              ) : (
+                <IoEyeOff
+                  onClick={() => setShowPasswordConf(!showPasswordConf)}
+                  className=" absolute right-4 top-4 text-[#737883] cursor-pointer"
+                />
+              )}
+            </div>
             {isPasswordMissMatch && (
               <span className=" text-lightred text-xs text-left w-full pt-1">
                 * Passwords do not match.
@@ -140,13 +169,12 @@ const ResetPasswordPage = () => {
               </label>
             </div>
 
-              <button
-                type="submit"
-                className=" h-12 mt-5 min-w-[150px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
-              >
-                Reset Password
-              </button>
-
+            <button
+              type="submit"
+              className=" h-12 mt-5 min-w-[150px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+            >
+              Reset Password
+            </button>
           </form>
         </div>
       </div>
