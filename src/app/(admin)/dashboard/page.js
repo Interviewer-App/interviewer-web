@@ -1,44 +1,40 @@
-import { SidebarMenu } from '@/components/SideBar';
-import NavbarComponent from '@/components/NavBar';
-const menus = [
-  {
-    label: "Discover",
-    name: "Home",
-    href: "/home"
-  },
-  {
-    label: "Discover",
-    name: "Interviews",
-    href: "/Interviews"
-  },
-  {
-    label: "Discover",
-    name: "Candidates",
-    href: "/Candidates"
-  },  
-  {
-    label: "Discover",
-    name: "company",
-    href: "/company"
-  },
-  
-  
-  // other menu items
-];
+import { AppSidebar } from "@/components/app-sidebar";
+import React from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
-const AdminDashboard = () => {
+export default function AdminDashboard() {
   return (
     <>
-      <div>
-        <NavbarComponent menus={menus} />
-        <div className="flex bg-background">
-          <div className="hidden sm:block">
-            <SidebarMenu menus={menus} />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
+   
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Admmin
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
-export default AdminDashboard;
+
+            </>)
+
+}
