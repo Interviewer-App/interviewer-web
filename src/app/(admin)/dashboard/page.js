@@ -24,7 +24,7 @@ export default function AdminDashboard() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Admmin
+                    Admin
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
@@ -35,6 +35,7 @@ export default function AdminDashboard() {
             </Breadcrumb>
 
 
-            </>)
+            </>
+            )
 
 }

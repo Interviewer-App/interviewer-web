@@ -32,7 +32,7 @@ const items = [
   },
   {
     title: "Interviews",
-    url: "#",
+    url: "/interview-session",
     icon: Home,
   },
 ]

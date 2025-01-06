@@ -35,7 +35,7 @@ const InterviewSession = () => {
           <h1 className="text-xl font-semibold">Question</h1>
           <p className="text-base text-[#909194] pt-5">
             Can you explain the core principles of Object-Oriented Programming
-            (OOP) and provide an example of how you've applied these principles
+            (OOP) and provide an example of how you&apos;ve applied these principles
             in a project?
           </p>
         </div>
