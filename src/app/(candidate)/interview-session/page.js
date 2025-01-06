@@ -52,7 +52,7 @@ const InterviewSession = () => {
                     </div>
                   </header>
           
-                  <div className=" relative flex flex-col h-lvh items-center justify-between w-full text-white py-9 bg-cover overflow-hidden">
+                  <div className=" relative flex flex-col h-full items-center justify-between w-full text-white py-9 bg-cover overflow-hidden">
       <div className="absolute inset-0 bg-background -z-20"></div>
       <Image
         src={bgGrid}

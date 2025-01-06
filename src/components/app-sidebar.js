@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { useSession } from "next-auth/react"
+
 import {
   Sidebar,
   SidebarHeader,
@@ -18,12 +20,21 @@ import { NavUser } from "@/components/nav-user"
 import Link from "next/link"
 import { TeamSwitcher } from "./team-switcher" // Import TeamSwitcher
 
-// Menu items.
-const items = [
+const commonItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: Inbox,
+  },
+  {
+    title: "Interviews",
+    url: "/interviews",
+    icon: Home,
+  },
+  {
+    title: "Interview session",
+    url: "/interview-session",
+    icon: Home,
   },
   {
     title: "Users",
@@ -35,16 +46,40 @@ const items = [
     url: "/AI",
     icon: Search,
   },
-  {
-    title: "Interview session",
-    url: "/interview-session",
-    icon: Home,
-  },
-  {
-    title: "Interviews",
-    url: "/interviews",
-    icon: Home,
-  },
+]
+
+const companyItems = [
+  // {
+  //   title: "Users",
+  //   url: "/users",
+  //   icon: Inbox,
+  // },
+  // {
+  //   title: "AI",
+  //   url: "/AI",
+  //   icon: Search,
+  // },
+]
+
+const candidateItems = [
+  // {
+  //   title: "Interview session",
+  //   url: "/interview-session",
+  //   icon: Home,
+  // },
+]
+
+const adminItems = [
+  // {
+  //   title: "Interviews",
+  //   url: "/interviews",
+  //   icon: Home,
+  // },
+  // {
+  //   title: "Settings",
+  //   url: "/settings",
+  //   icon: Settings,
+  // },
 ]
 
 // Sample user data.
@@ -66,6 +101,18 @@ const teams = [
 ]
 
 export function AppSidebar() {
+  const { data: session } = useSession()
+  const role = session?.user?.role // Assuming role is set on the user object in the session
+
+  let items = commonItems
+  if (role === "COMPANY") {
+    items = [...items, ...companyItems]
+  } else if (role === "CANDIDATE") {
+    items = [...items, ...candidateItems]
+  } else if (role === "ADMIN") {
+    items = [...items, ...adminItems]
+  }
+
   return (
     <Sidebar>
       <SidebarHeader>
