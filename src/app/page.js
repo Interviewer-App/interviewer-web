@@ -108,7 +108,7 @@ export default function Home() {
               enterprises, to streamline operations effortlessly.
             </p>
             <Link href="/register">
-              <button className="bg-[#2e2850]/80 py-2 md:py-3 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium mt-5 lg:mt-10">
+              <button className="bg-[#2e2850]/80 py-2 md:py-4 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium mt-5 lg:mt-10">
                 Get Started Now
               </button>
             </Link>
