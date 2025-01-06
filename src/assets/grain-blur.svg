@@ -17,13 +17,13 @@
       <feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_180_8288"/>
     </filter>
     <linearGradient id="paint0_linear_180_8288" x1="610" y1="0" x2="610" y2="820" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6b1218" stop-opacity="0"/>
-      <stop offset="0.355" stop-color="#b81e2a" stop-opacity="0.1"/>
-      <stop offset="0.805" stop-color="#6b1218" stop-opacity="0.3"/>
+      <stop stop-color="#785DFB" stop-opacity="0"/>
+      <stop offset="0.355" stop-color="#81F0E8" stop-opacity="0.1"/>
+      <stop offset="0.805" stop-color="#785DFB" stop-opacity="0.3"/>
     </linearGradient>
     <linearGradient id="paint1_linear_180_8288" x1="610" y1="379" x2="610" y2="938" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6b1218" stop-opacity="0"/>
-      <stop offset="1" stop-color="#b81e2a"/>
+      <stop stop-color="#785DFB" stop-opacity="0"/>
+      <stop offset="1" stop-color="#81F0E8"/>
     </linearGradient>
   </defs>
 </svg>
