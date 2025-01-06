@@ -42,10 +42,7 @@ const InterviewSession = () => {
         <div className="relative float-right mt-5 w-[70%] rounded-xl h-auto p-7 bg-gradient-to-br from-[#202225] to-[#282a2e] text-white shadow-md">
           <h1 className="text-lg font-semibold text-right">Answer</h1>
           <p className="text-base text-[#909194] pt-5 text-justify">
-            OOP principles include encapsulation, bundling data with methods;
-            inheritance, reusing code; polymorphism, flexible method behavior;
-            and abstraction, simplifying complexity by exposing only necessary
-            details, creating secure, reusable, and maintainable software.
+          {transcript}
           </p>
         </div>
       </div>
@@ -74,7 +71,7 @@ const InterviewSession = () => {
 
               {transcript && (
                 <div className="border rounded-md p-2 h-fullm mt-4">
-                  <p className="mb-0 text-black">{transcript}</p>
+                  <p className="mb-0 ">{transcript}</p>
                 </div>
               )}
             </div>
