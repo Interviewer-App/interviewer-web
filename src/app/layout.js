@@ -1,6 +1,7 @@
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "@/components/ui/theme-provider"
 
 
 export const metadata = {
@@ -10,11 +11,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head />
       <body
-        className={`antialiased`} suppressHydrationWarning={true}
+       
       >
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+        <AuthProvider>{children}</AuthProvider></ThemeProvider>
         <Toaster />
       </body>
     </html>

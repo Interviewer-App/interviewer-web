@@ -21,6 +21,11 @@ import { TeamSwitcher } from "./team-switcher" // Import TeamSwitcher
 // Menu items.
 const items = [
   {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Inbox,
+  },
+  {
     title: "Users",
     url: "/users",
     icon: Inbox,
