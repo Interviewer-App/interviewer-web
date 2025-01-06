@@ -36,8 +36,13 @@ const items = [
     icon: Search,
   },
   {
-    title: "Interviews",
+    title: "Interview session",
     url: "/interview-session",
+    icon: Home,
+  },
+  {
+    title: "Interviews",
+    url: "/interviews",
     icon: Home,
   },
 ]

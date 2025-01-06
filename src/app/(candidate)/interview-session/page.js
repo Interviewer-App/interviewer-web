@@ -1,7 +1,20 @@
 "use client";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import Image from "next/image";
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import bgGrid from "@/assets/grid-bg.svg";
 import bgGrain from "@/assets/grain-bg.svg";
 
@@ -18,7 +31,28 @@ const InterviewSession = () => {
     isListening ? stopListening() : startListening();
   };
   return (
-    <div className=" relative flex flex-col h-lvh items-center justify-between w-full text-white py-9 bg-cover overflow-hidden">
+    <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+                    <div className="flex items-center gap-2 px-3">
+                      <SidebarTrigger />
+                      <Separator orientation="vertical" className="mr-2 h-4" />
+                      <Breadcrumb>
+                        <BreadcrumbList>
+                          <BreadcrumbItem className="hidden md:block">
+                            <BreadcrumbLink href="#">
+                              Candidate
+                            </BreadcrumbLink>
+                          </BreadcrumbItem>
+                          <BreadcrumbSeparator className="hidden md:block" />
+                          <BreadcrumbItem>
+                            <BreadcrumbPage>Interview Session</BreadcrumbPage>
+                          </BreadcrumbItem>
+                        </BreadcrumbList>
+                      </Breadcrumb>
+                    </div>
+                  </header>
+          
+                  <div className=" relative flex flex-col h-lvh items-center justify-between w-full text-white py-9 bg-cover overflow-hidden">
       <div className="absolute inset-0 bg-background -z-20"></div>
       <Image
         src={bgGrid}
@@ -113,6 +147,9 @@ const InterviewSession = () => {
         </div>
       </div>
     </div>
+                  </SidebarInset>
+
+    
   );
 };
 
