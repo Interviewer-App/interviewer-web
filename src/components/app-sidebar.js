@@ -46,6 +46,11 @@ const commonItems = [
     url: "/AI",
     icon: Search,
   },
+  {
+    title: "Interview scheduls",
+    url: "/interview-schedules",
+    icon: Search,
+  },
 ]
 
 const companyItems = [
