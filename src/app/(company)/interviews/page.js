@@ -33,8 +33,6 @@ const InterviewsPage = () => {
       }
     };
     fetchInterviews();
-    // console.log(interviews);
-
   }, []);
 
   return (
@@ -70,9 +68,10 @@ const InterviewsPage = () => {
               <InterviewDisplayCard
                 key={index}
                 index={index+1}
-                title={interview.jobTitle}
-                date={interview.scheduledDate}
-                time={interview.scheduledAt}
+                interview={interview}
+                // title={interview.jobTitle}
+                // date={interview.scheduledDate}
+                // time={interview.scheduledAt}
               />
             ))}
           </div>
