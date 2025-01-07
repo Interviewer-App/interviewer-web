@@ -1,58 +1,29 @@
 'use client'
-import React, { useState, useEffect } from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { fetchUsers } from "@/lib/api/users";
+import React, { useState, useEffect } from "react";
+import { columns } from "../../../components/ui/DataTable/column";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { DataTable } from "../../../components/ui/DataTable/Datatable";
+import { fetchUsers } from "@/lib/api/users";
 
 const UsersPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(5);
-  const [users, setUsers] = useState([]);
-  const [totalUsers, setTotalUsers] = useState(0);
+  const [payments, setPayments] = useState([]); 
   const [loading, setLoading] = useState(false);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  // Fetch data on page load or when page changes
+
   useEffect(() => {
-    fetchUsers(currentPage, limit, setLoading, setUsers, setTotalUsers); // pass setLoading, setUsers, and setTotalUsers here
-  }, [currentPage, limit]);
+    const fetchPaymentsData = async () => {
+      setLoading(true);
+      await fetchUsers(page, limit, setLoading, setPayments, setTotalUsers); 
+    };
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-  const totalPages = Math.ceil(totalUsers / limit); // Calculate the total number of pages based on the total number of users
+    fetchPaymentsData(); 
+  }, [page, limit]);
 
   return (
     <>
@@ -68,7 +39,7 @@ const UsersPage = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Users</BreadcrumbPage>
+                  <BreadcrumbPage>Users</BreadcrumbPage> 
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -76,86 +47,11 @@ const UsersPage = () => {
         </header>
 
         <div>
-          <Table>
-            <TableCaption>A list of your recent users.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Created At</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={4}>Loading...</TableCell>
-                </TableRow>
-              ) : (
-                users.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4}>No users found</TableCell>
-                  </TableRow>
-                ) : (
-                  users.map((user) => (
-                    <TableRow key={user.userID}>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role}</TableCell>
-                      <TableCell>{user.createdAt}</TableCell>
-                      {/* You can add more cells like createdAt/updatedAt if needed */}
-                    </TableRow>
-                  ))
-                )
-              )}
-            </TableBody>
-
-          </Table>
-        </div>
-
-        {/* Pagination Component */}
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              />
-            </PaginationItem>
-
-            {/* Pagination Links */}
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  href="#"
-                  onClick={() => handlePageChange(index + 1)}
-                  className={currentPage === index + 1 ? 'bg-blue-500 text-white' : ''}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+          {loading ? (
+            <div>Loading payments...</div> 
+          ) : (
+            <DataTable columns={columns} data={payments} />
+          )}
         </div>
       </SidebarInset>
     </>
