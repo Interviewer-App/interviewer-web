@@ -14,7 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getAllInterviews } from "@/lib/api/interview";
+import { getPublishedInterview } from "@/lib/api/interview";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 
@@ -22,15 +22,15 @@ const InterviewSchedulePage = () => {
   const [interviews, setInterviews] = useState([]);
 
   useEffect(() => {
-    const fetchAllInterviews = async () => {
+    const fetchPublishedInterviews = async () => {
       try {
-        const response = await getAllInterviews();
+        const response = await getPublishedInterview();
         setInterviews(response.data);
       } catch (error) {
         console.log("Error fetching interviews:", error);
       }
     };
-    fetchAllInterviews();
+    fetchPublishedInterviews();
   }, []);
 
   return (
