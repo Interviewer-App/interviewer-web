@@ -85,7 +85,7 @@ const adminItems = [
 // Sample user data.
 const data = {
   user: {
-    name: "Shadcn",
+    name: "Company",
     email: "shadcn@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
@@ -94,7 +94,7 @@ const data = {
 // Team data (single team, but passed as an array)
 const teams = [
   {
-    name: "Shadcn",
+    name: "Hello",
     logo: Inbox, // Example logo; replace with actual component or URL for team logo
     plan: "Pro",
   },
