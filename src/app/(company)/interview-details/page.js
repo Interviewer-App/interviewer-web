@@ -1,6 +1,4 @@
 "use client";
-import CreateInterviewModal from "@/components/interviews/create-interview-modal";
-import InterviewDisplayCard from "@/components/interviews/interview-display-card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,7 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Chip } from "@mui/material";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
@@ -30,6 +28,7 @@ const InterviewDetailsPage = () => {
   const [editSkills, setEditSkills] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [skills, setSkills] = useState([]);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     const fetchInterview = async () => {
@@ -45,12 +44,12 @@ const InterviewDetailsPage = () => {
   }, []);
 
   useEffect(() => {
-      setDescription(interviewDetail.jobDescription);
-      if (interviewDetail?.requiredSkills) {
-        setSkills(interviewDetail.requiredSkills.split(", "));
-      } else {
-        setSkills([]);
-      }
+    setDescription(interviewDetail.jobDescription);
+    if (interviewDetail?.requiredSkills) {
+      setSkills(interviewDetail.requiredSkills.split(", "));
+    } else {
+      setSkills([]);
+    }
   }, [interviewDetail]);
 
   console.log("interviewDetail", interviewDetail);
@@ -152,6 +151,14 @@ const InterviewDetailsPage = () => {
     );
   };
 
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [description]);
+
   return (
     <>
       <SidebarInset>
@@ -196,11 +203,11 @@ const InterviewDetailsPage = () => {
                 )}
               </h1>
               <textarea
+                ref={textareaRef}
                 readOnly={!editDescription}
                 className={` text-justify py-5 w-full resize-none ${
                   !editDescription ? "bg-transparent" : "bg-[#32353b] px-5"
                 } rounded-lg focus:outline-none`}
-                rows={11}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
