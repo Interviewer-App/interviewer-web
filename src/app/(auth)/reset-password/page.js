@@ -57,15 +57,8 @@ const ResetPasswordPage = () => {
               alt="bg"
               className=" absolute w-full top-0 left-0 -z-10 "
             />
-      <div className="h-fit md:max-h-[600px] w-[90%] md:w-[50%] lg:w-[70%] lg:max-w-[1000px] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
-        <div className=" hidden lg:block w-[40%] h-full relative">
-          <Image
-            src={sideImage}
-            alt="side image"
-            className=" rounded-tl-lg rounded-bl-lg h-full w-full object-cover"
-          />
-        </div>
-        <div className=" w-full lg:w-[60%] py-10 px-14 relative rounded-tr-lg">
+      <div className="h-fit md:max-h-[600px] w-[90%] md:w-[60%] lg:max-w-[500px] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
+        <div className=" w-full py-10 px-14 relative rounded-tr-lg">
           <h1 className=" text-xl md:text-2xl lg:text-3xl font-semibold text-[#f3f3f3] pt-5">
             Reset your password
           </h1>
