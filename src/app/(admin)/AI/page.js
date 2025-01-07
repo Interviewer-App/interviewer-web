@@ -13,7 +13,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 
 const page = () => {
   return (
@@ -39,15 +43,32 @@ const page = () => {
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <h1>AIII </h1>
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        <ResizablePanelGroup
+      direction="horizontal"
+      className="max-w-md rounded-lg md:min-w-full"
+    >
+      <ResizablePanel defaultSize={150}>
+        <div className="flex h-[200px] items-center justify-center p-6">
+          <span className="font-semibold">One</span>
         </div>
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel defaultSize={150}>
+        <ResizablePanelGroup direction="vertical">
+          <ResizablePanel defaultSize={25}>
+            <div className="flex h-full items-center justify-center p-6">
+              <span className="font-semibold">Two</span>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={75}>
+            <div className="flex h-full items-center justify-center p-6">
+              <span className="font-semibold">Three</span>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </ResizablePanel>
+    </ResizablePanelGroup>
         </SidebarInset>
     </>
   )
