@@ -63,9 +63,7 @@ const InterviewSchedulePage = () => {
               <InterviewScheduleCard
                 key={index}
                 index={index+1}
-                title={interview.jobTitle}
-                date={interview.scheduledDate}
-                time={interview.scheduledAt}
+                interview={interview}
               />
             ))}
           </div>
