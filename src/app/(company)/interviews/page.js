@@ -69,9 +69,6 @@ const InterviewsPage = () => {
                 key={index}
                 index={index+1}
                 interview={interview}
-                // title={interview.jobTitle}
-                // date={interview.scheduledDate}
-                // time={interview.scheduledAt}
               />
             ))}
           </div>
