@@ -93,10 +93,10 @@ const handler = NextAuth({
           const newUser = await providerRegistration(userData);
           let companyID ;
             let candidateID;
-            if (res.data.user.role === 'COMPANY') {
-              companyID = res.data.user.companyID
+            if (newUser.user.role === 'COMPANY') {
+              companyID = newUser.user.company.companyID
             } else {
-              candidateID = res.data.user.candidateID
+              candidateID = newUser.user.candidate.candidateID
             }
 
           if (newUser.token) {
