@@ -98,12 +98,12 @@ export default function Home() {
             </div>
           </div>
         </header>
-        <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
-          <div className=" w-[90%] lg:w-[40%]">
-            <h1 className="text-[42px] leading-[42px] md:text-[65px] md:leading-[65px] font-semibold">
+        <div className=" flex flex-col lg:flex-row items-center justify-center w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
+          <div className=" w-[70%] flex flex-col justify-center items-center">
+            <h1 className=" text-center text-[42px] leading-[42px] md:text-[86px] md:leading-[86px] font-semibold">
               Effortless hiring with smart interview tools.
             </h1>
-            <p className=" text-base pt-6 md:pt-9 md:text-[20px] md:leading-[30px]">
+            <p className=" text-base w-[60%] mx-auto text-center pt-6 md:pt-9 md:text-[20px] md:leading-[30px]">
               Providing solutions for every team, from small businesses to large
               enterprises, to streamline operations effortlessly.
             </p>
@@ -112,9 +112,6 @@ export default function Home() {
                 Get Started Now
               </button>
             </Link>
-          </div>
-          <div className=" w-[90%] mt-9 md:mt-8 lg:mt-0 lg:w-[55%] shadow-black rounded-lg">
-            <Image src={AiImage} alt="bg" className=" w-full rounded-lg" />
           </div>
         </div>
         <h1 className=" w-full text-center text-2xl font-semibold">

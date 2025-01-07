@@ -8,15 +8,13 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import SessionValidation from "@/context/SessionContext";
 export default function CampanyLayout({
     children,
 }) {
     return (
         <>
-            <SidebarProvider>
-                <AppSidebar />
-                {children}
-            </SidebarProvider>
+           <SessionValidation> {children}</SessionValidation>
         </>
     )
 }

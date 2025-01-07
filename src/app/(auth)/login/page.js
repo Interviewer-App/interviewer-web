@@ -100,15 +100,8 @@ const LoginPage = () => {
               alt="bg"
               className=" absolute w-full top-0 left-0 -z-10 "
             />
-      <div className="h-fit max-h-[670px] w-[90%] md:w-[50%] lg:w-[70%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
-        <div className=" hidden lg:block w-[40%] h-full relative">
-          <Image
-            src={sideImage}
-            alt="side image"
-            className=" rounded-tl-lg rounded-bl-lg h-full w-full object-cover"
-          />
-        </div>
-        <div className=" w-full lg:w-[60%] py-10 px-14">
+      <div className="h-fit max-h-[670px] w-[90%] md:w-[60%] max-w-[500px] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg flex justify-between">
+        <div className=" w-full py-10 px-14">
           <h1 className=" text-2xl font-semibold text-[#f3f3f3]">Sign In</h1>
           <div className=" mt-8 clear-start flex flex-col items-start justify-between">
             <button onClick={handleGoogleLoginSuccess} className=" bg-white h-[45px] w-full text-black font-normal rounded-lg text-sm ">
