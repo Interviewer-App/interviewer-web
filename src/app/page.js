@@ -204,7 +204,7 @@ export default function Home() {
               <h1 className=" text-4xl font-semibold ">Candidates</h1>
               <p className=" text-lg text-gray-500 py-4">
                 This is text describing why people should use your product.
-                Double-click anywhere on the text to edit it's contents.
+                Double-click anywhere on the text to edit it&apos;s contents.
               </p>
             </div>
           </div>
@@ -216,7 +216,7 @@ export default function Home() {
               <h1 className=" text-4xl font-semibold ">Companies</h1>
               <p className=" text-lg text-gray-500 py-4">
                 This is text describing why people should use your product.
-                Double-click anywhere on the text to edit it's contents.
+                Double-click anywhere on the text to edit it&apos;s contents.
               </p>
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function Home() {
               <h1 className=" text-4xl font-semibold ">Entrepreneurs</h1>
               <p className=" text-lg text-gray-500 py-4">
                 This is text describing why people should use your product.
-                Double-click anywhere on the text to edit it's contents.
+                Double-click anywhere on the text to edit it&apos;s contents.
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from './authentication';
+import { getToken } from './auth';
 
 import isTokenExpired from './jwt';
 

@@ -44,6 +44,8 @@ const LoginPage = () => {
         
         const session = await getSession();
         const userRole = session?.user?.role;
+        const token = session?.user?.accessToken;
+        localStorage.setItem('accessToken', token);
 
         if (userRole === 'COMPANY') {
           router.push('/dashboard');

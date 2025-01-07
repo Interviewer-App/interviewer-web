@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { useAuth } from "@/context/AuthContext";
 import CredentialsProvider from 'next-auth/providers/credentials'
-import api from '@/lib/api/api';
+import { api } from "@/lib/api/api";
 import { checkUserAvailability, signUp ,providerRegistration,Login} from '@/lib/api/authentication';
 
 const handler = NextAuth({
