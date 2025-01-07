@@ -15,15 +15,28 @@ const UsersPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-
   useEffect(() => {
     const fetchPaymentsData = async () => {
       setLoading(true);
+      // Make sure to pass the correct page and limit to the API
       await fetchUsers(page, limit, setLoading, setPayments, setTotalUsers); 
     };
 
     fetchPaymentsData(); 
-  }, [page, limit]);
+  }, [page, limit]); // Ensure that when page or limit changes, data is fetched
+
+  // Pagination logic
+  const handleNextPage = () => {
+    if (page * limit < totalUsers) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <>
@@ -52,6 +65,23 @@ const UsersPage = () => {
           ) : (
             <DataTable columns={columns} data={payments} />
           )}
+        </div>
+
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <button
+            className="btn btn-outline"
+            onClick={handlePreviousPage}
+            disabled={page <= 1}
+          >
+            Previous
+          </button>
+          <button
+            className="btn btn-outline px-6"
+            onClick={handleNextPage}
+            disabled={page * limit >= totalUsers}
+          >
+            Next
+          </button>
         </div>
       </SidebarInset>
     </>
