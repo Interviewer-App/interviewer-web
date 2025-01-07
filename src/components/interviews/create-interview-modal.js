@@ -22,7 +22,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [date, setDate] = React.useState("");
   const [time, setTime] = React.useState("");
 
-  const toast = useToast();
+  const { toast } = useToast()
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
@@ -39,7 +39,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key)
     );
-    console.log(chipData);
   };
 
   const handleSubmit = async (e) => {
@@ -60,7 +59,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
       if (response) {
         window.location.reload();
       }
-      // }
+
     } catch (err) {
       if (err.response) {
         const { data } = err.response;
@@ -96,7 +95,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
     <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
       <div className=" relative max-w-[700px] h-fit max-h-[670px] w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
         <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-5">
-          Add new interview
+          Create interview
         </h1>
         <button
           onClick={() => setModalOpen(false)}
