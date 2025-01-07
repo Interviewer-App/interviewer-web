@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fetchUsers } from "@/lib/api/api";
+import { fetchUsers } from "@/lib/api/users";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
