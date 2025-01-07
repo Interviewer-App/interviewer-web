@@ -4,7 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 import { useAuth } from "@/context/AuthContext";
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { api } from "@/lib/api/api";
-import { checkUserAvailability, signUp ,providerRegistration,Login} from '@/lib/api/authentication';
+import { checkUserAvailability, signUp, providerRegistration, Login } from '@/lib/api/authentication';
 
 const handler = NextAuth({
   pages: {
@@ -26,7 +26,7 @@ const handler = NextAuth({
       name: "credentials",
       credentials: {},
       async authorize(credentials, req) {
-        
+
         // const provider = credentials.provider;
         const email = credentials.email;
         const password = credentials.password;
@@ -36,16 +36,26 @@ const handler = NextAuth({
           const res = await api.post(`/auth/login`, loginData);
           // const res = await login({email, password});
           // const { token, user } = res.data;
+
           if (res.data.token) {
+            let companyID ;
+            let candidateID;
+            if (res.data.user.role === 'COMPANY') {
+              companyID = res.data.user.companyID
+            } else {
+              candidateID = res.data.user.candidateID
+            }
             console.log("Login successful");
             return {
               accessToken: res.data.token,
               role: res.data.user.role,
               email: res.data.user.email,
               id: res.data.user.userID,
+              companyID: companyID,
+              candidateID: candidateID
             };
 
-          } 
+          }
 
         } catch (e) {
           console.log("Invalid email or password");
@@ -81,13 +91,23 @@ const handler = NextAuth({
 
 
           const newUser = await providerRegistration(userData);
+          let companyID ;
+            let candidateID;
+            if (res.data.user.role === 'COMPANY') {
+              companyID = res.data.user.companyID
+            } else {
+              candidateID = res.data.user.candidateID
+            }
+
           if (newUser.token) {
             user.accessToken = newUser.token;
             user.role = newUser.user.role
             user.email = newUser.user.email
-            user.id  = newUser.user.userID
+            user.id = newUser.user.userID,
+            user.companyID = companyID,
+            user.candidateID = candidateID
           }
-          
+
 
           // const res = await login({ name, email, provider, googleId, image });
 
@@ -108,9 +128,11 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.accessToken;
-        token.role = user.role; 
-        token.id = user.id; 
-        token.email = user.email; 
+        token.role = user.role;
+        token.id = user.id;
+        token.email = user.email;
+        token.companyID = user.companyID,
+        token.candidateID = user.candidateID
       }
       return token;
     },
@@ -119,9 +141,11 @@ const handler = NextAuth({
       session.user.role = token.role;
       session.user.id = token.id;
       session.user.email = token.email;
+      session.user.companyID = token.companyID,
+      session.user.candidateID = token.candidateID
       return session;
     },
-    
+
   },
 });
 
