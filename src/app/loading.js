@@ -1,22 +1,19 @@
 "use client";
-// import "@/style/loading.css";
+
 import { useEffect } from "react";
+import { PuffLoader } from "react-spinners";
 
 export default function Loading() {
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
-
-    <div className="flex justify-center item-center loading">
-      <div>
-      <p
-            className="loading"
-            
-          >
-            Loading.........................
-          </p>
+    <div className="flex flex-col h-lvh w-full justify-center item-center">
+      <div className=" w-full flex justify-center items-center">
+        <PuffLoader color="#ffffff" />
       </div>
+      <p className=" w-full text-center font-semibold text-xl py-5">
+        Loading...
+      </p>
     </div>
   );
 }
