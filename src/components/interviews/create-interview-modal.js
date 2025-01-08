@@ -11,6 +11,18 @@ import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
 
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
@@ -47,21 +59,24 @@ export default function CreateInterviewModal({ setModalOpen }) {
     try {
       const session = await getSession();
       const companyId = session?.user?.companyID;
+      const scheduleDate = new Date(date);
+      const [hours, minutes] = time.split(":").map(Number);
+      scheduleDate.setUTCHours(hours, minutes, 0, 0);
+      const isoString = scheduleDate.toISOString();
       const interviewData = {
         companyID: companyId,
         jobTitle,
         jobDescription,
         requiredSkills: chipData.map((chip) => chip.label).join(", "),
-        scheduledDate: new Date(`${date}T${time}`).toISOString(),
-        scheduledAt: new Date(`${date}T${time}`).toISOString(),
+        scheduledDate: isoString,
+        scheduledAt: isoString,
         status: "DRAFT",
       };
       console.log(interviewData);
       const response = await createInterview(interviewData);
 
       if (response) {
-        setModalOpen(false)
-        // window.location.reload();
+        window.location.reload();
       }
     } catch (err) {
       if (err.response) {
@@ -170,15 +185,28 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
           <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-5">
             <div className=" w-full md:w-[48%]">
-              <input
-                type="date"
-                placeholder="Schedule Date"
-                name="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
-                className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon />
+                    {date ? format(date, "PPP") : <span>Scheduled Date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="w-full md:w-[48%]">
               <input
