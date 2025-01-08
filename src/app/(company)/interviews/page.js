@@ -24,9 +24,13 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getSession } from "next-auth/react";
 
+import NoData from "@/assets/nodata.png";
+import Image from "next/image";
+
 const InterviewsPage = () => {
   const [interviews, setInterviews] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isAnyInterviews, setIsAnyInterviews] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,6 +40,7 @@ const InterviewsPage = () => {
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
         setInterviews(response.data);
+        setIsAnyInterviews(response.data.length > 0);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -46,7 +51,7 @@ const InterviewsPage = () => {
       }
     };
     fetchInterviews();
-  }, [modalOpen]);
+  }, []);
 
   return (
     <>
@@ -69,25 +74,42 @@ const InterviewsPage = () => {
           </div>
         </header>
 
-        <div className=" w-full p-9 h-full">
+        <div className=" w-full px-9 py-6 h-full">
           <h1 className=" text-4xl font-semibold">Interviews</h1>
-          <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
-            <div
-              onClick={() => setModalOpen(true)}
-              className=" w-full h-full cursor-pointer border-4 border-dashed border-gray-700 flex flex-col items-center justify-center rounded-xl"
-            >
-              <div className=" bg-slate-500 rounded-full p-6 m-14 md:m-0">
-                <FaPlus className=" text-white text-3xl " />
+          {isAnyInterviews && (
+            <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
+              <div
+                onClick={() => setModalOpen(true)}
+                className=" w-full h-full cursor-pointer border-4 border-dashed border-gray-700 flex flex-col items-center justify-center rounded-xl"
+              >
+                <div className=" bg-slate-500 rounded-full p-6 m-14 md:m-0">
+                  <FaPlus className=" text-white text-3xl " />
+                </div>
               </div>
+              {interviews.map((interview, index) => (
+                <InterviewDisplayCard
+                  key={index}
+                  index={index + 1}
+                  interview={interview}
+                />
+              ))}
             </div>
-            {interviews.map((interview, index) => (
-              <InterviewDisplayCard
-                key={index}
-                index={index + 1}
-                interview={interview}
-              />
-            ))}
-          </div>
+          )}
+          {!isAnyInterviews && (
+            <div className=" relative flex justify-center items-center h-full w-full">
+              <div className=" w-full">
+                <Image
+                  src={NoData}
+                  alt="No data"
+                  className=" mx-auto h-[150px] w-[200px]"
+                />
+                <h1 className="text-3xl py-2 text-gray-500 w-full text-center">
+                  No interviews found
+                </h1>
+              </div>
+              <button onClick={() => setModalOpen(true)} className=" absolute top-10 md:top-5 md:right-0 rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2">+ Create Interview</button>
+            </div>
+          )}
         </div>
         {modalOpen && <CreateInterviewModal setModalOpen={setModalOpen} />}
       </SidebarInset>
