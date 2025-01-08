@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings,Activity  } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -50,6 +50,11 @@ const commonItems = [
     title: "Interview scheduls",
     url: "/interview-schedules",
     icon: Search,
+  },
+  {
+    title: "Joined Interviews",
+    url: "/joined-interviews",
+    icon: Activity ,
   },
 ];
 
