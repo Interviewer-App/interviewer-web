@@ -9,6 +9,7 @@ import { ToastAction } from "@/components/ui/toast";
 
 import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
+import { getSession } from "next-auth/react";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -22,7 +23,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [date, setDate] = React.useState("");
   const [time, setTime] = React.useState("");
 
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
@@ -44,8 +45,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const session = await getSession();
+      const companyId = session?.user?.companyID;
       const interviewData = {
-        companyID: "cm5f3mptx0001u77ka8iv6sss",
+        companyID: companyId,
         jobTitle,
         jobDescription,
         requiredSkills: chipData.map((chip) => chip.label).join(", "),
@@ -59,7 +62,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
       if (response) {
         window.location.reload();
       }
-
     } catch (err) {
       if (err.response) {
         const { data } = err.response;
