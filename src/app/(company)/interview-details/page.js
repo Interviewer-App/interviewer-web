@@ -15,10 +15,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Chip } from "@mui/material";
 import { use, useEffect, useRef, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
 import { MdEdit } from "react-icons/md";
+
+//MUI
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const InterviewDetailsPage = () => {
   const interview = JSON.parse(localStorage.getItem("interview"));
@@ -29,12 +31,12 @@ const InterviewDetailsPage = () => {
   const [inputValue, setInputValue] = useState("");
   const [skills, setSkills] = useState([]);
   const textareaRef = useRef(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchInterview = async () => {
       try {
         const response = await getInterviewById(interview.interviewID);
-        console.log(response.data);
         setInterviewDetail(response.data);
       } catch (error) {
         console.log("Error fetching interviews:", error);
@@ -51,9 +53,6 @@ const InterviewDetailsPage = () => {
       setSkills([]);
     }
   }, [interviewDetail]);
-
-  console.log("interviewDetail", interviewDetail);
-  const { toast } = useToast();
 
   const handlePublishInterview = async (e) => {
     e.preventDefault();
