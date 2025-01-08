@@ -60,7 +60,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
       const response = await createInterview(interviewData);
 
       if (response) {
-        window.location.reload();
+        setModalOpen(false)
+        // window.location.reload();
       }
     } catch (err) {
       if (err.response) {

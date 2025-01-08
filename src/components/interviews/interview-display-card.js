@@ -1,10 +1,14 @@
+'use client'
 import Link from "next/link";
-import React from "react";
+import { useRouter, useSearchParams, redirect } from "next/navigation";
 
 export default function InterviewDisplayCard({ index, interview }) {
+   const router = useRouter();
+
   const navigationClickHandler = () => {
-    localStorage.setItem("interview",JSON.stringify(interview));
-    window.location.href = "/interview-details";
+    router.push(`/interviews/${encodeURIComponent(interview.interviewID)}`);
+    // localStorage.setItem("interview",JSON.stringify(interview));
+    // window.location.href = "/interview/";
   };
 
 

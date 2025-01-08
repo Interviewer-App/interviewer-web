@@ -21,11 +21,11 @@ import Link from "next/link";
 import { TeamSwitcher } from "./team-switcher"; 
 
 const commonItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Inbox,
-  },
+  // {
+  //   title: "Dashboard",
+  //   url: "/dashboard",
+  //   icon: Inbox,
+  // },
   {
     title: "Interviews",
     url: "/interviews",

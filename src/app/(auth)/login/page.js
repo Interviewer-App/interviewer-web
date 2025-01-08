@@ -49,10 +49,12 @@ const LoginPage = () => {
         localStorage.setItem('accessToken', token);
 
         if (userRole === 'COMPANY') {
-          router.push('/dashboard');
+          router.push('/interviews');
         } else if (userRole === 'CANDIDATE') {
-          router.push('/panel');
-        } else {
+          router.push('/interview-schedules');
+        } else if (userRole === 'ADMIN')  {
+          router.push('/users');
+        } else{
           router.push('/');
         }
 
