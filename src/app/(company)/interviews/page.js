@@ -51,7 +51,7 @@ const InterviewsPage = () => {
       }
     };
     fetchInterviews();
-  }, []);
+  }, [modalOpen]);
 
   return (
     <>
@@ -75,7 +75,17 @@ const InterviewsPage = () => {
         </header>
 
         <div className=" w-full px-9 py-6 h-full">
-          <h1 className=" text-4xl font-semibold">Interviews</h1>
+          <div className=" flex items-center justify-between">
+            <h1 className=" text-4xl font-semibold">Interviews</h1>
+            {!isAnyInterviews && (
+              <button
+                onClick={() => setModalOpen(true)}
+                className=" hidden md:block rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+              >
+                + Create Interview
+              </button>
+            )}
+          </div>
           {isAnyInterviews && (
             <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
               <div
@@ -106,8 +116,13 @@ const InterviewsPage = () => {
                 <h1 className="text-3xl py-2 text-gray-500 w-full text-center">
                   No interviews found
                 </h1>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className=" mx-auto my-4 block md:hidden rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+                >
+                  + Create Interview
+                </button>
               </div>
-              <button onClick={() => setModalOpen(true)} className=" absolute top-10 md:top-5 md:right-0 rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2">+ Create Interview</button>
             </div>
           )}
         </div>
