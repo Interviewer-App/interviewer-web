@@ -59,3 +59,13 @@ export const getInterviewById = async (interviewId) => {
         throw error;
     }
 }
+
+export const deleteInterview = async (interviewID) => {
+    try {
+        const response=await axiosInstance.delete(`/interview/${interviewID}`)
+        return response;
+    } catch (error) {
+        console.log(`Error Deleting Interview`,error)
+        throw error;
+    }
+}

@@ -21,6 +21,8 @@ import { MdEdit } from "react-icons/md";
 //MUI
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { deleteInterview } from "@/lib/api/interview";
+import { useRouter } from "next/navigation";
 
 export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
@@ -32,6 +34,7 @@ export default function InterviewPreviewPage({ params }) {
   const [skills, setSkills] = useState([]);
   const textareaRef = useRef(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -169,6 +172,17 @@ export default function InterviewPreviewPage({ params }) {
     }
   }, [description]);
 
+  const handleDeleteInterview =async() => {
+    try {
+      const response=await deleteInterview(interviewId);
+      console.log('Interview',response);
+      router.push('/interviews');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   return (
     <>
       <SidebarInset>
@@ -281,7 +295,7 @@ export default function InterviewPreviewPage({ params }) {
               Publish Now
             </button>
             <button
-              onClick={handlePublishInterview}
+              onClick={handleDeleteInterview}
               className=" h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold"
             >
               Remove
