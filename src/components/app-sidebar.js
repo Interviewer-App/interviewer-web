@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { useSession } from "next-auth/react"
-
+import * as React from "react";
+import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
   Sidebar,
   SidebarHeader,
@@ -15,10 +15,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-} from "@/components/ui/sidebar"
-import { NavUser } from "@/components/nav-user"
-import Link from "next/link"
-import { TeamSwitcher } from "./team-switcher" // Import TeamSwitcher
+} from "@/components/ui/sidebar";
+import { NavUser } from "@/components/nav-user";
+import Link from "next/link";
+import { TeamSwitcher } from "./team-switcher"; 
 
 const commonItems = [
   {
@@ -51,77 +51,49 @@ const commonItems = [
     url: "/interview-schedules",
     icon: Search,
   },
-]
+];
 
-const companyItems = [
-  // {
-  //   title: "Users",
-  //   url: "/users",
-  //   icon: Inbox,
-  // },
-  // {
-  //   title: "AI",
-  //   url: "/AI",
-  //   icon: Search,
-  // },
-]
+const companyItems = [];
+const candidateItems = [];
+const adminItems = [];
 
-const candidateItems = [
-  // {
-  //   title: "Interview session",
-  //   url: "/interview-session",
-  //   icon: Home,
-  // },
-]
-
-const adminItems = [
-  // {
-  //   title: "Interviews",
-  //   url: "/interviews",
-  //   icon: Home,
-  // },
-  // {
-  //   title: "Settings",
-  //   url: "/settings",
-  //   icon: Settings,
-  // },
-]
-
-// Sample user data.
 const data = {
   user: {
     name: "Company",
     email: "shadcn@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-}
+};
 
-// Team data (single team, but passed as an array)
 const teams = [
   {
     name: "Hello",
-    logo: Inbox, // Example logo; replace with actual component or URL for team logo
+    logo: Inbox, 
     plan: "Pro",
   },
-]
+];
 
 export function AppSidebar() {
-  const { data: session } = useSession()
-  const role = session?.user?.role // Assuming role is set on the user object in the session
+  const { data: session } = useSession();
+  const pathname = usePathname();
+  const role = session?.user?.role; 
 
-  let items = commonItems
+  let items = commonItems;
   if (role === "COMPANY") {
-    items = [...items, ...companyItems]
+    items = [...items, ...companyItems];
   } else if (role === "CANDIDATE") {
-    items = [...items, ...candidateItems]
+    items = [...items, ...candidateItems];
   } else if (role === "ADMIN") {
-    items = [...items, ...adminItems]
+    items = [...items, ...adminItems];
   }
+
+  //checking currenbt link is active or not
+  const isActive = (url) => pathname === url;
 
   return (
     <Sidebar>
       <SidebarHeader>
-        {/* Pass the teams array to the TeamSwitcher component */}
+       
         <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
@@ -132,8 +104,15 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
+                    <Link
+                      href={item.url}
+                      className={`${
+                        isActive(item.url)
+                          ? "bg-primary text-white bg-gray-950" // active styles
+                          : "text-slate-300 hover:bg-primary hover:text-white"
+                      } flex items-center p-4 rounded-md text-xs`}
+                    >
+                      <item.icon className="mr-2" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -144,9 +123,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {/* Display the NavUser component with user data */}
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

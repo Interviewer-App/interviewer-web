@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import * as React from "react";
 
+
 export function SidebarMenu({ menus }) {
   const uniqueLabels = Array.from(new Set(menus.map((menu) => menu.label)));
 

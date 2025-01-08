@@ -13,8 +13,8 @@ const fetchUsers = async (page, limit, setLoading, setUsers, setTotalUsers) => {
         const data = response.data.data; // Access the user data here
         const totalUsers = response.data.total; // Access the total users count
         if (data && data.length > 0) {
-            setUsers(data); // Set the users data from the response
-            setTotalUsers(totalUsers); // Set the total number of users
+            setUsers(data); 
+            setTotalUsers(totalUsers); 
         } else {
             console.log("No users found.");
         }

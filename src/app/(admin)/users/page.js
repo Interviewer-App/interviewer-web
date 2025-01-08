@@ -18,14 +18,13 @@ const UsersPage = () => {
   useEffect(() => {
     const fetchPaymentsData = async () => {
       setLoading(true);
-      // Make sure to pass the correct page and limit to the API
       await fetchUsers(page, limit, setLoading, setPayments, setTotalUsers); 
     };
 
     fetchPaymentsData(); 
-  }, [page, limit]); // Ensure that when page or limit changes, data is fetched
+  }, [page, limit]); 
 
-  // Pagination logic
+  //pagination
   const handleNextPage = () => {
     if (page * limit < totalUsers) {
       setPage(page + 1);
