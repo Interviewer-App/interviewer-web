@@ -21,7 +21,7 @@ import { FiArrowUpRight } from "react-icons/fi";
 
 import PremiuCard from "../components/home/premiumCard";
 import { useState } from "react";
-import "./globals.css";
+import "@/styles/globals.css";
 
 export default function Home() {
   const [duration, setDuration] = useState("MONTHLY");

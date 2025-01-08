@@ -9,12 +9,13 @@ import {
     redirect,
     useSearchParams,
 } from "next/navigation";
+import Loading from "@/app/loading";
 
 function SessionValidation({ children }) {
     const { data: session, status } = useSession();
     const pathname = usePathname();
     if (status === "loading") {
-        return <h1>Loading...</h1>;
+        return <Loading />;
     }
 
     if (!session) {

@@ -1,7 +1,9 @@
 import { AuthProvider } from "@/context/AuthContext";
-import "./globals.css";
+import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/ui/theme-provider"
+import { Suspense } from "react";
+import Loading from "./loading";
 
 
 export const metadata = {
@@ -22,7 +24,12 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-        <AuthProvider>{children}</AuthProvider></ThemeProvider>
+        <AuthProvider>
+        <Suspense fallback={<Loading />}>
+        {children}
+        </Suspense>
+        </AuthProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
