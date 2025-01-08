@@ -23,6 +23,18 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { deleteInterview } from "@/lib/api/interview";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
@@ -294,12 +306,32 @@ export default function InterviewPreviewPage({ params }) {
             >
               Publish Now
             </button>
-            <button
-              onClick={handleDeleteInterview}
-              className=" h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold"
-            >
-              Remove
-            </button>
+            <AlertDialog>
+              {/* Remove the wrapping button and use AlertDialogTrigger directly */}
+              <AlertDialogTrigger>
+                <div
+                  className="h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold flex items-center justify-center"
+                >
+                  Remove
+                </div>
+
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to delete this interview?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteInterview}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
           </div>
         </div>
       </SidebarInset>
