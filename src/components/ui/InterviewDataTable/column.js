@@ -12,7 +12,44 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation"; 
 
+const ActionCell = ({ session }) => {
+  const router = useRouter();
+
+  const handleStartSession = () => {
+    if (router && session?.sessionId) {
+      router.push(`/interview-sesions/${encodeURIComponent(session.sessionId)}`);
+    }
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end">
+        <div className="bg-black bg-opacity-100 shadow-lg">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(session.sessionId)}
+          >
+            Copy session ID
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleStartSession}>Start Session</DropdownMenuItem>
+          <DropdownMenuItem>View more Details</DropdownMenuItem>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+// Table Columns
 export const interviewSessionTableColumns = [
   {
     id: "select",
@@ -38,17 +75,15 @@ export const interviewSessionTableColumns = [
   },
   {
     accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Candidate Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Candidate Email
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: "candidateName",
@@ -73,32 +108,9 @@ export const interviewSessionTableColumns = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="end">
-            <div className=" bg-black bg-opacity-100 shadow-lg">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy session ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Start Session</DropdownMenuItem>
-              <DropdownMenuItem>View more Details</DropdownMenuItem>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      const session = row.original; 
+      console.log("session", session.sessionId);
+      return <ActionCell session={session} />;
     },
   },
 ];
