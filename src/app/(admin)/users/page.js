@@ -7,9 +7,18 @@ import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { DataTable } from "../../../components/ui/DataTable/Datatable";
 import { fetchUsers } from "@/lib/api/users";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const UsersPage = () => {
-  const [payments, setPayments] = useState([]); 
+  const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
   const [page, setPage] = useState(1);
@@ -18,18 +27,25 @@ const UsersPage = () => {
   useEffect(() => {
     const fetchPaymentsData = async () => {
       setLoading(true);
-      await fetchUsers(page, limit, setLoading, setPayments, setTotalUsers); 
+      // Fetch users data and total user count
+      await fetchUsers(page, limit, setLoading, setPayments, setTotalUsers);
     };
 
-    fetchPaymentsData(); 
-  }, [page, limit]); 
+    fetchPaymentsData();
+  }, [page, limit]);
 
-  //pagination
+  // Handle pagination navigation
   const handleNextPage = () => {
     if (page * limit < totalUsers) {
       setPage(page + 1);
     }
   };
+
+  const handlePage = (newPage) => {
+    if (newPage <= Math.ceil(totalUsers / limit)) {
+      setPage(newPage);
+    }
+  }
 
   const handlePreviousPage = () => {
     if (page > 1) {
@@ -51,37 +67,41 @@ const UsersPage = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Users</BreadcrumbPage> 
+                  <BreadcrumbPage>Users</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
 
-        <div>
+        <div className="px-20">
           {loading ? (
-            <div>Loading payments...</div> 
+            <div>Loading payments...</div>
           ) : (
             <DataTable columns={columns} data={payments} />
           )}
         </div>
 
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <button
-            className="btn btn-outline"
-            onClick={handlePreviousPage}
-            disabled={page <= 1}
-          >
-            Previous
-          </button>
-          <button
-            className="btn btn-outline px-6"
-            onClick={handleNextPage}
-            disabled={page * limit >= totalUsers}
-          >
-            Next
-          </button>
-        </div>
+        {/* Pagination Controls */}
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={handlePreviousPage} disabled={page <= 1} />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink onClick={() => handlePage(page)}>{page}</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink onClick={() => handlePage(page + 1)}>{page + 1}</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext onClick={handleNextPage} disabled={page * limit >= totalUsers} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </SidebarInset>
     </>
   );
