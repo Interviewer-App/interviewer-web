@@ -19,7 +19,7 @@ const ActionCell = ({ session }) => {
 
   const handleStartSession = () => {
     if (router && session?.sessionId) {
-      router.push(`/interview-sesions/${encodeURIComponent(session.sessionId)}`);
+      router.push(`/company-interview-session/${encodeURIComponent(session.sessionId)}`);
     }
   };
 
