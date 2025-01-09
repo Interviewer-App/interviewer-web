@@ -46,7 +46,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 
 export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
@@ -94,21 +94,20 @@ export default function InterviewPreviewPage({ params }) {
     };
 
     if (interviewId) fetchSessionData();
-    
   }, [interviewId, page, limit]);
 
   const handleNextPage = () => {
-      console.log("totalsessions", totalsessions);
-      if (page * limit< totalsessions) {
-        setPage(page + 1);
-      }
+    console.log("totalsessions", totalsessions);
+    if (page * limit < totalsessions) {
+      setPage(page + 1);
+    }
   };
 
   const handlePage = (page) => {
-    if (page * limit< totalsessions) {
-    setPage(page);
+    if (page * limit < totalsessions) {
+      setPage(page);
     }
-  }
+  };
 
   const handlePreviousPage = () => {
     if (page > 1) {
@@ -423,42 +422,29 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           </div>
         </div>
-        {/* <div className="flex items-center justify-end space-x-2 py-4">
-          <button
-            className="btn btn-outline"
-            onClick={handlePreviousPage}
-            disabled={page <= 1}
-          >
-            Previous
-          </button>
-          <button
-            className="btn btn-outline px-6"
-            onClick={handleNextPage}
-            disabled={page * limit >= totalsessions}
-          >
-            Next
-          </button>
-        </div> */}
         <Pagination>
-  <PaginationContent>
-    <PaginationItem>
-      <PaginationPrevious onClick={() => handlePreviousPage()} />
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink onClick={() => handlePage(page+1)}>{page +1}</PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink  onClick={() => handlePage(page+2)}>{page +2}</PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationEllipsis />
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationNext  onClick={() => handleNextPage()}/>
-    </PaginationItem>
-  </PaginationContent>
-</Pagination>
-
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={() => handlePreviousPage()} />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink onClick={() => handlePage(page + 1)}>
+                {page + 1}
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink onClick={() => handlePage(page + 2)}>
+                {page + 2}
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext onClick={() => handleNextPage()} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </SidebarInset>
     </>
   );
