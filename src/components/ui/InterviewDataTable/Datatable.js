@@ -63,7 +63,7 @@ export function DataTable({ columns, data }) {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" className="max-w-[120px] ml-auto">
               Columns
             </Button>
           </DropdownMenuTrigger>
