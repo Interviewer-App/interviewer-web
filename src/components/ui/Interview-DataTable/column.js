@@ -3,36 +3,32 @@
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button"; 
 
-
 export const columns = [
   {
-    accessorKey: "email",
+    accessorKey: "candidateId",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          candidateId
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "role", 
-    header: "Role",
+    accessorKey: "candidate.status", 
+    header: "status",
   },
   {
-    accessorKey: "userID",  
-    header: "User ID",
+    accessorKey: "candidate.updatedAt",  
+    header: "updatedAt",
   },
   {
-    accessorKey: "createdAt", 
-    header: "Created At",
+    accessorKey: "interviewCategory",  
+    header: "interviewCategory",
   },
-  {
-    accessorKey: "updatedAt", 
-    header: "Updated At",
-  },
+  
 ];
