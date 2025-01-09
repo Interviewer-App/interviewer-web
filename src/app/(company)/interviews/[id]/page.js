@@ -378,13 +378,13 @@ export default function InterviewPreviewPage({ params }) {
             <div className=" w-full flex justify-between items-center mt-5">
               <button
                 onClick={handlePublishInterview}
-                className=" h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+                className=" h-12 min-w-[150px] w-[200px] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
               >
                 Publish Now
               </button>
               <AlertDialog>
                 <AlertDialogTrigger>
-                  <div className="h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold flex items-center justify-center">
+                  <div className="h-12 min-w-[150px] w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold flex items-center justify-center">
                     Remove
                   </div>
                 </AlertDialogTrigger>
