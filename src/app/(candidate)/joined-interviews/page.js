@@ -18,7 +18,7 @@ const JoinedInterviews = () => {
     useEffect(() => {
         const fetchUserJoinedInterviews = async () => {
             try {
-                // Fetch session information
+                // fetching info
                 const session = await getSession();
                 const candidateId = session?.user?.candidateID;
 
@@ -27,7 +27,7 @@ const JoinedInterviews = () => {
                     return;
                 }
 
-                // Make the API call to fetch interviews
+                // makeing API calls
                 await fetchJoinedInterviews(candidateId, page, limit, setLoading, setLimit, setPayments);
 
             } catch (error) {
@@ -35,15 +35,14 @@ const JoinedInterviews = () => {
             }
         };
 
-        fetchUserJoinedInterviews(); // Trigger the API call on component mount
+        fetchUserJoinedInterviews(); // API Triggerss
     }, [page, limit]); // Depend on page and limit, so the effect reruns when these change.
 
-    // Log the payments when it updates
     useEffect(() => {
         console.log('Updated payments:', payments);
-    }, [payments]); // This will log whenever `payments` is updated.
+    }, [payments]); 
 
-    // Pagination
+    // Pagination handlijgs
     const handleNextPage = () => {
         if (page * limit < totalUsers) {
             setPage(page + 1);
