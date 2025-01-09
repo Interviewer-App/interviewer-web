@@ -55,7 +55,7 @@ export function DataTable({ columns, data }) {
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="outline"
-                            className="max-w-[120px] ml-auto"  // Set max width and align it to the right
+                            className="max-w-[120px] ml-auto" 
                         >
                             Columns
                         </Button>
