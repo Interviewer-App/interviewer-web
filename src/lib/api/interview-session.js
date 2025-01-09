@@ -44,4 +44,14 @@ const fetchInterviewSessionsForInterview = async (
   }
 };
 
-export { fetchJoinedInterviews, fetchInterviewSessionsForInterview };
+export const getInterviewSessionById = async (sessionId) => {
+  try{
+      const response = await axiosInstance.get(`/interview-session/session/${sessionId}`);
+      return response;
+  } catch(error){
+      console.log('Error fetching session:', error);
+      throw error;
+  }
+}
+
+export { fetchJoinedInterviews, fetchInterviewSessionsForInterview, getInterviewSessionById };
