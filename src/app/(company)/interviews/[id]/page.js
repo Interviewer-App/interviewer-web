@@ -33,8 +33,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-
+} from "@/components/ui/alert-dialog";
+import { DataTable } from "@/components/ui/InterviewDataTable/Datatable";
+import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
+import { fetchInterviewSessionsForInterview } from "@/lib/api/interview-session";
+import { set } from "date-fns";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
@@ -47,6 +59,12 @@ export default function InterviewPreviewPage({ params }) {
   const textareaRef = useRef(null);
   const { toast } = useToast();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [interviewSessions, setInterviewSessions] = useState([]);
+  const [interviewSessionsSort, setInterviewSessionsSort] = useState([]);
+  const [totalsessions, setTotalSessions] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -57,10 +75,67 @@ export default function InterviewPreviewPage({ params }) {
   }, [params]);
 
   useEffect(() => {
+    const fetchSessionData = async () => {
+      setLoading(true);
+      try {
+        await fetchInterviewSessionsForInterview(
+          interviewId,
+          page,
+          limit,
+          setLoading,
+          setInterviewSessions,
+          setTotalSessions
+        );
+      } catch (error) {
+        console.log("Error fetching interviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (interviewId) fetchSessionData();
+    
+  }, [interviewId, page, limit]);
+
+  const handleNextPage = () => {
+      console.log("totalsessions", totalsessions);
+      if (page * limit< totalsessions) {
+        setPage(page + 1);
+      }
+  };
+
+  const handlePage = (page) => {
+    if (page * limit< totalsessions) {
+    setPage(page);
+    }
+  }
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+      console.log("page", page);
+    }
+  };
+
+  useEffect(() => {
+    const sortedSessions = interviewSessions.map((session) => ({
+      interviewId: session.interview.interviewID,
+      sessionId: session.sessionId,
+      email: session.candidate.user.email,
+      candidateName: session.candidate.user.firstName,
+      startAt: new Date(session.scheduledDate).toLocaleDateString(),
+      endAt: new Date(session.scheduledAt).toLocaleTimeString(),
+      status: session.interviewStatus,
+      score: session.score,
+    }));
+
+    setInterviewSessionsSort(sortedSessions);
+  }, [interviewSessions]);
+
+  useEffect(() => {
     const fetchInterview = async () => {
       try {
         const response = await getInterviewById(interviewId);
-        console.log(response.data);
         setInterviewDetail(response.data);
       } catch (error) {
         console.log("Error fetching interviews:", error);
@@ -184,16 +259,14 @@ export default function InterviewPreviewPage({ params }) {
     }
   }, [description]);
 
-  const handleDeleteInterview =async() => {
+  const handleDeleteInterview = async () => {
     try {
-      const response=await deleteInterview(interviewId);
-      console.log('Interview',response);
-      router.push('/interviews');
+      const response = await deleteInterview(interviewId);
+      router.push("/interviews");
     } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   return (
     <>
@@ -220,120 +293,172 @@ export default function InterviewPreviewPage({ params }) {
           <h1 className=" text-4xl font-semibold">
             InterviewsInterview Details
           </h1>
-          <div className=" w-full flex justify-between items-center">
-            <h1 className=" text-2xl font-semibold pt-5">
-              Job Title:{" "}
-              <input
-                type="text"
-                readOnly={!editDitails}
-                value={title || ""}
-                onChange={(e) => setTitle(e.target.value)}
-                className={` ${
-                  !editDitails ? "bg-transparent" : "bg-[#32353b] px-5"
-                } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
-              />
-            </h1>
-            {!editDitails ? (
-              <button
-                onClick={() => setEditDetails(!editDitails)}
-                className=" bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center"
-              >
-                <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
-                Edit details
-              </button>
-            ) : (
-              <button
-                onClick={handleSaveCanges}
-                className=" bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 "
-              >
-                Save Changes
-              </button>
-            )}
-          </div>
-          <div className="flex w-full flex-col lg:flex-row justify-between items-start gap-4">
-            <div className=" w-full lg:w-[60%]">
-              <h1 className=" text-2xl font-semibold py-5">Description</h1>
-              <textarea
-                ref={textareaRef}
-                readOnly={!editDitails}
-                className={` text-justify py-5 w-full resize-none ${
-                  !editDitails ? "bg-transparent" : "bg-[#32353b] px-5"
-                } rounded-lg focus:outline-none`}
-                value={description || ""}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+          <div className=" w-full h-fit bg-slate-600/10 p-9 rounded-lg mt-5">
+            <div className=" w-full flex justify-between items-center">
+              <h1 className=" text-2xl font-semibold">
+                Job Title:{" "}
+                <input
+                  type="text"
+                  readOnly={!editDitails}
+                  value={title || ""}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className={` ${
+                    !editDitails ? "bg-transparent" : "bg-[#32353b] px-5"
+                  } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
+                />
+              </h1>
+              {!editDitails ? (
+                <button
+                  onClick={() => setEditDetails(!editDitails)}
+                  className=" bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center"
+                >
+                  <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
+                  Edit details
+                </button>
+              ) : (
+                <button
+                  onClick={handleSaveCanges}
+                  className=" bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 "
+                >
+                  Save Changes
+                </button>
+              )}
             </div>
-            <div className=" w-full lg:w-[35%]">
-              <h1 className=" text-2xl font-semibold py-5">Required Skills</h1>
-              <div className=" flex flex-wrap w-full">
-                {skills.map((skill, index) => (
-                  <Chip
-                    key={index}
-                    label={skill}
-                    onDelete={
-                      editDitails ? () => handleDelete(skill) : undefined
-                    }
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      padding: "1rem",
-                      paddingY: "20px",
-                      borderRadius: "9999px",
-                      margin: "0.2rem",
-                      backgroundColor: "#2d2f36",
-                      color: "white",
-                    }}
-                  />
-                ))}
-                {editDitails && (
-                  <input
-                    type="text"
-                    placeholder="Add Skills"
-                    name="skills"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-6 py-2 mb-5 focus:outline-none"
-                  />
-                )}
+            <div className="flex w-full flex-col lg:flex-row justify-between items-start gap-4">
+              <div className=" w-full lg:w-[60%]">
+                <h1 className=" text-2xl font-semibold py-5">Description</h1>
+                <textarea
+                  ref={textareaRef}
+                  readOnly={!editDitails}
+                  className={` text-justify py-5 w-full resize-none ${
+                    !editDitails ? "bg-transparent" : "bg-[#32353b] px-5"
+                  } rounded-lg focus:outline-none`}
+                  value={description || ""}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <div className=" w-full lg:w-[35%]">
+                <h1 className=" text-2xl font-semibold py-5">
+                  Required Skills
+                </h1>
+                <div className=" flex flex-wrap w-full">
+                  {skills.map((skill, index) => (
+                    <Chip
+                      key={index}
+                      label={skill}
+                      onDelete={
+                        editDitails ? () => handleDelete(skill) : undefined
+                      }
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        padding: "1rem",
+                        paddingY: "20px",
+                        borderRadius: "9999px",
+                        margin: "0.2rem",
+                        backgroundColor: "#2d2f36",
+                        color: "white",
+                      }}
+                    />
+                  ))}
+                  {editDitails && (
+                    <input
+                      type="text"
+                      placeholder="Add Skills"
+                      name="skills"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-6 py-2 mb-5 focus:outline-none"
+                    />
+                  )}
+                </div>
               </div>
             </div>
+            <div className=" w-full flex justify-between items-center mt-5">
+              <button
+                onClick={handlePublishInterview}
+                className=" h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              >
+                Publish Now
+              </button>
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <div className="h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold flex items-center justify-center">
+                    Remove
+                  </div>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you sure you want to delete this interview?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteInterview}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
-          <div className=" w-full flex justify-between items-center mt-5">
-            <button
-              onClick={handlePublishInterview}
-              className=" h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
-            >
-              Publish Now
-            </button>
-            <AlertDialog>
-              {/* Remove the wrapping button and use AlertDialogTrigger directly */}
-              <AlertDialogTrigger>
-                <div
-                  className="h-12 min-w-[150px] w-full md:w-[200px] mt-8 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold flex items-center justify-center"
-                >
-                  Remove
-                </div>
-
-              </AlertDialogTrigger>
-
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure you want to delete this interview?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteInterview}>Delete</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-
+          <div>
+            <h1 className=" text-2xl font-semibold py-5">Interview sessions</h1>
+            <div>
+              {loading ? (
+                <div>Loading interview sessions...</div>
+              ) : (
+                <DataTable
+                  columns={interviewSessionTableColumns}
+                  data={interviewSessionsSort}
+                />
+              )}
+            </div>
           </div>
         </div>
+        {/* <div className="flex items-center justify-end space-x-2 py-4">
+          <button
+            className="btn btn-outline"
+            onClick={handlePreviousPage}
+            disabled={page <= 1}
+          >
+            Previous
+          </button>
+          <button
+            className="btn btn-outline px-6"
+            onClick={handleNextPage}
+            disabled={page * limit >= totalsessions}
+          >
+            Next
+          </button>
+        </div> */}
+        <Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious onClick={() => handlePreviousPage()} />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink onClick={() => handlePage(page+1)}>{page +1}</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink  onClick={() => handlePage(page+2)}>{page +2}</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext  onClick={() => handleNextPage()}/>
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+
       </SidebarInset>
     </>
   );
