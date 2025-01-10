@@ -449,7 +449,7 @@ export default function InterviewPreviewPage({ params }) {
 
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteInterview}>
+                    <AlertDialogAction onClick={handleDeleteInterview} className='h-[45px]'>
                       Delete
                     </AlertDialogAction>
                   </AlertDialogFooter>
