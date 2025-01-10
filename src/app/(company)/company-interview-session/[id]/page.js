@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import  socket  from '../../../../lib/utils/socket';
+import { useRouter, useSearchParams, redirect } from "next/navigation";
 
 //UI Components
 import { ToastAction } from "@/components/ui/toast";
@@ -14,7 +16,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
+import { getSession } from "next-auth/react";
 //API
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import { generateQuestions } from "@/lib/api/ai";
@@ -26,6 +28,8 @@ function InterviewSessionPreviewPage({ params }) {
   const [sessionDetails, setSessionDetails] = useState({});
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const { toast } = useToast();
+  // const { socket } = useSocket();
+   const router = useRouter();
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -38,11 +42,16 @@ function InterviewSessionPreviewPage({ params }) {
   useEffect(() => {
     const fetchSessionDetails = async () => {
       try {
+        
         if (!sessionId) return;
 
         const response = await getInterviewSessionById(sessionId);
         console.log(response.data);
-        setSessionDetails(response.data);
+        if(response.data){
+          setSessionDetails(response.data);
+          
+        }
+        
       } catch (error) {
         toast({
           variant: "destructive",
@@ -99,6 +108,19 @@ function InterviewSessionPreviewPage({ params }) {
       }
     }
   };
+
+  const interviewStart = async (e) => {
+    const session = await getSession();
+
+    const sessionId = sessionDetails.sessionId;
+    const role = session?.user?.role;
+    const userId = session?.user?.id;
+    if(sessionId && userId && role){
+      socket.emit('joinInterviewSession', { sessionId: sessionId, userId: userId, role: role});
+      router.push(`/interview-room-analiyzer/${sessionId}`);
+    }
+    
+  }
   return (
     <>
       <SidebarInset>
@@ -144,6 +166,7 @@ function InterviewSessionPreviewPage({ params }) {
             </div>
             <div className=" w-full md:w-[50%] flex items-center justify-start md:justify-end mt-5 md:mt-0">
             <button
+            type="button" onClick={interviewStart}
                 className=" h-12 min-w-[150px] w-[280px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
               >
                 Start Interview

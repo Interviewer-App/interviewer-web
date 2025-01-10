@@ -80,6 +80,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
         requiredSkills: chipData.map((chip) => chip.label).join(", "),
         scheduledDate: isoString,
         scheduledAt: isoString,
+        interviewCategory: "Technical",
         status: "DRAFT",
         interviewCategory,
       };
@@ -87,7 +88,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
       const response = await createInterview(interviewData);
 
       if (response) {
-        window.location.reload();
+        setModalOpen(false);
       }
     } catch (err) {
       if (err.response) {

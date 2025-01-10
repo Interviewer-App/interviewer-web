@@ -60,7 +60,6 @@ export const useSpeechRecognition = (options) => {
     }
 
     const stopListening = () => {
-        debugger
         if(recognitionRef.current && isListening){
             recognitionRef.current.stop();
             setIsListening(false);

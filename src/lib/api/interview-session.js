@@ -70,4 +70,15 @@ const getInterviewSessionById = async (sessionId) => {
   }
 }
 
+export const createInterviewSession = async (data) => {
+  try{
+      const response = await axiosInstance.post(`/interview-session`, data);
+      return response;
+  } catch(error){
+      console.log('Error Create interview session:', error);
+      throw error;
+  }
+}
+
+
 export { fetchJoinedInterviews, fetchInterviewSessionsForInterview, getInterviewSessionById };
