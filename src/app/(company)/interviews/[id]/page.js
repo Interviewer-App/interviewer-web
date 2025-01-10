@@ -302,7 +302,7 @@ export default function InterviewPreviewPage({ params }) {
 
         <div className=" px-9 py-4  max-w-[1500px] w-full mx-auto">
           <h1 className=" text-4xl font-semibold">
-            InterviewsInterview Details
+            Interview Details
           </h1>
           <div className=" w-full h-fit bg-slate-600/10 p-9 rounded-lg mt-5">
             <div className=" w-full flex justify-between items-center">
@@ -388,7 +388,7 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
                 <div className=" w-full mt-5">
                   <h1 className=" text-2xl font-semibold py-5">
-                    Interview Type
+                    Interview Catagory
                   </h1>
                   {!editDitails && (
                     <h1 className=" bg-[#2d2f36] py-2 w-fit px-9 rounded-full">
