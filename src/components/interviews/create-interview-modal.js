@@ -80,7 +80,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
         requiredSkills: chipData.map((chip) => chip.label).join(", "),
         scheduledDate: isoString,
         scheduledAt: isoString,
-        interviewCategory: "Technical",
         status: "DRAFT",
         interviewCategory,
       };
