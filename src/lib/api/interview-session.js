@@ -38,7 +38,7 @@ const fetchInterviewSessionsForInterview = async (
       console.log("No sessions found.");
     }
   } catch (error) {
-    console.error("Error fetching sessions:", error);
+    console.log("Error fetching sessions:", error);
   } finally {
     setLoading(false);
   }

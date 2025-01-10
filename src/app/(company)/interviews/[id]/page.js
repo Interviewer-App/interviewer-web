@@ -87,7 +87,7 @@ export default function InterviewPreviewPage({ params }) {
           setTotalSessions
         );
       } catch (error) {
-        console.log("Error fetching interviews:", error);
+        // console.log("Error fetching interviews:", error);
       } finally {
         setLoading(false);
       }
@@ -140,7 +140,10 @@ export default function InterviewPreviewPage({ params }) {
         console.log("Error fetching interviews:", error);
       }
     };
-    fetchInterview();
+    if(interviewId){
+      fetchInterview();
+    }
+    
   }, [interviewId, editDitails]);
 
   useEffect(() => {
