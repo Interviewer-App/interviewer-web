@@ -1,4 +1,8 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
+//Breadcrumbs
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,22 +11,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { Chip } from "@mui/material";
-import { use, useEffect, useRef, useState } from "react";
-import { getInterviewById, updateInterview } from "@/lib/api/interview";
+
+//Icons
 import { MdEdit } from "react-icons/md";
 
-//MUI
+//UI Components
+import { Chip } from "@mui/material";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { deleteInterview } from "@/lib/api/interview";
-import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,10 +30,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DataTable } from "@/components/ui/InterviewDataTable/Datatable";
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
 import { fetchInterviewSessionsForInterview } from "@/lib/api/interview-session";
-import { set } from "date-fns";
 import {
   Pagination,
   PaginationContent,
@@ -47,6 +44,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+
+//API
+import { getInterviewById, updateInterview } from "@/lib/api/interview";
+import { deleteInterview } from "@/lib/api/interview";
 
 export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
@@ -87,7 +88,7 @@ export default function InterviewPreviewPage({ params }) {
           setTotalSessions
         );
       } catch (error) {
-        // console.log("Error fetching interviews:", error);
+        console.log("Error fetching interviews:", error);
       } finally {
         setLoading(false);
       }
@@ -97,7 +98,6 @@ export default function InterviewPreviewPage({ params }) {
   }, [interviewId, page, limit]);
 
   const handleNextPage = () => {
-    console.log("totalsessions", totalsessions);
     if (page * limit < totalsessions) {
       setPage(page + 1);
     }
@@ -112,7 +112,6 @@ export default function InterviewPreviewPage({ params }) {
   const handlePreviousPage = () => {
     if (page > 1) {
       setPage(page - 1);
-      console.log("page", page);
     }
   };
 
@@ -140,11 +139,8 @@ export default function InterviewPreviewPage({ params }) {
         console.log("Error fetching interviews:", error);
       }
     };
-    if(interviewId){
-      fetchInterview();
-    }
-    
-  }, [interviewId, editDitails]);
+    if(interviewId) fetchInterview();
+  }, [interviewId]);
 
   useEffect(() => {
     setDescription(interviewDetail.jobDescription);
@@ -411,43 +407,45 @@ export default function InterviewPreviewPage({ params }) {
               </AlertDialog>
             </div>
           </div>
-          <div>
-            <h1 className=" text-2xl font-semibold py-5">Interview sessions</h1>
+          <div className=" bg-slate-600/10 w-full h-fit min-h-[950px]  p-9 rounded-lg mt-5">
             <div>
-              {loading ? (
-                <div>Loading interview sessions...</div>
-              ) : (
-                <DataTable
-                  columns={interviewSessionTableColumns}
-                  data={interviewSessionsSort}
-                />
-              )}
+              <h1 className=" text-2xl font-semibold">Interview sessions</h1>
+              <div>
+                {loading ? (
+                  <div>Loading interview sessions...</div>
+                ) : (
+                  <DataTable
+                    columns={interviewSessionTableColumns}
+                    data={interviewSessionsSort}
+                  />
+                )}
+              </div>
             </div>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious onClick={() => handlePreviousPage()} />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink onClick={() => handlePage(page + 1)}>
+                    {page + 1}
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink onClick={() => handlePage(page + 2)}>
+                    {page + 2}
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext onClick={() => handleNextPage()} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious onClick={() => handlePreviousPage()} />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink onClick={() => handlePage(page + 1)}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink onClick={() => handlePage(page + 2)}>
-                {page + 2}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext onClick={() => handleNextPage()} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </SidebarInset>
     </>
   );
