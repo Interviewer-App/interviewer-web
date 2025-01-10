@@ -1,50 +1,64 @@
 'use client'
 import { useEffect, useState } from 'react';
+import { getSession } from 'next-auth/react';
+import { fetchJoinedInterviews } from '@/lib/api/interview-session';
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { fetchJoinedInterviews } from '@/lib/api/interview-session';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { getSession } from 'next-auth/react';
 import { DataTable } from '@/components/ui/Interview-DataTable/Datatable';
 import { columns } from '../../../components/ui/Interview-DataTable/column';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const JoinedInterviews = () => {
-    const [payments, setPayments] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
-    const [totalUsers, setTotalUsers] = useState(0);
+    const [payments, setPayments] = useState([]);  // Store interviews data
+    const [loading, setLoading] = useState(false);  // Loading state
+    const [page, setPage] = useState(1);  // Page number
+    const [limit, setLimit] = useState(10);  // Limit of items per page
+    const [totalUsers, setTotalUsers] = useState(0);  // Total users count for pagination
 
     useEffect(() => {
         const fetchUserJoinedInterviews = async () => {
             try {
-                // fetching info
+                setLoading(true);  // Start loading
                 const session = await getSession();
                 const candidateId = session?.user?.candidateID;
-
+                
                 if (!candidateId) {
                     console.log('No candidateId found');
+                    setLoading(false);
                     return;
                 }
 
-                // makeing API calls
-                await fetchJoinedInterviews(candidateId, page, limit, setLoading, setLimit, setPayments);
-
+                // Fetch interviews data
+                const data = await fetchJoinedInterviews(candidateId, page, limit);
+                console.log('Fetched interviews:', data);  
+                if (data && Array.isArray(data.interviewSessions)) {
+                    setPayments(data.interviewSessions);  // Set interviews
+                    setTotalUsers(data.total);  // Set total for pagination
+                } else {
+                    console.log('No interview data or incorrect response format');
+                }
             } catch (error) {
-                console.log('Error fetching interviews:', error);
+                console.error('Error fetching interviews:', error);
+            } finally {
+                setLoading(false);  // Stop loading
             }
         };
 
-        fetchUserJoinedInterviews(); // API Triggerss
-    }, [page, limit]); // Depend on page and limit, so the effect reruns when these change.
-
-    useEffect(() => {
-        console.log('Updated payments:', payments);
-    }, [payments]); 
+        fetchUserJoinedInterviews();  // Trigger data fetching when page or limit changes
+    }, [page, limit]);  // Re-fetch when page or limit changes
 
     // Pagination handlijgs
     const handleNextPage = () => {
-        if (page * limit < totalUsers) {
+        if (page < Math.ceil(totalUsers / limit)) {
             setPage(page + 1);
         }
     };
@@ -77,28 +91,32 @@ const JoinedInterviews = () => {
 
             <div className='px-20'>
                 {loading ? (
-                    <div>Loading payments...</div>
+                    <div>Loading interviews...</div>
                 ) : (
                     <DataTable columns={columns} data={payments} />
                 )}
             </div>
 
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <button
-                    className="btn btn-outline"
-                    onClick={handlePreviousPage}
-                    disabled={page <= 1}
-                >
-                    Previous
-                </button>
-                <button
-                    className="btn btn-outline px-6"
-                    onClick={handleNextPage}
-                    disabled={page * limit >= totalUsers}
-                >
-                    Next
-                </button>
-            </div>
+            {/* Pagination Section */}
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious onClick={handlePreviousPage} disabled={page <= 1} />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink onClick={() => setPage(page)}>{page}</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink onClick={() => setPage(page + 1)}>{page + 1}</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationNext onClick={handleNextPage} disabled={page * limit >= totalUsers} />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </SidebarInset>
     );
 };

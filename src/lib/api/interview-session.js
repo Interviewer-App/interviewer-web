@@ -1,15 +1,24 @@
 import axiosInstance from "./axioinstance";
 
-const fetchJoinedInterviews = async (candidateId) => {
+// api function to fetch joined interviews
+const fetchJoinedInterviews = async (candidateId, page, limit) => {
   try {
     const response = await axiosInstance.get(
-      `/interview-session/candidate/${candidateId}`
+      `/interview-session/candidate/${candidateId}/${page}/${limit}`
     );
-    return response;
+    
+    if (response && response.data) {
+      const data=response.data;
+      console.log(data)
+        // Assuming the data contains the interviews and total count
+    }
+    return { interviews: [], total: 0 };  // Default if no data is found
   } catch (error) {
-    console.log(error);
+    console.error('Error fetching joined interviews:', error);
+    return { interviews: [], total: 0 };  // In case of error, return empty
   }
 };
+
 
 const fetchInterviewSessionsForInterview = async (
   interviewId,
@@ -44,7 +53,7 @@ const fetchInterviewSessionsForInterview = async (
   }
 };
 
-export const getInterviewSessionById = async (sessionId) => {
+const getInterviewSessionById = async (sessionId) => {
   try{
       const response = await axiosInstance.get(`/interview-session/session/${sessionId}`);
       return response;
