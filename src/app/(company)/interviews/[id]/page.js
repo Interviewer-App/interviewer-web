@@ -44,10 +44,20 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 //API
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
+import { Button } from "@/components/ui/button";
 
 export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
@@ -55,6 +65,7 @@ export default function InterviewPreviewPage({ params }) {
   const [description, setDescription] = useState("");
   const [editDitails, setEditDetails] = useState(false);
   const [title, setTitle] = useState("");
+  const [interviewCategory, setInterviewCategory] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [skills, setSkills] = useState([]);
   const textareaRef = useRef(null);
@@ -139,12 +150,13 @@ export default function InterviewPreviewPage({ params }) {
         console.log("Error fetching interviews:", error);
       }
     };
-    if(interviewId) fetchInterview();
+    if (interviewId) fetchInterview();
   }, [interviewId]);
 
   useEffect(() => {
     setDescription(interviewDetail.jobDescription);
     setTitle(interviewDetail.jobTitle);
+    setInterviewCategory(interviewDetail.interviewCategory);
     if (interviewDetail?.requiredSkills) {
       setSkills(interviewDetail.requiredSkills.split(", "));
     } else {
@@ -199,6 +211,7 @@ export default function InterviewPreviewPage({ params }) {
         jobDescription: description,
         jobTitle: title,
         requiredSkills: skills.join(", "),
+        interviewCategory,
       });
 
       if (response) {
@@ -335,41 +348,78 @@ export default function InterviewPreviewPage({ params }) {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
-              <div className=" w-full lg:w-[35%]">
-                <h1 className=" text-2xl font-semibold py-5">
-                  Required Skills
-                </h1>
-                <div className=" flex flex-wrap w-full">
-                  {skills.map((skill, index) => (
-                    <Chip
-                      key={index}
-                      label={skill}
-                      onDelete={
-                        editDitails ? () => handleDelete(skill) : undefined
-                      }
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        padding: "1rem",
-                        paddingY: "20px",
-                        borderRadius: "9999px",
-                        margin: "0.2rem",
-                        backgroundColor: "#2d2f36",
-                        color: "white",
-                      }}
-                    />
-                  ))}
-                  {editDitails && (
-                    <input
-                      type="text"
-                      placeholder="Add Skills"
-                      name="skills"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-6 py-2 mb-5 focus:outline-none"
-                    />
+              <div className=" w-full lg:w-[35%] flex flex-col items-start">
+                <div>
+                  <h1 className=" text-2xl font-semibold py-5">
+                    Required Skills
+                  </h1>
+                  <div className=" flex flex-wrap w-full">
+                    {skills.map((skill, index) => (
+                      <Chip
+                        key={index}
+                        label={skill}
+                        onDelete={
+                          editDitails ? () => handleDelete(skill) : undefined
+                        }
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                          padding: "1rem",
+                          paddingY: "20px",
+                          borderRadius: "9999px",
+                          margin: "0.2rem",
+                          backgroundColor: "#2d2f36",
+                          color: "white",
+                        }}
+                      />
+                    ))}
+                    {editDitails && (
+                      <input
+                        type="text"
+                        placeholder="Add Skills"
+                        name="skills"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-6 py-2 mb-5 focus:outline-none"
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className=" w-full mt-5">
+                  <h1 className=" text-2xl font-semibold py-5">
+                    Interview Type
+                  </h1>
+                  {!editDitails && (
+                    <h1 className=" bg-[#2d2f36] py-2 w-fit px-9 rounded-full">
+                      {interviewCategory}
+                    </h1>
                   )}
+                  {editDitails && (<DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        className={`bg-[#32353b] w-[150px] h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                        variant="outline"
+                      >
+                        {interviewCategory}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Interview Catagory</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuRadioGroup
+                        value={interviewCategory}
+                        onValueChange={setInterviewCategory}
+                      >
+                        <DropdownMenuRadioItem value="Technical">
+                          Technical
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="Behavioural">
+                          Behavioural
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>)}
                 </div>
               </div>
             </div>
