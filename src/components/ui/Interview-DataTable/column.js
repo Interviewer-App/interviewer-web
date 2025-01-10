@@ -14,29 +14,29 @@ import {
 
 export const columns = [
   {
-    accessorKey: "candidateId",
+    accessorKey: "sessionId",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        candidateId
+        sessionId
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
-    accessorKey: "candidate.status", 
-    header: "status",
+    accessorKey: "interviewId", 
+    header: "Interview ID",
   },
   {
-    accessorKey: "candidate.updatedAt",  
-    header: "updatedAt",
+    accessorKey: "candidateId",  
+    header: "candidateId",
   },
-  {
-    accessorKey: "interviewCategory",  
-    header: "interviewCategory",
-  },
+  // {
+  //   accessorKey: "interviewCategory",  
+  //   header: "interviewCategory",
+  // },
   // Add the "Actions" column
   {
     id: "actions",

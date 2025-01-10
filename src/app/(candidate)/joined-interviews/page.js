@@ -27,34 +27,25 @@ const JoinedInterviews = () => {
     useEffect(() => {
         const fetchUserJoinedInterviews = async () => {
             try {
-                setLoading(true);  // Start loading
+                setLoading(true); // Start loading
                 const session = await getSession();
                 const candidateId = session?.user?.candidateID;
-                
-                if (!candidateId) {
-                    console.log('No candidateId found');
-                    setLoading(false);
-                    return;
-                }
-
+                console.log('candidate ID:', candidateId);
+          
                 // Fetch interviews data
-                const data = await fetchJoinedInterviews(candidateId, page, limit);
-                console.log('Fetched interviews:', data);  
-                if (data && Array.isArray(data.interviewSessions)) {
-                    setPayments(data.interviewSessions);  // Set interviews
-                    setTotalUsers(data.total);  // Set total for pagination
-                } else {
-                    console.log('No interview data or incorrect response format');
-                }
+                await fetchJoinedInterviews(candidateId, page, limit, setLoading, setPayments, setTotalUsers);
             } catch (error) {
                 console.error('Error fetching interviews:', error);
-            } finally {
-                setLoading(false);  // Stop loading
             }
         };
 
-        fetchUserJoinedInterviews();  // Trigger data fetching when page or limit changes
-    }, [page, limit]);  // Re-fetch when page or limit changes
+        fetchUserJoinedInterviews();
+    }, [page, limit]); // Fetch new interviews when page or limit change
+
+    // Log the fetched interviews when payments state changes
+    useEffect(() => {
+        console.log('Fetched interviews:', payments);
+    }, [payments]); // This effect runs whenever payments state changes
 
     // Pagination handlijgs
     const handleNextPage = () => {
