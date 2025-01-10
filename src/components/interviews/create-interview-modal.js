@@ -22,6 +22,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -32,6 +41,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [inputValue, setInputValue] = React.useState("");
   const [jobTitle, setJobTitle] = React.useState("");
   const [jobDescription, setJobDescription] = React.useState("");
+  const [interviewCategory, setInterviewCategory] = React.useState("Technical");
   const [date, setDate] = React.useState("");
   const [time, setTime] = React.useState("");
 
@@ -71,6 +81,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
         scheduledDate: isoString,
         scheduledAt: isoString,
         status: "DRAFT",
+        interviewCategory,
       };
       console.log(interviewData);
       const response = await createInterview(interviewData);
@@ -183,8 +194,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
             />
           </Paper>
 
-          <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-5">
-            <div className=" w-full md:w-[48%]">
+          <div className=" w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2  mt-5">
+            <div className=" w-full">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -195,7 +206,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     )}
                   >
                     <CalendarIcon />
-                    {date ? format(date, "PPP") : <span>Scheduled Date</span>}
+                    {date ? format(date, "PPP") : <span className="text-xs lg:text-sm">Scheduled Date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -208,7 +219,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <input
                 type="time"
                 placeholder="Scheduled Time"
@@ -219,6 +230,34 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className={`bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                  variant="outline"
+                >
+                  {interviewCategory}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Interview Catagory</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={interviewCategory}
+                  onValueChange={setInterviewCategory}
+                >
+                  <DropdownMenuRadioItem value="Technical">
+                    Technical
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="Behavioural">
+                    Behavioural
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-1">
+            
           </div>
 
           <div className=" w-full flex justify-center items-center">
