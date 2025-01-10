@@ -19,6 +19,7 @@ import {
 import { NavUser } from "@/components/nav-user";
 import Link from "next/link";
 import { TeamSwitcher } from "./team-switcher"; 
+import { getSession } from "next-auth/react";
 
 const commonItems = [
   // {
@@ -48,7 +49,9 @@ const commonItems = [
   // },
 
 ];
-
+const session=await getSession();
+const userEmail=session?.user?.email;
+const userRole=session?.user?.role;
 const companyItems = [
   {
     title: "Interviews",
@@ -78,8 +81,8 @@ const adminItems = [
 
 const data = {
   user: {
-    name: "Company",
-    email: "shadcn@example.com",
+    name: userRole,
+    email: userEmail,
     avatar: "/avatars/shadcn.jpg",
   },
 };
