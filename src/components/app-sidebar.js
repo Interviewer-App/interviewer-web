@@ -26,26 +26,37 @@ const commonItems = [
   //   url: "/dashboard",
   //   icon: Inbox,
   // },
+  // {
+  //   title: "Interviews",
+  //   url: "/interviews",
+  //   icon: Home,
+  // },
+  // {
+  //   title: "Interview session",
+  //   url: "/interview-session",
+  //   icon: Home,
+  // },
+  // {
+  //   title: "Users",
+  //   url: "/users",
+  //   icon: Inbox,
+  // },
+  // {
+  //   title: "AI",
+  //   url: "/AI",
+  //   icon: Search,
+  // },
+
+];
+
+const companyItems = [
   {
     title: "Interviews",
     url: "/interviews",
     icon: Home,
   },
-  {
-    title: "Interview session",
-    url: "/interview-session",
-    icon: Home,
-  },
-  {
-    title: "Users",
-    url: "/users",
-    icon: Inbox,
-  },
-  {
-    title: "AI",
-    url: "/AI",
-    icon: Search,
-  },
+];
+const candidateItems = [
   {
     title: "Interview scheduls",
     url: "/interview-schedules",
@@ -57,10 +68,13 @@ const commonItems = [
     icon: Activity ,
   },
 ];
-
-const companyItems = [];
-const candidateItems = [];
-const adminItems = [];
+const adminItems = [
+  {
+    title: "Users",
+    url: "/users",
+    icon: Inbox,
+  },
+];
 
 const data = {
   user: {
