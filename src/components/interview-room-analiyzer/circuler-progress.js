@@ -1,9 +1,10 @@
 import React from "react";
-
 function CirculerProgress({ marks, catorgory }) {
   const strokeDashoffset = 251.2 * (1 - marks / 100);
+  const gradientId = `gradient-${marks}-${catorgory.replace(/\s+/g, '-')}`;
 
   const getGradientStops = () => {
+    debugger
     if (marks <= 25) {
       return (
         <>
@@ -34,7 +35,6 @@ function CirculerProgress({ marks, catorgory }) {
       );
     }
   };
-
   return (
     <div className="flex items-center justify-center h-full">
       <div className="relative w-[200px] h-[200px]">
@@ -51,24 +51,21 @@ function CirculerProgress({ marks, catorgory }) {
             stroke="#14161a"
             strokeWidth="8"
           />
-
           {/* Progress circle */}
           <circle
             cx="50"
             cy="50"
             r="40"
             fill="transparent"
-            stroke="url(#progress-gradient)"
+            stroke={`url(#${gradientId})`}
             strokeWidth="8"
             strokeDasharray="251.2"
             strokeLinecap="round"
             strokeDashoffset={strokeDashoffset}
           />
-
           <defs>
             <linearGradient
-              key={marks}
-              id="progress-gradient"
+              id={`${gradientId}`}
               x1="0%"
               y1="0%"
               x2="100%"
@@ -78,7 +75,6 @@ function CirculerProgress({ marks, catorgory }) {
             </linearGradient>
           </defs>
         </svg>
-
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-900 dark:text-gray-50">
           <p className="text-4xl font-bold text-gray-900 dark:text-gray-50">
             {marks}%
@@ -89,5 +85,4 @@ function CirculerProgress({ marks, catorgory }) {
     </div>
   );
 }
-
 export default CirculerProgress;
