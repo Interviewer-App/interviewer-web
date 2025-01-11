@@ -4,7 +4,6 @@ function CirculerProgress({ marks, catorgory }) {
   const strokeDashoffset = 251.2 * (1 - marks / 100);
 
   const getGradientStops = () => {
-    debugger
     if (marks <= 25) {
       return (
         <>
