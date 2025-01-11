@@ -14,35 +14,16 @@ import {
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
+import { analiyzeQuestion } from "@/lib/api/ai";
 
 const InterviewRoomAnalizerPage = () => {
   // const { socket } = useSocket();
   const [candidateAnswers, setCandidateAnswers] = useState({
     question: "What is polymorphism in object-oriented programming?",
     answer:
-      'Polymorphism allows objects to be treated as instances of their parent class. For example, in Java, a parent class can have a method "draw" that is overridden in subclasses like Circle or Square. It improves flexibility and reusability.',
+      ' Polymorphism allows objects to be treated as instances of their parent class. For example, in Java, a parent class can have a method "draw" that is overridden in subclasses like Circle or Square. It improves flexibility and reusability.',
   });
-
-  const [response, setResponse] = useState({
-    relevanceScore: 90,
-    keyStrengths: [
-      "Understands the core concept of polymorphism",
-      "Provides a concrete example using Java",
-      "Highlights the benefits of flexibility and reusability",
-    ],
-    areasOfImprovement: [
-      "Could explain different types of polymorphism (e.g., compile-time vs. runtime)",
-      "Could elaborate on the mechanism behind polymorphism (e.g., method overriding, virtual functions)",
-    ],
-    alignment:
-      "Strongly aligns with the job requirement, which typically requires a solid understanding of OOP concepts.",
-    followUpQuestions: [
-      "Could you explain the difference between compile-time and runtime polymorphism with an example?",
-      "How does polymorphism contribute to the open/closed principle in object-oriented design?",
-      "Can you describe a real-world scenario where you have used polymorphism and how it solved a problem?",
-    ],
-  });
-
+  const [analiyzeResponse, setAnaliyzeResponse] = useState({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -55,11 +36,59 @@ const InterviewRoomAnalizerPage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (candidateAnswers) {
+      handleQuestionAnaliyze();
+    }
+  }, [candidateAnswers]);
+
+  const handleQuestionAnaliyze = async () => {
+    try {
+      const response = await analiyzeQuestion(
+        candidateAnswers
+        // {question: "What is polymorphism in object-oriented programming?",
+        // answer:'i dont know',}
+      );
+
+      if (response) {
+        setAnaliyzeResponse(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Question Analiysis failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
   return (
     <div className=" h-full">
       <ResizablePanelGroup
         direction="horizontal"
-        className="max-w-md rounded-lg md:min-w-full h-full"
+        className=" rounded-lg md:min-w-full h-full"
       >
         <ResizablePanel defaultSize={150}>
           <div className=" h-full p-6">
@@ -84,9 +113,9 @@ const InterviewRoomAnalizerPage = () => {
                 <div className=" w-full">
                   <h1 className="py-3 font-semibold text-lg">keyStrengths</h1>
                   <ul className="list-disc list-inside text-sm text-gray-400">
-                    {response.keyStrengths.map((key, index) => (
+                    {analiyzeResponse.keyStrengths?.map((key, index) => (
                       <li key={index}>{key}</li>
-                    ))}
+                    )) || "No key strengths found"}
                   </ul>
                 </div>
                 <div className=" w-full mt-2">
@@ -94,14 +123,16 @@ const InterviewRoomAnalizerPage = () => {
                     Areas of Improvement
                   </h1>
                   <ul className="list-disc list-inside text-sm text-gray-400">
-                    {response.areasOfImprovement.map((key, index) => (
+                    {analiyzeResponse.areasOfImprovement?.map((key, index) => (
                       <li key={index}>{key}</li>
-                    ))}
+                    )) || "No areas of improvement found"}
                   </ul>
                 </div>
                 <div className=" w-full mt-2">
                   <h1 className="py-3 font-semibold text-lg">Alignment</h1>
-                  <p className=" text-sm text-gray-400">{response.alignment}</p>
+                  <p className=" text-sm text-gray-400">
+                    {analiyzeResponse?.alignment || ""}
+                  </p>
                 </div>
               </div>
             </div>
@@ -113,25 +144,39 @@ const InterviewRoomAnalizerPage = () => {
             <ResizablePanel defaultSize={65}>
               <div className=" w-full h-full p-6">
                 <h1 className=" text-3xl font-semibold">Marks Overview</h1>
-                <div className="flex flex-col md:flex-row h-full items-center justify-center w-full">
-                  <div className="flex flex-col items-center justify-center w-[50%]">
-                    <h1 className=" text-2xl font-semibold">Total Score</h1>
-                    <h2 className=" text-base text-gray-500">
+                <div className="flex flex-col md:flex-row h-full items-center justify-start md:justify-center w-full">
+                  <div className="flex flex-col items-center justify-center w-[50%] mt-7 md:mt-0">
+                    <h1 className=" text-2xl font-semibold text-center">
+                      Total Score
+                    </h1>
+                    <h2 className=" text-base text-gray-500 text-center">
                       {" "}
                       8/10 Questions
                     </h2>
-                    <CirculerProgress marks={76} catorgory='Total score'/>
-                    <p className=" text-gray-300">76% Accurate with expected answers</p>
-                    <p className=" text-sm text-gray-500">
+                    <CirculerProgress marks={76} catorgory="Total score" />
+                    <p className=" text-gray-300 text-center">
+                      76% Accurate with expected answers
+                    </p>
+                    <p className=" text-sm text-gray-500 text-center">
                       Showing Total Score for 8 out of 10 question
                     </p>
                   </div>
-                  <div className="flex flex-col items-center justify-center w-[50%]">
-                    <h1 className=" text-2xl font-semibold">Relevance Score</h1>
-                    <h2 className=" text-base text-gray-500">Question 01</h2>
-                    <CirculerProgress marks={60} catorgory='Question 01'/>
-                    <p className=" text-gray-300">60% Accurate with expected answer</p>
-                    <p className=" text-sm text-gray-500">
+                  <div className="flex flex-col items-center justify-center w-[50%] mt-7 md:mt-0">
+                    <h1 className=" text-2xl font-semibold text-center">
+                      Relevance Score
+                    </h1>
+                    <h2 className=" text-base text-gray-500 text-center">
+                      Question 01
+                    </h2>
+                    <CirculerProgress
+                      marks={analiyzeResponse.relevanceScore}
+                      catorgory="Question 01"
+                    />
+                    <p className=" text-gray-300 text-center">
+                      {analiyzeResponse.relevanceScore}% Accurate with expected
+                      answer
+                    </p>
+                    <p className=" text-sm text-gray-500 text-center">
                       Showing Relevance Score for current question
                     </p>
                   </div>
@@ -147,11 +192,13 @@ const InterviewRoomAnalizerPage = () => {
                   </h1>
                   <div className=" mt-3 rounded-lg py-2">
                     <ol className="list-decimal list-outside pl-7 ">
-                      {response.followUpQuestions.map((question, index) => (
-                        <li key={index} className=" py-2 text-gray-400">
-                          {question}
-                        </li>
-                      ))}
+                      {analiyzeResponse.followUpQuestions?.map(
+                        (question, index) => (
+                          <li key={index} className=" py-2 text-gray-400">
+                            {question}
+                          </li>
+                        )
+                      ) || "No follow up questions found"}
                     </ol>
                   </div>
                 </div>
