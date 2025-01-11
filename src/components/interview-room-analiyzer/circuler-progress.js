@@ -4,7 +4,6 @@ function CirculerProgress({ marks, catorgory }) {
   const gradientId = `gradient-${marks}-${catorgory.replace(/\s+/g, '-')}`;
 
   const getGradientStops = () => {
-    debugger
     if (marks <= 25) {
       return (
         <>
@@ -61,7 +60,7 @@ function CirculerProgress({ marks, catorgory }) {
             strokeWidth="8"
             strokeDasharray="251.2"
             strokeLinecap="round"
-            strokeDashoffset={strokeDashoffset}
+            strokeDashoffset={`${marks === 0 ? 251.2 : strokeDashoffset}`}
           />
           <defs>
             <linearGradient
@@ -77,7 +76,7 @@ function CirculerProgress({ marks, catorgory }) {
         </svg>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-900 dark:text-gray-50">
           <p className="text-4xl font-bold text-gray-900 dark:text-gray-50">
-            {marks}%
+            {marks || 0}%
           </p>
           <p className=" text-sm text-gray-500">{catorgory}</p>
         </div>
