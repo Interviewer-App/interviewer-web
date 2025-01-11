@@ -120,8 +120,8 @@ const InterviewRoomAnalizerPage = () => {
                       {" "}
                       8/10 Questions
                     </h2>
-                    <CirculerProgress marks={60} catorgory='Total score'/>
-                    <p className=" text-gray-300">60% Accurate with expected answers</p>
+                    <CirculerProgress marks={76} catorgory='Total score'/>
+                    <p className=" text-gray-300">76% Accurate with expected answers</p>
                     <p className=" text-sm text-gray-500">
                       Showing Total Score for 8 out of 10 question
                     </p>
@@ -129,8 +129,8 @@ const InterviewRoomAnalizerPage = () => {
                   <div className="flex flex-col items-center justify-center w-[50%]">
                     <h1 className=" text-2xl font-semibold">Relevance Score</h1>
                     <h2 className=" text-base text-gray-500">Question 01</h2>
-                    <CirculerProgress marks={90} catorgory='Question 01'/>
-                    <p className=" text-gray-300">90% Accurate with expected answer</p>
+                    <CirculerProgress marks={60} catorgory='Question 01'/>
+                    <p className=" text-gray-300">60% Accurate with expected answer</p>
                     <p className=" text-sm text-gray-500">
                       Showing Relevance Score for current question
                     </p>
