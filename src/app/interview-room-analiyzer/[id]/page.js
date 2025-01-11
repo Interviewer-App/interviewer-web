@@ -63,7 +63,7 @@ const InterviewRoomAnalizerPage = () => {
       >
         <ResizablePanel defaultSize={150}>
           <div className=" h-full p-6">
-            <h1 className=" text-3xl font-semibold">Live Analisis Resalt</h1>
+            <h1 className=" text-3xl font-semibold">Live Analysis Result</h1>
             <div className=" w-full mt-2">
               <h1 className=" py-3 font-semibold text-lg">Question</h1>
               <p className=" text-sm text-gray-400">
@@ -79,7 +79,7 @@ const InterviewRoomAnalizerPage = () => {
               </p>
             </div>
             <div className=" w-full rounded-lg bg-gray-600/30 py-4 px-7 mt-5">
-              <h1 className=" text-2xl font-semibold">Analisis with AI</h1>
+              <h1 className=" text-2xl font-semibold">Analysis with AI</h1>
               <div className=" mt-2">
                 <div className=" w-full">
                   <h1 className="py-3 font-semibold text-lg">keyStrengths</h1>
