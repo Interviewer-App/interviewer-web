@@ -61,7 +61,7 @@ function InterviewSessionPreviewPage({ params }) {
     };
 
     fetchSessionDetails();
-  }, [sessionId, isGenerateQuestions, isQuestionEdit]);
+  }, [sessionId, isGenerateQuestions, isQuestionEdit, toast]);
 
   const handleQuestionGenarate = async (e) => {
     e.preventDefault();
