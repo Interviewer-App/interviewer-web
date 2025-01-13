@@ -52,23 +52,26 @@ const InterviewRoomPage = ({ params }) => {
       recordingComplete,
       startListening,
       stopListening,
+      setTranscript
     } = useSpeechRecognition({ continuous: true });
   
     const startStopListening = () => {
       isListening ? stopListening() : startListening();
     };
     const handleAnswerChange = (e) => {
-      setAnswer(e.target.value); 
+      // setAnswer(e.target.value); 
+      setTranscript(e.target.value);
     };
   
     const handleSubmit = () => {
-        if (answer.trim() !== "") {
+        if (transcript.trim() !== "") {
           setActiveStep((prevStep) => {
             const nextStep = Math.min(prevStep + 1, questions.length - 1);
             return nextStep;
           });
-          setAnswer(""); 
         }
+        stopListening();
+        setTranscript("");
     };
         // Update swiper on activeStep change
         useEffect(() => {
@@ -108,15 +111,13 @@ const InterviewRoomPage = ({ params }) => {
     }, []);
         // Preserve the transcript once recording is completed
         // useEffect(() => {
-        //     if (recordingComplete) {
-        //         setRecordedAnswer(transcript); 
-        //     }
+        //     setAnswer(transcript);
         // }, [recordingComplete, transcript]);
 
     const combinedAnswer = answer || transcript; 
 
     return (
-        <div className="relative flex flex-col h-full items-center w-full text-white py-32 bg-cover overflow-hidden">
+        <div className="flex flex-col justify-center h-full items-center w-full text-white py-3">
           <div className="absolute inset-0 bg-black -z-20"></div>
           <div className="w-[70%] max-w-[1100px]">
             {/* Swiper Component with Questions */}
@@ -127,11 +128,11 @@ const InterviewRoomPage = ({ params }) => {
                 onSlideChange={(index) => setActiveStep(index)} // Slide change handler
               />
             </div>
-            <div className="relative flex flex-col items-center justify-between w-full text-white py-12">
+            <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
               <div className="w-[70%] max-w-[1100px]">
                 <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
                   <textarea
-                    value={combinedAnswer} // Use combined answer (typed or transcript)
+                    value={transcript} // Use combined answer (typed or transcript)
                     onChange={handleAnswerChange} // Handle typing
                     placeholder="your answer here..."
                     className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
@@ -159,7 +160,7 @@ const InterviewRoomPage = ({ params }) => {
                 <div className="flex justify-center">
                   <button
                     onClick={handleSubmit}
-                    disabled={!combinedAnswer}
+                    disabled={!transcript}
                     className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
                   >
                     Submit Answer
@@ -173,7 +174,7 @@ const InterviewRoomPage = ({ params }) => {
               What is Your Answer?
             </h1>
             <div className="rounded-lg w-full">
-              {(isListening ) && (
+              {/* {(isListening ) && (
                 <div className="w-full m-auto min-h-[100px] rounded-lg px-6 py-5 bg-gradient-to-br from-[#2e3036] to-[#282a2e] text-white">
                   <div className="flex-1 flex w-full justify-between">
                     <div className="space-y-1">
@@ -195,7 +196,7 @@ const InterviewRoomPage = ({ params }) => {
                     </div>
                   )}
                 </div>
-              )}
+              )} */}
               <div className="flex items-center w-full">
                 {isListening ? (
                   <button

@@ -27,12 +27,12 @@ const InterviewRoomAnalizerPage = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    socket.on("interviewStarted", ({ firstQuestion }) => {
-      router.push(`/interview/${sessionId}/question`);
+    socket.on("answerSubmitted", ({ firstQuestion }) => {
+      // router.push(`/interview/${sessionId}/question`);
     });
 
     return () => {
-      socket.off("interviewStarted");
+      socket.off("answerSubmitted");
     };
   }, []);
 
@@ -101,7 +101,7 @@ const InterviewRoomAnalizerPage = () => {
             </div>
             <div className=" w-full mt-2">
               <h1 className=" py-3 font-semibold text-lg">
-                Candidate's Answer
+                {"Candidate's Answer"}
               </h1>
               <p className=" text-sm text-gray-400">
                 {candidateAnswers.answer}

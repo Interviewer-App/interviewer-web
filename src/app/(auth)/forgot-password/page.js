@@ -25,11 +25,10 @@ const ForgotPasswordPage = () => {
       />
       <div className="h-fit max-h-[670px] max-w-[600px] w-[90%] md:w-[50%] bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg p-14">
         <h1 className=" text-xl md:text-2xl lg:text-3xl font-semibold text-[#f3f3f3]">
-          Forgot your password?
+          {"Forgot your password? "}
         </h1>
         <p className=" text-sm md:text-base text-neutral-500 pt-3 pb-8 ">
-          Don't fret! Just type in your email and we will send you a code to
-          reset your password!
+        {"Don't fret! Just type in your email and we will send you a code to reset your password! "}
         </p>
         <form className=" w-full">
           <label

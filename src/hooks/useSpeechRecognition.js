@@ -64,7 +64,7 @@ export const useSpeechRecognition = (options) => {
             recognitionRef.current.stop();
             setIsListening(false);
             setRecordingComplete(true);
-            setTranscript('');
+            // setTranscript('');
         }
     }
     return {
@@ -72,7 +72,8 @@ export const useSpeechRecognition = (options) => {
         transcript,
         recordingComplete,
         startListening,
-        stopListening
+        stopListening,
+        setTranscript
     }
 }
 
