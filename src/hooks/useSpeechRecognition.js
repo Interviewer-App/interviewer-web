@@ -43,7 +43,7 @@ export const useSpeechRecognition = (options) => {
 
         recognition.onend = () => {
             setIsListening(false);
-            setTranscript("");
+            // setTranscript("");
         }
 
         return () =>{
@@ -64,6 +64,7 @@ export const useSpeechRecognition = (options) => {
             recognitionRef.current.stop();
             setIsListening(false);
             setRecordingComplete(true);
+            setTranscript('');
         }
     }
     return {

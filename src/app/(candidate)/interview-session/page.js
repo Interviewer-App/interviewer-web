@@ -17,8 +17,24 @@ import {
 } from "@/components/ui/sidebar";
 import bgGrid from "@/assets/grid-bg.svg";
 import bgGrain from "@/assets/grain-bg.svg";
+import { useState } from "react";
+import Carousel from "@/components/ui/carousel";
+import SwiperComponent from "@/components/ui/swiperComponent";
+import '../../../styles/swiper/swiperStyles.css'
+
+
 
 const InterviewSession = () => {
+  const [answer, setAnswer] = useState(""); 
+  const [activeStep, setActiveStep] = useState(0);
+  const [questions, setQuestions] = useState([
+    "Can you explain the core principles of Object-Oriented Programming (OOP) and provide an example of how you've applied these principles in a project?",
+    "What are the differences between a class and an interface in Object-Oriented Programming?",
+    "How would you handle memory management in a project?",
+    "Explain polymorphism and provide an example.",
+    "Can you describe what a design pattern is and provide an example you’ve used?",
+    "How do you approach debugging and troubleshooting in software development?",
+  ]);
   const {
     isListening,
     transcript,
@@ -30,29 +46,48 @@ const InterviewSession = () => {
   const startStopListening = () => {
     isListening ? stopListening() : startListening();
   };
-  return (
-    <SidebarInset>
-      <header className="flex h-16 shrink-0 items-center gap-2">
-        <div className="flex items-center gap-2 px-3">
-          <SidebarTrigger />
-          {/* <Separator orientation="vertical" className="mr-2 h-4" /> */}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Candidate
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Interview Session</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
+  const handleAnswerChange = (e) => {
+    setAnswer(e.target.value); 
+  };
 
-      <div className=" relative flex flex-col h-full items-center justify-between w-full text-white py-9 bg-cover overflow-hidden">
+  const handleSubmit = () => {
+    if (answer.trim() !== "") {
+      setActiveStep((prevStep) => Math.min(prevStep + 1, questions.length - 1));
+      setAnswer(""); 
+    }
+  };
+
+  const progress = ((activeStep + 1) / questions.length) * 100; 
+  const handleSlideChange = (index) => {
+    setActiveStep(index);
+  };
+
+  
+
+  return (
+    <>
+    
+    <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2">
+                <div className="flex items-center gap-2 px-3">
+                    <SidebarTrigger />
+                    <Separator orientation="vertical" className="mr-2 h-4" />
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem className="hidden md:block">
+                                <BreadcrumbLink href="#">Candidate</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="hidden md:block" />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>Interview Session</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
+            </header>
+
+
+      <div className=" relative flex flex-col h-full items-center w-full text-white py-9 bg-cover overflow-hidden">
         <div className="absolute inset-0 bg-background -z-20"></div>
         <Image
           src={bgGrid}
@@ -65,20 +100,53 @@ const InterviewSession = () => {
           className=" absolute w-full top-0 left-0 -z-10 "
         />
         <div className="w-[70%] max-w-[1100px]">
-          <div className="relative w-[70%] rounded-xl h-auto p-7 bg-gradient-to-br from-[#1d1f24] to-[#1a1d23] text-white shadow-md">
-            <h1 className="text-xl font-semibold">Question</h1>
-            <p className="text-base text-[#909194] pt-5">
-              Can you explain the core principles of Object-Oriented Programming
-              (OOP) and provide an example of how you&apos;ve applied these principles
-              in a project?
-            </p>
+                     
+                      <div className="relative w-full py-9">
+              <SwiperComponent
+                questions={questions}
+                onSlideChange={handleSlideChange}
+              />
+            </div>
+          <div className="relative flex flex-col items-center justify-between w-full text-white py-9">
+      <div className="w-[70%] max-w-[1100px]">
+
+
+        <div className="relative w-full rounded-xl h-auto p-7 bg-gradient-to-br from-[#202225] to-[#282a2e] text-white shadow-md mb-5">
+          <textarea
+            value={transcript}
+            onChange={handleAnswerChange}
+            placeholder="your answer here..."
+            className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
+          />
+        </div>
+
+
+        
+        <div className="w-full mt-8">
+          <div className="flex items-center mb-3">
+            <span className="text-sm text-gray-400">Step {activeStep + 1} of {questions.length}</span>
           </div>
-          <div className="relative float-right mt-5 w-[70%] rounded-xl h-auto p-7 bg-gradient-to-br from-[#202225] to-[#282a2e] text-white shadow-md">
-            <h1 className="text-lg font-semibold text-right">Answer</h1>
-            <p className="text-base text-[#909194] pt-5 text-justify">
-              {transcript}
-            </p>
+
+          <div className="relative w-full h-2 bg-gray-400 rounded-full">
+            <div
+              className="absolute top-0 left-0 h-full bg-blue-400 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            ></div>
           </div>
+        </div>
+        
+       
+        <div className="flex justify-center">
+          <button
+            onClick={handleSubmit}
+            disabled={!answer.trim()}
+            className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+          >
+            Submit Answer
+          </button>
+        </div>
+      </div>
+    </div>
         </div>
         <div className="w-[70%]">
           <h1 className=" text-2xl font-semibold text-center w-full pb-5">
@@ -112,7 +180,7 @@ const InterviewSession = () => {
             )}
             <div className="flex items-center w-full">
               {isListening ? (
-                // Button for stopping recording
+               
                 <button
                   onClick={stopListening}
                   className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
@@ -126,7 +194,7 @@ const InterviewSession = () => {
                   </svg>
                 </button>
               ) : (
-                // Button for starting recording
+           
                 <button
                   onClick={startListening}
                   className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
@@ -137,7 +205,7 @@ const InterviewSession = () => {
                     className="w-8 h-8 text-white"
                   >
                     <path
-                      fill="currentColor" // Change fill color to the desired color
+                      fill="currentColor" 
                       d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
                     />
                   </svg>
@@ -146,10 +214,11 @@ const InterviewSession = () => {
             </div>
           </div>
         </div>
-      </div>
-    </SidebarInset>
-
-
+      </div>  
+              
+          </SidebarInset>
+          
+      </>
   );
 };
 
