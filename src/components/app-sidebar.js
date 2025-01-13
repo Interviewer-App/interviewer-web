@@ -49,9 +49,7 @@ const commonItems = [
   // },
 
 ];
-const session=await getSession();
-const userEmail=session?.user?.email;
-const userRole=session?.user?.role;
+
 const companyItems = [
   {
     title: "Interviews",
@@ -79,13 +77,7 @@ const adminItems = [
   },
 ];
 
-const data = {
-  user: {
-    name: userRole,
-    email: userEmail,
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
+
 
 const teams = [
   {
@@ -99,6 +91,19 @@ export function AppSidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const role = session?.user?.role; 
+
+    // const session=await getSession();
+  const userEmail=session?.user?.email;
+    // const userRole=session?.user?.role;
+
+    const [userData, setUserData] = React.useState({
+      user: {
+        name: userRole,
+        email: userEmail,
+        avatar: "/avatars/shadcn.jpg",
+      },
+    });
+
 
   let items = commonItems;
   if (role === "COMPANY") {
@@ -145,7 +150,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData.user} />
       </SidebarFooter>
     </Sidebar>
   );
