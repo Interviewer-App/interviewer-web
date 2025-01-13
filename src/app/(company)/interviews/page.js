@@ -51,7 +51,7 @@ const InterviewsPage = () => {
       }
     };
     fetchInterviews();
-  }, [modalOpen]);
+  }, [modalOpen, toast]);
 
   return (
     <>

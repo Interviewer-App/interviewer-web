@@ -40,7 +40,7 @@ const InterviewRoomAnalizerPage = () => {
     if (candidateAnswers) {
       handleQuestionAnaliyze();
     }
-  }, [candidateAnswers]);
+  }, [candidateAnswers, handleQuestionAnaliyze]);
 
   const handleQuestionAnaliyze = async () => {
     try {
