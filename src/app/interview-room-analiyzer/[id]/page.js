@@ -11,7 +11,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback  } from "react";
 import { CircularProgress } from "@mui/material";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
@@ -36,13 +36,7 @@ const InterviewRoomAnalizerPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (candidateAnswers) {
-      handleQuestionAnaliyze();
-    }
-  }, [candidateAnswers, handleQuestionAnaliyze]);
-
-  const handleQuestionAnaliyze = async () => {
+  const handleQuestionAnaliyze = useCallback(async () => {
     try {
       const response = await analiyzeQuestion(
         candidateAnswers
@@ -82,7 +76,13 @@ const InterviewRoomAnalizerPage = () => {
         });
       }
     }
-  };
+  }, [candidateAnswers]);
+
+  useEffect(() => {
+    if (candidateAnswers) {
+      handleQuestionAnaliyze();
+    }
+  }, [candidateAnswers, handleQuestionAnaliyze]);
 
   return (
     <div className=" h-lvh">
