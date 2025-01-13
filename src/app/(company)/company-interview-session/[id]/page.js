@@ -22,12 +22,14 @@ import { getSession } from "next-auth/react";
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import { generateQuestions } from "@/lib/api/ai";
 import QuestionDisplayCard from "@/components/company/question-display-card";
+import CreateQuestionModal from "@/components/company/create-question-modal";
 
 function InterviewSessionPreviewPage({ params }) {
   const [sessionId, setSessionId] = useState(null);
   const [isGenerateQuestions, setGenerateQuestions] = useState(false);
   const [sessionDetails, setSessionDetails] = useState({});
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
   // const { socket } = useSocket();
   const router = useRouter();
@@ -61,7 +63,7 @@ function InterviewSessionPreviewPage({ params }) {
     };
 
     fetchSessionDetails();
-  }, [sessionId, isGenerateQuestions, isQuestionEdit, toast]);
+  }, [sessionId, isGenerateQuestions, isQuestionEdit, modalOpen]);
 
   const handleQuestionGenarate = async (e) => {
     e.preventDefault();
@@ -122,6 +124,7 @@ function InterviewSessionPreviewPage({ params }) {
       router.push(`/interview-room-analiyzer/${sessionId}`);
     }
   };
+  
   return (
     <>
       <SidebarInset>
@@ -179,7 +182,7 @@ function InterviewSessionPreviewPage({ params }) {
           <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
             <div className=" w-full flex items-center justify-between">
               <h1 className=" text-2xl font-semibold">Questions</h1>
-              <button className=" h-12 min-w-[160px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold">
+              <button onClick={() => setModalOpen(true)} className=" h-12 min-w-[160px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold">
                 {" "}
                 + Add Question
               </button>
@@ -208,6 +211,7 @@ function InterviewSessionPreviewPage({ params }) {
           </div>
         </div>
       </SidebarInset>
+      {modalOpen && (<CreateQuestionModal sessionId={sessionId} setModalOpen={setModalOpen}/>)}
     </>
   );
 }
