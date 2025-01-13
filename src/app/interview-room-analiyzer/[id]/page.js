@@ -76,7 +76,7 @@ const InterviewRoomAnalizerPage = () => {
         });
       }
     }
-  }, [candidateAnswers]);
+  }, [candidateAnswers, toast]);
 
   useEffect(() => {
     if (candidateAnswers) {
