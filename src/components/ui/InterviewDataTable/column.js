@@ -23,6 +23,12 @@ const ActionCell = ({ session }) => {
     }
   };
 
+  const handleViewSessionHostory = () => {
+    if (router && session?.sessionId) {
+      router.push(`/session-history/${encodeURIComponent(session.sessionId)}`);
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -42,7 +48,7 @@ const ActionCell = ({ session }) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleStartSession}>Start Session</DropdownMenuItem>
-          <DropdownMenuItem>View more Details</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -109,7 +115,6 @@ export const interviewSessionTableColumns = [
     id: "actions",
     cell: ({ row }) => {
       const session = row.original; 
-      console.log("session", session.sessionId);
       return <ActionCell session={session} />;
     },
   },
