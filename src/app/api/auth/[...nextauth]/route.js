@@ -10,6 +10,7 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
     newUser: "/register",
+    error: "/error"
   },
   providers: [
     GoogleProvider({
