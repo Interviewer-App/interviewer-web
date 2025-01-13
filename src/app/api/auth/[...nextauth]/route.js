@@ -64,6 +64,7 @@ const handler = NextAuth({
       },
     }),
   ],
+  // secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ account, profile, user }) {
 

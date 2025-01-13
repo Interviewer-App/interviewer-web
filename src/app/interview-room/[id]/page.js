@@ -26,6 +26,7 @@ import bgGrain from "@/assets/grain-bg.svg";
 import Carousel from "@/components/ui/carousel";
 import SwiperComponent from "@/components/ui/swiperComponent";
 import '../../../styles/swiper/swiperStyles.css'
+import Loading from "@/app/loading";
 
 
 const InterviewRoomPage = ({ params }) => {
@@ -39,12 +40,7 @@ const InterviewRoomPage = ({ params }) => {
     const [answer, setAnswer] = useState(""); 
     const [activeStep, setActiveStep] = useState(0);
     const [questions, setQuestions] = useState([
-      "Can you explain the core principles of Object-Oriented Programming (OOP) and provide an example of how you've applied these principles in a project?",
-      "What are the differences between a class and an interface in Object-Oriented Programming?",
-      "How would you handle memory management in a project?",
-      "Explain polymorphism and provide an example.",
-      "Can you describe what a design pattern is and provide an example you’ve used?",
-      "How do you approach debugging and troubleshooting in software development?",
+     
     ]); // Example questions
     const {
       isListening,
@@ -63,13 +59,21 @@ const InterviewRoomPage = ({ params }) => {
       setTranscript(e.target.value);
     };
   
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+       const session = await getSession();
+      
+          const role = session?.user?.role;
+          const candidateId = session?.user?.candidateID;
+
         if (transcript.trim() !== "") {
           setActiveStep((prevStep) => {
             const nextStep = Math.min(prevStep + 1, questions.length - 1);
             return nextStep;
           });
         }
+        const question = questions[activeStep];
+        const questionNumber = activeStep + 1;
+        socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText,questionNumber: questionNumber,numOfQuestions: questions.length});
         stopListening();
         setTranscript("");
     };
@@ -117,7 +121,9 @@ const InterviewRoomPage = ({ params }) => {
     const combinedAnswer = answer || transcript; 
 
     return (
-        <div className="flex flex-col justify-center h-full items-center w-full text-white py-3">
+      <>
+      {isQuestionAvailabe ? (<>
+        <div className="flex flex-col justify-center h-full items-center w-full text-white py-3 bg-black">
           <div className="absolute inset-0 bg-black -z-20"></div>
           <div className="w-[70%] max-w-[1100px]">
             {/* Swiper Component with Questions */}
@@ -232,6 +238,8 @@ const InterviewRoomPage = ({ params }) => {
             </div>
           </div>
         </div>
+        </>) : (<div className="flex flex-col justify-center h-full items-center w-full py-3 bg-black text-white"><Loading/></div>)}
+        </>
       );
     };
     

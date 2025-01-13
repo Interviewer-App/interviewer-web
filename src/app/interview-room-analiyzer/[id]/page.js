@@ -17,20 +17,30 @@ import { CircularProgress } from "@mui/material";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
+import Loading from "@/app/loading";
 
 const InterviewRoomAnalizerPage = () => {
-  const pages = ['candidate.Name', 'candidate.Email'];
-  // const { socket } = useSocket();
-  const [candidateAnswers, setCandidateAnswers] = useState({
-    question: "What is polymorphism in object-oriented programming?",
-    answer:
-      ' Polymorphism allows objects to be treated as instances of their parent class. For example, in Java, a parent class can have a method "draw" that is overridden in subclasses like Circle or Square. It improves flexibility and reusability.',
-  });
+    const pages = ['candidate.Name', 'candidate.Email'];
+  const [candidateAnswers, setCandidateAnswers] = useState();
   const [analiyzeResponse, setAnaliyzeResponse] = useState({});
+  const [isSubmitAnswers, setIsSubmitAnswers] = useState(false);
+  const [numOfQuestions, setNumOfQuestions] = useState(0);
+  const [answeredQuestionNo, setAnsweredQuestionNO] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+  const [numberOfAnswers, setNumberOfAnswers] = useState(0);
+
   const { toast } = useToast();
 
   useEffect(() => {
-    socket.on("answerSubmitted", ({ firstQuestion }) => {
+    socket.on("answerSubmitted", (data) => {
+      debugger
+      setIsSubmitAnswers(true);
+      setCandidateAnswers({question: data.questionText, answer: data.answerText});
+      setAnaliyzeResponse(data.metrics);
+      setAnsweredQuestionNO(data.questionNumber);
+      setNumOfQuestions(data.numOfQuestions);
+      setTotalScore(data.totalScore.totalScore);
+      setNumberOfAnswers(data.totalScore.numberOfAnswers);
       // router.push(`/interview/${sessionId}/question`);
     });
 
@@ -41,71 +51,57 @@ const InterviewRoomAnalizerPage = () => {
     };
   }, []);
 
-  useEffect(() =>{
-    const fetchPages=async ()=>{
-      try {
-        const candidateId='cm5nu8z1w0007vpbsbaugzsj9';
-        const response=await fetch(`/users/candidate/details/${candidateId}`);
-        console.log('Res:',response);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  // const handleQuestionAnaliyze = useCallback(async () => {
+  //   try {
+  //     const response = await analiyzeQuestion(
+  //       candidateAnswers
+  //       // {question: "What is polymorphism in object-oriented programming?",
+  //       // answer:'i dont know',}
+  //     );
 
-    fetchPages();
-  },[])
+  //     if (response) {
+  //       setAnaliyzeResponse(response.data);
+  //     }
+  //   } catch (error) {
+  //     if (error.response) {
+  //       const { data } = error.response;
 
-  const handleQuestionAnaliyze = useCallback(async () => {
-    try {
-      const response = await analiyzeQuestion(
-        candidateAnswers
-        // {question: "What is polymorphism in object-oriented programming?",
-        // answer:'i dont know',}
-      );
+  //       if (data && data.message) {
+  //         toast({
+  //           variant: "destructive",
+  //           title: "Uh oh! Something went wrong.",
+  //           description: `Question Analiysis failed: ${data.message}`,
+  //           action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //         });
+  //       } else {
+  //         toast({
+  //           variant: "destructive",
+  //           title: "Uh oh! Something went wrong.",
+  //           description: "An unexpected error occurred. Please try again.",
+  //           action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //         });
+  //       }
+  //     } else {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Uh oh! Something went wrong.",
+  //         description:
+  //           "An unexpected error occurred. Please check your network and try again.",
+  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //       });
+  //     }
+  //   }
+  // }, [candidateAnswers, toast]);
 
-      if (response) {
-        setAnaliyzeResponse(response.data);
-      }
-    } catch (error) {
-      if (error.response) {
-        const { data } = error.response;
-
-        if (data && data.message) {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: `Question Analiysis failed: ${data.message}`,
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "An unexpected error occurred. Please try again.",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description:
-            "An unexpected error occurred. Please check your network and try again.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
-    }
-  }, [candidateAnswers, toast]);
-
-  useEffect(() => {
-    if (candidateAnswers) {
-      handleQuestionAnaliyze();
-    }
-  }, [candidateAnswers, handleQuestionAnaliyze, toast]);
+  // useEffect(() => {
+  //   if (candidateAnswers) {
+  //     handleQuestionAnaliyze();
+  //   }
+  // }, [candidateAnswers, handleQuestionAnaliyze, toast]);
 
   return (
     <>
-
+    {isSubmitAnswers ? (<>
     <div className=" h-lvh">
 
     <ResponsiveAppBar pages={pages} />
@@ -114,7 +110,6 @@ const InterviewRoomAnalizerPage = () => {
         direction="horizontal"
         className=" rounded-lg md:min-w-full h-full"
       >
-
         <ResizablePanel defaultSize={150}>
           <div className=" h-full overflow-y-auto p-6">
             <h1 className=" text-3xl font-semibold">Live Analysis Result</h1>
@@ -183,11 +178,11 @@ const InterviewRoomAnalizerPage = () => {
                     </h1>
                     <h2 className=" text-base text-gray-500 text-center">
                       {" "}
-                      8/10 Questions
+                      {numberOfAnswers}/{numOfQuestions} Questions
                     </h2>
-                    <CirculerProgress marks={76} catorgory="Total score" />
+                    <CirculerProgress marks={totalScore} catorgory="Total score" />
                     <p className=" text-gray-300 text-center">
-                      76% Accurate with expected answers
+                      {totalScore}% Accurate with expected answers
                     </p>
                     <p className=" text-sm text-gray-500 text-center">
                       Showing Total Score for 8 out of 10 question
@@ -198,7 +193,7 @@ const InterviewRoomAnalizerPage = () => {
                       Relevance Score
                     </h1>
                     <h2 className=" text-base text-gray-500 text-center">
-                      Question 01
+                      {answeredQuestionNo}
                     </h2>
                     <CirculerProgress
                       marks={analiyzeResponse.relevanceScore}
@@ -240,6 +235,7 @@ const InterviewRoomAnalizerPage = () => {
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
+    </>) : (<><Loading/></>)}
     </>
   );
 };

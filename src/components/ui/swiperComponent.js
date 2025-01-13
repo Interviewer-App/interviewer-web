@@ -18,7 +18,10 @@ const SwiperComponent = forwardRef(({ questions, onSlideChange }, ref) => {
         <SwiperSlide key={index}>
           <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
             <h1 className="text-2xl font-semibold">Question {index + 1}</h1>
-            <p className="text-lg text-white pt-5">{question}</p>
+            <p className="text-lg text-white pt-5">{question.questionText}</p>
+            <p className="text-sm text-gray-600">
+              Estimated Time: {question.estimatedTimeMinutes} minutes
+            </p>
           </div>
         </SwiperSlide>
       ))}
