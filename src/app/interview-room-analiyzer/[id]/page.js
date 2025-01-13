@@ -82,7 +82,7 @@ const InterviewRoomAnalizerPage = () => {
     if (candidateAnswers) {
       handleQuestionAnaliyze();
     }
-  }, [candidateAnswers, handleQuestionAnaliyze]);
+  }, [candidateAnswers, handleQuestionAnaliyze, toast]);
 
   return (
     <div className=" h-lvh">

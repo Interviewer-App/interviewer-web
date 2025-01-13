@@ -52,7 +52,7 @@ function SessionHistoryPage({ params }) {
     };
 
     if (sessionId) fetchSessionDetails();
-  }, [sessionId]);
+  }, [sessionId, toast]);
 
   useEffect(() => {
     const fetchSessionScoreDetails = async () => {
@@ -72,7 +72,7 @@ function SessionHistoryPage({ params }) {
     };
 
     if (sessionId) fetchSessionScoreDetails();
-  }, [sessionId]);
+  }, [sessionId, toast]);
 
   console.log("sessionDetails", sessionDetails);
   return (
