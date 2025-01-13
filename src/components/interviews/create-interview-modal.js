@@ -11,7 +11,6 @@ import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
 
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -206,7 +205,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     )}
                   >
                     <CalendarIcon />
-                    {date ? format(date, "PPP") : <span className="text-xs lg:text-sm">Scheduled Date</span>}
+                    {date ? date.toLocaleDateString() : "Scheduled Date"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
