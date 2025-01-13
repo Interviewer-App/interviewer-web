@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import  socket  from '../../../../lib/utils/socket';
+import socket from "../../../../lib/utils/socket";
 import { useRouter, useSearchParams, redirect } from "next/navigation";
 
 //UI Components
@@ -17,6 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getSession } from "next-auth/react";
+
 //API
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import { generateQuestions } from "@/lib/api/ai";
@@ -29,7 +30,7 @@ function InterviewSessionPreviewPage({ params }) {
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const { toast } = useToast();
   // const { socket } = useSocket();
-   const router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -42,16 +43,13 @@ function InterviewSessionPreviewPage({ params }) {
   useEffect(() => {
     const fetchSessionDetails = async () => {
       try {
-        
         if (!sessionId) return;
 
         const response = await getInterviewSessionById(sessionId);
         console.log(response.data);
-        if(response.data){
+        if (response.data) {
           setSessionDetails(response.data);
-          
         }
-        
       } catch (error) {
         toast({
           variant: "destructive",
@@ -63,7 +61,7 @@ function InterviewSessionPreviewPage({ params }) {
     };
 
     fetchSessionDetails();
-  }, [sessionId, isGenerateQuestions, isQuestionEdit, toast]);
+  }, [sessionId, isGenerateQuestions, isQuestionEdit]);
 
   const handleQuestionGenarate = async (e) => {
     e.preventDefault();
@@ -115,12 +113,15 @@ function InterviewSessionPreviewPage({ params }) {
     const sessionId = sessionDetails.sessionId;
     const role = session?.user?.role;
     const userId = session?.user?.id;
-    if(sessionId && userId && role){
-      socket.emit('joinInterviewSession', { sessionId: sessionId, userId: userId, role: role});
+    if (sessionId && userId && role) {
+      socket.emit("joinInterviewSession", {
+        sessionId: sessionId,
+        userId: userId,
+        role: role,
+      });
       router.push(`/interview-room-analiyzer/${sessionId}`);
     }
-    
-  }
+  };
   return (
     <>
       <SidebarInset>
@@ -149,7 +150,7 @@ function InterviewSessionPreviewPage({ params }) {
                 {sessionDetails?.interview?.jobTitle || ""} Position
               </h1>
               <h1 className=" text-xl font-semibold text-gray-500">
-                {sessionDetails?.interviewCategory || ""}  Interview
+                {sessionDetails?.interviewCategory || ""} Interview
               </h1>
               <p className=" text-base pt-3 text-gray-400">
                 Scheduled Date:{" "}
@@ -165,8 +166,9 @@ function InterviewSessionPreviewPage({ params }) {
               </p>
             </div>
             <div className=" w-full md:w-[50%] flex items-center justify-start md:justify-end mt-5 md:mt-0">
-            <button
-            type="button" onClick={interviewStart}
+              <button
+                type="button"
+                onClick={interviewStart}
                 className=" h-12 min-w-[150px] w-[280px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
               >
                 Start Interview
@@ -175,7 +177,13 @@ function InterviewSessionPreviewPage({ params }) {
           </div>
 
           <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
-            <h1 className=" text-2xl font-semibold">Questions</h1>
+            <div className=" w-full flex items-center justify-between">
+              <h1 className=" text-2xl font-semibold">Questions</h1>
+              <button className=" h-12 min-w-[160px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold">
+                {" "}
+                + Add Question
+              </button>
+            </div>
             {sessionDetails.questions?.length > 0 ? (
               sessionDetails.questions.map((question, index) => (
                 <QuestionDisplayCard
