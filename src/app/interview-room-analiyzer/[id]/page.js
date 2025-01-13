@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getSession } from "next-auth/react";
 import socket from "../../../lib/utils/socket";
+import { Button } from "@/components/ui/button"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -15,8 +16,10 @@ import { useEffect, useState, useCallback  } from "react";
 import { CircularProgress } from "@mui/material";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
+import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
 
 const InterviewRoomAnalizerPage = () => {
+  const pages = ['candidate.Name', 'candidate.Email'];
   // const { socket } = useSocket();
   const [candidateAnswers, setCandidateAnswers] = useState({
     question: "What is polymorphism in object-oriented programming?",
@@ -31,10 +34,26 @@ const InterviewRoomAnalizerPage = () => {
       // router.push(`/interview/${sessionId}/question`);
     });
 
+
+
     return () => {
       socket.off("answerSubmitted");
     };
   }, []);
+
+  useEffect(() =>{
+    const fetchPages=async ()=>{
+      try {
+        const candidateId='cm5nu8z1w0007vpbsbaugzsj9';
+        const response=await fetch(`/users/candidate/details/${candidateId}`);
+        console.log('Res:',response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchPages();
+  },[])
 
   const handleQuestionAnaliyze = useCallback(async () => {
     try {
@@ -85,11 +104,17 @@ const InterviewRoomAnalizerPage = () => {
   }, [candidateAnswers, handleQuestionAnaliyze, toast]);
 
   return (
+    <>
+
     <div className=" h-lvh">
+
+    <ResponsiveAppBar pages={pages} />
+
       <ResizablePanelGroup
         direction="horizontal"
         className=" rounded-lg md:min-w-full h-full"
       >
+
         <ResizablePanel defaultSize={150}>
           <div className=" h-full overflow-y-auto p-6">
             <h1 className=" text-3xl font-semibold">Live Analysis Result</h1>
@@ -101,7 +126,7 @@ const InterviewRoomAnalizerPage = () => {
             </div>
             <div className=" w-full mt-2">
               <h1 className=" py-3 font-semibold text-lg">
-                {"Candidate's Answer"}
+                Candidate&apos;s Answer
               </h1>
               <p className=" text-sm text-gray-400">
                 {candidateAnswers.answer}
@@ -136,6 +161,13 @@ const InterviewRoomAnalizerPage = () => {
                 </div>
               </div>
             </div>
+
+            <Button variant="secondary"  className="absolute h-16 y-8 mt-8">Next Questions</Button>
+
+            {/* <Button variant="secondary"  className="mt-60 ml-96 px-8 py-8 text-lg
+    sm:mt-8 sm:mx-auto sm:ml-8 sm:block sm:text-base
+    md:mt-60 md:ml-96 md:block flex item justify-center">Generate Next Questions</Button> */}
+
           </div>
         </ResizablePanel>
         <ResizableHandle />
@@ -208,6 +240,7 @@ const InterviewRoomAnalizerPage = () => {
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
+    </>
   );
 };
 
