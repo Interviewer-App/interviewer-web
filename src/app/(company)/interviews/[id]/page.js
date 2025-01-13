@@ -135,7 +135,7 @@ export default function InterviewPreviewPage({ params }) {
       startAt: new Date(session.scheduledDate).toLocaleDateString(),
       endAt: new Date(session.scheduledAt).toLocaleTimeString(),
       status: session.interviewStatus,
-      score: session.score,
+      score: session.score? session.score : "N/A",
     }));
 
     setInterviewSessionsSort(sortedSessions);
