@@ -85,13 +85,13 @@ const InterviewRoomAnalizerPage = () => {
   };
 
   return (
-    <div className=" h-full">
+    <div className=" h-lvh">
       <ResizablePanelGroup
         direction="horizontal"
         className=" rounded-lg md:min-w-full h-full"
       >
         <ResizablePanel defaultSize={150}>
-          <div className=" h-full p-6">
+          <div className=" h-full overflow-y-auto p-6">
             <h1 className=" text-3xl font-semibold">Live Analysis Result</h1>
             <div className=" w-full mt-2">
               <h1 className=" py-3 font-semibold text-lg">Question</h1>
@@ -142,7 +142,7 @@ const InterviewRoomAnalizerPage = () => {
         <ResizablePanel defaultSize={150}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={65}>
-              <div className=" w-full h-full p-6">
+              <div className=" w-full h-full overflow-y-auto p-6 relative">
                 <h1 className=" text-3xl font-semibold">Marks Overview</h1>
                 <div className="flex flex-col md:flex-row h-full items-center justify-start md:justify-center w-full">
                   <div className="flex flex-col items-center justify-center w-[50%] mt-7 md:mt-0">
@@ -185,7 +185,7 @@ const InterviewRoomAnalizerPage = () => {
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={35}>
-              <div className="h-full p-6">
+              <div className="h-full w-full overflow-y-auto p-6">
                 <div>
                   <h1 className=" text-3xl font-semibold">
                     Follow Up Questions
