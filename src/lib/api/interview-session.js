@@ -70,6 +70,16 @@ const getInterviewSessionById = async (sessionId) => {
   }
 }
 
+const getInterviewSessionHistoryById = async (sessionId) => {
+  try{
+      const response = await axiosInstance.get(`/interview-session/session-history/${sessionId}`);
+      return response;
+  } catch(error){
+      console.log('Error fetching session history:', error);
+      throw error;
+  }
+}
+
 export const createInterviewSession = async (data) => {
   try{
       const response = await axiosInstance.post(`/interview-session`, data);
@@ -81,4 +91,4 @@ export const createInterviewSession = async (data) => {
 }
 
 
-export { fetchJoinedInterviews, fetchInterviewSessionsForInterview, getInterviewSessionById };
+export { fetchJoinedInterviews, fetchInterviewSessionsForInterview, getInterviewSessionById, getInterviewSessionHistoryById };
