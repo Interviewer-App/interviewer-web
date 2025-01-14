@@ -102,7 +102,7 @@ const InterviewSchedulePage = () => {
           </div>
         </header>
 
-        <div className=" w-full p-9 h-full text-white">
+        <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
           <div className=" w-full flex justify-between items-center">
             <h1 className=" text-4xl font-semibold">Scheduled Interviews</h1>
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
