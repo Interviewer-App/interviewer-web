@@ -12,7 +12,9 @@ const SwiperComponent = forwardRef(({ questions, onSlideChange }, ref) => {
       onSlideChange={(swiper) => onSlideChange(swiper.activeIndex)} // Callback for slide change
       speed={500} // Smooth animation speed
       effect="slide"
-      grabCursor={true} // Changes cursor when dragging
+      grabCursor={false} // Changes cursor when dragging
+      allowTouchMove = {false}
+
     >
       {questions.map((question, index) => (
         <SwiperSlide key={index}>

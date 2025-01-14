@@ -37,7 +37,6 @@ const InterviewSchedulePage = () => {
     };
 
     socket.on("published", (data) => {
-      debugger
       fetchPublishedInterviews();
     });
 
@@ -70,7 +69,7 @@ const InterviewSchedulePage = () => {
           </div>
         </header>
 
-        <div className=" w-full p-9 h-full text-white">
+        <div className=" px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
           <h1 className=" text-4xl font-semibold">Scheduled Interviews</h1>
           {isAnyInterviews ? (
             <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">

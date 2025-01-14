@@ -19,7 +19,7 @@ import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
 import { PuffLoader } from "react-spinners";
 
-const InterviewRoomAnalizerPage = () => {
+const InterviewRoomAnalizerPage = ({params}) => {
   const pages = ["candidate.Name", "candidate.Email"];
   const [candidateAnswers, setCandidateAnswers] = useState();
   const [analiyzeResponse, setAnaliyzeResponse] = useState({});
@@ -29,12 +29,20 @@ const InterviewRoomAnalizerPage = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [numberOfAnswers, setNumberOfAnswers] = useState(0);
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
+  const [sessionId, setSessionId] = useState(null)
 
   const { toast } = useToast();
+  useEffect(() => {
+    const unwrapParams = async () => {
+      const resolvedParams = await params;
+      setSessionId(resolvedParams.id);
+    };
+    unwrapParams();
+  }, [params]);
+
 
   useEffect(() => {
     socket.on("answerSubmitted", (data) => {
-      debugger;
       setIsSubmitAnswers(true);
       setCandidateAnswers({
         question: data.questionText,
@@ -53,53 +61,7 @@ const InterviewRoomAnalizerPage = () => {
     };
   }, []);
 
-  // const handleQuestionAnaliyze = useCallback(async () => {
-  //   try {
-  //     const response = await analiyzeQuestion(
-  //       candidateAnswers
-  //       // {question: "What is polymorphism in object-oriented programming?",
-  //       // answer:'i dont know',}
-  //     );
-
-  //     if (response) {
-  //       setAnaliyzeResponse(response.data);
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       const { data } = error.response;
-
-  //       if (data && data.message) {
-  //         toast({
-  //           variant: "destructive",
-  //           title: "Uh oh! Something went wrong.",
-  //           description: `Question Analiysis failed: ${data.message}`,
-  //           action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //         });
-  //       } else {
-  //         toast({
-  //           variant: "destructive",
-  //           title: "Uh oh! Something went wrong.",
-  //           description: "An unexpected error occurred. Please try again.",
-  //           action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //         });
-  //       }
-  //     } else {
-  //       toast({
-  //         variant: "destructive",
-  //         title: "Uh oh! Something went wrong.",
-  //         description:
-  //           "An unexpected error occurred. Please check your network and try again.",
-  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //       });
-  //     }
-  //   }
-  // }, [candidateAnswers, toast]);
-
-  // useEffect(() => {
-  //   if (candidateAnswers) {
-  //     handleQuestionAnaliyze();
-  //   }
-  // }, [candidateAnswers, handleQuestionAnaliyze, toast]);
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -108,6 +70,13 @@ const InterviewRoomAnalizerPage = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const nextQuestion = () => {
+    const data = {
+      sessionId : sessionId, followUpQuestion : false
+    }
+    socket.emit('nextQuestion', data);
+  }
 
   return (
     <>
@@ -175,12 +144,13 @@ const InterviewRoomAnalizerPage = () => {
                     </div>
                   </div>
 
-                  <Button
+                  <button
                     variant="secondary"
                     className="absolute h-16 y-8 mt-8"
+                    onClick={nextQuestion}
                   >
                     Next Questions
-                  </Button>
+                  </button>
 
                   {/* <Button variant="secondary"  className="mt-60 ml-96 px-8 py-8 text-lg
     sm:mt-8 sm:mx-auto sm:ml-8 sm:block sm:text-base
@@ -220,11 +190,11 @@ const InterviewRoomAnalizerPage = () => {
                             Relevance Score
                           </h1>
                           <h2 className=" text-base text-gray-500 text-center">
-                            {answeredQuestionNo}
+                            Question - {answeredQuestionNo}
                           </h2>
                           <CirculerProgress
                             marks={analiyzeResponse.relevanceScore}
-                            catorgory="Question 01"
+                            catorgory="Question Score"
                           />
                           <p className=" text-gray-300 text-center">
                             {analiyzeResponse.relevanceScore}% Accurate with

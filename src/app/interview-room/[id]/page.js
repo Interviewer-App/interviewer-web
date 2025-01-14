@@ -2,8 +2,8 @@
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getSession } from "next-auth/react";
-import  socket  from '../../../lib/utils/socket';
-import { useEffect, useState,useRef } from "react";
+import socket from '../../../lib/utils/socket';
+import { useEffect, useState, useRef } from "react";
 
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import Image from "next/image";
@@ -30,106 +30,119 @@ import { PuffLoader } from "react-spinners";
 
 
 const InterviewRoomPage = ({ params }) => {
-    const swiperRef = useRef(null); // Reference for the Swiper component
+  const swiperRef = useRef(null); // Reference for the Swiper component
 
-    // const { socket } = useSocket();
-    const { toast } = useToast();
-    const [sessionId, setSessionId] = useState(null);
-    const [isQuestionAvailabe, setIsQuestionAvailabe] = useState(false);
-    const [recordedAnswer, setRecordedAnswer] = useState(""); // State for stored transcript
-    const [answer, setAnswer] = useState(""); 
-    const [activeStep, setActiveStep] = useState(0);
-    const [questions, setQuestions] = useState([]); // Example questions
-    const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
+  // const { socket } = useSocket();
+  const { toast } = useToast();
+  const [sessionId, setSessionId] = useState(null);
+  const [isQuestionAvailabe, setIsQuestionAvailabe] = useState(false);
+  const [recordedAnswer, setRecordedAnswer] = useState(""); // State for stored transcript
+  const [answer, setAnswer] = useState("");
+  const [activeStep, setActiveStep] = useState(0);
+  const [questions, setQuestions] = useState([]); // Example questions
+  const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
 
-    const {
-      isListening,
-      transcript,
-      recordingComplete,
-      startListening,
-      stopListening,
-      setTranscript
-    } = useSpeechRecognition({ continuous: true });
-  
-    const startStopListening = () => {
-      isListening ? stopListening() : startListening();
+  const {
+    isListening,
+    transcript,
+    recordingComplete,
+    startListening,
+    stopListening,
+    setTranscript
+  } = useSpeechRecognition({ continuous: true });
+
+  const startStopListening = () => {
+    isListening ? stopListening() : startListening();
+  };
+  const handleAnswerChange = (e) => {
+    // setAnswer(e.target.value); 
+    setTranscript(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    const session = await getSession();
+
+    const role = session?.user?.role;
+    const candidateId = session?.user?.candidateID;
+
+    if (transcript.trim() !== "") {
+      setActiveStep((prevStep) => {
+        const nextStep = Math.min(prevStep + 1, questions.length - 1);
+        return nextStep;
+      });
+    }
+    const question = questions[activeStep];
+    const questionNumber = activeStep + 1;
+    socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText, questionNumber: questionNumber, numOfQuestions: questions.length });
+    stopListening();
+    setTranscript("");
+  };
+  // Update swiper on activeStep change
+  // useEffect(() => {
+  //     if (swiperRef.current && swiperRef.current.swiper) {
+  //         swiperRef.current.swiper.slideTo(activeStep); 
+  //     }
+  // }, [activeStep]);
+
+  const progress = ((activeStep + 1) / questions.length) * 100;
+  const handleSlideChange = (index) => {
+    setActiveStep(index); // Updates active step when slide changes
+  };
+
+
+
+
+  useEffect(() => {
+    const unwrapParams = async () => {
+      const resolvedParams = await params;
+      setSessionId(resolvedParams.id);
     };
-    const handleAnswerChange = (e) => {
-      // setAnswer(e.target.value); 
-      setTranscript(e.target.value);
-    };
-  
-    const handleSubmit = async () => {
-       const session = await getSession();
-      
-          const role = session?.user?.role;
-          const candidateId = session?.user?.candidateID;
+    unwrapParams();
+  }, [params]);
 
-        if (transcript.trim() !== "") {
-          setActiveStep((prevStep) => {
-            const nextStep = Math.min(prevStep + 1, questions.length - 1);
-            return nextStep;
-          });
+
+  useEffect(() => {
+    socket.on('questions', (data) => {
+      console.log('Received questions:', data.questions);
+      setQuestions(data.questions);
+      setIsQuestionAvailabe(true);
+    });
+
+
+    socket.on("navigateNextQuestion", (data) => {
+      if (!data.followUpQuestion) {
+        const nextquestion = activeStep + 1
+        if (swiperRef.current && swiperRef.current.swiper) {
+          swiperRef.current.swiper.slideTo(nextquestion);
         }
-        const question = questions[activeStep];
-        const questionNumber = activeStep + 1;
-        socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText,questionNumber: questionNumber,numOfQuestions: questions.length});
-        stopListening();
-        setTranscript("");
+      }
+
+      setTranscript('')
+      setAnswer('')
+      stopListening();
+
+    });
+
+
+    return () => {
+      socket.off('questions');
+      socket.off('navigateNextQuestion');
     };
-        // Update swiper on activeStep change
-        useEffect(() => {
-            if (swiperRef.current && swiperRef.current.swiper) {
-                swiperRef.current.swiper.slideTo(activeStep); // Update the swiper slide to the active step
-            }
-        }, [activeStep]);
-  
-    const progress = ((activeStep + 1) / questions.length) * 100; 
-    const handleSlideChange = (index) => {
-      setActiveStep(index); // Updates active step when slide changes
-    };
-  
+  }, []);
 
 
+  const combinedAnswer = answer || transcript;
 
-    useEffect(() => {
-        const unwrapParams = async () => {
-          const resolvedParams = await params;
-          setSessionId(resolvedParams.id);
-        };
-        unwrapParams();
-      }, [params]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeNow(new Date().toLocaleTimeString());
+    }, 1000);
 
+    return () => clearInterval(interval);
+  }, []);
 
-    useEffect(() => {
-        socket.on('questions', (data) => {
-            console.log('Received questions:', data.questions);
-            setQuestions(data.questions);
-            setIsQuestionAvailabe(true);
-          });
-       
-
-        return () => {
-            socket.off('questions');
-        };
-    }, []);
-        // Preserve the transcript once recording is completed
-        // useEffect(() => {
-        //     setAnswer(transcript);
-        // }, [recordingComplete, transcript]);
-
-    const combinedAnswer = answer || transcript; 
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setTimeNow(new Date().toLocaleTimeString());
-      }, 1000);
-  
-      return () => clearInterval(interval);
-    }, []);
-
-    return (
-      <>
+  return (
+    <>
       {isQuestionAvailabe ? (<>
         <div className="flex flex-col justify-center h-full items-center w-full text-white py-3 bg-black">
           <div className="absolute inset-0 bg-black -z-20"></div>
@@ -152,7 +165,7 @@ const InterviewRoomPage = ({ params }) => {
                     className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
                   />
                 </div>
-    
+
                 {/* Custom Stepper (Progress Bar) */}
                 <div className="w-full mt-8">
                   <div className="flex items-center mb-3">
@@ -160,7 +173,7 @@ const InterviewRoomPage = ({ params }) => {
                       Step {activeStep + 1} of {questions.length}
                     </span>
                   </div>
-    
+
                   {/* Progress bar */}
                   <div className="relative w-full h-2 bg-gray-400 rounded-full">
                     <div
@@ -169,7 +182,7 @@ const InterviewRoomPage = ({ params }) => {
                     ></div>
                   </div>
                 </div>
-    
+
                 {/* Submit Button */}
                 <div className="flex justify-center">
                   <button
@@ -246,29 +259,29 @@ const InterviewRoomPage = ({ params }) => {
             </div>
           </div>
         </div>
-        </>) : (<div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-          <div className=" w-full flex flex-col justify-center items-center mb-14">
-            <div className=" w-full flex flex-col justify-center items-center">
-              <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
-              <h1 className=" font-semibold text-3xl py-3">
-                Time now: {timeNow}
-              </h1>
-            </div>
+      </>) : (<div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+        <div className=" w-full flex flex-col justify-center items-center mb-14">
+          <div className=" w-full flex flex-col justify-center items-center">
+            <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+            <h1 className=" font-semibold text-3xl py-3">
+              Time now: {timeNow}
+            </h1>
           </div>
-          <div className=" w-full flex flex-col justify-center items-center mb-16"> 
-            <PuffLoader color="#ffffff" />
-          </div>
-          <div className=" w-full flex flex-col justify-center] items-center">
-            <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-              Waiting for the company to start the interview session. Please hold on until the session begins.
-            </p>
-            <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+        </div>
+        <div className=" w-full flex flex-col justify-center items-center mb-16">
+          <PuffLoader color="#ffffff" />
+        </div>
+        <div className=" w-full flex flex-col justify-center] items-center">
+          <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+            Waiting for the company to start the interview session. Please hold on until the session begins.
+          </p>
+          <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
             Generating interview questions. Please hold on...
-            </p>
-          </div>
-        </div>)}
-        </>
-      );
-    };
-    
-    export default InterviewRoomPage;
+          </p>
+        </div>
+      </div>)}
+    </>
+  );
+};
+
+export default InterviewRoomPage;

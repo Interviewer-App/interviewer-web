@@ -79,7 +79,7 @@ export default function InterviewScheduleCard({ index, interview,showButton=true
     };
 
   return (
-    <div className=" relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80 cursor-pointer hover:bg-gray-800/90 transition-all duration-300">
+    <div className=" relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80 hover:bg-gray-800/90 transition-all duration-300">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>

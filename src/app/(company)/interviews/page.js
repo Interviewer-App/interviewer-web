@@ -39,8 +39,11 @@ const InterviewsPage = () => {
         const session = await getSession();
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
-        setInterviews(response.data);
-        setIsAnyInterviews(response.data.length > 0);
+        if(response){
+          setInterviews(response.data);
+          setIsAnyInterviews(response.data.length > 0);
+        }
+
       } catch (error) {
         toast({
           variant: "destructive",
@@ -51,7 +54,7 @@ const InterviewsPage = () => {
       }
     };
     fetchInterviews();
-  }, [modalOpen, toast]);
+  }, [modalOpen]);
 
   return (
     <>
@@ -74,7 +77,7 @@ const InterviewsPage = () => {
           </div>
         </header>
 
-        <div className=" w-full px-9 py-6 h-full">
+        <div className=" px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
           <div className=" flex items-center justify-between">
             <h1 className=" text-4xl font-semibold">Interviews</h1>
             {!isAnyInterviews && (

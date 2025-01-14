@@ -80,13 +80,14 @@ const JoinedInterviews = () => {
                 </div>
             </header>
 
-            <div className='px-20'>
+            <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
+            <h1 className=" text-4xl font-semibold mb-3">My Interviews</h1>
                 {loading ? (
                     <div>Loading interviews...</div>
                 ) : (
                     <DataTable columns={columns} data={interviewData} />
                 )}
-            </div>
+           
 
             {/* Pagination Section */}
             <Pagination>
@@ -108,6 +109,8 @@ const JoinedInterviews = () => {
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
+
+            </div>
         </SidebarInset>
     );
 };

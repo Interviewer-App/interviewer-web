@@ -102,7 +102,7 @@ function InterviewSessionPreviewPage({ params }) {
             </Breadcrumb>
           </div>
         </header>
-        <div className="px-9 py-4  max-w-[1500px] w-full mx-auto">
+        <div className="px-9 py-4 w-full max-w-[1500px] w-full mx-auto">
           <h1 className=" text-4xl font-semibold">Session Preview</h1>
           <div className=" flex flex-col md:flex-row items-center justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-5">
             <div className=" w-full md:w-[50%] ">

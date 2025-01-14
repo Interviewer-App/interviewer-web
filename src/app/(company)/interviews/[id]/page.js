@@ -181,7 +181,6 @@ export default function InterviewPreviewPage({ params }) {
   }, [interviewDetail]);
 
   const handlePublishInterview = async (e) => {
-    debugger
     e.preventDefault();
     try {
       const response = await updateInterview(interviewId, {
@@ -494,7 +493,7 @@ export default function InterviewPreviewPage({ params }) {
               </AlertDialog>
             </div>
           </div>
-          <div className=" bg-slate-600/10 w-full h-fit min-h-[950px]  p-9 rounded-lg mt-5">
+          <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
             <div>
               <h1 className=" text-2xl font-semibold">Interview sessions</h1>
               <div>
