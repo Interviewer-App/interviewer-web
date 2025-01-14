@@ -20,9 +20,9 @@ export const createInterview = async (data) => {
     }
 }
 
-export const getPublishedInterview = async () => {
+export const getPublishedInterview = async (sordBy, datePosted, interviewCategory, jobTitle, keyWords) => {
     try{
-        const response = await axiosInstance.get(`/interview/published`);
+        const response = await axiosInstance.get(`/interview/published?sortBy=${sordBy}&datePosted=${datePosted}&category=${interviewCategory}&jobTitle=${jobTitle}&keyWords=${keyWords}`);
         return response;
     } catch(error){
         console.log('Error fetching published interviews:', error);
