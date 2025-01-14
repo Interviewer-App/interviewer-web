@@ -278,7 +278,7 @@ const InterviewRoomAnalizerPage = () => {
           </div>
           <div className=" w-full flex flex-col justify-center] items-center">
             <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-              Awaiting the candidate's response to the first question. Please
+              Awaiting the candidate&apos;s response to the first question. Please
               hold on while they provide their answer.
             </p>
             <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
