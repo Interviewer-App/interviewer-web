@@ -188,8 +188,11 @@ const InterviewSchedulePage = () => {
                           <Label htmlFor="Technical">Technical</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Behavioral" id="Behavioral" />
-                          <Label htmlFor="Behavioral">Behavioral</Label>
+                          <RadioGroupItem
+                            value="Behavioural"
+                            id="Behavioural"
+                          />
+                          <Label htmlFor="Behavioural">Behavioural</Label>
                         </div>
                       </div>
                     </RadioGroup>
