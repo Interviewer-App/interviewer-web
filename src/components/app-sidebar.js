@@ -98,7 +98,7 @@ export function AppSidebar() {
 
     const [userData, setUserData] = React.useState({
       user: {
-        name: userRole,
+        name: role,
         email: userEmail,
         avatar: "/avatars/shadcn.jpg",
       },
