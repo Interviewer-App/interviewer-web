@@ -17,6 +17,7 @@ import {
 import { getPublishedInterview } from "@/lib/api/interview";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
+import socket from "../../../lib/utils/socket";
 
 const InterviewSchedulePage = () => {
   const [interviews, setInterviews] = useState([]);
@@ -30,8 +31,31 @@ const InterviewSchedulePage = () => {
         console.log("Error fetching interviews:", error);
       }
     };
+
+    socket.on("published", (data) => {
+      debugger
+      fetchPublishedInterviews();
+    });
+
     fetchPublishedInterviews();
+
+    return () => {
+      socket.off("published");
+    };
+    
   }, []);
+
+  // useEffect(() => {
+
+  //   socket.on("published", (data) => {
+  //     debugger
+  //     console.log("Received published event:", data);
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   return (
     <>
@@ -56,7 +80,7 @@ const InterviewSchedulePage = () => {
           </div>
         </header>
 
-        <div className=" w-full p-9 h-full">
+        <div className=" w-full p-9 h-full text-white">
           <h1 className=" text-4xl font-semibold">Scheduled Interviews</h1>
           <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
             {interviews.map((interview, index) => (

@@ -9,9 +9,9 @@ export default function InterviewDisplayCard({ index, interview }) {
   };
 
   return (
-    <div onClick={navigationClickHandler} className=" group relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80">
+    <div onClick={navigationClickHandler} className=" group relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80 cursor-pointer hover:bg-gray-800/90 transition-all duration-300">
         <div className=" group-hover:w-full group-hover:h-full absolute top-0 left-0 rounded-lg w-0 h-0 bg-gradient-to-bl from-[#785DFB]/10 to-[#65aaa6]/30 "></div>
-      <h1 className=" text-2xl">Interview {index}</h1>
+      {/* <h1 className=" text-2xl">Interview {index}</h1> */}
       <h3 className=" text-3xl lg:text-4xl font-semibold py-3 text-center">
         {interview.jobTitle}
       </h3>

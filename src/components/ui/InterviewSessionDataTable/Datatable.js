@@ -17,11 +17,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { useRouter} from "next/navigation";
 
 export function DataTable({ columns, data }) {
     const [sorting, setSorting] = React.useState([]);
     const [columnFilters, setColumnFilters] = React.useState([]);
     const [columnVisibility, setColumnVisibility] = React.useState({});
+    const router = useRouter();
 
     const table = useReactTable({
         data,
@@ -39,6 +41,12 @@ export function DataTable({ columns, data }) {
             columnVisibility,
         },
     });
+
+    const handleMyInterviewSessionDetail = (row) => {
+        if(row.original.sessionId){
+            router.push(`/joined-interviews/${encodeURIComponent(row.original.sessionId)}`);
+        }
+    }
 
     return (
         <div className="px-6">
@@ -108,7 +116,7 @@ export function DataTable({ columns, data }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id}>
+                                <TableRow key={row.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => handleMyInterviewSessionDetail(row)}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell
                                             key={cell.id}

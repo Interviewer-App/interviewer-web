@@ -5,8 +5,8 @@ import { fetchJoinedInterviews } from '@/lib/api/interview-session';
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { DataTable } from '@/components/ui/Interview-DataTable/Datatable';
-import { columns } from '../../../components/ui/Interview-DataTable/column';
+import { DataTable } from '@/components/ui/InterviewSessionDataTable/Datatable';
+import { columns } from '../../../components/ui/InterviewSessionDataTable/column';
 import {
     Pagination,
     PaginationContent,
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/pagination"
 
 const JoinedInterviews = () => {
-    const [payments, setPayments] = useState([]);  // Store interviews data
+    const [interviewData, setInterviewData] = useState([]);  // Store interviews data
     const [loading, setLoading] = useState(false);  // Loading state
     const [page, setPage] = useState(1);  // Page number
     const [limit, setLimit] = useState(10);  // Limit of items per page
@@ -33,7 +33,7 @@ const JoinedInterviews = () => {
                 console.log('candidate ID:', candidateId);
           
                 // Fetch interviews data
-                await fetchJoinedInterviews(candidateId, page, limit, setLoading, setPayments, setTotalUsers);
+                await fetchJoinedInterviews(candidateId, page, limit, setLoading, setInterviewData, setTotalUsers);
             } catch (error) {
                 console.error('Error fetching interviews:', error);
             }
@@ -44,8 +44,8 @@ const JoinedInterviews = () => {
 
     // Log the fetched interviews when payments state changes
     useEffect(() => {
-        console.log('Fetched interviews:', payments);
-    }, [payments]); // This effect runs whenever payments state changes
+        console.log('Fetched interviews:', interviewData);
+    }, [interviewData]); // This effect runs whenever payments state changes
 
     // Pagination handlijgs
     const handleNextPage = () => {
@@ -84,7 +84,7 @@ const JoinedInterviews = () => {
                 {loading ? (
                     <div>Loading interviews...</div>
                 ) : (
-                    <DataTable columns={columns} data={payments} />
+                    <DataTable columns={columns} data={interviewData} />
                 )}
             </div>
 

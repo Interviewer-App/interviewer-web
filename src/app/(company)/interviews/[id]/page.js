@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import socket from "../../../../lib/utils/socket";
 
 //Breadcrumbs
 import {
@@ -105,7 +106,22 @@ export default function InterviewPreviewPage({ params }) {
       }
     };
 
+    socket.on("joinedParticipants", (data) => {
+      if (interviewId) fetchSessionData();
+      toast({
+        title: "New Participant Joined!",
+        description: "A new participant has successfully joined the interview.",
+        action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+      });
+    });
+
+
+
     if (interviewId) fetchSessionData();
+
+    return () => {
+      socket.off("joinedParticipants");
+    };
   }, [interviewId, page, limit]);
 
   const handleNextPage = () => {
@@ -165,6 +181,7 @@ export default function InterviewPreviewPage({ params }) {
   }, [interviewDetail]);
 
   const handlePublishInterview = async (e) => {
+    debugger
     e.preventDefault();
     try {
       const response = await updateInterview(interviewId, {
@@ -172,7 +189,17 @@ export default function InterviewPreviewPage({ params }) {
       });
 
       if (response) {
+        
         setEditDetails(false);
+        socket.emit("publishInterview", {
+          interviewId: interviewId,
+          companyId: interviewDetail.companyID,
+        });
+        toast({
+          title: "Interview Published Successfully!",
+          description: "The interview has been published and is now available.",
+          action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+        });
       }
     } catch (error) {
       if (error.response) {
@@ -216,6 +243,10 @@ export default function InterviewPreviewPage({ params }) {
 
       if (response) {
         setEditDetails(false);
+        socket.emit("publishInterview", {
+          interviewId: interviewId,
+          companyId: interviewDetail.companyID,
+        });
       }
     } catch (error) {
       if (error.response) {
@@ -273,7 +304,13 @@ export default function InterviewPreviewPage({ params }) {
   const handleDeleteInterview = async () => {
     try {
       const response = await deleteInterview(interviewId);
-      router.push("/interviews");
+      if (response){
+        socket.emit("publishInterview", {
+          interviewId: interviewId,
+          companyId: interviewDetail.companyID,
+        });
+        router.push("/interviews");
+      }
     } catch (error) {
       console.log(error);
     }

@@ -73,8 +73,8 @@ export default function InterviewScheduleCard({ index, interview,showButton=true
     };
 
   return (
-    <div className=" relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80">
-      <h1 className=" text-lg">Interview {index}</h1>
+    <div className=" relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80 cursor-pointer hover:bg-gray-800/90 transition-all duration-300">
+      {/* <h1 className=" text-lg">Interview {index}</h1> */}
       <h3 className=" text-2xl lg:text-4xl font-semibold py-3 text-center">
         {interview.jobTitle}
       </h3>
