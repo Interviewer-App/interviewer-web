@@ -4,6 +4,12 @@ import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import  socket  from '../../lib/utils/socket';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { useRouter, useSearchParams, redirect } from "next/navigation";
 
@@ -74,10 +80,16 @@ export default function InterviewScheduleCard({ index, interview,showButton=true
 
   return (
     <div className=" relative w-full h-full flex flex-col items-center justify-center rounded-xl p-6 bg-gray-800/80 cursor-pointer hover:bg-gray-800/90 transition-all duration-300">
-      {/* <h1 className=" text-lg">Interview {index}</h1> */}
-      <h3 className=" text-2xl lg:text-4xl font-semibold py-3 text-center">
-        {interview.jobTitle}
-      </h3>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <p className="text-3xl font-semibold pb-6 text-center text-ellipsis overflow-hidden whitespace-nowrap max-w-[300px]">
+              {interview.jobTitle}
+            </p>
+          </TooltipTrigger>
+          <TooltipContent>{interview.jobTitle || ""}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <h3 className=" text-sm md:text-base">Date: {new Date(interview.scheduledDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</h3>
       <h3 className=" text-sm md:text-base">Time: {new Date(interview.scheduledAt).toLocaleTimeString()}</h3>
       {showButton && (
