@@ -26,7 +26,7 @@ import bgGrain from "@/assets/grain-bg.svg";
 import Carousel from "@/components/ui/carousel";
 import SwiperComponent from "@/components/ui/swiperComponent";
 import '../../../styles/swiper/swiperStyles.css'
-import Loading from "@/app/loading";
+import { PuffLoader } from "react-spinners";
 
 
 const InterviewRoomPage = ({ params }) => {
@@ -39,9 +39,9 @@ const InterviewRoomPage = ({ params }) => {
     const [recordedAnswer, setRecordedAnswer] = useState(""); // State for stored transcript
     const [answer, setAnswer] = useState(""); 
     const [activeStep, setActiveStep] = useState(0);
-    const [questions, setQuestions] = useState([
-     
-    ]); // Example questions
+    const [questions, setQuestions] = useState([]); // Example questions
+    const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
+
     const {
       isListening,
       transcript,
@@ -119,6 +119,14 @@ const InterviewRoomPage = ({ params }) => {
         // }, [recordingComplete, transcript]);
 
     const combinedAnswer = answer || transcript; 
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setTimeNow(new Date().toLocaleTimeString());
+      }, 1000);
+  
+      return () => clearInterval(interval);
+    }, []);
 
     return (
       <>
@@ -238,7 +246,27 @@ const InterviewRoomPage = ({ params }) => {
             </div>
           </div>
         </div>
-        </>) : (<div className="flex flex-col justify-center h-full items-center w-full py-3 bg-black text-white"><Loading/></div>)}
+        </>) : (<div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+          <div className=" w-full flex flex-col justify-center items-center mb-14">
+            <div className=" w-full flex flex-col justify-center items-center">
+              <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+              <h1 className=" font-semibold text-3xl py-3">
+                Time now: {timeNow}
+              </h1>
+            </div>
+          </div>
+          <div className=" w-full flex flex-col justify-center items-center mb-16"> 
+            <PuffLoader color="#ffffff" />
+          </div>
+          <div className=" w-full flex flex-col justify-center] items-center">
+            <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+              Waiting for the company to start the interview session. Please hold on until the session begins.
+            </p>
+            <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+            Generating interview questions. Please hold on...
+            </p>
+          </div>
+        </div>)}
         </>
       );
     };
