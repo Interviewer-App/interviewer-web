@@ -20,16 +20,17 @@ import { getSession } from "next-auth/react";
 
 //API
 import { getInterviewSessionById } from "@/lib/api/interview-session";
-import { generateQuestions } from "@/lib/api/ai";
 import QuestionDisplayCard from "@/components/company/question-display-card";
 import CreateQuestionModal from "@/components/company/create-question-modal";
+import GenerateQuestionModal from "@/components/company/generate-question-modal";
 
 function InterviewSessionPreviewPage({ params }) {
   const [sessionId, setSessionId] = useState(null);
-  const [isGenerateQuestions, setGenerateQuestions] = useState(false);
   const [sessionDetails, setSessionDetails] = useState({});
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [generateModalOpen, setGenerateModalOpen] = useState(false);
+
   const { toast } = useToast();
   // const { socket } = useSocket();
   const router = useRouter();
@@ -63,51 +64,7 @@ function InterviewSessionPreviewPage({ params }) {
     };
 
     fetchSessionDetails();
-  }, [sessionId, isGenerateQuestions, isQuestionEdit, modalOpen]);
-
-  const handleQuestionGenarate = async (e) => {
-    e.preventDefault();
-    setGenerateQuestions(false);
-
-    try {
-      const response = await generateQuestions(sessionId, {
-        jobRole: sessionDetails.interview.jobTitle,
-        skillLevel: "Senior",
-      });
-
-      if (response) {
-        setGenerateQuestions(true);
-      }
-    } catch (error) {
-      if (error.response) {
-        const { data } = error.response;
-
-        if (data && data.message) {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: `Question Generation failed: ${data.message}`,
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "An unexpected error occurred. Please try again.",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description:
-            "An unexpected error occurred. Please check your network and try again.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
-    }
-  };
+  }, [sessionId, generateModalOpen, isQuestionEdit, modalOpen]);
 
   const interviewStart = async (e) => {
     const session = await getSession();
@@ -124,7 +81,7 @@ function InterviewSessionPreviewPage({ params }) {
       router.push(`/interview-room-analiyzer/${sessionId}`);
     }
   };
-  
+
   return (
     <>
       <SidebarInset>
@@ -180,12 +137,25 @@ function InterviewSessionPreviewPage({ params }) {
           </div>
 
           <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
-            <div className=" w-full flex items-center justify-between">
-              <h1 className=" text-2xl font-semibold">Questions</h1>
-              <button onClick={() => setModalOpen(true)} className=" h-12 min-w-[160px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold">
-                {" "}
-                + Add Question
-              </button>
+            <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+              <h1 className=" text-2xl font-semibold text-left w-full">
+                Questions
+              </h1>
+              <div className=" w-full flex items-center justify-end">
+                <button
+                  className=" h-12 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm md:text-base text-white font-semibold"
+                  onClick={() => setGenerateModalOpen(true)}
+                >
+                  Genarate questions
+                </button>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className=" h-12 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm md:text-base text-white font-semibold"
+                >
+                  {" "}
+                  + Add Question
+                </button>
+              </div>
             </div>
             {sessionDetails.questions?.length > 0 ? (
               sessionDetails.questions.map((question, index) => (
@@ -200,18 +170,21 @@ function InterviewSessionPreviewPage({ params }) {
             ) : (
               <p>No questions available.</p>
             )}
-            <div className=" w-full flex items-center justify-center">
-              <button
-                className=" h-12 min-w-[150px] w-[280px] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
-                onClick={handleQuestionGenarate}
-              >
-                Genarate questions
-              </button>
-            </div>
           </div>
         </div>
       </SidebarInset>
-      {modalOpen && (<CreateQuestionModal sessionId={sessionId} setModalOpen={setModalOpen}/>)}
+      {modalOpen && (
+        <CreateQuestionModal
+          sessionId={sessionId}
+          setModalOpen={setModalOpen}
+        />
+      )}
+      {generateModalOpen && (
+        <GenerateQuestionModal
+          session={sessionDetails}
+          setGenerateModalOpen={setGenerateModalOpen}
+        />
+      )}
     </>
   );
 }
