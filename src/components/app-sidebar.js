@@ -56,6 +56,11 @@ const companyItems = [
     url: "/interviews",
     icon: Home,
   },
+  {
+    title: "Interviews category",
+    url: "/interview-category",
+    icon: Home,
+  },
 ];
 const candidateItems = [
   {
