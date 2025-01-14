@@ -18,15 +18,19 @@ import { getPublishedInterview } from "@/lib/api/interview";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import socket from "../../../lib/utils/socket";
+import NoData from "@/assets/nodata.png";
+import Image from "next/image";
 
 const InterviewSchedulePage = () => {
   const [interviews, setInterviews] = useState([]);
+  const [isAnyInterviews, setIsAnyInterviews] = useState(false);
 
   useEffect(() => {
     const fetchPublishedInterviews = async () => {
       try {
         const response = await getPublishedInterview();
         setInterviews(response.data);
+        setIsAnyInterviews(response.data.length > 0);
       } catch (error) {
         console.log("Error fetching interviews:", error);
       }
@@ -42,20 +46,8 @@ const InterviewSchedulePage = () => {
     return () => {
       socket.off("published");
     };
-    
+
   }, []);
-
-  // useEffect(() => {
-
-  //   socket.on("published", (data) => {
-  //     debugger
-  //     console.log("Received published event:", data);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
 
   return (
     <>
@@ -67,9 +59,7 @@ const InterviewSchedulePage = () => {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Candidate
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="#">Candidate</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -82,19 +72,32 @@ const InterviewSchedulePage = () => {
 
         <div className=" w-full p-9 h-full text-white">
           <h1 className=" text-4xl font-semibold">Scheduled Interviews</h1>
-          <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
-            {interviews.map((interview, index) => (
-              <InterviewScheduleCard
-                key={index}
-                index={index + 1}
-                interview={interview}
-                showButton={true}
-              />
-            ))}
-          </div>
+          {isAnyInterviews ? (
+            <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
+              {interviews.map((interview, index) => (
+                <InterviewScheduleCard
+                  key={index}
+                  index={index + 1}
+                  interview={interview}
+                  showButton={true}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className=" relative flex justify-center items-center h-full w-full">
+              <div className=" w-full">
+                <Image
+                  src={NoData}
+                  alt="No data"
+                  className=" mx-auto h-[150px] w-[200px]"
+                />
+                <h1 className="text-3xl py-2 text-gray-500 w-full text-center">
+                  No interviews found
+                </h1>
+              </div>
+            </div>
+          )}
         </div>
-
-        
       </SidebarInset>
     </>
   );
