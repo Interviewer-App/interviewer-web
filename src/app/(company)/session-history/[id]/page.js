@@ -74,7 +74,6 @@ function SessionHistoryPage({ params }) {
     if (sessionId) fetchSessionScoreDetails();
   }, [sessionId, toast]);
 
-  console.log("sessionDetails", sessionDetails);
   return (
     <>
       <SidebarInset>
