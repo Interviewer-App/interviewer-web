@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import socket from "../../../../lib/utils/socket";
 
 //Breadcrumbs
@@ -59,8 +58,13 @@ import {
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
 import { Button } from "@/components/ui/button";
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
 
 export default function InterviewPreviewPage({ params }) {
+  const { data: session } = useSession();
+  const pathname = usePathname();
   const [interviewDetail, setInterviewDetail] = useState("");
   const [interviewId, setInterviewId] = useState(null);
   const [description, setDescription] = useState("");
@@ -314,6 +318,12 @@ export default function InterviewPreviewPage({ params }) {
       console.log(error);
     }
   };
+
+
+  if (session.user.role !== 'COMPANY') {
+    const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+    redirect(loginURL);
+  }
 
   return (
     <>

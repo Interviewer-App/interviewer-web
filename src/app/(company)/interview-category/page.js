@@ -27,18 +27,21 @@ import { DataTable } from "@/components/ui/InterviewCategory-DataTable/Datatable
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
 import InterviewCategoryModal from "../../../components/interviews/interviewCategoryModal";
 import { fetchInterCategories } from "@/lib/api/interview-category";
-import { getSession } from "next-auth/react";
 import { columns } from "@/components/ui/InterviewCategory-DataTable/column";
-
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
 
 const InterviewCategoryPage = () => {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [totalsessions, setTotalSessions] = useState(0);
   const [loading, setLoading] = useState(false);
   const [interviewSessionsSort, setInterviewSessionsSort] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [modalOpen, setModalOpen] = useState(false);
-  const [categories,setCategories]=useState([]);
+  const [categories, setCategories] = useState([]);
 
   const handleNextPage = () => {
     if (page * limit < totalsessions) {
@@ -64,7 +67,7 @@ const InterviewCategoryPage = () => {
         const session = await getSession();
         const companyId = session?.user?.companyID;
         // console.log('compnayID',companyId);
-        const response=await fetchInterCategories(companyId, page, limit)
+        const response = await fetchInterCategories(companyId, page, limit)
         setCategories(response.data.categories);
         setTotalSessions(response.data.total);
       } catch (error) {
@@ -73,7 +76,22 @@ const InterviewCategoryPage = () => {
     }
 
     fetchCategories();
-  },[page,limit,modalOpen])
+  }, [page, limit, modalOpen])
+
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'COMPANY') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
+
 
   return (
     <>

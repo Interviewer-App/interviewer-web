@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getSession } from "next-auth/react";
-import { fetchJoinedInterviews } from "@/lib/api/interview-session";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -21,8 +19,13 @@ import { ToastAction } from "@/components/ui/toast";
 
 import { FaDotCircle } from "react-icons/fa";
 import { getInterviewSessionScoreById } from "@/lib/api/answer";
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession } from "next-auth/react"
 
 const JoinedInterviewsDetails = ({ params }) => {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [sessionId, setSessionId] = useState(null);
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionScoreDetails, setSessionScoreDetails] = useState({});
@@ -75,6 +78,19 @@ const JoinedInterviewsDetails = ({ params }) => {
 
     if (sessionId) fetchSessionScoreDetails();
   }, [sessionId, toast]);
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'CANDIDATE') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
 
   return (
     <SidebarInset>

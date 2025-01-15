@@ -22,12 +22,15 @@ import { getInterviews } from "@/lib/api/interview";
 //MUI
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { getSession } from "next-auth/react";
-
 import NoData from "@/assets/nodata.png";
 import Image from "next/image";
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
 
 const InterviewsPage = () => {
+  const { data: session , status} = useSession();
+  const pathname = usePathname();
   const [interviews, setInterviews] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
@@ -39,7 +42,7 @@ const InterviewsPage = () => {
         const session = await getSession();
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
-        if(response){
+        if (response) {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
@@ -55,6 +58,20 @@ const InterviewsPage = () => {
     };
     fetchInterviews();
   }, [modalOpen]);
+
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'COMPANY') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
 
   return (
     <>

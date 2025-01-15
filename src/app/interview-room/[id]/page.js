@@ -1,7 +1,6 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { getSession } from "next-auth/react";
 import socket from '../../../lib/utils/socket';
 import { useEffect, useState, useRef } from "react";
 
@@ -27,9 +26,13 @@ import Carousel from "@/components/ui/carousel";
 import SwiperComponent from "@/components/ui/swiperComponent";
 import '../../../styles/swiper/swiperStyles.css'
 import { PuffLoader } from "react-spinners";
-
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
 
 const InterviewRoomPage = ({ params }) => {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
   const swiperRef = useRef(null); // Reference for the Swiper component
 
   // const { socket } = useSocket();
@@ -140,6 +143,20 @@ const InterviewRoomPage = ({ params }) => {
 
     return () => clearInterval(interval);
   }, []);
+
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'CANDIDATE') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
 
   return (
     <>

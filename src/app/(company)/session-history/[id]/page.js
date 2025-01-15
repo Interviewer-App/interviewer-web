@@ -19,8 +19,13 @@ import { ToastAction } from "@/components/ui/toast";
 
 import { FaDotCircle } from "react-icons/fa";
 import { getInterviewSessionScoreById } from "@/lib/api/answer";
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
 
 function SessionHistoryPage({ params }) {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [sessionId, setSessionId] = useState(null);
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionScoreDetails, setSessionScoreDetails] = useState({});
@@ -73,6 +78,20 @@ function SessionHistoryPage({ params }) {
 
     if (sessionId) fetchSessionScoreDetails();
   }, [sessionId, toast]);
+
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'COMPANY') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
 
   return (
     <>

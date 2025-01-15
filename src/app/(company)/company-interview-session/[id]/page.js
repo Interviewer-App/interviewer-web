@@ -2,9 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import socket from "../../../../lib/utils/socket";
-import { useRouter, useSearchParams, redirect } from "next/navigation";
-
-//UI Components
 import { ToastAction } from "@/components/ui/toast";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-dropdown-menu";
@@ -23,8 +20,14 @@ import { getInterviewSessionById } from "@/lib/api/interview-session";
 import QuestionDisplayCard from "@/components/company/question-display-card";
 import CreateQuestionModal from "@/components/company/create-question-modal";
 import GenerateQuestionModal from "@/components/company/generate-question-modal";
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession } from "next-auth/react"
+
 
 function InterviewSessionPreviewPage({ params }) {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [sessionId, setSessionId] = useState(null);
   const [sessionDetails, setSessionDetails] = useState({});
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
@@ -81,6 +84,19 @@ function InterviewSessionPreviewPage({ params }) {
       router.push(`/interview-room-analiyzer/${sessionId}`);
     }
   };
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'COMPANY') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
 
   return (
     <>

@@ -31,8 +31,13 @@ import { FaPlus } from "react-icons/fa6";
 import socket from "../../../lib/utils/socket";
 import NoData from "@/assets/nodata.png";
 import Image from "next/image";
+import Loading from "@/app/loading";
+import { usePathname , useRouter, redirect } from 'next/navigation';
+import { useSession } from "next-auth/react"
 
 const InterviewSchedulePage = () => {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [interviews, setInterviews] = useState([]);
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
   const [sordBy, setSortBy] = useState('');
@@ -80,6 +85,20 @@ const InterviewSchedulePage = () => {
     fetchPublishedInterviews();
     setIsSheetOpen(false);
   };
+
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== 'CANDIDATE') {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
 
   return (
     <>

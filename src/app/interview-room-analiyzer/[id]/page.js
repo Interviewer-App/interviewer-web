@@ -3,7 +3,6 @@
 //MUI
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { getSession } from "next-auth/react";
 import socket from "../../../lib/utils/socket";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +17,14 @@ import CirculerProgress from "@/components/interview-room-analiyzer/circuler-pro
 import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
 import { PuffLoader } from "react-spinners";
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
+
 
 const InterviewRoomAnalizerPage = ({params}) => {
+    const { data: session, status } = useSession();
+    const pathname = usePathname();
     const pages = ["candidate.Name", "candidate.Email"];
     const [candidateAnswers, setCandidateAnswers] = useState();
     const [analiyzeResponse, setAnaliyzeResponse] = useState({});
@@ -77,6 +82,20 @@ const InterviewRoomAnalizerPage = ({params}) => {
         }
         socket.emit('nextQuestion', data);
     }
+
+    
+      if (status === "loading") {
+        return (
+          <>
+            <Loading />
+          </>
+        );
+      } else {
+        if (session.user.role !== 'COMPANY') {
+          const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+          redirect(loginURL);
+        }
+      }
 
     return (
         <>

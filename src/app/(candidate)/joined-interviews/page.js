@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { getSession } from 'next-auth/react';
 import { fetchJoinedInterviews } from '@/lib/api/interview-session';
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -16,8 +15,14 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import Loading from "@/app/loading";
+import { usePathname, useRouter, redirect } from 'next/navigation';
+import { useSession, getSession } from "next-auth/react"
+
 
 const JoinedInterviews = () => {
+    const { data: session, status } = useSession();
+    const pathname = usePathname();
     const [interviewData, setInterviewData] = useState([]);  // Store interviews data
     const [loading, setLoading] = useState(false);  // Loading state
     const [page, setPage] = useState(1);  // Page number
@@ -31,7 +36,7 @@ const JoinedInterviews = () => {
                 const session = await getSession();
                 const candidateId = session?.user?.candidateID;
                 console.log('candidate ID:', candidateId);
-          
+
                 // Fetch interviews data
                 await fetchJoinedInterviews(candidateId, page, limit, setLoading, setInterviewData, setTotalUsers);
             } catch (error) {
@@ -60,6 +65,20 @@ const JoinedInterviews = () => {
         }
     };
 
+
+    if (status === "loading") {
+        return (
+            <>
+                <Loading />
+            </>
+        );
+    } else {
+        if (session.user.role !== 'CANDIDATE') {
+            const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+            redirect(loginURL);
+        }
+    }
+
     return (
         <SidebarInset>
             <header className="flex h-16 shrink-0 items-center gap-2">
@@ -81,34 +100,34 @@ const JoinedInterviews = () => {
             </header>
 
             <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
-            <h1 className=" text-4xl font-semibold mb-3">My Interviews</h1>
+                <h1 className=" text-4xl font-semibold mb-3">My Interviews</h1>
                 {loading ? (
                     <div>Loading interviews...</div>
                 ) : (
                     <DataTable columns={columns} data={interviewData} />
                 )}
-           
 
-            {/* Pagination Section */}
-            <Pagination>
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious onClick={handlePreviousPage} disabled={page <= 1} />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink onClick={() => setPage(page)}>{page}</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink onClick={() => setPage(page + 1)}>{page + 1}</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationNext onClick={handleNextPage} disabled={page * limit >= totalUsers} />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+
+                {/* Pagination Section */}
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious onClick={handlePreviousPage} disabled={page <= 1} />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink onClick={() => setPage(page)}>{page}</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink onClick={() => setPage(page + 1)}>{page + 1}</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext onClick={handleNextPage} disabled={page * limit >= totalUsers} />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
 
             </div>
         </SidebarInset>
