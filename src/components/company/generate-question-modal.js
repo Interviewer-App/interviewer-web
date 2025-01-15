@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { generateQuestions } from "@/lib/api/ai";
 import Loading from "@/app/loading";
+import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -198,6 +199,7 @@ export default function GenerateQuestionModal({
               required
               className=" h-[100px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 py-3 mb-4"
             />
+           
 
             {/* <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-1"></div> */}
             <Paper
@@ -242,12 +244,23 @@ export default function GenerateQuestionModal({
                 onKeyDown={handleKeyDown}
                 className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-5 py-3 mb-5 focus:outline-none"
               />
+
+
             </Paper>
+            <div className="flex justify-center items-center w-full">
+              <input
+                type="number"
+                placeholder="Number of question to generate:"
+                min={0}
+                className="py-2 my-3 w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 focus:outline-none "
+              />
+            </div>
+
 
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+                className=" h-12 min-w-[150px] w-full md:w-[40%] mt-2 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
               >
                 Genarate
               </button>

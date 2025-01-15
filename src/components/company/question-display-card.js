@@ -30,6 +30,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { LuCheck } from "react-icons/lu";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import { FaInfoCircle } from "react-icons/fa";
 import { deleteQuestion, updateQuestion } from "@/lib/api/question";
 
 function QuestionDisplayCard({
@@ -41,6 +42,7 @@ function QuestionDisplayCard({
   const [questionText, setQuestionText] = useState(question.questionText);
   const [questionType, setQuestionType] = useState(question.type);
   const [isEditing, setIsEditing] = useState(false);
+  const [explanation, setExplanation] = useState(question.explanation);
   const { toast } = useToast();
 
   const handleUpdateQuestion = async (e) => {
@@ -124,6 +126,8 @@ function QuestionDisplayCard({
       }
     }
   };
+  
+  
 
   return (
     <div key={index} className="mt-5">
@@ -179,13 +183,13 @@ function QuestionDisplayCard({
               <MdEdit />
             </button>
           )}
+
           <AlertDialog>
             <AlertDialogTrigger>
               <div className="text-red-500 bg-red-300/20 hover:text-red-100 hover:border-red-100 border-red-500 text-lg aspect-square h-9 border-2 rounded-sm flex items-center justify-center">
                 <MdDelete />
               </div>
             </AlertDialogTrigger>
-
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
@@ -204,6 +208,29 @@ function QuestionDisplayCard({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+          
+
+          <AlertDialog>
+            <AlertDialogTrigger>
+            <div
+            className="text-gray-300 bg-gray-300/20 hover:text-gray-100 hover:border-gray-100 border-gray-500 text-lg aspect-square h-9 border-2 rounded-sm flex items-center justify-center">
+            <FaInfoCircle />
+          </div>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Explanation</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {explanation}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Close</AlertDialogCancel>
+                {/* <AlertDialogAction>Close</AlertDialogAction> */}
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
         </div>
       </div>
       <div className="w-full bg-slate-500/20 py-3 text-gray-300 px-6 rounded-b-lg">
