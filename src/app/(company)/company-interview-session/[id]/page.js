@@ -53,7 +53,6 @@ function InterviewSessionPreviewPage({ params }) {
 
         const response = await getInterviewSessionById(sessionId);
         console.log(response.data);
-        console.log(response.data.questions.ex)
         // console.log(response.data.questions.explnations);
         if (response.data) {
           setSessionDetails(response.data);
