@@ -102,6 +102,16 @@ export const createInterviewSession = async (data) => {
   }
 };
 
+export const getInterviewOverviewById = async (interviewId) => {
+  try{
+      const response = await axiosInstance.get(`/interview-session/overview/${interviewId}`);
+      return response;
+  } catch(error){
+      console.log('Error fetching interview:', error);
+      throw error;
+  }
+}
+
 export {
   fetchJoinedInterviews,
   fetchInterviewSessionsForInterview,
