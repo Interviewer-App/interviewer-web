@@ -35,9 +35,9 @@ import Image from "next/image";
 const InterviewSchedulePage = () => {
   const [interviews, setInterviews] = useState([]);
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
-  const [sordBy, setSortBy] = useState("latest");
-  const [datePosted, setDatePosted] = useState("last 24 hours");
-  const [interviewCategory, setInterviewCategory] = useState("Technical");
+  const [sordBy, setSortBy] = useState('');
+  const [datePosted, setDatePosted] = useState('');
+  const [interviewCategory, setInterviewCategory] = useState('');
   const [jobTitle, setJobTitle] = useState("");
   const [keyWords, setKeyWords] = useState("");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
