@@ -37,24 +37,29 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "sessionId",
+    accessorKey: "interviewStatus",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        sessionId
+        interviewStatus
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
-    accessorKey: "interviewId", 
-    header: "Interview ID",
+    accessorKey: "interviewCategory",  
+    header: "interview Category",
   },
   {
-    accessorKey: "candidateId",  
-    header: "candidateId",
+    accessorKey: "scheduledDate", 
+    header: "scheduledDate",
+  },
+  
+  {
+    accessorKey: "reviewedBy",  
+    header: "reviewed By",
   },
 
   {
