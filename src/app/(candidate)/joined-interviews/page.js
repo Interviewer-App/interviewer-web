@@ -98,14 +98,24 @@ const JoinedInterviews = () => {
                     </Breadcrumb>
                 </div>
             </header>
-
-            <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
-                <h1 className=" text-4xl font-semibold mb-3">My Interviews</h1>
+           
+            <div className=" w-full px-9 py-6 h-full">
+          <h1 className="text-3xl font-semibold">Interviews</h1>
+          <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
+            <div>
+              <h1 className=" text-2xl font-semibold">My Interview</h1>
+              <div className="flex mb-5 justify-end">
+                </div>
+                <div>
                 {loading ? (
                     <div>Loading interviews...</div>
                 ) : (
                     <DataTable columns={columns} data={interviewData} />
                 )}
+
+                </div>
+
+                </div>
 
 
                 {/* Pagination Section */}
@@ -128,7 +138,7 @@ const JoinedInterviews = () => {
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
-
+            </div>
             </div>
         </SidebarInset>
     );

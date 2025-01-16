@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { generateQuestions } from "@/lib/api/ai";
 import Loading from "@/app/loading";
+import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -31,6 +32,7 @@ export default function GenerateQuestionModal({
   const [skillLevel, setSkillLevel] = React.useState("Junior");
   const [companyCulture, setCompanyCulture] = React.useState("");
   const [companyAim, setCompanyAim] = React.useState("");
+  const [noOfQuestion,setNoOfQuestion]=React.useState("");
   const [questionType, setQuestionType] = React.useState("Technical");
   const [keywords, setKeywords] = React.useState([]);
   const [inputValue, setInputValue] = React.useState("");
@@ -60,6 +62,19 @@ export default function GenerateQuestionModal({
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const validNoOfQuestions = parseInt(noOfQuestion, 10);
+
+    //not Empy and Valid Integer handling
+    if (isNaN(validNoOfQuestions) || validNoOfQuestions <= 0) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Input",
+        description: "Please enter a valid number of questions.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await generateQuestions(sessionID, {
@@ -69,6 +84,7 @@ export default function GenerateQuestionModal({
         companyAim,
         QuestionType: questionType.toUpperCase(),
         Keywords: keywords.map((keyword) => keyword.label),
+        noOfQuestions: validNoOfQuestions,
       });
 
       if (response) {
@@ -109,7 +125,7 @@ export default function GenerateQuestionModal({
   return (
     <div className=" w-full">
       <div className=" fixed  top-0 left-0 z-40 h-full w-full flex items-center justify-center bg-black/50">
-        <div className=" relative max-w-[700px] h-fit max-h-[670px] w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
+        <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
           <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-5">
             Genarate Questions
           </h1>
@@ -198,6 +214,7 @@ export default function GenerateQuestionModal({
               required
               className=" h-[100px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 py-3 mb-4"
             />
+           
 
             {/* <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-1"></div> */}
             <Paper
@@ -242,12 +259,28 @@ export default function GenerateQuestionModal({
                 onKeyDown={handleKeyDown}
                 className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-5 py-3 mb-5 focus:outline-none"
               />
+
+
             </Paper>
+            <div className="flex justify-center items-center w-full">
+              <input
+                type="number"
+                placeholder="Number of question to generate"
+                min={1}
+                name="noOfQuestion"
+                value={noOfQuestion}
+                onChange={(e) => setNoOfQuestion(e.target.value)}
+                required
+                className="py-3 my-4 w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 focus:outline-none "
+              />
+            </div>
+
 
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+                
+                className=" h-12 min-w-[150px] w-full md:w-[40%] mt-2 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
               >
                 Genarate
               </button>
