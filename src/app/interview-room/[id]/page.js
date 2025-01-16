@@ -128,8 +128,8 @@ const InterviewRoomPage = ({ params }) => {
 
 
     return () => {
-      socket.off('questions');
-      socket.off('navigateNextQuestion');
+      // socket.off('questions');
+      // socket.off('navigateNextQuestion');
     };
   }, []);
 

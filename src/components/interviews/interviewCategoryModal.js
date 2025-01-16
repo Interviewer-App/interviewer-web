@@ -29,7 +29,6 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
 
   useEffect(() => {
     const fetchSessionData = async () => {
-      debugger
       const session = await getSession(); 
       if (session?.user?.companyID) {
         setCompanyId(session.user.companyID); 

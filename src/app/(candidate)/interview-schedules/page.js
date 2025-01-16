@@ -52,7 +52,6 @@ const InterviewSchedulePage = () => {
 
   useEffect(() => {
     socket.on("published", (data) => {
-      debugger;
       fetchPublishedInterviews();
     });
 
