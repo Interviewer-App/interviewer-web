@@ -161,7 +161,7 @@ const InterviewRoomPage = ({ params }) => {
   return (
     <>
       {isQuestionAvailabe ? (<>
-        <div className="flex flex-col justify-center h-full items-center w-full text-white py-3 bg-black">
+        <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
           <div className="absolute inset-0 bg-black -z-20"></div>
           <div className="w-[70%] max-w-[1100px]">
             {/* Swiper Component with Questions */}
