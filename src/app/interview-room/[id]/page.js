@@ -202,13 +202,20 @@ const InterviewRoomPage = ({ params }) => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center">
-                  <button
+                  {activeStep < 4 ? (<button
                     onClick={handleSubmit}
                     disabled={!transcript}
                     className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
                   >
                     Submit Answer
-                  </button>
+                  </button>):(
+                  <button
+                    // onClick={handleSubmit}
+                    // disabled={!transcript}
+                    className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+                  >
+                    Finish Attempt
+                  </button>)}
                 </div>
               </div>
             </div>

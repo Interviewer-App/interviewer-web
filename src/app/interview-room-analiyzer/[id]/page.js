@@ -149,7 +149,9 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       {isSubmitAnswers ? (
         <>
           <div className=" h-lvh">
+            <div className=" w-full fixed top-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-1000">
             <ResponsiveAppBar pages={pages} />
+            </div>
 
             <ResizablePanelGroup
               direction="horizontal"
