@@ -42,7 +42,6 @@ import StepLabel from "@mui/material/StepLabel";
 import Check from "@mui/icons-material/Check";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
@@ -216,11 +215,12 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [date, setDate] = React.useState("");
   const [time, setTime] = React.useState("");
   const [stepperCount, setStepperCount] = React.useState(0);
-  const [inputCatagory, setInputCatagory] = React.useState(interviewCategories[0]?.categoryName);
+  const [inputCatagory, setInputCatagory] = React.useState("");
   const [inputPercentage, setInputPercentage] = React.useState("");
-  const [catorgoryList, setCatagoryList] = React.useState([]);
+  const [categoryList, setCatagoryList] = React.useState([]);
   const [totalPercentage, setTotalPercentage] = React.useState(100);
   const [addButtonDisable, setAddButtonDisable] = React.useState(false);
+  const [filteredCategories, setFilteredCategories] = React.useState([]);
 
   const { toast } = useToast();
 
@@ -232,6 +232,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
         const response = await getInterviewCategoryCompanyById(companyId);
         if (response) {
           setInterviewCategories(response.data.categories);
+          setFilteredCategories(response.data.categories);
         }
       } catch (error) {
         toast({
@@ -274,8 +275,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
       setCatagoryList((prev) => [
         ...prev,
         {
-          key: catorgoryList.length,
-          catagory: inputCatagory.trim(),
+          key: inputCatagory.trim(),
+          catagory: interviewCategories.find(
+            (cat) => cat.categoryId === inputCatagory.trim()
+          )?.categoryName,
           percentage: inputPercentage.trim(),
         },
       ]);
@@ -292,6 +295,13 @@ export default function CreateInterviewModal({ setModalOpen }) {
       catagory.filter((catagory) => catagory.key !== catagoryToDelete.key)
     );
   };
+
+  React.useEffect(() => {
+    const filter = interviewCategories.filter((category) =>
+      categoryList.every((item) => item.key !== category.categoryId)
+    );
+    setFilteredCategories(filter);
+  }, [categoryList, inputCatagory, inputPercentage]);
 
   const handleAddCatagoryDesable = (e) => {
     let newInputPercentage = e.target.value;
@@ -322,10 +332,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
         scheduledDate: isoString,
         scheduledAt: isoString,
         status: "DRAFT",
-        categoryAssignments: catorgoryList.map((catagory) => {
+        categoryAssignments: categoryList.map((catagory) => {
           return {
             categoryId: catagory.key,
-            percentage: catagory.percentage,
+            percentage: parseFloat(catagory.percentage),
           };
         }),
       };
@@ -368,7 +378,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
   return (
     <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
-      <div className=" relative max-w-[700px] h-fit max-h-[670px] w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
+      <div className=" relative max-w-[700px] h-fit max-h-[700px] w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
         <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-5">
           Create interview
         </h1>
@@ -393,7 +403,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
         >
           <MdClose className=" text-2xl" />
         </button>
-        {/* <form onSubmit={handleSubmit}> */}
         <form>
           {stepperCount === 0 && (
             <div className=" w-full mt-5">
@@ -491,39 +500,20 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     required
-                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
+                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
                   />
                 </div>
-                {/* <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
-                      variant="outline"
-                    >
-                      {interviewCategory}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Interview Catagory</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuRadioGroup
-                      value={interviewCategory}
-                      onValueChange={setInterviewCategory}
-                    >
-                      <DropdownMenuRadioItem value="Technical">
-                        Technical
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="Behavioural">
-                        Behavioural
-                      </DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu> */}
               </div>
             </div>
           )}
           {stepperCount === 1 && (
             <div className=" w-full mt-5 min-h-[350px]">
+              <p className={` text-red-500 text-xs py-2 ${totalPercentage !== 0 ? "block" : "hidden"}`}>
+                *Please ensure the total percentage equals 100%. The sum of all
+                category percentages should not exceed or fall below 100%.
+                Adjust your inputs accordingly.
+              </p>
+
               <div className=" flex w-full justify-between space-x-2 ">
                 <div className="w-[40%]">
                   <DropdownMenu>
@@ -532,7 +522,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                         className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
                         variant="outline"
                       >
-                        {inputCatagory}
+                        {interviewCategories.find(
+                          (cat) => cat.categoryId === inputCatagory
+                        )?.categoryName || "Select Category"}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
@@ -542,10 +534,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
                         value={inputCatagory}
                         onValueChange={setInputCatagory}
                       >
-                        {interviewCategories.map((category) => (
+                        {filteredCategories.map((category) => (
                           <DropdownMenuRadioItem
                             key={category.categoryId}
-                            value={category.categoryName}
+                            value={category.categoryId}
                           >
                             {category.categoryName}
                           </DropdownMenuRadioItem>
@@ -584,7 +576,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {catorgoryList.map((catagory) => (
+                    {categoryList.map((catagory) => (
                       <tr key={catagory.key} className=" bg-gray-800/10">
                         <td className=" py-3 px-4 w-[40%]">
                           {catagory.catagory}
@@ -606,11 +598,11 @@ export default function CreateInterviewModal({ setModalOpen }) {
             </div>
           )}
         </form>
-        <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-1">
+        <div className=" w-full flex md:flex-row justify-between items-center mt-1">
           {stepperCount > 0 ? (
             <button
               onClick={() => setStepperCount(stepperCount - 1)}
-              className=" mt-6 px-5 py-2 cursor-pointer border-2 border-gray-700 rounded-lg text-center text-sm text-gray-700 hover:text-gray-400 hover:border-gray-400 font-semibold"
+              className=" mt-2 md:mt-6 px-5 py-2 cursor-pointer border-2 border-gray-700 rounded-lg text-center text-sm text-gray-700 hover:text-gray-400 hover:border-gray-400 font-semibold"
             >
               Prev
             </button>
@@ -628,7 +620,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
           ) : (
             <button
               onClick={handleSubmit}
-              className=" mt-6 px-5 py-2 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              className={` ${
+                totalPercentage === 0 ? "block" : "hidden"
+              } mt-6 px-5 py-2 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold`}
             >
               Create Interview
             </button>
