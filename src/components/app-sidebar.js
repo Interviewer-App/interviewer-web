@@ -86,7 +86,7 @@ const adminItems = [
 
 const teams = [
   {
-    name: "Hello",
+    name: "Coullax",
     logo: Inbox, 
     plan: "Pro",
   },
@@ -139,11 +139,11 @@ export function AppSidebar() {
                       href={item.url}
                       className={`${
                         isActive(item.url)
-                          ? "bg-primary text-white bg-gray-950" // active styles
+                          ? "bg-primary text-white bg-black" // active styles
                           : "text-slate-300 hover:bg-primary hover:text-white"
-                      } flex items-center p-4 rounded-md text-xs`}
+                      } flex items-center p-5 rounded-md text-base font-semibold`}
                     >
-                      <item.icon className="mr-2" />
+                      <item.icon className="mr-2 w-20 h-20" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
