@@ -35,7 +35,7 @@ function ResponsiveAppBar({ pages}) {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'black' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'black', backgroundOpacity: 0.8 }}>
       <Box sx={{ width: '100%' }}>
         <Toolbar disableGutters>
           {/* Mobile menu icon */}
