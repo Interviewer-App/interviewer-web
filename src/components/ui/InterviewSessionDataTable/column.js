@@ -55,6 +55,11 @@ export const columns = [
   {
     accessorKey: "scheduledDate", 
     header: "scheduledDate",
+    cell: ({ row }) => {
+      const createdAt = new Date(row.original.createdAt); // Parse the date string
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return createdAt.toLocaleDateString('en-US', options); // Formats it to "January 16, 2025"
+    },
   },
   
   {

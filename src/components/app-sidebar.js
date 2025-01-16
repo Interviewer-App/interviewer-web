@@ -141,7 +141,7 @@ export function AppSidebar() {
                         isActive(item.url)
                           ? "bg-primary text-white bg-black" // active styles
                           : "text-slate-300 hover:bg-primary hover:text-white"
-                      } flex items-center p-5 rounded-md text-base font-semibold`}
+                      } flex items-center p-7 rounded-md text-base font-semibold`}
                     >
                       <item.icon className="mr-2 w-20 h-20" />
                       <span>{item.title}</span>

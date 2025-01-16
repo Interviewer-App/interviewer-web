@@ -106,7 +106,7 @@ const JoinedInterviews = () => {
               <h1 className=" text-2xl font-semibold">My Interview</h1>
               <div className="flex mb-5 justify-end">
                 </div>
-                <div>
+                <div>   
                 {loading ? (
                     <div>Loading interviews...</div>
                 ) : (
