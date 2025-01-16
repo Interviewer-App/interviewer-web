@@ -114,9 +114,9 @@ const InterviewCategoryPage = () => {
           </div>
         </header>
 
-        <div className=" w-full px-9 py-6 h-full">
+        <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
           <h1 className="text-3xl font-semibold">Categories</h1>
-          <div className=" bg-slate-600/10 w-full h-fit min-h-[950px]  p-9 rounded-lg mt-5">
+          <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
             <div>
               <h1 className=" text-2xl font-semibold">Interview Categories</h1>
               <div className="flex mb-5 justify-end">
