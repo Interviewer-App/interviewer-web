@@ -34,7 +34,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DataTable } from "@/components/ui/InterviewDataTable/Datatable";
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
-import { fetchInterviewSessionsForInterview } from "@/lib/api/interview-session";
+import { fetchInterviewSessionsForInterview, getInterviewOverviewById } from "@/lib/api/interview-session";
 import {
   Pagination,
   PaginationContent,
@@ -84,6 +84,7 @@ export default function InterviewPreviewPage({ params }) {
   const [limit, setLimit] = useState(10);
   const [tab, setTab] = useState("overview");
   const [status, setStatus] = useState("");
+  const [interviewOverview, setInterviewOverview] = useState({});
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -183,6 +184,20 @@ export default function InterviewPreviewPage({ params }) {
       setSkills([]);
     }
   }, [interviewDetail]);
+
+  useEffect(() => {
+    const fetchOverviewData = async () => {
+      try {
+        const response = await getInterviewOverviewById(interviewId);
+        if (response.data) {
+          setInterviewOverview(response.data);
+        }
+      } catch (error) {
+        console.log("Error fetching interview overview:", error);
+      } 
+    }
+    if (interviewId) fetchOverviewData();
+  },[interviewId]);
 
   const handlePublishInterview = async (status) => {
     try {
@@ -412,15 +427,14 @@ export default function InterviewPreviewPage({ params }) {
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
                   <h1 className=" text-lg md:text-2xl font-semibold">Highest Mark</h1>
                   <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold pt-6 px-5">
-                    200<span className=" text-base px-2">%</span>
+                    {interviewOverview?.maxScore || 0}<span className=" text-base px-2">%</span>
                   </h1>
-                  <p className=" text-md font-semibold px-5">Candidate Name</p>
+                  <p className=" text-md font-semibold px-5">{interviewOverview?.maxScoreCandidateFirstName || ''}{' '}{interviewOverview?.maxScoreCandidateLastName || '             '}</p>
                 </div>
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
                   <h1 className=" text-lg md:text-2xl font-semibold">Total Sessions</h1>
                   <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold py-6 px-5">
-                    {/* {totalsessions || 0} */}
-                    100
+                    {interviewOverview?.total || 0}
                     <span className=" text-base px-2">Sessions</span>
                   </h1>
                 </div>
@@ -429,7 +443,7 @@ export default function InterviewPreviewPage({ params }) {
                     Completed Sessions
                   </h1>
                   <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold py-6 px-5">
-                    200<span className=" text-base px-2">Sessions</span>
+                    {interviewOverview?.totalCompletedInterviews || 0}<span className=" text-base px-2">Sessions</span>
                   </h1>
                 </div>
               </div>

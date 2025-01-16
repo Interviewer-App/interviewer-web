@@ -39,6 +39,16 @@ const updateCategory = async (categoryId, data) => {
       throw error;
     }
   };
+
+export const getInterviewCategoryCompanyById = async (companyId) => {
+    try{
+        const response = await axiosInstance.get(`/categories/categories/${companyId}`);
+        return response;
+    } catch(error){
+        console.log('Error fetching category:', error);
+        throw error;
+    }
+}
   
 
 export {fetchInterCategories,createCategory,deleteCategory,updateCategory};
