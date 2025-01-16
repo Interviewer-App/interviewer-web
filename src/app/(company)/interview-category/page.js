@@ -115,58 +115,61 @@ const InterviewCategoryPage = () => {
         </header>
 
         <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
-          <h1 className="text-3xl font-semibold">Categories</h1>
-          <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
-            <div>
-              <h1 className=" text-2xl font-semibold">Interview Categories</h1>
-              <div className="flex mb-5 justify-end">
-                <button
-                  onClick={() => setModalOpen(true)}
-                  className="rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
-                >
-                  +Add category
-                </button>
-              </div>
+  <h1 className="text-3xl font-semibold">Categories</h1>
+  <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+    <div className="flex items-center justify-between mb-5">
+      
+      <h1 className="text-2xl font-semibold">Interview Categories</h1>
 
-              <div>
-                {loading ? (
-                  <div>Loading interview sessions...</div>
-                ) : (
-                  <DataTable
-                    columns={columns}
-                    data={categories}
+      {/* Add Category Button */}
+      <button
+        onClick={() => setModalOpen(true)}
+        className="rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+      >
+        +Add Category
+      </button>
+    </div>
 
-                  />
+    <div>
+      {loading ? (
+        <div>Loading interview sessions...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={categories}
+        />
+      )}
+    </div>
 
-                )}
-              </div>
-              {modalOpen && <InterviewCategoryModal setModalOpen={setModalOpen} isUpdated={false} />}
-            </div>
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious onClick={() => handlePreviousPage()} />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink onClick={() => handlePage(page + 1)}>
-                    {page + 1}
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink onClick={() => handlePage(page + 2)}>
-                    {page + 2}
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext onClick={() => handleNextPage()} />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </div>
+    {modalOpen && <InterviewCategoryModal setModalOpen={setModalOpen} isUpdated={false} />}
+
+    {/* Pagination handle section start */}
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious onClick={() => handlePreviousPage()} />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink onClick={() => handlePage(page + 1)}>
+            {page + 1}
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink onClick={() => handlePage(page + 2)}>
+            {page + 2}
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext onClick={() => handleNextPage()} />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  </div>
+</div>
+
 
       </SidebarInset>
     </>

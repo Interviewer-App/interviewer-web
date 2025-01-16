@@ -23,7 +23,7 @@ const ActionCell = ({ interviewCategoryDetails }) => {
       const handleDelete = async () => {
         try {
           
-          await deleteCategory(interviewCategoryDetails.companyId);
+          await deleteCategory(interviewCategoryDetails.categoryName);
           alert("Category Deleted: The interview category has been deleted successfully.");
         } catch (error) {
           console.error("Error deleting category:", error);
@@ -86,21 +86,18 @@ export const columns = [
     enableHiding: false,
   },  
   {
-    accessorKey: "companyId",
+    accessorKey: "categoryName",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        companyId
+        categoryName
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
-  {
-    accessorKey: "categoryName", 
-    header: "Category Name",
-  },
+
   {
     accessorKey: "description",  
     header: "Description",
