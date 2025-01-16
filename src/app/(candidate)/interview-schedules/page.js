@@ -142,7 +142,7 @@ const InterviewSchedulePage = () => {
                     your account and remove your data from our servers.
                   </SheetDescription> */}
                 </SheetHeader>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className=" !text-white">
                   <div className=" w-full mt-5">
                     <span className=" text-xl font-semibold text-gray-400">
                       Sort by
