@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen   } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -62,6 +61,7 @@ const companyItems = [
     icon: SquarePen   ,
   },
 ];
+
 const candidateItems = [
   {
     title: "Interview scheduls",
@@ -124,8 +124,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
-       
+      <SidebarHeader>       
         <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
