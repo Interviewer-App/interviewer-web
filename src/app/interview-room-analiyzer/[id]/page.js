@@ -21,6 +21,7 @@ import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import { Slider } from "@/components/ui/slider";
 
 const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -36,6 +37,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
   const [sessionId, setSessionId] = useState(null);
   const [interviewCategories, setInterviewCategories] = useState([]);
+  const [categoryMarks, setCategoryMarks] = useState([]);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -115,6 +117,32 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     };
     fetchInterviewCategories();
   }, []);
+
+  useEffect(() => {
+    if (interviewCategories.length > 0) {
+      setCategoryMarks((prev) => {
+        const existingIds = new Set(prev.map((item) => item.categoryId));
+        const newMarks = interviewCategories
+          .filter((category) => !existingIds.has(category.categoryId))
+          .map((category) => ({
+            categoryId: category.categoryId,
+            categoryName: category.categoryName,
+            marks: 10,
+          }));
+        return [...prev, ...newMarks];
+      });
+    }
+  }, [interviewCategories]);
+
+  const handleCategoryMarksChange = (category, value) => {
+    setCategoryMarks((prev) =>
+      prev.map((item) =>
+        item.categoryId === category.categoryId
+          ? { ...item, marks: value }
+          : item
+      )
+    );
+  };
 
   return (
     <>
@@ -197,33 +225,37 @@ const InterviewRoomAnalizerPage = ({ params }) => {
                   </ResizablePanel>
                   <ResizableHandle />
                   <ResizablePanel defaultSize={35}>
-                    <ResizablePanelGroup
-                      direction="horizontal"
-                      className=" rounded-lg md:min-w-full h-full"
-                    >
-                      {interviewCategories.map((category, index) => {
-                        if (category.categoryName !== "Technical") {
-                          return (
-                            <>
-                              <ResizablePanel
-                                defaultSize={100}
-                              >
-                                <div className=" w-full h-full overflow-y-auto p-6 relative">
-                                  <h1 className=" text-xl font-semibold">
-                                    {category.categoryName}
-                                  </h1>
-                                </div>
-                              </ResizablePanel>
-                              <ResizableHandle key={`handle-${category.categoryId}`} />
-                            </>
-                          );
-                        } else {
-                          return null;
-                        }
-                      })}
-                    </ResizablePanelGroup>
+                    <div className="h-full w-full overflow-y-auto p-6">
+                      <h1 className=" text-3xl font-semibold">
+                        Other categories
+                      </h1>
+                      <div className=" mt-4">
+                        {categoryMarks
+                          .filter(
+                            (category) => category.categoryName !== "Technical"
+                          )
+                          .map((category, index) => (
+                            <div key={index} className="mb-8">
+                              <h1 className="text-md font-semibold text-gray-500 py-2">
+                                {category.categoryName}
+                              </h1>
+                              <div className=" w-full flex justify-between">
+                                <p>0</p>
+                                <p>{category.marks}/100</p>
+                              </div>
+                              <Slider
+                                defaultValue={[10]}
+                                max={100}
+                                step={1}
+                                onValueChange={(value) =>
+                                  handleCategoryMarksChange(category, value)
+                                }
+                              />
+                            </div>
+                          ))}
+                      </div>
+                    </div>
                   </ResizablePanel>
-                  <ResizableHandle />
                 </ResizablePanelGroup>
               </ResizablePanel>
               <ResizableHandle />
