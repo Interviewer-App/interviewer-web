@@ -46,8 +46,8 @@ export function DataTable({ columns, data }) {
     });
 
     const handleMyInterviewSessionDetail = (row) => {
-        if(row.original.sessionId){
-            router.push(`/joined-interviews/${encodeURIComponent(row.original.sessionId)}`);
+        if(row.original.interviewStatus){
+            router.push(`/joined-interviews/${encodeURIComponent(row.original.interviewStatus)}`);
         }
     }
 
@@ -56,9 +56,9 @@ export function DataTable({ columns, data }) {
             <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Filter sessions..."
-                    value={table.getColumn("sessionId")?.getFilterValue() ?? ""}
+                    value={table.getColumn("interviewStatus")?.getFilterValue() ?? ""}
                     onChange={(event) =>
-                        table.getColumn("sessionId")?.setFilterValue(event.target.value)
+                        table.getColumn("interviewStatus")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
