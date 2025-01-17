@@ -23,7 +23,7 @@ const ActionCell = ({ interviewCategoryDetails }) => {
       const handleDelete = async () => {
         try {
           
-          await deleteCategory(interviewCategoryDetails.categoryId);
+          await deleteCategory(interviewCategoryDetails.categoryName);
           alert("Category Deleted: The interview category has been deleted successfully.");
         } catch (error) {
           console.error("Error deleting category:", error);
