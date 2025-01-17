@@ -31,6 +31,7 @@ import { columns } from "@/components/ui/InterviewCategory-DataTable/column";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from 'next/navigation';
 import { useSession, getSession } from "next-auth/react"
+import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen,plus, Plus   } from "lucide-react";
 
 const InterviewCategoryPage = () => {
   const { data: session, status } = useSession();
@@ -124,9 +125,9 @@ const InterviewCategoryPage = () => {
       {/* Add Category Button */}
       <button
         onClick={() => setModalOpen(true)}
-        className="rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+        className="rounded-full bg-white text-black font-bold px-2 py-2"
       >
-        +Add Category
+       <Plus/>
       </button>
     </div>
 

@@ -34,7 +34,7 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { usePathname , useRouter, redirect } from 'next/navigation';
 import { useSession } from "next-auth/react"
-
+import { Filter   } from "lucide-react";
 const InterviewSchedulePage = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -125,9 +125,9 @@ const InterviewSchedulePage = () => {
             <h1 className=" text-4xl font-semibold">Scheduled Interviews</h1>
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger>
-                <span className=" bg-transparent border-2 border-gray-500 text-gray-500 hover:text-gray-300 hover:border-gray-300 px-5 py-2 rounded-sm cursor-pointer">
-                  Apply Filter
-                </span>
+                <div className=" bg-transparent border-2 border-gray-300 text-gray-300 hover:text-gray-500 hover:border-gray-500 px-2 py-2 rounded-sm cursor-pointer">
+                <Filter/>
+                </div>
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>

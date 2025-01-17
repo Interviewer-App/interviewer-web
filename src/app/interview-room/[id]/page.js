@@ -113,6 +113,7 @@ const InterviewRoomPage = ({ params }) => {
 
 
     socket.on("navigateNextQuestion", (data) => {
+      debugger
       if (!data.followUpQuestion) {
         const nextquestion = activeStep + 1
         if (swiperRef.current && swiperRef.current.swiper) {

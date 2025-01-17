@@ -79,7 +79,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const nextQuestion = () => {
     const data = {
       sessionId: sessionId,
-      followUpQuestion: false,
     };
     socket.emit("nextQuestion", data);
   };

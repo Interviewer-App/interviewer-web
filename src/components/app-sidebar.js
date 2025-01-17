@@ -62,7 +62,7 @@ const companyItems = [
   },
   {
     title: "Comapny Profile",
-    url: "/companyProfile",
+    url: "/company-profile",
     icon: MonitorCheck   ,
   },
 ];
