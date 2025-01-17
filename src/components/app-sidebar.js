@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen,Warehouse   } from "lucide-react";
+import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen,Warehouse,UserRound    } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -80,8 +80,8 @@ const candidateItems = [
   },
   {
     title: "user profiles",
-    url: "/userProfile",
-    icon: UserPlus,
+    url: "/user-profile",
+    icon: UserRound ,
   },
 ];
 const adminItems = [
