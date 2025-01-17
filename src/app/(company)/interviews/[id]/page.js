@@ -34,7 +34,10 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DataTable } from "@/components/ui/InterviewDataTable/Datatable";
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
-import { fetchInterviewSessionsForInterview, getInterviewOverviewById } from "@/lib/api/interview-session";
+import {
+  fetchInterviewSessionsForInterview,
+  getInterviewOverviewById,
+} from "@/lib/api/interview-session";
 import {
   Pagination,
   PaginationContent,
@@ -59,8 +62,9 @@ import { getInterviewById, updateInterview } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
 import { Button } from "@/components/ui/button";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
-import { useSession, getSession } from "next-auth/react"
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession, getSession } from "next-auth/react";
+import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -85,6 +89,7 @@ export default function InterviewPreviewPage({ params }) {
   const [tab, setTab] = useState("overview");
   const [status, setStatus] = useState("");
   const [interviewOverview, setInterviewOverview] = useState({});
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -194,10 +199,10 @@ export default function InterviewPreviewPage({ params }) {
         }
       } catch (error) {
         console.log("Error fetching interview overview:", error);
-      } 
-    }
+      }
+    };
     if (interviewId) fetchOverviewData();
-  },[interviewId]);
+  }, [interviewId]);
 
   const handlePublishInterview = async (status) => {
     try {
@@ -213,8 +218,12 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${status === 'ACTIVE' ? 'published' : 'unpublished'} Successfully!`,
-          description: `The interview has been ${status === 'ACTIVE' ? 'published' : 'unpublished'} and is now ${status === 'ACTIVE' ? 'available' : 'not available'}.`,
+          title: `Interview ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } Successfully!`,
+          description: `The interview has been ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -334,8 +343,7 @@ export default function InterviewPreviewPage({ params }) {
     }
   };
 
-
-  if (session.user.role !== 'COMPANY') {
+  if (session.user.role !== "COMPANY") {
     const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
     redirect(loginURL);
   }
@@ -369,7 +377,7 @@ export default function InterviewPreviewPage({ params }) {
                 onClick={() => handlePublishInterview("ACTIVE")}
                 className={` ${
                   tab === "edit" || tab === "settings" ? "hidden" : "block"
-                } h-12 min-w-[150px] w-[160px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold`}
+                } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
               >
                 Publish Now
               </button>
@@ -378,7 +386,7 @@ export default function InterviewPreviewPage({ params }) {
                 onClick={() => handlePublishInterview("ARCHIVED")}
                 className={` ${
                   tab === "edit" || tab === "settings" ? "hidden" : "block"
-                } h-12 min-w-[150px] w-[160px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-base text-white font-semibold`}
+                } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
               >
                 Unpublish
               </button>
@@ -403,6 +411,14 @@ export default function InterviewPreviewPage({ params }) {
                 Interview Sessions
               </button>
               <button
+                onClick={() => setTab("invitation")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "invitation" ? "bg-gray-800" : ""
+                } `}
+              >
+                Invitation
+              </button>
+              <button
                 onClick={() => setTab("edit")}
                 className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
                   tab === "edit" ? "bg-gray-800" : ""
@@ -425,14 +441,23 @@ export default function InterviewPreviewPage({ params }) {
             <div className=" w-full h-full md:p-9 rounded-lg mt-5">
               <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
-                  <h1 className=" text-lg md:text-2xl font-semibold">Highest Mark</h1>
-                  <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold pt-6 px-5">
-                    {interviewOverview?.maxScore || 0}<span className=" text-base px-2">%</span>
+                  <h1 className=" text-lg md:text-2xl font-semibold">
+                    Highest Mark
                   </h1>
-                  <p className=" text-md font-semibold px-5">{interviewOverview?.maxScoreCandidateFirstName || ''}{' '}{interviewOverview?.maxScoreCandidateLastName || '             '}</p>
+                  <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold pt-6 px-5">
+                    {interviewOverview?.maxScore || 0}
+                    <span className=" text-base px-2">%</span>
+                  </h1>
+                  <p className=" text-md font-semibold px-5">
+                    {interviewOverview?.maxScoreCandidateFirstName || ""}{" "}
+                    {interviewOverview?.maxScoreCandidateLastName ||
+                      "             "}
+                  </p>
                 </div>
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
-                  <h1 className=" text-lg md:text-2xl font-semibold">Total Sessions</h1>
+                  <h1 className=" text-lg md:text-2xl font-semibold">
+                    Total Sessions
+                  </h1>
                   <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold py-6 px-5">
                     {interviewOverview?.total || 0}
                     <span className=" text-base px-2">Sessions</span>
@@ -443,7 +468,8 @@ export default function InterviewPreviewPage({ params }) {
                     Completed Sessions
                   </h1>
                   <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold py-6 px-5">
-                    {interviewOverview?.totalCompletedInterviews || 0}<span className=" text-base px-2">Sessions</span>
+                    {interviewOverview?.totalCompletedInterviews || 0}
+                    <span className=" text-base px-2">Sessions</span>
                   </h1>
                 </div>
               </div>
@@ -618,7 +644,7 @@ export default function InterviewPreviewPage({ params }) {
           )}
 
           {tab === "settings" && (
-            <div className="w-full h-fit bg-slate-600/10 py-5 px-7 rounded-lg mt-5 border-2 border-gray-700">
+            <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
               <div className=" w-full flex items-center justify-between">
                 <div>
                   <h1 className=" text-2xl font-semibold">Delete Interview</h1>
@@ -629,7 +655,7 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
                 <AlertDialog>
                   <AlertDialogTrigger>
-                    <div className="h-12 min-w-[150px] w-[200px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-base text-white font-semibold flex items-center justify-center">
+                    <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
                       Delete
                     </div>
                   </AlertDialogTrigger>
@@ -658,8 +684,27 @@ export default function InterviewPreviewPage({ params }) {
               </div>
             </div>
           )}
+          {tab === "invitation" && (
+            <div className="w-full h-fit bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
+              <div className=" w-full flex items-center justify-between">
+                <div>
+                  <h1 className=" text-2xl font-semibold">Invite Candidate</h1>
+                  <p className=" text-sm text-gray-500 py-3">
+                    You can now invite the desired candidate by using their
+                    email address. Ensure the email is accurate before sending
+                    the invitation.
+                  </p>
+                </div>
+
+                <div onClick={() => setInviteModalOpen(true)} className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+                  Invite Candidates
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </SidebarInset>
+      {inviteModalOpen && (<InviteCandidateModal setInviteModalOpen={setInviteModalOpen}/>)}
     </>
   );
 }
