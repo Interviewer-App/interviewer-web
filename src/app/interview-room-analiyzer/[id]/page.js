@@ -149,7 +149,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       {isSubmitAnswers ? (
         <>
           <div className=" h-lvh">
-            <div className=" w-full fixed top-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-1000">
+            <div className=" w-full fixed bottom-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-1000">
             <ResponsiveAppBar pages={pages} />
             </div>
 
@@ -218,7 +218,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
                       <button
                         variant="secondary"
-                        className="absolute h-16 y-8 mt-4"
+                        className=" absolute top-0 right-6 mt-6 bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm text-white font-semibold h-11 w-[130px]"
                         onClick={nextQuestion}
                       >
                         Next Question
