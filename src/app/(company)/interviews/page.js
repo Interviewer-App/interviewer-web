@@ -138,7 +138,7 @@ const InterviewsPage = () => {
                 </h1>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className=" mx-auto my-4 block md:hidden rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+                  className=" mx-auto my-4 block md:hidden rounded-lg bg-white text-black px-5 py-2"
                 >
                   + Create Interview
                 </button>
