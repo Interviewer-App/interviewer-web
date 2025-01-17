@@ -246,7 +246,7 @@ const InterviewSchedulePage = () => {
                     </button>
                     <button
                       type="submit"
-                      className=" mt-6 bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm text-white font-semibold h-11 w-[130px]"
+                      className=" mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
                     >
                       Apply Filter
                     </button>

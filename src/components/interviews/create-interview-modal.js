@@ -622,7 +622,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
               onClick={handleSubmit}
               className={` ${
                 totalPercentage === 0 ? "block" : "hidden"
-              } mt-6 px-5 py-2 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold`}
+              } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
             >
               Create Interview
             </button>

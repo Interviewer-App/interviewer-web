@@ -29,6 +29,8 @@ import { PuffLoader } from "react-spinners";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from 'next/navigation';
 import { useSession, getSession } from "next-auth/react"
+import { CodeBlock } from "@/components/ui/code-block";
+import CodeEditor from '@uiw/react-textarea-code-editor';
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -44,6 +46,7 @@ const InterviewRoomPage = ({ params }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [questions, setQuestions] = useState([]); // Example questions
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
+  const [code, setCode] = useState(`// Your code here`);
 
   const {
     isListening,
@@ -106,6 +109,7 @@ const InterviewRoomPage = ({ params }) => {
 
   useEffect(() => {
     socket.on('questions', (data) => {
+      debugger
       console.log('Received questions:', data.questions);
       setQuestions(data.questions);
       setIsQuestionAvailabe(true);
@@ -176,12 +180,29 @@ const InterviewRoomPage = ({ params }) => {
             <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
               <div className="w-[70%] max-w-[1100px]">
                 <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
+                  {questions.type === "OPEN_ENDED" ? 
+                  (<>
                   <textarea
                     value={transcript} // Use combined answer (typed or transcript)
                     onChange={handleAnswerChange} // Handle typing
                     placeholder="your answer here..."
                     className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
                   />
+                  </>) : 
+                  (<div data-color-mode="dark">
+                    <CodeEditor
+      value={code}
+      language="js"
+      placeholder="Please enter JS code."
+      onChange={(evn) => setCode(evn.target.value)}
+      padding={15}
+      style={{
+        backgroundColor: "#f5f5f5",
+        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+      }}
+    />
+                  </div>)}
+                  
                 </div>
 
                 {/* Custom Stepper (Progress Bar) */}

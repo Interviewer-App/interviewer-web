@@ -371,7 +371,7 @@ export default function InterviewPreviewPage({ params }) {
 
         <div className=" px-9 py-4  max-w-[1500px] w-full mx-auto">
           <div className=" w-full flex flex-col md:flex-row justify-between md:items-center">
-            <h1 className=" text-4xl font-semibold">Interview Details</h1>
+            <h1 className=" text-4xl font-semibold">{interviewDetail.jobTitle} - Interview</h1>
             {interviewDetail.status !== "ACTIVE" ? (
               <button
                 onClick={() => handlePublishInterview("ACTIVE")}
