@@ -621,8 +621,8 @@ export default function InterviewPreviewPage({ params }) {
                   )}
               </div>
               <div className="flex w-full flex-col lg:flex-row justify-between items-start gap-4">
-                <div className=" w-full lg:w-[60%]">
-                  <h1 className=" text-2xl font-semibold py-5">Description</h1>
+                <div className=" w-full lg:w-[63%] pr-10 border-r-2 border-gray-800/50">
+                  <h1 className=" text-2xl font-semibold py-5  ">Description</h1>
                   <textarea
                     ref={textareaRef}
                     readOnly={!editDetails}
@@ -670,7 +670,7 @@ export default function InterviewPreviewPage({ params }) {
                     </div>
                   </div>
                 </div>
-                <div className=" w-full lg:w-[35%] flex flex-col items-start">
+                <div className=" w-full lg:w-[32%] flex flex-col items-start">
                   <div className=" w-full mt-5 md:mt-0 min-h-[350px]">
                     <h1 className=" text-2xl font-semibold py-5">
                       Interview Catagory
