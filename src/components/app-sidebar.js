@@ -79,7 +79,7 @@ const candidateItems = [
     icon: UserPlus,
   },
   {
-    title: "user profiles",
+    title: "user profile",
     url: "/user-profile",
     icon: UserRound ,
   },
