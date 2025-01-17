@@ -14,6 +14,7 @@ import {
 
 //Icons
 import { MdEdit } from "react-icons/md";
+import { IoCloseCircle } from "react-icons/io5";
 
 //UI Components
 import { Chip } from "@mui/material";
@@ -61,10 +62,10 @@ import {
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
 import { Button } from "@/components/ui/button";
-import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import InviteCandidateModal from "@/components/company/invite-candidate-modal";
+import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -72,7 +73,7 @@ export default function InterviewPreviewPage({ params }) {
   const [interviewDetail, setInterviewDetail] = useState("");
   const [interviewId, setInterviewId] = useState(null);
   const [description, setDescription] = useState("");
-  const [editDitails, setEditDetails] = useState(false);
+  const [editDetails, setEditDetails] = useState(false);
   const [title, setTitle] = useState("");
   const [interviewCategory, setInterviewCategory] = useState("");
   const [inputValue, setInputValue] = useState("");
@@ -90,6 +91,70 @@ export default function InterviewPreviewPage({ params }) {
   const [status, setStatus] = useState("");
   const [interviewOverview, setInterviewOverview] = useState({});
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [interviewCategories, setInterviewCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [inputPercentage, setInputPercentage] = useState("");
+  const [categoryList, setCatagoryList] = useState([]);
+  const [inputCatagory, setInputCatagory] = useState("");
+  const [totalPercentage, setTotalPercentage] = useState(0);
+
+  useEffect(() => {
+    const fetchInterviewCategories = async () => {
+      try {
+        const session = await getSession();
+        const companyId = session?.user?.companyID;
+        const response = await getInterviewCategoryCompanyById(companyId);
+        if (response) {
+          setInterviewCategories(response.data.categories);
+          setFilteredCategories(response.data.categories);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `Error fetching interviews: ${error}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    };
+    fetchInterviewCategories();
+  }, []);
+
+  useEffect(() => {
+    const filter = interviewCategories.filter((category) =>
+      categoryList.every((item) => item.key !== category.categoryId)
+    );
+    setFilteredCategories(filter);
+  }, [categoryList, inputCatagory, inputPercentage]);
+
+  const handleAddCatagoty = (e) => {
+    e.preventDefault();
+
+    if (
+      inputCatagory.trim() !== "" &&
+      inputPercentage.trim() !== "" &&
+      totalPercentage < 100
+    ) {
+      setCatagoryList((prev) => [
+        ...prev,
+        {
+          key: inputCatagory.trim(),
+          catagory: interviewCategories.find(
+            (cat) => cat.categoryId === inputCatagory.trim()
+          )?.categoryName,
+          percentage: inputPercentage.trim(),
+        },
+      ]);
+      setInputPercentage("");
+      setInputCatagory("");
+    }
+  };
+
+  const handleDeleteCategory = (catagoryToDelete) => () => {
+    setCatagoryList((catagory) =>
+      catagory.filter((catagory) => catagory.key !== catagoryToDelete.key)
+    );
+  };
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -171,13 +236,32 @@ export default function InterviewPreviewPage({ params }) {
     const fetchInterview = async () => {
       try {
         const response = await getInterviewById(interviewId);
-        setInterviewDetail(response.data);
+        if (response.data) {
+          setInterviewDetail(response.data);
+          if (response.data.CategoryAssignment) {
+            const categories = response.data.CategoryAssignment.map(
+              (category) => {
+                console.log(interviewCategories);
+                const matchingCategory = interviewCategories.find(
+                  (cat) => cat.categoryId === category.categoryId
+                );
+
+                return {
+                  key: category.categoryId,
+                  catagory: matchingCategory?.categoryName || "",
+                  percentage: category.percentage,
+                };
+              }
+            );
+            setCatagoryList(categories);
+          }
+        }
       } catch (error) {
         console.log("Error fetching interviews:", error);
       }
     };
     if (interviewId) fetchInterview();
-  }, [interviewId, status]);
+  }, [interviewId, status, interviewCategories]);
 
   useEffect(() => {
     setDescription(interviewDetail.jobDescription);
@@ -258,7 +342,15 @@ export default function InterviewPreviewPage({ params }) {
     }
   };
 
-  const handleSaveCanges = async (e) => {
+  useEffect(() => {
+    let total = 0;
+    categoryList.map((catagory) => {
+      total += parseFloat(catagory.percentage);
+    })
+    setTotalPercentage(total);
+  }, [categoryList]);
+
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
     try {
       const response = await updateInterview(interviewId, {
@@ -266,6 +358,12 @@ export default function InterviewPreviewPage({ params }) {
         jobTitle: title,
         requiredSkills: skills.join(", "),
         interviewCategory,
+        categoryAssignments: categoryList.map((catagory) => {
+          return {
+            categoryId: catagory.key,
+            percentage: parseFloat(catagory.percentage),
+          };
+        }),
       });
 
       if (response) {
@@ -326,7 +424,7 @@ export default function InterviewPreviewPage({ params }) {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
-  }, [description, tab, editDitails]);
+  }, [description, tab, editDetails]);
 
   const handleDeleteInterview = async () => {
     try {
@@ -483,45 +581,57 @@ export default function InterviewPreviewPage({ params }) {
                   Job Title:{" "}
                   <input
                     type="text"
-                    readOnly={!editDitails}
+                    readOnly={!editDetails}
                     value={title || ""}
                     onChange={(e) => setTitle(e.target.value)}
                     className={` ${
-                      !editDitails ? "bg-transparent" : "bg-[#32353b] px-5"
+                      !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
                     } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
                   />
                 </h1>
-                {!editDitails ? (
-                  <button
-                    onClick={() => setEditDetails(!editDitails)}
-                    className={` bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
-                  >
-                    <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
-                    Edit details
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSaveCanges}
-                    className=" bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 "
-                  >
-                    Save Changes
-                  </button>
-                )}
+                {interviewDetail.status !== "ACTIVE" &&
+                  interviewSessions.length === 0 && (
+                    <div>
+                      <button
+                        onClick={() => setEditDetails(!editDetails)}
+                        className={` ${
+                          editDetails ? "hidden" : "block"
+                        } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
+                      >
+                        <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
+                        Edit details
+                      </button>
+
+                      <button
+                        onClick={handleSaveChanges}
+                        className={` ${
+                          (editDetails && totalPercentage == 100 ) ? "block" : "hidden"
+                        } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        className={` ${
+                          (editDetails && totalPercentage != 100 ) ? "block" : "hidden"
+                        } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  )}
               </div>
               <div className="flex w-full flex-col lg:flex-row justify-between items-start gap-4">
                 <div className=" w-full lg:w-[60%]">
                   <h1 className=" text-2xl font-semibold py-5">Description</h1>
                   <textarea
                     ref={textareaRef}
-                    readOnly={!editDitails}
+                    readOnly={!editDetails}
                     className={` text-justify py-5 w-full resize-none ${
-                      !editDitails ? "bg-transparent" : "bg-[#32353b] px-5"
+                      !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
                     } rounded-lg focus:outline-none`}
                     value={description || ""}
                     onChange={(e) => setDescription(e.target.value)}
                   />
-                </div>
-                <div className=" w-full lg:w-[35%] flex flex-col items-start">
                   <div>
                     <h1 className=" text-2xl font-semibold py-5">
                       Required Skills
@@ -532,7 +642,7 @@ export default function InterviewPreviewPage({ params }) {
                           key={index}
                           label={skill}
                           onDelete={
-                            editDitails ? () => handleDelete(skill) : undefined
+                            editDetails ? () => handleDelete(skill) : undefined
                           }
                           sx={{
                             fontWeight: "bold",
@@ -546,7 +656,7 @@ export default function InterviewPreviewPage({ params }) {
                           }}
                         />
                       ))}
-                      {editDitails && (
+                      {editDetails && (
                         <input
                           type="text"
                           placeholder="Add Skills"
@@ -559,44 +669,114 @@ export default function InterviewPreviewPage({ params }) {
                       )}
                     </div>
                   </div>
-                  <div className=" w-full mt-5">
+                </div>
+                <div className=" w-full lg:w-[35%] flex flex-col items-start">
+                  <div className=" w-full mt-5 md:mt-0 min-h-[350px]">
                     <h1 className=" text-2xl font-semibold py-5">
                       Interview Catagory
                     </h1>
-                    {!editDitails && (
-                      <h1 className=" bg-[#2d2f36] py-2 w-fit px-9 rounded-full">
-                        {interviewCategory}
-                      </h1>
+                    {editDetails && (
+                      <p
+                        className={` text-red-500 text-xs py-2 ${
+                          totalPercentage !== 100 ? "block" : "hidden"
+                        }`}
+                      >
+                        *Please ensure the total percentage equals 100%. The sum
+                        of all category percentages should not exceed or fall
+                        below 100%. Adjust your inputs accordingly.
+                      </p>
                     )}
-                    {editDitails && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            className={`bg-[#32353b] w-[150px] h-[45px] m-0 px-2 focus:outline-none outline-none`}
-                            variant="outline"
+
+                    <div
+                      className={`flex w-full justify-between space-x-2 ${
+                        editDetails ? "block" : "hidden"
+                      }`}
+                    >
+                      <div className="w-[40%]">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                              variant="outline"
+                            >
+                              {interviewCategories.find(
+                                (cat) => cat.categoryId === inputCatagory
+                              )?.categoryName || "Select Category"}
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>
+                              Interview Catagory
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuRadioGroup
+                              value={inputCatagory}
+                              onValueChange={setInputCatagory}
+                            >
+                              {filteredCategories.map((category) => (
+                                <DropdownMenuRadioItem
+                                  key={category.categoryId}
+                                  value={category.categoryId}
+                                >
+                                  {category.categoryName}
+                                </DropdownMenuRadioItem>
+                              ))}
+                            </DropdownMenuRadioGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <div className="w-[40%]">
+                        <input
+                          value={inputPercentage}
+                          onChange={(e) => setInputPercentage(e.target.value)}
+                          placeholder="Percentage"
+                          type="number"
+                          className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
+                        />
+                      </div>
+                      <div className="w-[20%]">
+                          <button
+                            onClick={handleAddCatagoty}
+                            className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-full text-3xl flex items-center justify-center"
                           >
-                            {interviewCategory}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                          <DropdownMenuLabel>
-                            Interview Catagory
-                          </DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuRadioGroup
-                            value={interviewCategory}
-                            onValueChange={setInterviewCategory}
-                          >
-                            <DropdownMenuRadioItem value="Technical">
-                              Technical
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Behavioural">
-                              Behavioural
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
+                            +
+                          </button>
+                      
+                      </div>
+                    </div>
+                    <div className="  overflow-y-auto h-[300px]">
+                      <table className=" w-full">
+                        <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
+                          <tr>
+                            <td className=" p-3 w-[40%]">Catagory</td>
+                            <td className=" p-3 w-[40%]">Percentage</td>
+                            {editDetails && <td className=" p-3 w-[20%]"></td>}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {categoryList.map((catagory) => (
+                            <tr key={catagory.key} className=" bg-gray-800/10">
+                              <td className=" py-3 px-4 w-[40%]">
+                                {catagory.catagory}
+                              </td>
+                              <td className=" p-3 w-[40%] text-center">
+                                {catagory.percentage}
+                              </td>
+                              <td
+                                className={` p-3 w-[20%] text-center ${
+                                  editDetails ? "block" : "hidden"
+                                }`}
+                              >
+                                <IoCloseCircle
+                                  onClick={handleDeleteCategory(catagory)}
+                                  className=" text-gray-500 text-2xl cursor-pointer"
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -696,7 +876,10 @@ export default function InterviewPreviewPage({ params }) {
                   </p>
                 </div>
 
-                <div onClick={() => setInviteModalOpen(true)} className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+                <div
+                  onClick={() => setInviteModalOpen(true)}
+                  className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
+                >
                   Invite Candidates
                 </div>
               </div>
@@ -704,7 +887,9 @@ export default function InterviewPreviewPage({ params }) {
           )}
         </div>
       </SidebarInset>
-      {inviteModalOpen && (<InviteCandidateModal setInviteModalOpen={setInviteModalOpen}/>)}
+      {inviteModalOpen && (
+        <InviteCandidateModal setInviteModalOpen={setInviteModalOpen} />
+      )}
     </>
   );
 }
