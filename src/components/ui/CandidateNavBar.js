@@ -35,7 +35,7 @@ function ResponsiveAppBar({ pages}) {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'black', backgroundOpacity: 0.8 }}>
+    <AppBar position="static" sx={{ backgroundColor: 'rgba(119,93,251,0.33)', color: 'white', boxShadow: 0, backdropFilter: 'blur(10px)'}}>
       <Box sx={{ width: '100%' }}>
         <Toolbar disableGutters>
           {/* Mobile menu icon */}
@@ -114,11 +114,11 @@ function ResponsiveAppBar({ pages}) {
             {/* Leave Button */}
             <Button
               variant="outlined"
-              color="inherit"
-              sx={{ marginRight: 2 }}
+              className=" !bg-red-600 !lowercase !text-white !border-red-900"
+              sx={{ marginRight: 2, color: 'white', borderColor: 'white' }}
                // Trigger the leave action when clicked
             >
-              Leave
+              Leave Session
             </Button>
 
             {/* Avatar (User profile menu) */}
