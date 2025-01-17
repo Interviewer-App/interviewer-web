@@ -60,7 +60,7 @@ export default function ContactFormPreview() {
     <div className="">
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle className="text-2xl">Team Details</CardTitle>
+          <CardTitle className="text-2xl">Details</CardTitle>
           <CardDescription>
             Please fill out the form below for your Team.
           </CardDescription>
@@ -131,8 +131,8 @@ export default function ContactFormPreview() {
                   )}
                 />
 
-                <Button type="submit" className="w-full">
-                  Send Message
+                <Button type="submit" className="w-full font-semibold">
+                  Save Details
                 </Button>
               </div>
             </form>

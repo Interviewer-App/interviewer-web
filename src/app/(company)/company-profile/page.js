@@ -206,7 +206,7 @@ const InterviewCategoryPage = () => {
             ) : (
               // Sample content for Details Tab
               <div className="text-white">
-              <h2 className="text-xl font-semibold">Team Details</h2>
+              <h2 className="text-xl font-semibold">Details Form</h2>
               <div className="w-full"> {/* Added max-width and full width to left-align */}
                 <ContactFormPreview />
               </div>
