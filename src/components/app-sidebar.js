@@ -60,6 +60,11 @@ const companyItems = [
     url: "/interview-category",
     icon: SquarePen   ,
   },
+  {
+    title: "Comapny Profile",
+    url: "/companyProfile",
+    icon: MonitorCheck   ,
+  },
 ];
 
 const candidateItems = [
