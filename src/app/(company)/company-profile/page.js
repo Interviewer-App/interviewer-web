@@ -128,6 +128,7 @@ const InterviewCategoryPage = () => {
 
 
         <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
+        <h1 className="text-3xl font-semibold">Company Profile</h1>
         <div className=" w-full mt-5 ml-md mb-12">
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
