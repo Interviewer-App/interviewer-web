@@ -241,12 +241,12 @@ const InterviewSchedulePage = () => {
                     />
                   </div>
                   <div className=" w-full flex justify-between mt-5">
-                    <button className=" mt-6 bg-transparent border-2 hover:text-white hover:border-white border-gray-600 rounded-lg text-center text-base text-gray-600 font-semibold h-12 w-[150px]">
+                    <button className=" mt-6 bg-transparent border-2 hover:text-white hover:border-white border-gray-600 rounded-lg text-center text-sm text-gray-600 font-semibold h-11 w-[130px]">
                       Reset fitler
                     </button>
                     <button
                       type="submit"
-                      className=" mt-6 bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm text-white font-semibold h-12 w-[150px]"
+                      className=" mt-6 bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm text-white font-semibold h-11 w-[130px]"
                     >
                       Apply Filter
                     </button>
