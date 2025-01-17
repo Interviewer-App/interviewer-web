@@ -58,7 +58,7 @@ export default function ContactFormPreview() {
 
   return (
     <div className="">
-      <Card className="mx-auto max-w-lg">
+      <Card className="mt-6">
         <CardHeader>
           <CardTitle className="text-2xl">Team Details</CardTitle>
           <CardDescription>
