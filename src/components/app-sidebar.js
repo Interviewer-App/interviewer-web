@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen   } from "lucide-react";
+import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen,Warehouse   } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -63,7 +63,7 @@ const companyItems = [
   {
     title: "Comapny Profile",
     url: "/company-profile",
-    icon: MonitorCheck   ,
+    icon: Warehouse    ,
   },
 ];
 
@@ -76,6 +76,11 @@ const candidateItems = [
   {
     title: "Joined Interviews",
     url: "/joined-interviews",
+    icon: UserPlus,
+  },
+  {
+    title: "user profiles",
+    url: "/userProfile",
     icon: UserPlus,
   },
 ];
