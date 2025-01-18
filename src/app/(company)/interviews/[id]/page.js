@@ -346,7 +346,7 @@ export default function InterviewPreviewPage({ params }) {
     let total = 0;
     categoryList.map((catagory) => {
       total += parseFloat(catagory.percentage);
-    })
+    });
     setTotalPercentage(total);
   }, [categoryList]);
 
@@ -469,25 +469,76 @@ export default function InterviewPreviewPage({ params }) {
 
         <div className=" px-9 py-4  max-w-[1500px] w-full mx-auto">
           <div className=" w-full flex flex-col md:flex-row justify-between md:items-center">
-            <h1 className=" text-4xl font-semibold">{interviewDetail.jobTitle} - Interview</h1>
+            <h1 className=" text-4xl font-semibold">
+              {interviewDetail.jobTitle} - Interview
+            </h1>
             {interviewDetail.status !== "ACTIVE" ? (
-              <button
-                onClick={() => handlePublishInterview("ACTIVE")}
-                className={` ${
-                  tab === "edit" || tab === "settings" ? "hidden" : "block"
-                } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
-              >
-                Publish Now
-              </button>
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <button
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
+                  >
+                    Publish Now
+                  </button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                    Are you sure you want to publish this interview?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                    Once published, the job details will become visible to candidates.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handlePublishInterview("ACTIVE")}
+                      className="h-[40px] font-medium"
+                    >
+                      Publish
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             ) : (
-              <button
-                onClick={() => handlePublishInterview("ARCHIVED")}
-                className={` ${
-                  tab === "edit" || tab === "settings" ? "hidden" : "block"
-                } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
-              >
-                Unpublish
-              </button>
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <button
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
+                  >
+                    Unpublish
+                  </button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you sure you want to Unpublish this interview?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      If you unpublish your job post, its details will no longer
+                      be visible to candidates
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handlePublishInterview("ARCHIVED")}
+                      className="h-[40px] font-medium"
+                    >
+                      Unpublish
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
           <div className=" w-full mt-5">
@@ -575,207 +626,309 @@ export default function InterviewPreviewPage({ params }) {
           )}
 
           {tab === "edit" && (
-            <div className=" w-full h-fit bg-slate-600/10 p-9 rounded-lg mt-5">
-              <div className=" w-full flex justify-between items-center">
-                <h1 className=" text-2xl font-semibold">
-                  Job Title:{" "}
-                  <input
-                    type="text"
-                    readOnly={!editDetails}
-                    value={title || ""}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className={` ${
-                      !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                    } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
-                  />
-                </h1>
-                {interviewDetail.status !== "ACTIVE" &&
-                  interviewSessions.length === 0 && (
-                    <div>
-                      <button
-                        onClick={() => setEditDetails(!editDetails)}
-                        className={` ${
-                          editDetails ? "hidden" : "block"
-                        } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
-                      >
-                        <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
-                        Edit details
-                      </button>
+            <div className="w-full h-fit">
+              {interviewDetail.status === "ACTIVE" &&
+                interviewSessions.length > 0 && (
+                  <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-600">
+                    <div className=" w-full flex items-center justify-between">
+                      <div>
+                        <h1 className=" text-2xl font-semibold">
+                          Warning: Edit Mode Unavailable
+                        </h1>
+                        <p className=" text-sm text-gray-500 py-3">
+                          {`You cannot access edit mode because your interview has already been published and includes ${interviewSessions.length} interview sessions.`}
+                        </p>
+                      </div>
 
-                      <button
-                        onClick={handleSaveChanges}
-                        className={` ${
-                          (editDetails && totalPercentage == 100 ) ? "block" : "hidden"
-                        } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                      <div
+                        onClick={() => setTab("sessions")}
+                        className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-red-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
                       >
-                        Save Changes
-                      </button>
-                      <button
-                        className={` ${
-                          (editDetails && totalPercentage != 100 ) ? "block" : "hidden"
-                        } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
-                      >
-                        Save Changes
-                      </button>
-                    </div>
-                  )}
-              </div>
-              <div className="flex w-full flex-col lg:flex-row justify-between items-start gap-4">
-                <div className=" w-full lg:w-[63%] pr-10 border-r-2 border-gray-800/50">
-                  <h1 className=" text-2xl font-semibold py-5  ">Description</h1>
-                  <textarea
-                    ref={textareaRef}
-                    readOnly={!editDetails}
-                    className={` text-justify py-5 w-full resize-none ${
-                      !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                    } rounded-lg focus:outline-none`}
-                    value={description || ""}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <div>
-                    <h1 className=" text-2xl font-semibold py-5">
-                      Required Skills
-                    </h1>
-                    <div className=" flex flex-wrap w-full">
-                      {skills.map((skill, index) => (
-                        <Chip
-                          key={index}
-                          label={skill}
-                          onDelete={
-                            editDetails ? () => handleDelete(skill) : undefined
-                          }
-                          sx={{
-                            fontWeight: "bold",
-                            fontSize: "1rem",
-                            padding: "1rem",
-                            paddingY: "20px",
-                            borderRadius: "9999px",
-                            margin: "0.2rem",
-                            backgroundColor: "#2d2f36",
-                            color: "white",
-                          }}
-                        />
-                      ))}
-                      {editDetails && (
-                        <input
-                          type="text"
-                          placeholder="Add Skills"
-                          name="skills"
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          onKeyDown={handleKeyDown}
-                          className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-6 py-2 mb-5 focus:outline-none"
-                        />
-                      )}
+                        View Sessions
+                      </div>
                     </div>
                   </div>
+                )}
+              {interviewDetail.status === "ACTIVE" &&
+                interviewSessions.length === 0 && (
+                  <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-600">
+                    <div className=" w-full flex items-center justify-between">
+                      <div>
+                        <h1 className=" text-2xl font-semibold">
+                          Warning: Edit Mode Unavailable
+                        </h1>
+                        <p className=" text-sm text-gray-500 py-3">
+                          {`You cannot access edit mode because your interview has already been published.`}
+                        </p>
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger>
+                          <div className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-red-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+                            Unpublish now
+                          </div>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure you want to Unpublish this interview?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              If you unpublish your job post, its details will
+                              no longer be visible to candidates
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handlePublishInterview("ARCHIVED")}
+                              className="h-[40px] font-medium"
+                            >
+                              Unpublish
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
+                )}
+              {interviewDetail.status !== "ACTIVE" &&
+                interviewSessions.length > 0 && (
+                  <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-600">
+                    <div className=" w-full flex items-center justify-between">
+                      <div>
+                        <h1 className=" text-2xl font-semibold">
+                          Warning: Edit Mode Unavailable
+                        </h1>
+                        <p className=" text-sm text-gray-500 py-3">
+                          {`You cannot access edit mode because your interview has already includes ${interviewSessions.length} interview sessions.`}
+                        </p>
+                      </div>
+
+                      <div
+                        onClick={() => setTab("sessions")}
+                        className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-red-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
+                      >
+                        View Sessions
+                      </div>
+                    </div>
+                  </div>
+                )}
+              <div className=" w-full h-fit bg-slate-600/10 p-9 rounded-lg mt-5">
+                <div className=" w-full flex justify-between items-center">
+                  <h1 className=" text-2xl font-semibold">
+                    Job Title:{" "}
+                    <input
+                      type="text"
+                      readOnly={!editDetails}
+                      value={title || ""}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className={` ${
+                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
+                      } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
+                    />
+                  </h1>
+                  {interviewDetail.status !== "ACTIVE" &&
+                    interviewSessions.length === 0 && (
+                      <div>
+                        <button
+                          onClick={() => setEditDetails(!editDetails)}
+                          className={` ${
+                            editDetails ? "hidden" : "block"
+                          } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
+                        >
+                          <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
+                          Edit details
+                        </button>
+
+                        <button
+                          onClick={handleSaveChanges}
+                          className={` ${
+                            editDetails && totalPercentage == 100
+                              ? "block"
+                              : "hidden"
+                          } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          className={` ${
+                            editDetails && totalPercentage != 100
+                              ? "block"
+                              : "hidden"
+                          } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                        >
+                          Save Changes
+                        </button>
+                      </div>
+                    )}
                 </div>
-                <div className=" w-full lg:w-[32%] flex flex-col items-start">
-                  <div className=" w-full mt-5 md:mt-0 min-h-[350px]">
-                    <h1 className=" text-2xl font-semibold py-5">
-                      Interview Catagory
+                <div className="flex w-full flex-col lg:flex-row justify-between items-start gap-4">
+                  <div className=" w-full lg:w-[63%] pr-10 border-r-2 border-gray-800/50">
+                    <h1 className=" text-2xl font-semibold py-5  ">
+                      Description
                     </h1>
-                    {editDetails && (
-                      <p
-                        className={` text-red-500 text-xs py-2 ${
-                          totalPercentage !== 100 ? "block" : "hidden"
+                    <textarea
+                      ref={textareaRef}
+                      readOnly={!editDetails}
+                      className={` text-justify py-5 w-full resize-none ${
+                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
+                      } rounded-lg focus:outline-none`}
+                      value={description || ""}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <div>
+                      <h1 className=" text-2xl font-semibold py-5">
+                        Required Skills
+                      </h1>
+                      <div className=" flex flex-wrap w-full">
+                        {skills.map((skill, index) => (
+                          <Chip
+                            key={index}
+                            label={skill}
+                            onDelete={
+                              editDetails
+                                ? () => handleDelete(skill)
+                                : undefined
+                            }
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "1rem",
+                              padding: "1rem",
+                              paddingY: "20px",
+                              borderRadius: "9999px",
+                              margin: "0.2rem",
+                              backgroundColor: "#2d2f36",
+                              color: "white",
+                            }}
+                          />
+                        ))}
+                        {editDetails && (
+                          <input
+                            type="text"
+                            placeholder="Add Skills"
+                            name="skills"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-6 py-2 mb-5 focus:outline-none"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className=" w-full lg:w-[32%] flex flex-col items-start">
+                    <div className=" w-full mt-5 md:mt-0 min-h-[350px]">
+                      <h1 className=" text-2xl font-semibold py-5">
+                        Interview Catagory
+                      </h1>
+                      {editDetails && (
+                        <p
+                          className={` text-red-500 text-xs py-2 ${
+                            totalPercentage !== 100 ? "block" : "hidden"
+                          }`}
+                        >
+                          *Please ensure the total percentage equals 100%. The
+                          sum of all category percentages should not exceed or
+                          fall below 100%. Adjust your inputs accordingly.
+                        </p>
+                      )}
+
+                      <div
+                        className={`flex w-full justify-between space-x-2 ${
+                          editDetails ? "block" : "hidden"
                         }`}
                       >
-                        *Please ensure the total percentage equals 100%. The sum
-                        of all category percentages should not exceed or fall
-                        below 100%. Adjust your inputs accordingly.
-                      </p>
-                    )}
-
-                    <div
-                      className={`flex w-full justify-between space-x-2 ${
-                        editDetails ? "block" : "hidden"
-                      }`}
-                    >
-                      <div className="w-[40%]">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
-                              variant="outline"
-                            >
-                              {interviewCategories.find(
-                                (cat) => cat.categoryId === inputCatagory
-                              )?.categoryName || "Select Category"}
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>
-                              Interview Catagory
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup
-                              value={inputCatagory}
-                              onValueChange={setInputCatagory}
-                            >
-                              {filteredCategories.map((category) => (
-                                <DropdownMenuRadioItem
-                                  key={category.categoryId}
-                                  value={category.categoryId}
-                                >
-                                  {category.categoryName}
-                                </DropdownMenuRadioItem>
-                              ))}
-                            </DropdownMenuRadioGroup>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                      <div className="w-[40%]">
-                        <input
-                          value={inputPercentage}
-                          onChange={(e) => setInputPercentage(e.target.value)}
-                          placeholder="Percentage"
-                          type="number"
-                          className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
-                        />
-                      </div>
-                      <div className="w-[20%]">
+                        <div className="w-[40%]">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                                variant="outline"
+                              >
+                                {interviewCategories.find(
+                                  (cat) => cat.categoryId === inputCatagory
+                                )?.categoryName || "Select Category"}
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                              <DropdownMenuLabel>
+                                Interview Catagory
+                              </DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuRadioGroup
+                                value={inputCatagory}
+                                onValueChange={setInputCatagory}
+                              >
+                                {filteredCategories.map((category) => (
+                                  <DropdownMenuRadioItem
+                                    key={category.categoryId}
+                                    value={category.categoryId}
+                                  >
+                                    {category.categoryName}
+                                  </DropdownMenuRadioItem>
+                                ))}
+                              </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                        <div className="w-[40%]">
+                          <input
+                            value={inputPercentage}
+                            onChange={(e) => setInputPercentage(e.target.value)}
+                            placeholder="Percentage"
+                            type="number"
+                            className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
+                          />
+                        </div>
+                        <div className="w-[20%]">
                           <button
                             onClick={handleAddCatagoty}
                             className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-full text-3xl flex items-center justify-center"
                           >
                             +
                           </button>
-                      
+                        </div>
                       </div>
-                    </div>
-                    <div className="  overflow-y-auto h-[300px]">
-                      <table className=" w-full">
-                        <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
-                          <tr>
-                            <td className=" p-3 w-[40%]">Catagory</td>
-                            <td className=" p-3 w-[40%]">Percentage</td>
-                            {editDetails && <td className=" p-3 w-[20%]"></td>}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {categoryList.map((catagory) => (
-                            <tr key={catagory.key} className=" bg-gray-800/10">
-                              <td className=" py-3 px-4 w-[40%]">
-                                {catagory.catagory}
-                              </td>
-                              <td className=" p-3 w-[40%] text-center">
-                                {catagory.percentage}
-                              </td>
-                              <td
-                                className={` p-3 w-[20%] text-center ${
-                                  editDetails ? "block" : "hidden"
-                                }`}
-                              >
-                                <IoCloseCircle
-                                  onClick={handleDeleteCategory(catagory)}
-                                  className=" text-gray-500 text-2xl cursor-pointer"
-                                />
-                              </td>
+                      <div className="  overflow-y-auto h-[300px]">
+                        <table className=" w-full">
+                          <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
+                            <tr>
+                              <td className=" p-3 w-[40%]">Catagory</td>
+                              <td className=" p-3 w-[40%]">Percentage</td>
+                              {editDetails && (
+                                <td className=" p-3 w-[20%]"></td>
+                              )}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {categoryList.map((catagory) => (
+                              <tr
+                                key={catagory.key}
+                                className=" bg-gray-800/10"
+                              >
+                                <td className=" py-3 px-4 w-[40%]">
+                                  {catagory.catagory}
+                                </td>
+                                <td className=" p-3 w-[40%] text-center">
+                                  {catagory.percentage}
+                                </td>
+                                <td
+                                  className={` p-3 w-[20%] text-center ${
+                                    editDetails ? "block" : "hidden"
+                                  }`}
+                                >
+                                  <IoCloseCircle
+                                    onClick={handleDeleteCategory(catagory)}
+                                    className=" text-gray-500 text-2xl cursor-pointer"
+                                  />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -854,7 +1007,7 @@ export default function InterviewPreviewPage({ params }) {
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteInterview}
-                        className="h-[45px]"
+                        className="h-[40px] font-medium"
                       >
                         Delete
                       </AlertDialogAction>
