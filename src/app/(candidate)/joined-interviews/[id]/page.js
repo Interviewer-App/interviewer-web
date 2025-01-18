@@ -112,7 +112,7 @@ const JoinedInterviewsDetails = ({ params }) => {
         </div>
       </header>
 
-      <div className="px-9 py-4  max-w-[1500px] w-full mx-auto">
+      <div className="px-9 py-4  max-w-[1500px] w-full mx-auto text-white">
         <h1 className=" text-4xl font-semibold">Joined Interviews Details</h1>
         <div className=" flex flex-col md:flex-row justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-8">
           <div className=" w-full md:w-[50%]">
