@@ -475,13 +475,13 @@ export default function InterviewPreviewPage({ params }) {
             {interviewDetail.status !== "ACTIVE" ? (
               <AlertDialog>
                 <AlertDialogTrigger>
-                  <button
+                  <span
                     className={` ${
                       tab === "edit" || tab === "settings" ? "hidden" : "block"
                     } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
                   >
                     Publish Now
-                  </button>
+                  </span>
                 </AlertDialogTrigger>
 
                 <AlertDialogContent>
@@ -508,13 +508,13 @@ export default function InterviewPreviewPage({ params }) {
             ) : (
               <AlertDialog>
                 <AlertDialogTrigger>
-                  <button
+                  <span
                     className={` ${
                       tab === "edit" || tab === "settings" ? "hidden" : "block"
                     } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
                   >
                     Unpublish
-                  </button>
+                  </span>
                 </AlertDialogTrigger>
 
                 <AlertDialogContent>
@@ -663,9 +663,9 @@ export default function InterviewPreviewPage({ params }) {
                       </div>
                       <AlertDialog>
                         <AlertDialogTrigger>
-                          <div className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-red-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+                          <span className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-red-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
                             Unpublish now
-                          </div>
+                          </span>
                         </AlertDialogTrigger>
 
                         <AlertDialogContent>
