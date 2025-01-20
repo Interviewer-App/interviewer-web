@@ -47,3 +47,12 @@ body {
   }
   
 }
+.rich-text{
+  /* .editor{
+    height: auto;
+  } */
+  .ProseMirror{
+    height: 14rem;
+    overflow: auto;
+  }
+}

@@ -46,6 +46,7 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import Editor from "../rich-text/editor";
 
 const QontoStepIconRoot = styled("div")(({ theme }) => ({
   color: "#eaeaf0",
@@ -370,7 +371,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
   return (
     <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
-      <div className=" relative max-w-[700px] h-fit max-h-[700px] w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
+      <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
         <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-5">
           Create interview
         </h1>
@@ -407,7 +408,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 required
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
-              <textarea
+              {/* <textarea
                 placeholder="Job Description"
                 name="description"
                 value={jobDescription}
@@ -415,8 +416,17 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 required
                 rows={5}
                 className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 mb-5"
-              />
+              /> */}
+              <div className="mb-8 rich-text text-white">
+              <Editor
+                content={jobDescription}
+                onChange={setJobDescription}
+                placeholder="Write your post"
+                readOnly={false}
+                className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
 
+              </div>
+             
               <Paper
                 sx={{
                   display: "flex",
