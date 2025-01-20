@@ -423,6 +423,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 onChange={setJobDescription}
                 placeholder="Write your post"
                 readOnly={false}
+                required
                 className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
 
               </div>

@@ -54,5 +54,6 @@ body {
   .ProseMirror{
     height: 14rem;
     overflow: auto;
+    
   }
 }
