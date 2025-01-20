@@ -31,7 +31,7 @@ import { usePathname, useRouter, redirect } from 'next/navigation';
 import { useSession, getSession } from "next-auth/react"
 import { CodeBlock } from "@/components/ui/code-block";
 import CodeEditor from '@uiw/react-textarea-code-editor';
-
+import Editor from "@/components/rich-text/editor";
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -46,7 +46,7 @@ const InterviewRoomPage = ({ params }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [questions, setQuestions] = useState([]); // Example questions
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
-  const [code, setCode] = useState(`// Your code here`);
+  const [code, setCode] = useState(`Write your code here`);
 
   const {
     isListening,
@@ -180,29 +180,38 @@ const InterviewRoomPage = ({ params }) => {
             <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
               <div className="w-[70%] max-w-[1100px]">
                 <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
-                  {questions.type === "OPEN_ENDED" ? 
-                  (<>
-                  <textarea
-                    value={transcript} // Use combined answer (typed or transcript)
-                    onChange={handleAnswerChange} // Handle typing
-                    placeholder="your answer here..."
-                    className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
-                  />
-                  </>) : 
-                  (<div data-color-mode="dark">
-                    <CodeEditor
-      value={code}
-      language="js"
-      placeholder="Please enter JS code."
-      onChange={(evn) => setCode(evn.target.value)}
-      padding={15}
-      style={{
-        backgroundColor: "#f5f5f5",
-        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-      }}
-    />
-                  </div>)}
-                  
+                  {questions.type === "OPEN_ENDED" ?
+                    (<>
+                      <textarea
+                        value={transcript} // Use combined answer (typed or transcript)
+                        onChange={handleAnswerChange} // Handle typing
+                        placeholder="your answer here..."
+                        className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
+                      />
+                    </>) :
+                    (<div data-color-mode="dark">
+                      {/* <CodeEditor
+                        value={code}
+                        language="js"
+                        placeholder="Please enter JS code."
+                        onChange={(evn) => setCode(evn.target.value)}
+                        padding={15}
+                        style={{
+                          backgroundColor: "#f5f5f5",
+                          fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                        }}
+                      /> */
+                      <Editor
+                      content={code}
+                      onChange={(evn) => setCode(evn.target.value)}
+                      placeholder="Write your post"
+                      readOnly={false}
+                      required
+                      className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
+                      }
+                      
+                    </div>)}
+
                 </div>
 
                 {/* Custom Stepper (Progress Bar) */}
@@ -230,14 +239,14 @@ const InterviewRoomPage = ({ params }) => {
                     className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
                   >
                     Submit Answer
-                  </button>):(
-                  <button
-                    // onClick={handleSubmit}
-                    // disabled={!transcript}
-                    className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
-                  >
-                    Finish Attempt
-                  </button>)}
+                  </button>) : (
+                    <button
+                      // onClick={handleSubmit}
+                      // disabled={!transcript}
+                      className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+                    >
+                      Finish Attempt
+                    </button>)}
                 </div>
               </div>
             </div>
