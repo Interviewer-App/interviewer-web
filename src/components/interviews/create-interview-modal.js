@@ -41,7 +41,8 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Check from "@mui/icons-material/Check";
 import SettingsIcon from "@mui/icons-material/Settings";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import CategorySharpIcon from "@mui/icons-material/CategorySharp";
+import AvTimerSharpIcon from "@mui/icons-material/AvTimerSharp";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
@@ -124,7 +125,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
     border: 0,
-    backgroundColor: "#eaeaf0",
+    backgroundColor: "#3d3d3e",
     borderRadius: 1,
     ...theme.applyStyles("dark", {
       backgroundColor: theme.palette.grey[800],
@@ -133,7 +134,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 }));
 
 const ColorlibStepIconRoot = styled("div")(({ theme }) => ({
-  backgroundColor: "#ccc",
+  backgroundColor: "#3d3d3e",
   zIndex: 1,
   color: "#fff",
   width: 50,
@@ -169,7 +170,8 @@ function ColorlibStepIcon(props) {
 
   const icons = {
     1: <SettingsIcon />,
-    2: <GroupAddIcon />,
+    2: <AvTimerSharpIcon />,
+    3: <CategorySharpIcon />,
   };
 
   return (
@@ -200,7 +202,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const steps = ["Interview Details", "Categories"];
+const steps = ["Interview Details", "Schedules", "Categories"];
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -219,10 +221,28 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [inputCatagory, setInputCatagory] = React.useState("");
   const [inputPercentage, setInputPercentage] = React.useState("");
   const [categoryList, setCatagoryList] = React.useState([]);
+  const [inputScheduleDate, setInputScheduleDate] = React.useState(new Date());
+  const [inputScheduleStartTime, setInputScheduleStartTime] = React.useState(
+    new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+  const [inputScheduleEndTime, setInputScheduleEndTime] = React.useState(
+    new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+  const [scheduleList, setScheduleList] = React.useState([]);
   const [totalPercentage, setTotalPercentage] = React.useState(0);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
 
   const { toast } = useToast();
+
+  React.useEffect(() => {
+    console.log("date", inputScheduleStartTime);
+  }, [inputScheduleStartTime]);
 
   React.useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -292,6 +312,75 @@ export default function CreateInterviewModal({ setModalOpen }) {
     );
   };
 
+  const handleAddSchedule = (e) => {
+    e.preventDefault();
+
+    if (
+      !inputScheduleDate ||
+      !inputScheduleStartTime ||
+      !inputScheduleEndTime
+    ) {
+      alert("All fields are required.");
+      return;
+    }
+
+    const newStart = convertToMinutes(inputScheduleStartTime);
+    const newEnd = convertToMinutes(inputScheduleEndTime);
+    if (newStart >= newEnd) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `Start time must be earlier than end time.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+
+    const hasConflict = scheduleList.some((schedule) => {
+      const existingStart = convertToMinutes(schedule.startTime);
+      const existingEnd = convertToMinutes(schedule.endTime);
+
+      return (
+        schedule.date === inputScheduleDate &&
+        newStart < existingEnd &&
+        newEnd > existingStart
+      );
+    });
+
+    if (hasConflict) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `The schedule conflicts with an existing time slot.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+    setScheduleList((prev) => [
+      ...prev,
+      {
+        key: scheduleList.length,
+        date: inputScheduleDate,
+        startTime: inputScheduleStartTime,
+        endTime: inputScheduleEndTime,
+      },
+    ]);
+    setInputScheduleDate("");
+    setInputScheduleStartTime("");
+    setInputScheduleEndTime("");
+  };
+
+  const convertToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const handleDeleteSchedule = (scheduleToDelete) => () => {
+    setScheduleList((schedule) =>
+      schedule.filter((schedule) => schedule.key !== scheduleToDelete.key)
+    );
+  };
+
   React.useEffect(() => {
     const filter = interviewCategories.filter((category) =>
       categoryList.every((item) => item.key !== category.categoryId)
@@ -312,23 +401,40 @@ export default function CreateInterviewModal({ setModalOpen }) {
     try {
       const session = await getSession();
       const companyId = session?.user?.companyID;
-      const scheduleDate = new Date(date);
-      const [hours, minutes] = time.split(":").map(Number);
-      scheduleDate.setUTCHours(hours, minutes, 0, 0);
-      const isoString = scheduleDate.toISOString();
       const interviewData = {
         companyID: companyId,
         jobTitle,
         jobDescription,
         interviewCategory,
         requiredSkills: chipData.map((chip) => chip.label).join(", "),
-        scheduledDate: isoString,
-        scheduledAt: isoString,
+        startDate: new Date(date.from).toISOString(),
+        endDate: new Date(date.to).toISOString(),
         status: "DRAFT",
         categoryAssignments: categoryList.map((catagory) => {
           return {
             categoryId: catagory.key,
             percentage: parseFloat(catagory.percentage),
+          };
+        }),
+        schedules: scheduleList.map((schedule) => {
+          const date = new Date(schedule.date);
+
+          const [startHours, startMinutes] = schedule.startTime
+            .split(":")
+            .map(Number);
+          date.setUTCHours(startHours, startMinutes, 0, 0); 
+          const startIsoString = date.toISOString(); 
+
+
+          const [endHours, endMinutes] = schedule.endTime
+            .split(":")
+            .map(Number);
+          date.setUTCHours(endHours, endMinutes, 0, 0); 
+          const endIsoString = date.toISOString(); 
+
+          return {
+            startTime: startIsoString,
+            endTime: endIsoString,
           };
         }),
       };
@@ -408,15 +514,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 required
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
-              {/* <textarea
-                placeholder="Job Description"
-                name="description"
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                required
-                rows={5}
-                className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 mb-5"
-              /> */}
               <div className="mb-8 rich-text text-white">
               <Editor
                 content={jobDescription}
@@ -470,46 +567,164 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 />
               </Paper>
 
-              <div className=" w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2  mt-5">
-                <div className=" w-full">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon />
-                        {date ? date.toLocaleDateString() : "Scheduled Date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="w-full">
-                  <input
-                    type="time"
-                    placeholder="Scheduled Time"
-                    name="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    required
-                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
-                  />
-                </div>
+              <div className=" w-full mt-5">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {date?.from ? (
+                        date.to ? (
+                          <>
+                            {date.from.toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}{" "}
+                            -{" "}
+                            {date.to.toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </>
+                        ) : (
+                          date.from.toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })
+                        )
+                      ) : (
+                        <span>Pick Date Range</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="range"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                      numberOfMonths={2}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           )}
           {stepperCount === 1 && (
+            <div className=" w-full mt-5 min-h-[350px]">
+              <div className="  overflow-y-auto h-[300px]">
+                <table className=" w-full">
+                  <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
+                    <tr>
+                      <td className=" p-3 w-[30%]">Date</td>
+                      <td className=" p-3 w-[30%]">Start Time</td>
+                      <td className=" p-3 w-[30%]">End Time</td>
+                      <td className=" p-3 w-[10%]"></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className=" w-[30%]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                                !inputScheduleDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {inputScheduleDate
+                                ? inputScheduleDate.toLocaleDateString()
+                                : "Scheduled Date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={inputScheduleDate}
+                              onSelect={setInputScheduleDate}
+                              initialFocus
+                              disabled={(date) =>
+                                date < new Date().setHours(0, 0, 0, 0)
+                              }
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </td>
+                      <td className=" w-[30%] p-1">
+                        <input
+                          type="time"
+                          placeholder="Start Time"
+                          name="start_time"
+                          value={inputScheduleStartTime}
+                          onChange={(e) =>
+                            setInputScheduleStartTime(e.target.value)
+                          }
+                          required
+                          className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
+                        />
+                      </td>
+                      <td className=" w-[30%]">
+                        <input
+                          type="time"
+                          placeholder="End Time"
+                          name="end_time"
+                          value={inputScheduleEndTime}
+                          onChange={(e) =>
+                            setInputScheduleEndTime(e.target.value)
+                          }
+                          required
+                          className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
+                        />
+                      </td>
+                      <td className=" w-[10%]">
+                        <button
+                          onClick={handleAddSchedule}
+                          className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center ml-2"
+                        >
+                          +
+                        </button>
+                      </td>
+                    </tr>
+                    {scheduleList.map((schedule) => (
+                      <tr key={schedule.key} className=" bg-gray-800/10">
+                        <td className=" py-3 px-4 w-[30%] text-center">
+                          {new Date(schedule.date).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </td>
+                        <td className=" p-3 w-[30%] text-center">
+                          {schedule.startTime}
+                        </td>
+                        <td className=" p-3 w-[30%] text-center">
+                          {schedule.endTime}
+                        </td>
+                        <td className=" p-3 w-[10%] text-center">
+                          <IoCloseCircle
+                            onClick={handleDeleteSchedule(schedule)}
+                            className=" text-gray-500 text-2xl cursor-pointer"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+          {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px]">
               <p
                 className={` text-red-500 text-xs py-2 ${
@@ -615,10 +830,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
             <button></button>
           )}
 
-          {stepperCount < 1 ? (
+          {stepperCount < 2 ? (
             <button
               onClick={() => setStepperCount(stepperCount + 1)}
-              className=" mt-6 px-5 py-2 cursor-pointer border-2 border-gray-700 rounded-lg text-center text-sm text-gray-700 hover:text-gray-400 hover:border-gray-400 font-semibold"
+              className={`  mt-6 px-5 py-2 cursor-pointer border-2 border-gray-700 rounded-lg text-center text-sm text-gray-700 hover:text-gray-400 hover:border-gray-400 font-semibold`}
             >
               Next
             </button>
