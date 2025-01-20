@@ -32,6 +32,8 @@ import { useSession, getSession } from "next-auth/react"
 import { CodeBlock } from "@/components/ui/code-block";
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import Editor from "@/components/rich-text/editor";
+import VideoCall from "@/components/video/video";
+
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -209,7 +211,7 @@ const InterviewRoomPage = ({ params }) => {
                       required
                       className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
                       }
-                      
+
                     </div>)}
 
                 </div>
@@ -326,6 +328,7 @@ const InterviewRoomPage = ({ params }) => {
         <div className=" w-full flex flex-col justify-center items-center mb-16">
           <PuffLoader color="#ffffff" />
         </div>
+        <VideoCall sessionId={sessionId} />
         <div className=" w-full flex flex-col justify-center] items-center">
           <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
             Waiting for the company to start the interview session. Please hold on until the session begins.
