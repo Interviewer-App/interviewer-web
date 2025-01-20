@@ -15,6 +15,7 @@ import {
 //Icons
 import { MdEdit } from "react-icons/md";
 import { IoCloseCircle } from "react-icons/io5";
+import { CalendarIcon, Percent } from "lucide-react";
 
 //UI Components
 import { Chip } from "@mui/material";
@@ -57,6 +58,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 //API
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
@@ -66,7 +74,6 @@ import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
-import InvitedCandidates from "@/components/interviews/invite-candidates";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -98,6 +105,20 @@ export default function InterviewPreviewPage({ params }) {
   const [categoryList, setCatagoryList] = useState([]);
   const [inputCatagory, setInputCatagory] = useState("");
   const [totalPercentage, setTotalPercentage] = useState(0);
+  const [inputScheduleDate, setInputScheduleDate] = useState(new Date());
+  const [inputScheduleStartTime, setInputScheduleStartTime] = useState(
+    new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+  const [inputScheduleEndTime, setInputScheduleEndTime] = useState(
+    new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+  const [scheduleList, setScheduleList] = useState([]);
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -154,6 +175,80 @@ export default function InterviewPreviewPage({ params }) {
   const handleDeleteCategory = (catagoryToDelete) => () => {
     setCatagoryList((catagory) =>
       catagory.filter((catagory) => catagory.key !== catagoryToDelete.key)
+    );
+  };
+
+  const handleAddSchedule = (e) => {
+    e.preventDefault();
+
+    if (
+      !inputScheduleDate ||
+      !inputScheduleStartTime ||
+      !inputScheduleEndTime
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `All fields are required.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+
+    const newStart = convertToMinutes(inputScheduleStartTime);
+    const newEnd = convertToMinutes(inputScheduleEndTime);
+    if (newStart >= newEnd) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `Start time must be earlier than end time.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+
+    const hasConflict = scheduleList.some((schedule) => {
+      const existingStart = convertToMinutes(schedule.startTime);
+      const existingEnd = convertToMinutes(schedule.endTime);
+
+      return (
+        schedule.date === inputScheduleDate &&
+        newStart < existingEnd &&
+        newEnd > existingStart
+      );
+    });
+
+    if (hasConflict) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `The schedule conflicts with an existing time slot.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+    setScheduleList((prev) => [
+      ...prev,
+      {
+        key: scheduleList.length,
+        date: inputScheduleDate,
+        startTime: inputScheduleStartTime,
+        endTime: inputScheduleEndTime,
+      },
+    ]);
+    setInputScheduleDate("");
+    setInputScheduleStartTime("");
+    setInputScheduleEndTime("");
+  };
+
+  const convertToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const handleDeleteSchedule = (scheduleToDelete) => () => {
+    setScheduleList((schedule) =>
+      schedule.filter((schedule) => schedule.key !== scheduleToDelete.key)
     );
   };
 
@@ -242,7 +337,6 @@ export default function InterviewPreviewPage({ params }) {
           if (response.data.CategoryAssignment) {
             const categories = response.data.CategoryAssignment.map(
               (category) => {
-                console.log(interviewCategories);
                 const matchingCategory = interviewCategories.find(
                   (cat) => cat.categoryId === category.categoryId
                 );
@@ -255,6 +349,16 @@ export default function InterviewPreviewPage({ params }) {
               }
             );
             setCatagoryList(categories);
+          }
+          if (response.data.scheduling) {
+            const schedules = response.data.scheduling.map((schedule) => ({
+              key: schedule.scheduleID,
+              date: new Date(schedule.startTime).toLocaleDateString(),
+              startTime: new Date(schedule.startTime).toLocaleTimeString(),
+              endTime: new Date(schedule.endTime).toLocaleTimeString(),
+              isBooked: schedule.isBooked,
+            }));
+            setScheduleList(schedules);
           }
         }
       } catch (error) {
@@ -365,6 +469,28 @@ export default function InterviewPreviewPage({ params }) {
             percentage: parseFloat(catagory.percentage),
           };
         }),
+        schedules: scheduleList
+          .filter((schedule) => !schedule.isBooked)
+          .map((schedule) => {
+            const date = new Date(schedule.date);
+
+            const [startHours, startMinutes] = schedule.startTime
+              .split(":")
+              .map(Number);
+            date.setUTCHours(startHours, startMinutes, 0, 0);
+            const startIsoString = date.toISOString();
+
+            const [endHours, endMinutes] = schedule.endTime
+              .split(":")
+              .map(Number);
+            date.setUTCHours(endHours, endMinutes, 0, 0);
+            const endIsoString = date.toISOString();
+
+            return {
+              startTime: startIsoString,
+              endTime: endIsoString,
+            };
+          }),
       });
 
       if (response) {
@@ -488,10 +614,11 @@ export default function InterviewPreviewPage({ params }) {
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                    Are you sure you want to publish this interview?
+                      Are you sure you want to publish this interview?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                    Once published, the job details will become visible to candidates.
+                      Once published, the job details will become visible to
+                      candidates.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
 
@@ -818,6 +945,121 @@ export default function InterviewPreviewPage({ params }) {
                         )}
                       </div>
                     </div>
+                    <div>
+                      <h1 className=" text-2xl font-semibold py-5">
+                        Interview Schedules
+                      </h1>
+                      <table className=" w-full">
+                        <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
+                          <tr>
+                            <td className=" p-3 w-[30%]">Date</td>
+                            <td className=" p-3 w-[30%]">Start Time</td>
+                            <td className=" p-3 w-[30%]">End Time</td>
+                            <td className=" p-3 w-[10%]"></td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {editDetails && (
+                            <tr>
+                              <td className=" w-[30%]">
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                                        !inputScheduleDate &&
+                                          "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon />
+                                      {inputScheduleDate
+                                        ? inputScheduleDate.toLocaleDateString()
+                                        : "Scheduled Date"}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-auto p-0">
+                                    <Calendar
+                                      mode="single"
+                                      selected={inputScheduleDate}
+                                      onSelect={setInputScheduleDate}
+                                      initialFocus
+                                      disabled={(date) =>
+                                        date < new Date().setHours(0, 0, 0, 0)
+                                      }
+                                    />
+                                  </PopoverContent>
+                                </Popover>
+                              </td>
+                              <td className=" w-[30%] p-1">
+                                <input
+                                  type="time"
+                                  placeholder="Start Time"
+                                  name="start_time"
+                                  value={inputScheduleStartTime}
+                                  onChange={(e) =>
+                                    setInputScheduleStartTime(e.target.value)
+                                  }
+                                  required
+                                  className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
+                                />
+                              </td>
+                              <td className=" w-[30%]">
+                                <input
+                                  type="time"
+                                  placeholder="End Time"
+                                  name="end_time"
+                                  value={inputScheduleEndTime}
+                                  onChange={(e) =>
+                                    setInputScheduleEndTime(e.target.value)
+                                  }
+                                  required
+                                  className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
+                                />
+                              </td>
+                              <td className=" w-[10%]">
+                                <button
+                                  onClick={handleAddSchedule}
+                                  className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center ml-2"
+                                >
+                                  +
+                                </button>
+                              </td>
+                            </tr>
+                          )}
+                          {scheduleList.map((schedule) => (
+                            <tr key={schedule.key} className=" bg-gray-800/10">
+                              <td className=" py-3 px-4 w-[30%] text-center">
+                                {new Date(schedule.date).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "numeric",
+                                    month: "long",
+                                    year: "numeric",
+                                  }
+                                )}
+                              </td>
+                              <td className=" p-3 w-[30%] text-center">
+                                {schedule.startTime}
+                              </td>
+                              <td className=" p-3 w-[30%] text-center">
+                                {schedule.endTime}
+                              </td>
+                              <td className=" p-3 w-[10%] text-center">
+                                {editDetails && (
+                                  <IoCloseCircle
+                                    onClick={handleDeleteSchedule(schedule)}
+                                    className={` ${
+                                      schedule.isBooked ? "hidden" : "block"
+                                    } text-gray-500 text-2xl cursor-pointer`}
+                                  />
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <div className=" w-full lg:w-[32%] flex flex-col items-start">
                     <div className=" w-full mt-5 md:mt-0 min-h-[350px]">
@@ -1019,7 +1261,6 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           )}
           {tab === "invitation" && (
-            <>
             <div className="w-full h-fit bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
               <div className=" w-full flex items-center justify-between">
                 <div>
@@ -1039,7 +1280,6 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
             </div>
-             <InvitedCandidates /></>
           )}
         </div>
       </SidebarInset>
