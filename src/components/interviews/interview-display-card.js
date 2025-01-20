@@ -19,7 +19,6 @@ export default function InterviewDisplayCard({ index, interview }) {
       onClick={navigationClickHandler}
       className=" group relative w-full h-full flex flex-col items-center justify-center rounded-xl py-8 px-6 bg-gray-800/80 cursor-pointer hover:bg-gray-800/90 transition-all duration-300"
     >
-      {/* <div className=" group-hover:w-full group-hover:h-full absolute top-0 left-0 rounded-lg w-0 h-0 bg-gradient-to-bl from-[#785DFB]/10 to-[#65aaa6]/30 "></div> */}
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
@@ -32,15 +31,20 @@ export default function InterviewDisplayCard({ index, interview }) {
       </TooltipProvider>
 
       <h3 className=" text-base md:text-xl">
-        Date:{" "}
-        {new Date(interview.scheduledDate).toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
+        Satrt:{" "}
+        {new Date(interview.startDate).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
           year: "numeric",
         })}
       </h3>
       <h3 className=" text-base md:text-xl p-1">
-        Time: {new Date(interview.scheduledAt).toLocaleTimeString()}
+        End:{" "}
+        {new Date(interview.endDate).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
       </h3>
     </div>
   );
