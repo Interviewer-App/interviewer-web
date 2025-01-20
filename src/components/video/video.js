@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import Peer from 'peerjs';
 import socket from "../../lib/utils/socket";
@@ -38,9 +38,9 @@ const VideoCall = ({ sessionId }) => {
   
     return (
       <div>
-        <video srcObject={localStream} autoPlay muted></video>
+        <video src={localStream} autoPlay muted></video>
         {remoteStreams.map(stream => (
-          <video srcObject={stream} autoPlay key={stream.id}></video>
+          <video src={stream} autoPlay key={stream.id}></video>
         ))}
       </div>
     );

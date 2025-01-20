@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { fetchJoinedInterviews } from '@/lib/api/interview-session';
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -29,8 +29,8 @@ const MyInterviews = () => {
     const [limit, setLimit] = useState(10);  // Limit of items per page
     const [totalUsers, setTotalUsers] = useState(0);  // Total users count for pagination
 
-    const myVideoRef = useRef<HTMLVideoElement>(null);
-    const callingVideoRef = useRef<HTMLVideoElement>(null);
+    const myVideoRef = useRef < HTMLVideoElement > (null);
+    const callingVideoRef = useRef < HTMLVideoElement > (null);
 
     useEffect(() => {
         const fetchUserJoinedInterviews = async () => {
@@ -95,53 +95,25 @@ const MyInterviews = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="hidden md:block" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage>Interview Session</BreadcrumbPage>
+                                <BreadcrumbPage>My Interviews</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
             </header>
-           
+
             <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
-          <h1 className="text-3xl font-semibold">Interviews</h1>
-          <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
-            <div>
-              <h1 className=" text-2xl font-semibold">My Interview</h1>
-              <div className="flex mb-5 justify-end">
-                </div>
-                <div>   
-                {loading ? (
-                    <div>Loading interviews...</div>
-                ) : (
-                    <DataTable columns={columns} data={interviewData} />
-                )}
+                <h1 className="text-3xl font-semibold">My Interviews</h1>
+                <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
+                    <div>
+                        <h1 className=" text-2xl font-semibold">My Interview</h1>
+
+                  
+                    </div>
+
+
 
                 </div>
-
-                </div>
-
-
-                {/* Pagination Section */}
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious onClick={handlePreviousPage} disabled={page <= 1} />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink onClick={() => setPage(page)}>{page}</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink onClick={() => setPage(page + 1)}>{page + 1}</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationEllipsis />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext onClick={handleNextPage} disabled={page * limit >= totalUsers} />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            </div>
             </div>
         </SidebarInset>
     );
