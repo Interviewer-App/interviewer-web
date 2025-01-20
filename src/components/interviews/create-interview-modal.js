@@ -212,7 +212,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [chipData, setChipData] = React.useState([]);
   const [inputValue, setInputValue] = React.useState("");
   const [jobTitle, setJobTitle] = React.useState("");
-  const [jobDescription, setJobDescription] = React.useState("");
+  const [jobDescription, setJobDescription] = React.useState("Description..");
   const [interviewCategory, setInterviewCategory] = React.useState("Technical");
   const [interviewCategories, setInterviewCategories] = React.useState([]);
   const [date, setDate] = React.useState("");
