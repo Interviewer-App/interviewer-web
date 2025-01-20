@@ -10,8 +10,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
+ 
 
-// import { format } from "date-fns";
 import { CalendarIcon, Percent } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -212,11 +212,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [chipData, setChipData] = React.useState([]);
   const [inputValue, setInputValue] = React.useState("");
   const [jobTitle, setJobTitle] = React.useState("");
-  const [jobDescription, setJobDescription] = React.useState("Description..");
+  const [jobDescription, setJobDescription] = React.useState("");
   const [interviewCategory, setInterviewCategory] = React.useState("Technical");
   const [interviewCategories, setInterviewCategories] = React.useState([]);
   const [date, setDate] = React.useState("");
-  const [time, setTime] = React.useState("");
   const [stepperCount, setStepperCount] = React.useState(0);
   const [inputCatagory, setInputCatagory] = React.useState("");
   const [inputPercentage, setInputPercentage] = React.useState("");
@@ -235,8 +234,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
     })
   );
   const [scheduleList, setScheduleList] = React.useState([]);
-  const [totalPercentage, setTotalPercentage] = React.useState(100);
-  const [addButtonDisable, setAddButtonDisable] = React.useState(false);
+  const [totalPercentage, setTotalPercentage] = React.useState(0);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
 
   const { toast } = useToast();
@@ -286,12 +284,11 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
   const handleAddCatagoty = (e) => {
     e.preventDefault();
-    setTotalPercentage(totalPercentage - parseFloat(inputPercentage));
 
     if (
       inputCatagory.trim() !== "" &&
       inputPercentage.trim() !== "" &&
-      totalPercentage > 0
+      totalPercentage < 100
     ) {
       setCatagoryList((prev) => [
         ...prev,
@@ -309,9 +306,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
   };
 
   const handleDeleteCategory = (catagoryToDelete) => () => {
-    setTotalPercentage(
-      totalPercentage + parseFloat(catagoryToDelete.percentage)
-    );
     setCatagoryList((catagory) =>
       catagory.filter((catagory) => catagory.key !== catagoryToDelete.key)
     );
@@ -325,7 +319,12 @@ export default function CreateInterviewModal({ setModalOpen }) {
       !inputScheduleStartTime ||
       !inputScheduleEndTime
     ) {
-      alert("All fields are required.");
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `All fields are required.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
       return;
     }
 
@@ -393,16 +392,13 @@ export default function CreateInterviewModal({ setModalOpen }) {
     setFilteredCategories(filter);
   }, [categoryList, inputCatagory, inputPercentage]);
 
-  const handleAddCatagoryDesable = (e) => {
-    let newInputPercentage = e.target.value;
-    let remender = totalPercentage - newInputPercentage;
-    setInputPercentage(newInputPercentage);
-    if (remender < 0) {
-      setAddButtonDisable(true);
-    } else {
-      setAddButtonDisable(false);
-    }
-  };
+  React.useEffect(() => {
+    let total = 0;
+    categoryList.map((catagory) => {
+      total += parseFloat(catagory.percentage);
+    });
+    setTotalPercentage(total);
+  }, [categoryList]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -734,7 +730,11 @@ export default function CreateInterviewModal({ setModalOpen }) {
           )}
           {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px]">
-              <p className={` text-red-500 text-xs py-2 ${totalPercentage !== 0 ? "block" : "hidden"}`}>
+              <p
+                className={` text-red-500 text-xs py-2 ${
+                  totalPercentage !== 100 ? "block" : "hidden"
+                }`}
+              >
                 *Please ensure the total percentage equals 100%. The sum of all
                 category percentages should not exceed or fall below 100%.
                 Adjust your inputs accordingly.
@@ -775,21 +775,19 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 <div className="w-[40%]">
                   <input
                     value={inputPercentage}
-                    onChange={handleAddCatagoryDesable}
+                    onChange={(e) => setInputPercentage(e.target.value)}
                     placeholder="Percentage"
                     type="number"
                     className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
                   />
                 </div>
                 <div className="w-[20%]">
-                  {!addButtonDisable && (
-                    <button
-                      onClick={handleAddCatagoty}
-                      className=" border-2 h-[45px] border-gray-500 text-gray-500 hover:text-gray-500 hover:border-gray-500 py-2 px-4 rounded-lg "
-                    >
-                      + add
-                    </button>
-                  )}
+                  <button
+                    onClick={handleAddCatagoty}
+                    className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
               <div className="  overflow-y-auto h-[300px]">
@@ -847,7 +845,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
             <button
               onClick={handleSubmit}
               className={` ${
-                totalPercentage === 0 ? "block" : "hidden"
+                totalPercentage === 100 ? "block" : "hidden"
               } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
             >
               Create Interview
