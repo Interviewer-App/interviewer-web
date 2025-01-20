@@ -46,7 +46,7 @@ const InterviewRoomPage = ({ params }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [questions, setQuestions] = useState([]); // Example questions
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
-  const [code, setCode] = useState(`Write your code here`);
+  const [code, setCode] = useState(``);
 
   const {
     isListening,
@@ -179,7 +179,7 @@ const InterviewRoomPage = ({ params }) => {
             </div>
             <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
               <div className="w-[70%] max-w-[1100px]">
-                <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
+                <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5 overflow-auto">
                   {questions.type === "OPEN_ENDED" ?
                     (<>
                       <textarea
@@ -190,7 +190,7 @@ const InterviewRoomPage = ({ params }) => {
                       />
                     </>) :
                     (<div data-color-mode="dark">
-                      {/* <CodeEditor
+                      { <CodeEditor
                         value={code}
                         language="js"
                         placeholder="Please enter JS code."
@@ -200,14 +200,15 @@ const InterviewRoomPage = ({ params }) => {
                           backgroundColor: "#f5f5f5",
                           fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                         }}
-                      /> */
-                      <Editor
-                      content={code}
-                      onChange={(evn) => setCode(evn.target.value)}
-                      placeholder="Write your post"
-                      readOnly={false}
-                      required
-                      className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
+                      />
+                      // <Editor
+                      // content={code}
+                      // onChange={setCode}
+                      // placeholder="Write your post"
+                      // readOnly={false}
+                      // required
+                      // className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text"
+                      //  />
                       }
                       
                     </div>)}
