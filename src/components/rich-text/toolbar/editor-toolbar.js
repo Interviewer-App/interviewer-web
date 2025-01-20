@@ -24,7 +24,7 @@ import { FormatType } from "./format-type"
 const EditorToolbar = ({ editor }) => {
   return (
     <Toolbar
-      className="m-0 flex items-center justify-between p-2"
+      className="m-0 flex items-center justify-between p-2 "
       aria-label="Formatting options"
     >
       <ToggleGroup className="flex flex-row items-center" type="multiple">

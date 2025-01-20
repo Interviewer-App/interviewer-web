@@ -50,10 +50,15 @@ body {
 .rich-text{
   /* .editor{
     height: auto;
+    
   } */
+   
   .ProseMirror{
-    height: 14rem;
+    height: 8rem;
     overflow: auto;
+    background-color: #32353b;
+
+
     
   }
 }
