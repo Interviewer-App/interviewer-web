@@ -213,9 +213,17 @@ const InterviewScheduleDetailsPage = ({ params }) => {
         </header>
 
         <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
-          <div className=" w-full flex justify-between items-center">
-            <h1 className=" text-4xl font-semibold">Interview ID :{interviewId} </h1>
+          <div className="w-full flex justify-between items-center">
+            <h1 className="text-4xl font-semibold">Interview ID: {interviewId}</h1>
+            <button
+              type="button"
+              className="h-12 min-w-[150px] w-full md:w-[10%] cursor-pointer bg-white from-lightred to-darkred rounded-lg text-center text-base text-black font-semibold"
+              onClick={joinInterviewSession}
+            >
+              Join Now
+            </button>
           </div>
+
 
           {interviewDetail ? (
             <div className="mt-6 space-y-8 max-w-4xl">
@@ -234,15 +242,8 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                 <h3 className="text-2xl font-semibold text-primary mb-4">Job Description</h3>
                 <p className="text-gray-300 text-lg leading-relaxed">{interviewDetail.jobDescription || "No description provided."}</p>
               </div>
-              <div className="flex justify-center">
-              <button
-                type="button"
-                className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white from-lightred to-darkred rounded-lg text-center text-base text-black font-semibold "
-                onClick={joinInterviewSession}
-              >
-                Join Now
-              </button>
-              </div>
+
+
             </div>
 
           ) : (
