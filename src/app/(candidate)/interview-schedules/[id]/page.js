@@ -200,7 +200,12 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Interview ID :{interviewId} </BreadcrumbPage>
+                  <BreadcrumbPage>Interview Session</BreadcrumbPage>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Interview Details </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
