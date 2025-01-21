@@ -62,10 +62,39 @@ export const columns = [
     },
   },
   
-  // {
-  //   accessorKey: "reviewedBy",  
-  //   header: "reviewed By",
-  // },
+  {
+    accessorKey: "Scheduling",  
+    header: "Schedule At",
+    cell: ({ row }) => {
+      const createdAt = new Date(row.original.Scheduling.startTime); // Parse the date string
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return createdAt.toLocaleDateString('en-US', options); // Formats it to "January 16, 2025"
+    },
+  },
+  {
+    accessorKey: "SchedulingstartTime",  
+    header: "Start Time",
+    cell: ({ row }) => {
+      const startTime = new Date(row.original.Scheduling.startTime);
+      return startTime.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      }); // Formats to "4:00 PM"
+    },
+  },
+  {
+    accessorKey: "SchedulingendTime",  
+    header: "End Time",
+    cell: ({ row }) => {
+      const endTime = new Date(row.original.Scheduling.endTime);
+      return endTime.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      }); // Formats to "4:30 PM"
+    },
+  },
 
   {
     accessorKey: "status",  

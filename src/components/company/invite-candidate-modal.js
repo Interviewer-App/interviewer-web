@@ -75,30 +75,36 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
         // const companyId = session?.user?.companyID;
         const response = await getInterviewTimeSlotsInterviewById(interviewId);
         if (response) {
-          const scheduleData = response.data.schedulesByDate;
+          const scheduleData = response.data.schedulesByDate || [];
 
-          // Extract and sort dates
-          const dates = Object.keys(scheduleData)
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a.getTime() - b.getTime())
-            .map(date => date.toISOString().split('T')[0]);
+          // Process dates and time slots
+          const dates = Array.from(
+            new Set(
+              scheduleData.map(group =>
+                new Date(group.date).toISOString().split('T')[0]
+              )
+            )
+          ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
-          // Create time slots map
-          const timeSlotsMap = Object.entries(scheduleData).reduce((acc, [date, slots]) => {
-            acc[date] = slots.map(slot => ({
-              scheduleID: slot.scheduleID,
-              startTime: new Date(slot.startTime).toLocaleTimeString([], {
+          const timeSlotsMap = scheduleData.reduce((acc, group) => {
+            const dateKey = new Date(group.date).toISOString().split('T')[0];
+            acc[dateKey] = group.schedules.map(slot => ({
+              scheduleID: slot.id,
+              startTime: new Date(slot.start).toLocaleTimeString([], {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                hour12: true
               }),
-              endTime: new Date(slot.endTime).toLocaleTimeString([], {
+              endTime: new Date(slot.end).toLocaleTimeString([], {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                hour12: true
               }),
               isBooked: slot.isBooked
             }));
             return acc;
           }, {});
+
 
           setInterviewTimeSlotsDates(dates)
           setInterviewTimeSlots(timeSlotsMap);
@@ -150,13 +156,12 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                  className="!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none"
                   variant="outline"
                 >
-                  {/* Find selected time slot across all dates */}
                   {Object.values(interviewTimeSlots)
                     .flat()
-                    .find((slot) => slot.scheduleID === selectedTimeSlot)?.startTime || "Select Time Slot"}
+                    .find(slot => slot.scheduleID === selectedTimeSlot)?.startTime || "Select Time Slot"}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
@@ -166,21 +171,27 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
                   value={selectedTimeSlot}
                   onValueChange={setSelectedTimeSlot}
                 >
-                  {/* Group time slots by date */}
-                  {interviewTimeSlotsDates.map((date) => (
+                  {interviewTimeSlotsDates?.map(date => (
                     <div key={date}>
                       <DropdownMenuLabel className="text-xs text-gray-400">
-                        {new Date(date).toLocaleDateString()}
+                        {new Date(date).toLocaleDateString(undefined, {
+                          weekday: 'short',
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
                       </DropdownMenuLabel>
-                      {interviewTimeSlots[date]?.map((slot) => (
+                      {interviewTimeSlots[date]?.map(slot => (
                         <DropdownMenuRadioItem
                           key={slot.scheduleID}
                           value={slot.scheduleID}
                           disabled={slot.isBooked}
                         >
-                          <div className="flex justify-between w-full">
-                            <span>{slot.startTime}</span>
-                            {slot.isBooked && <span className="text-red-500 text-xs">Booked</span>}
+                          <div className="flex justify-between items-center w-full">
+                            <span>{slot.startTime} - {slot.endTime}</span>
+                            {slot.isBooked && (
+                              <span className="text-red-500 text-xs ml-2">Booked</span>
+                            )}
                           </div>
                         </DropdownMenuRadioItem>
                       ))}
