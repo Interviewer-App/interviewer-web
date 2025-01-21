@@ -120,7 +120,7 @@ const MyInterviews = () => {
                                     </AlertDialogDescription>
                                 )}
                                 <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel>Exit</AlertDialogCancel>
                                     <AlertDialogAction>Join Session</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
