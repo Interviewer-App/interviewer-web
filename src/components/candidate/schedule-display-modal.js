@@ -19,7 +19,6 @@ function ScheduleDesplayModal({
 }) {
   const [scheduling, setScheduling] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
-  const [sortedScheduling, setSortedScheduling] = useState([]);
   const [dateLength, setDateLength] = useState(0);
   const { toast } = useToast();
   const swiperRef = useRef(null);
@@ -134,6 +133,7 @@ function ScheduleDesplayModal({
           ref={swiperRef}
           scheduling={scheduling}
             interviewId={interviewId}
+            setSlotModalOpen={setSlotModalOpen}
           onSlideChange={(index) => setActiveStep(index)}
         />
       </div>
