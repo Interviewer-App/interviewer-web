@@ -207,14 +207,14 @@ const InterviewScheduleDetailsPage = ({ params }) => {
           </div>
         </header>
 
-        <div className="px-9 py-4 w-full max-w-[1500px]  h-full text-white">
-          <div className="w-full flex justify-between items-center">
+        <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
+          <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center">
             <h1 className="text-4xl font-semibold">
               Interview ID: {interviewId}
             </h1>
             <button
               type="button"
-              className="h-11 min-w-[150px] w-full md:w-[10%] cursor-pointer bg-white from-lightred to-darkred rounded-lg text-center text-sm text-black font-semibold"
+              className="h-11 min-w-[150px] mt-5 md:mt-0 w-[200px] md:w-[10%] cursor-pointer bg-white from-lightred to-darkred rounded-lg text-center text-sm text-black font-semibold"
               onClick={() => setSlotModalOpen(true)}
             >
               Book Your Slot
@@ -222,8 +222,8 @@ const InterviewScheduleDetailsPage = ({ params }) => {
           </div>
 
           {interviewDetail ? (
-            <div className="mt-6 flex justify-between items-start">
-              <div className=" w-[70%]">
+            <div className="mt-6 flex flex-col md:flex-row justify-between items-start">
+              <div className=" w-full md:w-[70%]">
                 {/* Company Info Section */}
                 <div className="bg-gray-500/20 p-8 rounded-lg shadow-md">
                   <h2 className="text-3xl font-semibold text-primary mb-2">
@@ -262,7 +262,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                   />
                 </div>
               </div>
-              <div className=" w-[30%] ml-5 bg-gray-500/20 p-8 h-full rounded-lg shadow-md">
+              <div className=" w-full md:w-[30%] md:ml-5 mt-5 md:mt-0 bg-gray-500/20 p-8 h-full rounded-lg shadow-md">
                 <h2 className="text-3xl font-semibold text-primary mb-2">
                   Schedule Details
                 </h2>
