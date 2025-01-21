@@ -1,56 +1,40 @@
+// pages/my-interviews.js
+
 'use client'
+
 import { useEffect, useState, useRef } from 'react';
 import { fetchJoinedInterviews } from '@/lib/api/interview-session';
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { DataTable } from '@/components/ui/InterviewSessionDataTable/Datatable';
-import { columns } from '../../../components/ui/InterviewSessionDataTable/column';
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from 'next/navigation';
-import { useSession, getSession } from "next-auth/react"
-import { Button } from "@/components/ui/button"
+import { useSession, getSession } from "next-auth/react";
+import { getScheduledInterview } from '@/lib/api/interview';
+import Calendar from '@/components/calender';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 
 const MyInterviews = () => {
     const { data: session, status } = useSession();
     const pathname = usePathname();
-    const [interviewData, setInterviewData] = useState([]);  // Store interviews data
+    const [scheduleInterviews, setScheduleInterviews] = useState([]);  // Store scheduled interviews
     const [loading, setLoading] = useState(false);  // Loading state
     const [page, setPage] = useState(1);  // Page number
     const [limit, setLimit] = useState(10);  // Limit of items per page
-    const [totalUsers, setTotalUsers] = useState(0);  // Total users count for pagination
-
-    const myVideoRef = useRef < HTMLVideoElement > (null);
-    const callingVideoRef = useRef < HTMLVideoElement > (null);
-
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [interviewDetails, setInterviewDetails] = useState(null);
     useEffect(() => {
         const fetchUserJoinedInterviews = async () => {
             try {
@@ -59,47 +43,31 @@ const MyInterviews = () => {
                 const candidateId = session?.user?.candidateID;
                 console.log('candidate ID:', candidateId);
 
-                // Fetch interviews data
-                await fetchJoinedInterviews(candidateId, page, limit, setLoading, setInterviewData, setTotalUsers);
+                // Fetch scheduled interviews
+                const response = await getScheduledInterview(candidateId);
+                setScheduleInterviews(response.data.schedules);
+                console.log('Fetched scheduled interviews:', response.data.schedules);
             } catch (error) {
                 console.error('Error fetching interviews:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchUserJoinedInterviews();
-    }, [page, limit]); // Fetch new interviews when page or limit change
-
-    // Log the fetched interviews when payments state changes
-    useEffect(() => {
-        console.log('Fetched interviews:', interviewData);
-    }, [interviewData]); // This effect runs whenever payments state changes
-
-    // Pagination handlijgs
-    const handleNextPage = () => {
-        if (page < Math.ceil(totalUsers / limit)) {
-            setPage(page + 1);
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (page > 1) {
-            setPage(page - 1);
-        }
-    };
-
+    }, [page, limit]);
 
     if (status === "loading") {
-        return (
-            <>
-                <Loading />
-            </>
-        );
-    } else {
-        if (session.user.role !== 'CANDIDATE') {
-            const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
-            redirect(loginURL);
-        }
+        return <Loading />;
     }
+
+    if (session.user.role !== 'CANDIDATE') {
+        const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+        redirect(loginURL);
+    }
+
+    // If no interviews are scheduled, default to current date
+    const selectedDate = scheduleInterviews.length > 0 ? scheduleInterviews[0].startTime : null;
 
     return (
         <SidebarInset>
@@ -120,57 +88,46 @@ const MyInterviews = () => {
                     </Breadcrumb>
                 </div>
             </header>
+            <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
+                <div className="px-9 py-4 h-full text-white max-w-fit">
+                    <h1 className="text-3xl font-semibold">My Interviews</h1>
 
-            <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
-                <h1 className="text-3xl font-semibold">My Interviews</h1>
-                <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
-                    <div>
-                        <h1 className=" text-2xl font-semibold mb-4">My Interview</h1>
-                        <Card className="w-[350px]">
-                            <CardHeader>
-                                <CardTitle>Create project</CardTitle>
-                                <CardDescription>Deploy your new project in one-click.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <form>
-                                    <div className="grid w-full items-center gap-4">
-                                        <div className="flex flex-col space-y-1.5">
-                                            <Label htmlFor="name">Name</Label>
-                                            <Input id="name" placeholder="Name of your project" />
-                                        </div>
-                                        <div className="flex flex-col space-y-1.5">
-                                            <Label htmlFor="framework">Framework</Label>
-                                            <Select>
-                                                <SelectTrigger id="framework">
-                                                    <SelectValue placeholder="Select" />
-                                                </SelectTrigger>
-                                                <SelectContent position="popper">
-                                                    <SelectItem value="next">Next.js</SelectItem>
-                                                    <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                                                    <SelectItem value="astro">Astro</SelectItem>
-                                                    <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                </form>
-                            </CardContent>
-                            <CardFooter className="flex justify-end">
-                                <Button variant="outline">View Details</Button>
-                                
-                            </CardFooter>
-                        </Card>
+                    <div className=" bg-slate-600/10 h-fit p-9 rounded-lg mt-5">
+                        {scheduleInterviews.length > 0 ? (
+                            <Calendar
+                                selectedDate={scheduleInterviews[0]?.startTime}
+                                setModalOpen={setModalOpen}
+                                setInterviewDetails={setInterviewDetails}
+                                interviews={scheduleInterviews}  // Pass interviews here
+                            />
+                        ) : (
+                            <div>No scheduled interviews.</div>
+                        )}
 
+                        {/*alert modal*/}
+                        <AlertDialog open={isModalOpen} onOpenChange={setModalOpen}>
+                            <AlertDialogTrigger />
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Interview Details</AlertDialogTitle>
+                                </AlertDialogHeader>
+                                {interviewDetails && (
+                                    <AlertDialogDescription>
+                                        <div><strong>Interview ID:</strong> {interviewDetails.interviewId}</div>
+                                        <div><strong>Status:</strong> {interviewDetails.isBooked ? "Booked" : "Not Booked"}</div>
+                                        <div><strong>Start Time:</strong> {new Date(interviewDetails.startTime).toLocaleString()}</div>
+                                        <div><strong>End Time:</strong> {new Date(interviewDetails.endTime).toLocaleString()}</div>
+                                    </AlertDialogDescription>
+                                )}
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Exit</AlertDialogCancel>
+                                    <AlertDialogAction>Join Session</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
-
-
-
                 </div>
-
             </div>
-
-
-
         </SidebarInset>
     );
 };
