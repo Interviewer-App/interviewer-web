@@ -142,17 +142,19 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
           submitted, an interview session link will be sent directly to the
           candidate's email.
         </p>
-        <form onSubmit={handleSubmit} className=" flex flex-col space-y-4 mt-5">
-          <input
-            type="email"
-            placeholder="Canadidate's Email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className=" h-[45px] w-full md:w-[60%] rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
-          />
-          <div className="w-[40%]">
+        <form onSubmit={handleSubmit} className=" flex w-full justify-between space-x-2 mt-5">
+          <div className="flex-1">
+            <input
+              type="email"
+              placeholder="Canadidate's Email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
+            />
+          </div>
+          <div className="flex-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -201,12 +203,13 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className=" flex w-full justify-end">
-            <button type="submit" className=" py-2.5 bg-white text-black text-sm font-semibold rounded-lg px-5">
+          
+        </form>
+        <div className=" flex w-full justify-center w-full mt-4">
+            <button type="submit" className=" py-2.5 bg-white text-black text-sm font-semibold rounded-lg px-5 w-full">
               Send Invitation
             </button>
           </div>
-        </form>
       </div>
     </div>
   );
