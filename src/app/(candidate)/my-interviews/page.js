@@ -8,7 +8,6 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from 'next/navigation';
 import { useSession, getSession } from "next-auth/react";
@@ -34,8 +33,8 @@ const MyInterviews = () => {
     const [loading, setLoading] = useState(false);  // Loading state
     const [page, setPage] = useState(1);  // Page number
     const [limit, setLimit] = useState(10);  // Limit of items per page
-    const [isModalOpen,setModalOpen]=useState(false);
-
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [interviewDetails, setInterviewDetails] = useState(null);
     useEffect(() => {
         const fetchUserJoinedInterviews = async () => {
             try {
@@ -93,58 +92,38 @@ const MyInterviews = () => {
                 <div className="px-9 py-4 h-full text-white max-w-fit">
                     <h1 className="text-3xl font-semibold">My Interviews</h1>
 
-
                     <div className=" bg-slate-600/10 h-fit p-9 rounded-lg mt-5">
-                        <div>
-   
+                        {scheduleInterviews.length > 0 ? (
+                            <Calendar
+                                selectedDate={scheduleInterviews[0]?.startTime}
+                                setModalOpen={setModalOpen}
+                                setInterviewDetails={setInterviewDetails}
+                                interviews={scheduleInterviews}  // Pass interviews here
+                            />
+                        ) : (
+                            <p>No scheduled interviews.</p>
+                        )}
 
-
-                            {scheduleInterviews.length > 0 ? (
-                                <Calendar selectedDate={selectedDate} setModalOpen={setModalOpen}/>
-                            ) : (
-                                <p>No scheduled interviews.</p>
-                            )}
-
-                            {/* Alert Dialog (Modal) */}
-                            <AlertDialog open={isModalOpen} onOpenChange={setModalOpen}>
-                                <AlertDialogTrigger />
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. Do you want to proceed with this action?
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-
-
-                            {/* {scheduleInterviews.length > 0 ? (
-              scheduleInterviews.map((interview) => (
-                <Card key={interview.scheduleID} className="mb-4">
-                  <CardHeader>
-                    <CardTitle>Interview ID: {interview.interviewId}</CardTitle>
-                    <CardDescription>Status: {interview.isBooked ? "Booked" : "Not Booked"}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div>
-                      <p><strong>Start Time:</strong> {new Date(interview.startTime).toLocaleString()}</p>
-                      <p><strong>End Time:</strong> {new Date(interview.endTime).toLocaleString()}</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-end">
-                    <Button variant="outline">View Details</Button>
-                           </CardFooter>
-                              </Card>
-                              ))
-                              ) : (
-                   <p>No scheduled interviews.</p>
-                         )} */}
-
-                        </div>
+                        {/* Alert Dialog (Modal) */}
+                        <AlertDialog open={isModalOpen} onOpenChange={setModalOpen}>
+                            <AlertDialogTrigger />
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Interview Details</AlertDialogTitle>
+                                </AlertDialogHeader>
+                                {interviewDetails && (
+                                    <AlertDialogDescription>
+                                        <p><strong>Interview ID:</strong> {interviewDetails.interviewId}</p>
+                                        <p><strong>Status:</strong> {interviewDetails.isBooked ? "Booked" : "Not Booked"}</p>
+                                        <p><strong>Start Time:</strong> {new Date(interviewDetails.startTime).toLocaleString()}</p>
+                                        <p><strong>End Time:</strong> {new Date(interviewDetails.endTime).toLocaleString()}</p>
+                                    </AlertDialogDescription>
+                                )}
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </div>
             </div>

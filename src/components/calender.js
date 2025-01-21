@@ -2,7 +2,7 @@
 
 import { useEffect, useState, } from 'react';
 
-const Calendar = ({ selectedDate,setModalOpen}) => {
+const Calendar = ({ selectedDate,setModalOpen,setInterviewDetails,interviews }) => {
   const [dayNumber, setDayNumber] = useState(null);
   const [monthName, setMonthName] = useState('');
   const [dayName, setDayName] = useState('');
@@ -24,17 +24,36 @@ const Calendar = ({ selectedDate,setModalOpen}) => {
     setYear(year);
   }, [selectedDate]);
 
-  const handleClick = ()  =>{
-    setModalOpen(true)
-  }
+  const handleClick = (event) => {
+    // Find the interview that corresponds to this clicked date
+    const interview = interviews.find(
+      (interview) => new Date(interview.startTime).toDateString() === new Date(event).toDateString()
+    );
+    
+    if (interview) {
+      // Set modal details if interview is found for the selected day
+      setModalOpen(true);
+      setInterviewDetails(interview);
+    }
+  };
 
   return (
-    <div className="calendar" onClick={handleClick}>
-      <p id="monthName">{monthName}</p>
-      <p id="dayName">{dayName}</p>
-      <p id="dayNumber">{dayNumber}</p>
-      <p id="year">{year}</p>
-    </div>
+    <div className="calendar">
+    {/* Render the calendar details */}
+    <p id="monthName">{monthName}</p>
+    <p id="dayName">{dayName}</p>
+    <p id="dayNumber" onClick={() => handleClick(selectedDate)}>{dayNumber}</p>
+    <p id="year">{year}</p>
+
+    {/* Optionally, you can render all interviews for the selected date */}
+    {interviews && interviews.map((interview) => (
+      new Date(interview.startTime).toDateString() === new Date(selectedDate).toDateString() && (
+        <div key={interview.interviewId} onClick={() => handleClick(interview.startTime)}>
+          <p>Interview at {new Date(interview.startTime).toLocaleTimeString()}</p>
+        </div>
+      )
+    ))}
+  </div>
   );
 };
 
