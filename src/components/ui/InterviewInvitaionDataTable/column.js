@@ -37,39 +37,39 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "interviewStatus",
+    accessorKey: "invitationID",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        interviewStatus
+        invitationID
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
+  // {
+  //   accessorKey: "interviewCategory",  
+  //   header: "interview Category",
+  // },
   {
-    accessorKey: "interviewCategory",  
-    header: "interview Category",
-  },
-  {
-    accessorKey: "scheduledDate", 
-    header: "scheduledDate",
+    accessorKey: "sentAt", 
+    header: "sent At",
     cell: ({ row }) => {
-      const createdAt = new Date(row.original.createdAt); // Parse the date string
+      const createdAt = new Date(row.original.sentAt); // Parse the date string
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return createdAt.toLocaleDateString('en-US', options); // Formats it to "January 16, 2025"
     },
   },
   
-  {
-    accessorKey: "reviewedBy",  
-    header: "reviewed By",
-  },
+  // {
+  //   accessorKey: "reviewedBy",  
+  //   header: "reviewed By",
+  // },
 
   {
-    accessorKey: "score",  
-    header: "score",
+    accessorKey: "status",  
+    header: "Status",
   },
   // {
   //   accessorKey: "interviewCategory",  

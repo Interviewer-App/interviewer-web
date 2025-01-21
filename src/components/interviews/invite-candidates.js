@@ -36,24 +36,25 @@ import { columns } from "@/components/ui/InterviewInvitaionDataTable/column";
 import { getSession } from "next-auth/react";
 import { fetchSendInterviewInvitations } from "@/lib/api/interview-invitation";
 
-export default function InvitedCandidates() {
+export default function InvitedCandidates({interviewId}) {
     const [loading, setLoading] = useState(false);
-    const [interviewSessionsSort, setInterviewSessionsSort] = useState([]);
+    const [sendInterviewsDataSort, setSendInterviewsDataSort] = useState([]);
     const [page, setPage] = useState(1);  // Page number
     const [limit, setLimit] = useState(10);  // Limit of items per page
-    const [totalUsers, setTotalUsers] = useState(0);  // Total users count for pagination
+    const [totalInvitations, setTotalInvitations] = useState(0);  // Total users count for pagination
     const [sendInterviewsData, setSendInterviewsData] = useState([]); 
 
     useEffect(() => {
         const fetchSendInterviews = async () => {
+            debugger
             try {
                 setLoading(true); // Start loading
-                const session = await getSession();
-                const candidateId = session?.user?.candidateID;
-                console.log('candidate ID:', candidateId);
+                // const session = await getSession();
+                // const candidateId = session?.user?.candidateID;
+                // console.log('candidate ID:', candidateId);
 
                 // Fetch interviews data
-                await fetchSendInterviewInvitations(candidateId, page, limit, setLoading, setSendInterviewsData, setTotalUsers);
+                await fetchSendInterviewInvitations(interviewId, page, limit, setLoading, setSendInterviewsData, setTotalInvitations);
             } catch (error) {
                 console.error('Error fetching interviews:', error);
             }
@@ -93,7 +94,7 @@ export default function InvitedCandidates() {
                     ) : (
                         <DataTable
                             columns={columns}
-                            data={interviewSessionsSort}
+                            data={sendInterviewsData}
                         />
                     )}
                 </div>
