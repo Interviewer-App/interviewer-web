@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 
 const SlotSwiperComponent = forwardRef(
-  ({ scheduling, interviewId, onSlideChange }, ref) => {
+  ({ scheduling, interviewId, setSlotModalOpen, onSlideChange }, ref) => {
     const { toast } = useToast();
 
     const handleBookSlot = async (id) => {
@@ -36,6 +36,7 @@ const SlotSwiperComponent = forwardRef(
             title: "Success!",
             description: `Your slot has been booked successfully.`,
           });
+          setSlotModalOpen(false);
         }
       } catch (err) {
         if (err.response) {
@@ -45,7 +46,7 @@ const SlotSwiperComponent = forwardRef(
             toast({
               variant: "destructive",
               title: "Uh oh! Something went wrong.",
-              description: `Schedule fetch failed: ${data.message}`,
+              description: `Schedule Booking failed: ${data.message}`,
               action: <ToastAction altText="Try again">Try again</ToastAction>,
             });
           } else {
