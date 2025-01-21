@@ -65,6 +65,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Editor from "@/components/rich-text/editor";
 
 //API
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
@@ -897,15 +898,21 @@ export default function InterviewPreviewPage({ params }) {
                     <h1 className=" text-2xl font-semibold py-5  ">
                       Description
                     </h1>
-                    <textarea
-                      ref={textareaRef}
-                      readOnly={!editDetails}
-                      className={` text-justify py-5 w-full resize-none ${
-                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                      } rounded-lg focus:outline-none`}
-                      value={description || ""}
-                      onChange={(e) => setDescription(e.target.value)}
-                    />
+                    {editDetails ? (
+                      <Editor
+                        content={description}
+                        onChange={setDescription}
+                        placeholder="Write your post"
+                        readOnly={false}
+                        required
+                        className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text"
+                      />
+                    ) : (
+                      <div
+                        className="text-justify w-full bg-transparent rounded-lg"
+                        dangerouslySetInnerHTML={{ __html: description }}
+                      />
+                    )}
                     <div>
                       <h1 className=" text-2xl font-semibold py-5">
                         Required Skills
