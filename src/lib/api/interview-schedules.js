@@ -7,6 +7,7 @@ export const getAllInterviewSchedules =async(companyId) =>{
         return response;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
@@ -17,5 +18,6 @@ export const bookSchedule =async(data) =>{
         return response;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
