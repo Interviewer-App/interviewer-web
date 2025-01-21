@@ -70,7 +70,7 @@ export default function InvitedCandidates({interviewId}) {
 
     // Pagination handlijgs
     const handleNextPage = () => {
-        if (page < Math.ceil(totalUsers / limit)) {
+        if (page < Math.ceil(totalInvitations / limit)) {
             setPage(page + 1);
         }
     };
@@ -81,6 +81,11 @@ export default function InvitedCandidates({interviewId}) {
         }
     };
 
+    const handlePage = (newPage) => {
+        if (newPage <= Math.ceil(totalInvitations / limit)) {
+          setPage(newPage);
+        }
+      }
 
 
     
@@ -105,12 +110,12 @@ export default function InvitedCandidates({interviewId}) {
                         <PaginationPrevious onClick={() => handlePreviousPage()} />
                     </PaginationItem>
                     <PaginationItem>
-                        <PaginationLink onClick={() => handlePage(page + 1)}>
+                        <PaginationLink onClick={() => handlePage(page)}>
                             {page + 1}
                         </PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
-                        <PaginationLink onClick={() => handlePage(page + 2)}>
+                        <PaginationLink onClick={() => handlePage(page + 1)}>
                             {page + 2}
                         </PaginationLink>
                     </PaginationItem>
