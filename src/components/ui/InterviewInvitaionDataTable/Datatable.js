@@ -45,20 +45,14 @@ export function DataTable({ columns, data }) {
         },
     });
 
-    const handleMyInterviewSessionDetail = (row) => {
-        if(row.original.interviewStatus){
-            router.push(`/joined-interviews/${encodeURIComponent(row.original.interviewStatus)}`);
-        }
-    }
-
     return (
         <div className="px-6">
             <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Filter sessions..."
-                    value={table.getColumn("interviewStatus")?.getFilterValue() ?? ""}
+                    value={table.getColumn("invitationID")?.getFilterValue() ?? ""}
                     onChange={(event) =>
-                        table.getColumn("interviewStatus")?.setFilterValue(event.target.value)
+                        table.getColumn("invitationID")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
@@ -119,7 +113,7 @@ export function DataTable({ columns, data }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => handleMyInterviewSessionDetail(row)}>
+                                <TableRow key={row.id} className="hover:bg-gray-100 cursor-pointer" >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell
                                             key={cell.id}

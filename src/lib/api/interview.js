@@ -30,6 +30,17 @@ export const getPublishedInterview = async (sordBy, datePosted, interviewCategor
     }
 }
 
+
+export const getScheduledInterview = async (candidateid) =>{
+    try {
+        const response=await axiosInstance.get(`/interview/schedules/candidate/${candidateid}`);
+        return response;
+    } catch (error) {
+        console.log('Error fetching scheduled interviews',error)
+        throw error;
+    }
+}
+
 export const getAllInterviews = async () => {
     try{
         const response = await axiosInstance.get(`/interview`);

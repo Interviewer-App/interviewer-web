@@ -33,6 +33,12 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
   .dark {
     --sidebar-background: 240 5.9% 10%;
@@ -44,6 +50,12 @@ body {
     --sidebar-border: #434343;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
+
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
   
 }
@@ -61,4 +73,47 @@ body {
 
     
   }
+}
+
+
+/* styles/globals.css */
+
+.calendar {
+  position: relative;
+  width: 200px;
+  background: #fff;
+  text-align: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#monthName {
+  position: relative;
+  padding: 5px 10px;
+  background: #ff6331;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+#dayName {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 300;
+  color: #999;
+}
+
+#dayNumber {
+  margin-top: 0px;
+  line-height: 1em;
+  font-size: 80px;
+  font-weight: 700;
+  color: #333;
+}
+
+#year {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #999;
 }

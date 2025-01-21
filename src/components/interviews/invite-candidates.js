@@ -36,31 +36,31 @@ import { columns } from "@/components/ui/InterviewInvitaionDataTable/column";
 import { getSession } from "next-auth/react";
 import { fetchSendInterviewInvitations } from "@/lib/api/interview-invitation";
 
-export default function InvitedCandidates() {
+export default function InvitedCandidates({interviewId , inviteModalOpen}) {
     const [loading, setLoading] = useState(false);
-    const [interviewSessionsSort, setInterviewSessionsSort] = useState([]);
+    const [sendInterviewsDataSort, setSendInterviewsDataSort] = useState([]);
     const [page, setPage] = useState(1);  // Page number
     const [limit, setLimit] = useState(10);  // Limit of items per page
-    const [totalUsers, setTotalUsers] = useState(0);  // Total users count for pagination
+    const [totalInvitations, setTotalInvitations] = useState(0);  // Total users count for pagination
     const [sendInterviewsData, setSendInterviewsData] = useState([]); 
 
     useEffect(() => {
         const fetchSendInterviews = async () => {
             try {
                 setLoading(true); // Start loading
-                const session = await getSession();
-                const candidateId = session?.user?.candidateID;
-                console.log('candidate ID:', candidateId);
+                // const session = await getSession();
+                // const candidateId = session?.user?.candidateID;
+                // console.log('candidate ID:', candidateId);
 
                 // Fetch interviews data
-                await fetchSendInterviewInvitations(candidateId, page, limit, setLoading, setSendInterviewsData, setTotalUsers);
+                await fetchSendInterviewInvitations(interviewId, page, limit, setLoading, setSendInterviewsData, setTotalInvitations);
             } catch (error) {
                 console.error('Error fetching interviews:', error);
             }
         };
 
         fetchSendInterviews();
-    }, [page, limit]); // Fetch new interviews when page or limit change
+    }, [inviteModalOpen, page, limit]); // Fetch new interviews when page or limit change
 
     // Log the fetched interviews when payments state changes
     useEffect(() => {
@@ -69,7 +69,7 @@ export default function InvitedCandidates() {
 
     // Pagination handlijgs
     const handleNextPage = () => {
-        if (page < Math.ceil(totalUsers / limit)) {
+        if (page < Math.ceil(totalInvitations / limit)) {
             setPage(page + 1);
         }
     };
@@ -80,6 +80,11 @@ export default function InvitedCandidates() {
         }
     };
 
+    const handlePage = (newPage) => {
+        if (newPage <= Math.ceil(totalInvitations / limit)) {
+          setPage(newPage);
+        }
+      }
 
 
     
@@ -93,7 +98,7 @@ export default function InvitedCandidates() {
                     ) : (
                         <DataTable
                             columns={columns}
-                            data={interviewSessionsSort}
+                            data={sendInterviewsData}
                         />
                     )}
                 </div>
@@ -104,12 +109,12 @@ export default function InvitedCandidates() {
                         <PaginationPrevious onClick={() => handlePreviousPage()} />
                     </PaginationItem>
                     <PaginationItem>
-                        <PaginationLink onClick={() => handlePage(page + 1)}>
+                        <PaginationLink onClick={() => handlePage(page)}>
                             {page + 1}
                         </PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
-                        <PaginationLink onClick={() => handlePage(page + 2)}>
+                        <PaginationLink onClick={() => handlePage(page + 1)}>
                             {page + 2}
                         </PaginationLink>
                     </PaginationItem>

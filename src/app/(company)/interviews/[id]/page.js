@@ -75,6 +75,8 @@ import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import InvitedCandidates from "@/components/interviews/invite-candidates";
+import InterviewCharts from "@/components/interviews/interviewCharts";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -761,6 +763,7 @@ export default function InterviewPreviewPage({ params }) {
                   </h1>
                 </div>
               </div>
+              <InterviewCharts/>
             </div>
           )}
 
@@ -1384,6 +1387,7 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           )}
           {tab === "invitation" && (
+            <>
             <div className="w-full h-fit bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
               <div className=" w-full flex items-center justify-between">
                 <div>
@@ -1403,11 +1407,13 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
             </div>
+            <InvitedCandidates interviewId={interviewId} inviteModalOpen={inviteModalOpen}/>
+            </>
           )}
         </div>
       </SidebarInset>
       {inviteModalOpen && (
-        <InviteCandidateModal setInviteModalOpen={setInviteModalOpen} />
+        <InviteCandidateModal setInviteModalOpen={setInviteModalOpen} interviewId={interviewId}/>
       )}
     </>
   );
