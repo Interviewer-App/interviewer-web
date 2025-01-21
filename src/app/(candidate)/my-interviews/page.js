@@ -101,10 +101,10 @@ const MyInterviews = () => {
                                 interviews={scheduleInterviews}  // Pass interviews here
                             />
                         ) : (
-                            <p>No scheduled interviews.</p>
+                            <div>No scheduled interviews.</div>
                         )}
 
-                        {/* Alert Dialog (Modal) */}
+                        {/*alert modal*/}
                         <AlertDialog open={isModalOpen} onOpenChange={setModalOpen}>
                             <AlertDialogTrigger />
                             <AlertDialogContent>
@@ -113,14 +113,15 @@ const MyInterviews = () => {
                                 </AlertDialogHeader>
                                 {interviewDetails && (
                                     <AlertDialogDescription>
-                                        <p><strong>Interview ID:</strong> {interviewDetails.interviewId}</p>
-                                        <p><strong>Status:</strong> {interviewDetails.isBooked ? "Booked" : "Not Booked"}</p>
-                                        <p><strong>Start Time:</strong> {new Date(interviewDetails.startTime).toLocaleString()}</p>
-                                        <p><strong>End Time:</strong> {new Date(interviewDetails.endTime).toLocaleString()}</p>
+                                        <div><strong>Interview ID:</strong> {interviewDetails.interviewId}</div>
+                                        <div><strong>Status:</strong> {interviewDetails.isBooked ? "Booked" : "Not Booked"}</div>
+                                        <div><strong>Start Time:</strong> {new Date(interviewDetails.startTime).toLocaleString()}</div>
+                                        <div><strong>End Time:</strong> {new Date(interviewDetails.endTime).toLocaleString()}</div>
                                     </AlertDialogDescription>
                                 )}
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction>Join Session</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
