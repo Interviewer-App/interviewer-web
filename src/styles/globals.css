@@ -62,3 +62,46 @@ body {
     
   }
 }
+
+
+/* styles/globals.css */
+
+.calendar {
+  position: relative;
+  width: 200px;
+  background: #fff;
+  text-align: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#monthName {
+  position: relative;
+  padding: 5px 10px;
+  background: #ff6331;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+#dayName {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 300;
+  color: #999;
+}
+
+#dayNumber {
+  margin-top: 0px;
+  line-height: 1em;
+  font-size: 80px;
+  font-weight: 700;
+  color: #333;
+}
+
+#year {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #999;
+}
