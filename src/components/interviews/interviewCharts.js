@@ -69,7 +69,6 @@ export default function InterviewCharts({ interviewId }) {
 
     useEffect(() => {
         const fetchSendInterviews = async () => {
-            debugger
             try {
                 setLoading(true); // Start loading
                 // const session = await getSession();

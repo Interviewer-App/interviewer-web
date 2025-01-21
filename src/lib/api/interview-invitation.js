@@ -10,7 +10,6 @@ const fetchSendInterviewInvitations = async (
 ) => {
   setLoading(true); // Start loading
   try {
-    debugger
     const response = await axiosInstance.get(
       `/interview/invitations/${interviewId}/${page}/${limit}`
     );

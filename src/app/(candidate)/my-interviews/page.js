@@ -113,10 +113,10 @@ const MyInterviews = () => {
                                 </AlertDialogHeader>
                                 {interviewDetails && (
                                     <AlertDialogDescription>
-                                        <div><strong>Interview ID:</strong> {interviewDetails.interviewId}</div>
-                                        <div><strong>Status:</strong> {interviewDetails.isBooked ? "Booked" : "Not Booked"}</div>
-                                        <div><strong>Start Time:</strong> {new Date(interviewDetails.startTime).toLocaleString()}</div>
-                                        <div><strong>End Time:</strong> {new Date(interviewDetails.endTime).toLocaleString()}</div>
+                                        <strong>Interview ID:</strong> {interviewDetails.interviewId} <br/>
+                                        <strong>Status:</strong> {interviewDetails.isBooked ? "Booked" : "Not Booked"} <br/>
+                                        <strong>Start Time:</strong> {new Date(interviewDetails.startTime).toLocaleString()} <br/>
+                                        <strong>End Time:</strong> {new Date(interviewDetails.endTime).toLocaleString()}
                                     </AlertDialogDescription>
                                 )}
                                 <AlertDialogFooter>

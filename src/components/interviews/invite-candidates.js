@@ -36,7 +36,7 @@ import { columns } from "@/components/ui/InterviewInvitaionDataTable/column";
 import { getSession } from "next-auth/react";
 import { fetchSendInterviewInvitations } from "@/lib/api/interview-invitation";
 
-export default function InvitedCandidates({interviewId}) {
+export default function InvitedCandidates({interviewId , inviteModalOpen}) {
     const [loading, setLoading] = useState(false);
     const [sendInterviewsDataSort, setSendInterviewsDataSort] = useState([]);
     const [page, setPage] = useState(1);  // Page number
@@ -46,7 +46,6 @@ export default function InvitedCandidates({interviewId}) {
 
     useEffect(() => {
         const fetchSendInterviews = async () => {
-            debugger
             try {
                 setLoading(true); // Start loading
                 // const session = await getSession();
@@ -61,7 +60,7 @@ export default function InvitedCandidates({interviewId}) {
         };
 
         fetchSendInterviews();
-    }, [page, limit]); // Fetch new interviews when page or limit change
+    }, [inviteModalOpen, page, limit]); // Fetch new interviews when page or limit change
 
     // Log the fetched interviews when payments state changes
     useEffect(() => {

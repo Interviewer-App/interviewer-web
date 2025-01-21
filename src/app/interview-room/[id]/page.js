@@ -111,7 +111,6 @@ const InterviewRoomPage = ({ params }) => {
 
   useEffect(() => {
     socket.on('questions', (data) => {
-      debugger
       console.log('Received questions:', data.questions);
       setQuestions(data.questions);
       setIsQuestionAvailabe(true);
@@ -119,7 +118,6 @@ const InterviewRoomPage = ({ params }) => {
 
 
     socket.on("navigateNextQuestion", (data) => {
-      debugger
       if (!data.followUpQuestion) {
         const nextquestion = activeStep + 1
         if (swiperRef.current && swiperRef.current.swiper) {

@@ -1291,7 +1291,7 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
             </div>
-            <InvitedCandidates interviewId={interviewId}/>
+            <InvitedCandidates interviewId={interviewId} inviteModalOpen={inviteModalOpen}/>
             </>
           )}
         </div>
