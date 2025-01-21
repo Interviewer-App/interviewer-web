@@ -616,6 +616,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                       onSelect={setDate}
                       initialFocus
                       numberOfMonths={2}
+                      disabled={(date) =>
+                        date < new Date().setHours(0, 0, 0, 0)
+                      }
                     />
                   </PopoverContent>
                 </Popover>
@@ -658,9 +661,16 @@ export default function CreateInterviewModal({ setModalOpen }) {
                               selected={inputScheduleDate}
                               onSelect={setInputScheduleDate}
                               initialFocus
-                              disabled={(date) =>
-                                date < new Date().setHours(0, 0, 0, 0)
-                              }
+                              disabled={(d) => {
+                                const startDate = new Date(
+                                  date.from
+                                );
+                                const endDate = new Date(date.to);
+
+                                return (
+                                  d < startDate || d > endDate
+                                );
+                              }}
                             />
                           </PopoverContent>
                         </Popover>

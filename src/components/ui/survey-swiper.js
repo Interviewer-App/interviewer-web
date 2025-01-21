@@ -1,4 +1,4 @@
-import React, { forwardRef, use, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 

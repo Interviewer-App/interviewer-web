@@ -122,7 +122,8 @@ export default function InterviewPreviewPage({ params }) {
     })
   );
   const [scheduleList, setScheduleList] = useState([]);
-  
+  const [dateRange, setDateRange] = useState({});
+
   useEffect(() => {
     const fetchInterviewCategories = async () => {
       try {
@@ -363,6 +364,13 @@ export default function InterviewPreviewPage({ params }) {
             }));
             setScheduleList(schedules);
           }
+          if (response.data.startDate && response.data.endDate) {
+            setDateRange({
+              from: new Date(response.data.startDate),
+              to: new Date(response.data.endDate),
+            });
+            console.log("date range", dateRange);
+          }
         }
       } catch (error) {
         console.log("Error fetching interviews:", error);
@@ -466,6 +474,8 @@ export default function InterviewPreviewPage({ params }) {
         jobTitle: title,
         requiredSkills: skills.join(", "),
         interviewCategory,
+        startDate: new Date(dateRange.from).toISOString(),
+        endDate: new Date(dateRange.to).toISOString(),
         categoryAssignments: categoryList.map((catagory) => {
           return {
             categoryId: catagory.key,
@@ -994,9 +1004,16 @@ export default function InterviewPreviewPage({ params }) {
                                       selected={inputScheduleDate}
                                       onSelect={setInputScheduleDate}
                                       initialFocus
-                                      disabled={(date) =>
-                                        date < new Date().setHours(0, 0, 0, 0)
-                                      }
+                                      disabled={(date) => {
+                                        const startDate = new Date(
+                                          dateRange.from
+                                        );
+                                        const endDate = new Date(dateRange.to);
+
+                                        return (
+                                          date < startDate || date > endDate
+                                        );
+                                      }}
                                     />
                                   </PopoverContent>
                                 </Popover>
@@ -1056,13 +1073,32 @@ export default function InterviewPreviewPage({ params }) {
                                 {schedule.endTime}
                               </td>
                               <td className=" p-3 w-[10%] text-center">
-                                {editDetails && (
-                                  <IoCloseCircle
-                                    onClick={handleDeleteSchedule(schedule)}
+                                {editDetails ? (
+                                  <>
+                                    <IoCloseCircle
+                                      onClick={handleDeleteSchedule(schedule)}
+                                      className={` ${
+                                        schedule.isBooked ? "hidden" : "block"
+                                      } text-gray-500 text-2xl cursor-pointer`}
+                                    />
+                                    <div
+                                      className={` ${
+                                        schedule.isBooked ? "block" : "hidden"
+                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                    >
+                                      <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
+                                      <div className=" ml-2">Booked</div>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div
                                     className={` ${
-                                      schedule.isBooked ? "hidden" : "block"
-                                    } text-gray-500 text-2xl cursor-pointer`}
-                                  />
+                                      schedule.isBooked ? "block" : "hidden"
+                                    } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                  >
+                                    <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
+                                    <div className=" ml-2">Booked</div>
+                                  </div>
                                 )}
                               </td>
                             </tr>
@@ -1144,7 +1180,7 @@ export default function InterviewPreviewPage({ params }) {
                           </button>
                         </div>
                       </div>
-                      <div className="  overflow-y-auto h-[300px]">
+                      <div className="  overflow-y-auto min-h-[250px]">
                         <table className=" w-full">
                           <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
                             <tr>
@@ -1182,6 +1218,86 @@ export default function InterviewPreviewPage({ params }) {
                           </tbody>
                         </table>
                       </div>
+                      <h1 className=" text-2xl font-semibold py-5">
+                        Scheduled Date Range
+                        <div className=" w-full mt-5">
+                          {!editDetails ? (
+                            <span className=" text-base font-normal text-gray-400">
+                              {dateRange.from.toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })}{" "}
+                              -{" "}
+                              {dateRange.to.toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </span>
+                          ) : (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                                    !dateRange && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon />
+                                  {dateRange?.from ? (
+                                    dateRange.to ? (
+                                      <>
+                                        {dateRange.from.toLocaleDateString(
+                                          "en-GB",
+                                          {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                          }
+                                        )}{" "}
+                                        -{" "}
+                                        {dateRange.to.toLocaleDateString(
+                                          "en-GB",
+                                          {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                          }
+                                        )}
+                                      </>
+                                    ) : (
+                                      dateRange.from.toLocaleDateString(
+                                        "en-GB",
+                                        {
+                                          day: "numeric",
+                                          month: "long",
+                                          year: "numeric",
+                                        }
+                                      )
+                                    )
+                                  ) : (
+                                    <span>Pick Date Range</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="range"
+                                  selected={dateRange}
+                                  onSelect={setDateRange}
+                                  initialFocus
+                                  numberOfMonths={2}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          )}
+                        </div>
+                      </h1>
                     </div>
                   </div>
                 </div>
