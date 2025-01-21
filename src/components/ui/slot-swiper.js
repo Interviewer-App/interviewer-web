@@ -22,6 +22,7 @@ const SlotSwiperComponent = forwardRef(
     const { toast } = useToast();
 
     const handleBookSlot = async (id) => {
+        debugger;
       try {
         const session = await getSession();
         const candidateID = session?.user?.candidateID;
@@ -97,7 +98,7 @@ const SlotSwiperComponent = forwardRef(
                       <div
                         key={index}
                         className={` py-2 border-2 ${
-                          slot.isBooked ? "border-green-700" : "border-gray-700"
+                          slot.isBooked ? "border-red-700" : "border-gray-700"
                         } rounded-lg p-5 `}
                       >
                         <div className=" flex justify-between w-full">
@@ -117,9 +118,9 @@ const SlotSwiperComponent = forwardRef(
                         <div className=" w-full flex justify-center items-center mt-1">
                           {slot.isBooked ? (
                             <div
-                              className={` mt-1 mx-auto text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                              className={` mt-1 mx-auto text-xs px-3 py-1 text-red-500 bg-red-500/20 rounded-full flex justify-start items-center`}
                             >
-                              <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
+                              <div className=" aspect-square h-[8px] rounded-full bg-red-400"></div>
                               <div className=" ml-2">Booked</div>
                             </div>
                           ) : (
