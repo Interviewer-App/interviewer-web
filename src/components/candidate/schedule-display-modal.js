@@ -118,13 +118,14 @@ function ScheduleDesplayModal({
         <div className="flex justify-between mt-5">
           <button
             onClick={handlePrev}
-            className=" text-gray-500 text-sm py-1 rounded-md hover:text-gray-300"
+            className={`${activeStep === 0 ? 'hidden' : 'block'} text-gray-500 text-sm py-1 rounded-md hover:text-gray-300`}
           >
             <ArrowBackIosNewIcon sx={{fontSize: '12px'}}/> Prev day
           </button>
+          <button className={`${activeStep === 0 ? 'block' : 'hidden'}`}></button>
           <button
             onClick={handleNext}
-            className=" text-gray-500 text-sm py-1 rounded-md hover:text-gray-300"
+            className={`${activeStep === scheduling.length - 1 ? 'hidden' : 'block'} text-gray-500 text-sm py-1 rounded-md hover:text-gray-300`}
           >
             Next day <ArrowForwardIosIcon sx={{fontSize: '12px'}}/> 
           </button>
