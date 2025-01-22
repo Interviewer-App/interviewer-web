@@ -22,9 +22,8 @@ const MyInterviews = () => {
 
     useEffect(() => {
       const fetchUserJoinedInterviews = async () => {
-        debugger
         try {
-          setLoading(true); // Start loading
+          setLoading(true); 
           const session = await getSession();
           const candidateId = session?.user?.candidateID;
           console.log('candidate ID:', candidateId);
