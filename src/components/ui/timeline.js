@@ -32,7 +32,7 @@ const TimelineTitle = React.forwardRef(
   ({ className, children, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("text-xl font-bold text-primary", className)}
+      className={cn("text-xl font-medium text-primary", className)}
       {...props}
     >
       {children}
@@ -41,19 +41,24 @@ const TimelineTitle = React.forwardRef(
 )
 TimelineTitle.displayName = "TimelineTitle"
 
-const TimelineTime = ({ className, variant = "default", ...props }) => {
+const TimelineTime = ({timeBgColor, className, variant = "default", ...props }) => {
   return (
     <div
       className={cn(
-        "left-0 mb-3 inline-flex flex-col items-center justify-center text-sm font-semibold uppercase sm:absolute sm:mb-0 bg-gray-800 py-1 px-5 rounded-xl",
+        "left-0 mb-3 inline-flex flex-col items-center justify-center text-sm font-semibold uppercase sm:absolute sm:mb-0 bg-[#18181E] px-4 rounded-xl aspect-square",
         className
       )}
       {...props}
     >
-   
-      <div className="text-xl font-semibold text-white">{props.date}</div>
-     
-      <div className="text-sm text-gray-500 text-white">{props.time}</div>
+      <div className="px-2 py-6 bg-[#25252F] rounded-xl aspect-square relative h-[100px]">
+        <div className= {` ${timeBgColor} absolute h-[15px] aspect-square top-2 right-2 rounded-full`}>
+          
+        </div>
+        <div className="text-xl font-semibold text-white">{props.date}</div>
+
+        <div className="text-sm  text-white">{props.time}</div>
+
+      </div>
     </div>
   );
 };

@@ -51,6 +51,8 @@ export const TimelineLayout = ({ interviews }) => {
   const handleClose = () => setIsSheetOpen(false);
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [expandedInterviewId, setExpandedInterviewId] = useState(null); 
+
 
   const totalInterviews = interviews.length;
 
@@ -165,38 +167,49 @@ export const TimelineLayout = ({ interviews }) => {
     return timeDifference;
   };
 
+  const toggleDescription = (interviewId) => {
+    setExpandedInterviewId((prevId) => (prevId === interviewId ? null : interviewId)); // Toggle expanded state
+  };
+
   return (
     <div>
       <div className="bg-zinc-900 text-white py-10 rounded-lg mb-6 mt-12 max-w-full text-left ">
         <h2 className="text-2xl font-medium ml-8">Total Interviews</h2>
         <p className="text-4xl font-medium mt-2 ml-8">{totalInterviews}</p>
+        
       </div>
 
-
+      <h2 className="text-2xl font-medium">Upcoming Interviews</h2>
       <Timeline className="mt-8">
         {interviews.map((interview) => {
           const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
+          const isExpanded = expandedInterviewId === interview.scheduleID;
 
           // Time differnce class definations
           const isClose = timeDifference <= 180 && timeDifference > 0; // Less than 240 minutess
           const isFar = timeDifference > 180; // More than 240 minutes
 
           const timeBgColor = isClose
-            ? "bg-red-500 hover:bg-red-600"
+            ? "bg-[#F4BB50] hover:bg-red-600"
             : isFar
               ? "bg-green-500 hover:bg-green-600"
-              : "bg-gray-500 hover:bg-gray-600";
+              : "bg-gray-900 hover:bg-gray-600";
 
           return (
-            <TimelineItem key={interview.scheduleID}>
-              <TimelineHeader>
+            <TimelineItem key={interview.scheduleID} className=''>
+              <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-md" >
+
                 <TimelineTime
                   date={formatDate(interview.startTime)}
                   time={formatTime(interview.startTime)}
-                  className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center font-thin ${timeBgColor}`}
+                  timeBgColor={timeBgColor}
+                  className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center font-thin`}
                 />
+       
+                
+
                 {/* <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle> */}
-                <div className="flex justify-between items-center w-full">
+                <div className="flex justify-between items-center w-full ">
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
                   <button
                     onClick={() => { joinInterviewSession(interview) }}
@@ -206,20 +219,26 @@ export const TimelineLayout = ({ interviews }) => {
                   </button>
                 </div>
               </TimelineHeader>
-              <TimelineDescription className='mt-6'>
-                <div>
-                  {getPlainTextFromHtml(interview.interview.jobDescription)}
+              <div className="bg-[#18181E]">
+              <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B]'>
+              <div className="w-[90%]">
+                  {isExpanded
+                    ? getPlainTextFromHtml(interview.interview.jobDescription)
+                    : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
                 </div>
                 {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
                 <Accordion type="single" collapsible>
                   <AccordionItem value="item-1">
                     <div className="flex justify-end">
-                      <AccordionTrigger className="text-sm font-thin text-[#BBB9FF] hover:text-white px-1 py-1 bg-[#25252F] rounded-lg mb-6 mt-2">
-                        More Details
+                    <AccordionTrigger
+                        onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
+                        className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2"
+                      >
+                        {isExpanded ? "Show Less" : "More Details"}
                       </AccordionTrigger>
                     </div>
-                    <AccordionContent className="bg-zinc-900 p-4 shadow-md">
-                      <div className="space-y-4">
+                    <AccordionContent className="bg-[#18181E] p-4 shadow-md">
+                      <div className="space-y-2 text-white">
                         <div>
                           <span className="font-bold">Interview ID:</span>
                           <span className="ml-2">{interview.interviewId}</span>
@@ -229,7 +248,7 @@ export const TimelineLayout = ({ interviews }) => {
                             title="Copy Interview ID"
                           >
                             <ClipboardList className="w-5 h-5 inline" />
-                            {copied ? "Copied!" : "Copy"}
+                            {"Copy"}
                           </button>
                         </div>
                         <div>
@@ -251,6 +270,7 @@ export const TimelineLayout = ({ interviews }) => {
 
 
               </TimelineDescription>
+              </div>
             </TimelineItem>
           );
         })}
