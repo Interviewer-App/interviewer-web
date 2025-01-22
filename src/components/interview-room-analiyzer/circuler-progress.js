@@ -1,5 +1,5 @@
 import React from "react";
-function CirculerProgress({ marks, catorgory }) {
+function CirculerProgress({ marks, catorgory, subTitleSize, titleSize }) {
   const strokeDashoffset = 251.2 * (1 - marks / 100);
   const gradientId = `gradient-${marks}-${catorgory.replace(/\s+/g, '-')}`;
 
@@ -75,10 +75,10 @@ function CirculerProgress({ marks, catorgory }) {
           </defs>
         </svg>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-900 dark:text-gray-50">
-          <p className="text-4xl font-bold text-gray-900 dark:text-gray-50">
+          <p className={`${titleSize} font-bold text-gray-900 dark:text-gray-50 text-center`}>
             {marks || 0}%
           </p>
-          <p className=" text-sm text-gray-500">{catorgory}</p>
+          <p className={` ${subTitleSize} text-gray-500 text-center`}>{catorgory}</p>
         </div>
       </div>
     </div>
