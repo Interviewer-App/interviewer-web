@@ -22,7 +22,6 @@ const SlotSwiperComponent = forwardRef(
     const { toast } = useToast();
 
     const handleBookSlot = async (id) => {
-        debugger;
       try {
         const session = await getSession();
         const candidateID = session?.user?.candidateID;
@@ -94,7 +93,7 @@ const SlotSwiperComponent = forwardRef(
               <div className=" w-full grid place-content-center grid-cols-1  md:grid-cols-2  lg:grid-cols-3 gap-3">
                 {schedule.schedules.map((slot, index) => (
                   <AlertDialog key={index}>
-                    <AlertDialogTrigger>
+                    <AlertDialogTrigger disabled={slot.isBooked}>
                       <div
                         key={index}
                         className={` py-2 border-2 ${
