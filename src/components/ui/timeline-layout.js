@@ -60,7 +60,6 @@ export const TimelineLayout = ({interviews}) => {
 
 
     const joinInterviewSession = async (interview) => {
-        debugger
         // e.preventDefault();
         try {
           const session = await getSession();
