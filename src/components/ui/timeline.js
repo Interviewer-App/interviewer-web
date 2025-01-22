@@ -43,19 +43,22 @@ TimelineTitle.displayName = "TimelineTitle"
 
 const TimelineTime = ({ className, variant = "default", ...props }) => {
   return (
-    <Badge
+    <div
       className={cn(
-        "left-0 mb-3 inline-flex h-10 w-36 translate-y-0.5 items-center justify-center text-sm font-semibold uppercase sm:absolute sm:mb-0",
+        "left-0 mb-3 inline-flex flex-col items-center justify-center text-sm font-semibold uppercase sm:absolute sm:mb-0 bg-gray-800 py-1 px-5 rounded-xl",
         className
       )}
-      variant={variant}
       {...props}
     >
-      {props.children}
-    </Badge>
-  )
-}
-TimelineTime.displayName = "TimelineTime"
+   
+      <div className="text-xl font-semibold text-white">{props.date}</div>
+     
+      <div className="text-sm text-gray-500 text-white">{props.time}</div>
+    </div>
+  );
+};
+TimelineTime.displayName = "TimelineTime";
+
 
 const TimelineDescription = React.forwardRef(({ className, ...props }, ref) => (
   <div
