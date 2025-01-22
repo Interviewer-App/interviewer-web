@@ -167,13 +167,13 @@ export const TimelineLayout = ({ interviews }) => {
 
   return (
     <div>
-      <div className="bg-zinc-900 text-white py-8 rounded-lg mb-6 mt-12 max-w-full text-left hover:bg-blue-800">
-        <h2 className="text-2xl font-semibold ml-8">Total Interviews</h2>
-        <p className="text-xl font-bold mt-2 ml-8">{totalInterviews}</p>
+      <div className="bg-zinc-900 text-white py-10 rounded-lg mb-6 mt-12 max-w-full text-left ">
+        <h2 className="text-2xl font-medium ml-8">Total Interviews</h2>
+        <p className="text-4xl font-medium mt-2 ml-8">{totalInterviews}</p>
       </div>
 
 
-  <Timeline className="mt-8">
+      <Timeline className="mt-8">
         {interviews.map((interview) => {
           const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
 
@@ -184,74 +184,76 @@ export const TimelineLayout = ({ interviews }) => {
           const timeBgColor = isClose
             ? "bg-red-500 hover:bg-red-600"
             : isFar
-            ? "bg-green-500 hover:bg-green-600"
-            : "bg-gray-500 hover:bg-gray-600";
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-gray-500 hover:bg-gray-600";
 
           return (
-          <TimelineItem key={interview.scheduleID}>
-            <TimelineHeader>
-              <TimelineTime
-                date={formatDate(interview.startTime)}
-                time={formatTime(interview.startTime)}
-                className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center ${timeBgColor}`}
-              />
-              {/* <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle> */}
-              <div className="flex justify-between items-center w-full">
-                <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
-                <button
-                  onClick={() => { joinInterviewSession(interview) }}
-                  className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
-                >
-                  Join Now
-                </button>
-              </div>
-            </TimelineHeader>
-            <TimelineDescription>
-              <div>
-                {getPlainTextFromHtml(interview.interview.jobDescription)}
-              </div>
-              {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className="text-lg font-semibold text-blue-600 hover:text-blue-800">
-                    More Details
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-zinc-900 p-4 shadow-md">
-                    <div className="space-y-4">
-                      <div>
-                        <span className="font-bold">Interview ID:</span>
-                        <span className="ml-2">{interview.interviewId}</span>
-                        <button
-                          onClick={() => handleCopy(interview.interviewId)}
-                          className="ml-4 text-blue-500 hover:text-blue-700"
-                          title="Copy Interview ID"
-                        >
-                          <ClipboardList className="w-5 h-5 inline" />
-                          {copied ? "Copied!" : "Copy"}
-                        </button>
-                      </div>
-                      <div>
-                        <span className="font-bold">Interview Category:</span>
-                        <span className="ml-2">{interview.interview.interviewCategory}</span>
-                      </div>
-                      <div>
-                        <span className="font-bold">End Date:</span>
-                        <span className="ml-2">{formatDateMoreDetailsSection(interview?.interview?.endDate)}</span>
-                        </div>
-                      <div>
-                        <span className="font-bold">Company Name:</span>
-                        <span className="ml-2">{interview.interview.company.companyName}</span>
-                      </div>
+            <TimelineItem key={interview.scheduleID}>
+              <TimelineHeader>
+                <TimelineTime
+                  date={formatDate(interview.startTime)}
+                  time={formatTime(interview.startTime)}
+                  className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center font-thin ${timeBgColor}`}
+                />
+                {/* <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle> */}
+                <div className="flex justify-between items-center w-full">
+                  <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
+                  <button
+                    onClick={() => { joinInterviewSession(interview) }}
+                    className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
+                  >
+                    Join Now
+                  </button>
+                </div>
+              </TimelineHeader>
+              <TimelineDescription className='mt-6'>
+                <div>
+                  {getPlainTextFromHtml(interview.interview.jobDescription)}
+                </div>
+                {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="item-1">
+                    <div className="flex justify-end">
+                      <AccordionTrigger className="text-sm font-thin text-[#BBB9FF] hover:text-white px-1 py-1 bg-[#25252F] rounded-lg mb-6 mt-2">
+                        More Details
+                      </AccordionTrigger>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                    <AccordionContent className="bg-zinc-900 p-4 shadow-md">
+                      <div className="space-y-4">
+                        <div>
+                          <span className="font-bold">Interview ID:</span>
+                          <span className="ml-2">{interview.interviewId}</span>
+                          <button
+                            onClick={() => handleCopy(interview.interviewId)}
+                            className="ml-4 text-blue-500 hover:text-blue-700"
+                            title="Copy Interview ID"
+                          >
+                            <ClipboardList className="w-5 h-5 inline" />
+                            {copied ? "Copied!" : "Copy"}
+                          </button>
+                        </div>
+                        <div>
+                          <span className="font-bold">Interview Category:</span>
+                          <span className="ml-2">{interview.interview.interviewCategory}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold">End Date:</span>
+                          <span className="ml-2">{formatDateMoreDetailsSection(interview?.interview?.endDate)}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold">Company Name:</span>
+                          <span className="ml-2">{interview.interview.company.companyName}</span>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
 
 
-            </TimelineDescription>
-          </TimelineItem>
+              </TimelineDescription>
+            </TimelineItem>
           );
-})}
+        })}
       </Timeline>
     </div>
   );
