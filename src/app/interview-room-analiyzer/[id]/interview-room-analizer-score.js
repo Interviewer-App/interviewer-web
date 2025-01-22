@@ -103,7 +103,7 @@ function InterviewRoomAnalizerScore({
         </div>
 
         <div className=" w-full md:w-[35%] p-8 flex flex-col h-full items-center justify-start md:justify-center">
-          <div className="  bg-gray-700/20 text-gray-400 border-2 py-8 border-gray-700 flex flex-col items-center justify-center w-full mt-7 md:mt-4 rounded-lg">
+          <div className="  bg-gray-700/20 text-gray-400 border-2 py-8 border-gray-700 flex flex-col items-center justify-center w-full mt-7 md:mt-5 rounded-lg">
             <h1 className=" text-2xl font-semibold text-center">Total Score</h1>
             <h2 className=" text-base text-gray-500 text-center">
               {" "}
