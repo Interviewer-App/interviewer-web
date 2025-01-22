@@ -53,7 +53,8 @@ const handler = NextAuth({
               email: res.data.user.email,
               id: res.data.user.userID,
               companyID: companyID,
-              candidateID: candidateID
+              candidateID: candidateID,
+              isSurveyCompleted: res.data.user.isSurveyCompleted
             };
 
           }
@@ -93,12 +94,13 @@ const handler = NextAuth({
 
 
           const newUser = await providerRegistration(userData);
+          console.log(newUser)
           let companyID ;
             let candidateID;
             if (newUser.user.role === 'COMPANY') {
               companyID = newUser.user.company.companyID
             } else {
-              candidateID = newUser.user.candidate.candidateID
+              candidateID = newUser.user.candidate.profileID
             }
 
           if (newUser.token) {
@@ -108,6 +110,7 @@ const handler = NextAuth({
             user.id = newUser.user.userID,
             user.companyID = companyID,
             user.candidateID = candidateID
+            user.isSurveyCompleted = newUser.user.candidate.isSurveyCompleted
           }
 
 
@@ -135,6 +138,7 @@ const handler = NextAuth({
         token.email = user.email;
         token.companyID = user.companyID,
         token.candidateID = user.candidateID
+        token.isSurveyCompleted = user.isSurveyCompleted
       }
       return token;
     },
@@ -145,6 +149,7 @@ const handler = NextAuth({
       session.user.email = token.email;
       session.user.companyID = token.companyID,
       session.user.candidateID = token.candidateID
+      session.user.isSurveyCompleted = token.isSurveyCompleted
       return session;
     },
 

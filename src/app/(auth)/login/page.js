@@ -30,7 +30,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast()
-
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,21 +43,24 @@ const LoginPage = () => {
       });
 
       if (res.ok) {
-        
-        const session = await getSession();
-        const userRole = session?.user?.role;
-        const token = session?.user?.accessToken;
-        localStorage.setItem('accessToken', token);
 
-        if (userRole === 'COMPANY') {
-          router.push('/interviews');
-        } else if (userRole === 'CANDIDATE') {
-          router.push('/interview-schedules');
-        } else if (userRole === 'ADMIN')  {
-          router.push('/users');
-        } else{
-          router.push('/');
-        }
+        const authCallback = `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`;
+        router.push(authCallback);
+        
+        // const session = await getSession();
+        // const userRole = session?.user?.role;
+        // const token = session?.user?.accessToken;
+        // localStorage.setItem('accessToken', token);
+
+        // if (userRole === 'COMPANY') {
+        //   router.push('/interviews');
+        // } else if (userRole === 'CANDIDATE') {
+        //   router.push('/my-interviews');
+        // } else if (userRole === 'ADMIN')  {
+        //   router.push('/users');
+        // } else{
+        //   router.push('/');
+        // }
 
 
       } else {
@@ -79,13 +83,13 @@ const LoginPage = () => {
 
     const handleGoogleLoginSuccess = async () => {
       await signIn("google", {
-        callbackUrl: "/panel",
+        callbackUrl: `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`,
       });
     };
     
     const handleGithubLoginSuccess = async () => {
       await signIn("github", {
-        callbackUrl: "/panel",
+        callbackUrl: `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`,
       });
   
     };

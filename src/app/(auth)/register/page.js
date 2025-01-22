@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { signUp } from "@/lib/api/authentication";
-import { useRouter } from "next/navigation";
+import { useRouter,useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -30,7 +30,8 @@ const RegisterPage = () => {
   const [role, setRole] = useState("CANDIDATE");
   const [companyname, setCompanyName] = useState("");
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [isPasswordMissMatch, setIsPasswordMissMatch] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -121,13 +122,13 @@ const RegisterPage = () => {
 
   const handleGoogleLoginSuccess = async () => {
     await signIn("google", {
-      callbackUrl: "/panel",
+      callbackUrl: `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`,
     });
   };
 
   const handleGithubLoginSuccess = async () => {
     await signIn("github", {
-      callbackUrl: "/panel",
+      callbackUrl: `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`,
     });
   };
 
@@ -182,6 +183,7 @@ const RegisterPage = () => {
           <h1 className=" text-2xl font-semibold text-[#f3f3f3] pt-7">
             Sign Up
           </h1>
+          {role === 'CANDIDATE' && (<>
           <div className=" mt-5 clear-start flex flex-col md:flex-row items-start justify-between">
             <button
               onClick={handleGoogleLoginSuccess}
@@ -204,10 +206,10 @@ const RegisterPage = () => {
               OR
             </p>
             <hr className="w-[45%] border-[#666666]" />
-          </div>
+          </div> </>)}
           <form
             onSubmit={handleSubmit}
-            className=" flex flex-col items-center justify-between"
+            className=" flex flex-col items-center justify-between mt-5"
           >
             <div
               className={` ${
