@@ -1,8 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Slider } from "@/components/ui/slider";
+import Editor from "@/components/rich-text/editor";
 
 function InterviewRoomAnalizerOther({ setCategoryMarks, categoryMarks }) {
+  const [note, setNote] = useState("");
+
   const handleCategoryMarksChange = (category, value) => {
     setCategoryMarks((prev) =>
       prev.map((item) =>
@@ -15,8 +18,8 @@ function InterviewRoomAnalizerOther({ setCategoryMarks, categoryMarks }) {
   return (
     <div className=" w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
       <h1 className=" text-3xl font-semibold">Other categories</h1>
-      <div className=" flex justify-between items-start w-full mt-5">
-        <div className=" w-[70%]">
+      <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-5">
+        <div className=" w-full md:w-[60%] md:pr-8">
           {categoryMarks
             .filter((category) => category.categoryName !== "Technical")
             .map((category, index) => (
@@ -48,7 +51,19 @@ function InterviewRoomAnalizerOther({ setCategoryMarks, categoryMarks }) {
               </div>
             ))}
         </div>
-        <div className=" w-[30%]"></div>
+        <div className=" w-full md:w-[40%] mt-4">
+          <Editor
+            content={note}
+            onChange={setNote}
+            placeholder="Write your note"
+            readOnly={false}
+            required
+            className=" w-full text-sm border-2 border-gray-700 rounded-lg placeholder-[#737883] px-6 py-3 rich-text"
+          />
+          <button className=" md:float-right mt-5 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]">
+            Add note
+          </button>
+        </div>
       </div>
     </div>
   );
