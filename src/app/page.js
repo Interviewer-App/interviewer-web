@@ -22,8 +22,14 @@ import { FiArrowUpRight } from "react-icons/fi";
 import PremiuCard from "../components/home/premiumCard";
 import { useState } from "react";
 import "@/styles/globals.css";
+import { getSession, useSession } from "next-auth/react";
+import { useRouter,useSearchParams } from "next/navigation";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
   const [duration, setDuration] = useState("MONTHLY");
   const premiumDetails = [
     {
@@ -73,6 +79,24 @@ export default function Home() {
     },
   ];
 
+  const handleAuthentication = async () => {
+    if (status === "authenticated") {
+      const token = localStorage.getItem('accessToken');
+      const session = await getSession();
+      const userRole = session?.user?.role;
+      if (userRole === 'COMPANY') {
+        router.push('/interviews');
+      } else if (userRole === 'CANDIDATE') {
+        router.push('/my-interviews');
+      } else if (userRole === 'ADMIN')  {
+        router.push('/users');
+      } else{
+        router.push('/');
+      }
+
+    }
+  }
+
   return (
     <div className=" w-full">
       {/* landing screen */}
@@ -107,11 +131,11 @@ export default function Home() {
               Providing solutions for every team, from small businesses to large
               enterprises, to streamline operations effortlessly.
             </p>
-            <Link href="/register">
-              <button className="bg-[#2e2850]/80 py-2 md:py-4 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium mt-5 lg:mt-10">
+            {/* <Link > */}
+              <button onClick={handleAuthentication} className="bg-[#2e2850]/80 py-2 md:py-4 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium mt-5 lg:mt-10">
                 Get Started Now
               </button>
-            </Link>
+            {/* </Link> */}
           </div>
         </div>
         <h1 className=" w-full text-center text-2xl font-semibold">
