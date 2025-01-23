@@ -229,7 +229,7 @@ export const TimelineLayout = ({ interviews }) => {
               </TimelineHeader>
               <div className="bg-[#18181E]">
                 <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B] '>
-                  <div className="w-[90%] ">
+                  <div className="w-[90%] pb-3">
                     {isExpanded
                       ? getPlainTextFromHtml(interview.interview.jobDescription)
                       : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
@@ -247,8 +247,8 @@ export const TimelineLayout = ({ interviews }) => {
                       </div> */}
                       <AccordionContent className="bg-[#18181E] p-4 shadow-md ">
                         <div className="space-y-2 text-white mt-4 ">
-                          <div>
-                            <span className="font-medium">Interview ID:</span>
+                          <div className="flex items-center">
+                            <span className="font-medium">ID:</span>
                             <span className="ml-2">{interview.interviewId}</span>
                             <button
                               onClick={() => handleCopy(interview.interviewId)}
@@ -256,7 +256,9 @@ export const TimelineLayout = ({ interviews }) => {
                               title="Copy Interview ID"
                             >
                               <ClipboardList className="w-5 h-5 inline" />
-                              {isCopied ? "Copied!" : "Copy"}
+                              <span className="hidden sm:inline ml-2">
+                                {isCopied ? "Copied!" : "Copy"}
+                              </span>
                             </button>
                           </div>
                           <div>
