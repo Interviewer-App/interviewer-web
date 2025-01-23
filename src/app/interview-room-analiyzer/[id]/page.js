@@ -54,7 +54,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       usageFrequency: 0,
       interviewResponses: {
         responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
+          "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
         score: { score: 10 },
       },
     },
@@ -76,7 +76,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       usageFrequency: 0,
       interviewResponses: {
         responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
+          "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
         score: { score: 10 },
       },
     },
@@ -116,7 +116,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       usageFrequency: 0,
       interviewResponses: {
         responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
+          "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
         score: { score: 10 },
       },
     },
@@ -138,8 +138,35 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       usageFrequency: 0,
       interviewResponses: {
         responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
+          "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
         score: { score: 10 },
+      },
+    },
+  ]);
+  const [categoryScores, setCategoryScores] = useState([
+    {
+      categoryScoreId: "cm67gmy4i0005lf34tkfwjzly",
+      sessionId: "cm67gmy4d0003lf34rrjvx1n6",
+      assignmentId: "cm667xfj40006lfbsdtunsb2h",
+      score: 10,
+      note: null,
+      createdAt: "2025-01-22T05:25:11.875Z",
+      updatedAt: "2025-01-22T07:37:53.735Z",
+      categoryAssignment: {
+        assignmentId: "cm667xfj40006lfbsdtunsb2h",
+        interviewId: "cm667xfj40005lfbscq8acf5r",
+        categoryId: "cm667vnjo0003lfbskmcug6xv",
+        percentage: 100,
+        createdAt: "2025-01-21T08:33:38.272Z",
+        updatedAt: "2025-01-21T08:33:38.272Z",
+        category: {
+          categoryId: "cm667vnjo0003lfbskmcug6xv",
+          companyId: "cm667vnjh0001lfbsew3f7oly",
+          categoryName: "Behavioural",
+          description: "Asseses the technical ability of the candidate",
+          createdAt: "2025-01-21T08:32:15.349Z",
+          updatedAt: "2025-01-21T08:32:15.349Z",
+        },
       },
     },
   ]);
@@ -208,6 +235,57 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // useEffect(() => {
+  //   const fetchInterviewCategories = async () => {
+  //     try {
+  //       const session = await getSession();
+  //       const companyId = session?.user?.companyID;
+  //       const response = await getInterviewCategoryCompanyById(companyId);
+  //       if (response) {
+  //         setInterviewCategories(response.data.categories);
+  //       }
+  //     } catch (error) {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Uh oh! Something went wrong.",
+  //         description: `Error fetching interview categories: ${error}`,
+  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //       });
+  //     }
+  //   };
+  //   fetchInterviewCategories();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (interviewCategories.length > 0) {
+  //     setCategoryMarks((prev) => {
+  //       const existingIds = new Set(prev.map((item) => item.categoryId));
+  //       const newMarks = interviewCategories
+  //         .filter((category) => !existingIds.has(category.categoryId))
+  //         .map((category) => ({
+  //           categoryId: category.categoryId,
+  //           categoryName: category.categoryName,
+  //           marks: 10,
+  //         }));
+  //       return [...prev, ...newMarks];
+  //     });
+  //   }
+  // }, [interviewCategories]);
+
+  // const handleCategoryMarksChange = (category, value) => {
+  //   setCategoryMarks((prev) =>
+  //     prev.map((item) =>
+  //       item.categoryId === category.categoryId
+  //         ? { ...item, marks: value }
+  //         : item
+  //     )
+  //   );
+  // };
+
+  const handleTabChange = (tab) => {
+    setTab(tab);
+  };
+
   const nextQuestion = () => {
     const data = {
       sessionId: sessionId,
@@ -227,57 +305,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       redirect(loginURL);
     }
   }
-
-  useEffect(() => {
-    const fetchInterviewCategories = async () => {
-      try {
-        const session = await getSession();
-        const companyId = session?.user?.companyID;
-        const response = await getInterviewCategoryCompanyById(companyId);
-        if (response) {
-          setInterviewCategories(response.data.categories);
-        }
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: `Error fetching interview categories: ${error}`,
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
-    };
-    fetchInterviewCategories();
-  }, []);
-
-  useEffect(() => {
-    if (interviewCategories.length > 0) {
-      setCategoryMarks((prev) => {
-        const existingIds = new Set(prev.map((item) => item.categoryId));
-        const newMarks = interviewCategories
-          .filter((category) => !existingIds.has(category.categoryId))
-          .map((category) => ({
-            categoryId: category.categoryId,
-            categoryName: category.categoryName,
-            marks: 10,
-          }));
-        return [...prev, ...newMarks];
-      });
-    }
-  }, [interviewCategories]);
-
-  const handleCategoryMarksChange = (category, value) => {
-    setCategoryMarks((prev) =>
-      prev.map((item) =>
-        item.categoryId === category.categoryId
-          ? { ...item, marks: value }
-          : item
-      )
-    );
-  };
-
-  const handleTabChange = (tab) => {
-    setTab(tab);
-  };
 
   return (
     <>
@@ -345,8 +372,9 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         )}
         {tab === "OTHER" && (
           <InterviewRoomAnalizerOther
-            categoryMarks={categoryMarks}
-            setCategoryMarks={setCategoryMarks}
+            categoryScores={categoryScores}
+            setCategoryScores={setCategoryScores}
+            sessionId={sessionId}
           />
         )}
         {/* <ResizablePanelGroup
