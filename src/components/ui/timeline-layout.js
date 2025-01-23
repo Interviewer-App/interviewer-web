@@ -160,14 +160,30 @@ export const TimelineLayout = ({ interviews }) => {
   return (
     <div>
       <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
-        <div className="text-2xl font-medium ml-8"> <h1>Total Interviews</h1>
+
+        <div className="flex justify-between px-3">
+          <div className="flex-col">
+            <div className="text-2xl font-medium text-start">
+              <h1>Total Interviews</h1>
+              <div className="text-4xl font-medium mt-2">{totalInterviews}</div>
+            </div>
+          </div>
+          <div className="flex-col">
+            {/* <div className="text-2xl font-medium ml-8"> */}
+              <div className="flex justify-end w-60 aspect-square ml-auto mr-3 -mt-28">
+                <Lottie animationData={interviewAnimation} />
+              </div>
+            {/* </div> */}
+          </div>
+        </div>
+
+        {/* <div className="text-2xl font-medium ml-8"> <h1>Total Interviews</h1>
           <div className="text-4xl font-medium mt-2">{totalInterviews}
             <div className="flex justify-end w-60 aspect-square ml-auto mr-32 -mt-28">
               <Lottie animationData={interviewAnimation} />
             </div>
-
           </div>
-        </div>
+        </div> */}
 
       </div>
 
