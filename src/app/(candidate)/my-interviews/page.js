@@ -71,7 +71,7 @@ const MyInterviews = () => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="px-4 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
+        <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
             <h1 className="text-3xl font-semibold">My Interviews</h1>
             <TimelineLayout interviews={scheduleInterviews} />
         </div>
