@@ -188,11 +188,14 @@ export const TimelineLayout = ({ interviews }) => {
           // Time differnce class definations
           const isClose = timeDifference <= 180 && timeDifference > 0; // Less than 240 minutess
           const isFar = timeDifference > 180; // More than 240 minutes
+          const ismedium=timeDifference < 60 && timeDifference > 0;
 
           const timeBgColor = isClose
-            ? "bg-[#F4BB50] hover:bg-red-600"
+            ? "bg-[#F4BB50]"
             : isFar
-              ? "bg-green-500 hover:bg-green-600"
+              ? "bg-[#7DDA6A]"
+            : ismedium
+              ? "bg-[#F4BB50]"
               : "bg-gray-900 hover:bg-gray-600";
 
           return (
