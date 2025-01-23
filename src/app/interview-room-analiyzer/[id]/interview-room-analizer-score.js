@@ -18,8 +18,6 @@ function InterviewRoomAnalizerScore({
   numberOfAnswers,
   numOfQuestions,
   totalScore,
-  analiyzeResponse,
-  answeredQuestionNo,
   questionList,
 }) {
   const [expandedQuestions, setExpandedQuestions] = useState({});
@@ -34,7 +32,7 @@ function InterviewRoomAnalizerScore({
     <div className=" w-[90%] max-w-[1500px] mx-auto h-full p-6">
       <h1 className=" text-3xl font-semibold">Marks Overview</h1>
       <div className=" w-full flex flex-col-reverse md:flex-row justify-between items-start mt-9">
-        <div className=" w-full md:w-[65%] mt-10 md:mt-0">
+        <div className=" w-full md:w-[65%] mt-10 md:mt-0 md:mb-10">
           <h1 className=" text-2xl font-semibold">Question List</h1>
           {questionList.map((question, index) => (
             <div
@@ -119,7 +117,7 @@ function InterviewRoomAnalizerScore({
               {totalScore}% Accurate with expected answers
             </p>
             <p className=" text-sm text-gray-500 text-center">
-              Showing Total Score for 8 out of 10 question
+              Showing Total Score for {numberOfAnswers} out of {numOfQuestions} question
             </p>
           </div>
         </div>
