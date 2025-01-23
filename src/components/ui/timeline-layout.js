@@ -185,9 +185,9 @@ export const TimelineLayout = ({ interviews }) => {
           const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
           const isExpanded = expandedInterviewId === interview.scheduleID;
 
-          // Time differnce class definations
-          const isClose = timeDifference <= 180 && timeDifference > 0; // Less than 240 minutess
-          const isFar = timeDifference > 180; // More than 240 minutes
+          // Time differnce dynamic class definations
+          const isClose = timeDifference <= 180 && timeDifference > 0; //adjust the time whatever values you prefer
+          const isFar = timeDifference > 180; 
           const ismedium=timeDifference < 60 && timeDifference > 0;
 
           const timeBgColor = isClose
@@ -200,7 +200,7 @@ export const TimelineLayout = ({ interviews }) => {
 
           return (
             <TimelineItem key={interview.scheduleID} className=''>
-              <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-md" >
+              <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-xl" >
 
                 <TimelineTime
                   date={formatDate(interview.startTime)}
@@ -243,7 +243,7 @@ export const TimelineLayout = ({ interviews }) => {
                     <AccordionContent className="bg-[#18181E] p-4 shadow-md">
                       <div className="space-y-2 text-white">
                         <div>
-                          <span className="font-bold">Interview ID:</span>
+                          <span className="font-medium">Interview ID:</span>
                           <span className="ml-2">{interview.interviewId}</span>
                           <button
                             onClick={() => handleCopy(interview.interviewId)}
@@ -255,15 +255,15 @@ export const TimelineLayout = ({ interviews }) => {
                           </button>
                         </div>
                         <div>
-                          <span className="font-bold">Interview Category:</span>
+                          <span className="font-medium">Interview Category:</span>
                           <span className="ml-2">{interview.interview.interviewCategory}</span>
                         </div>
                         <div>
-                          <span className="font-bold">End Date:</span>
+                          <span className="font-medium">End Date:</span>
                           <span className="ml-2">{formatDateMoreDetailsSection(interview?.interview?.endDate)}</span>
                         </div>
                         <div>
-                          <span className="font-bold">Company Name:</span>
+                          <span className="font-medium">Company Name:</span>
                           <span className="ml-2">{interview.interview.company.companyName}</span>
                         </div>
                       </div>
