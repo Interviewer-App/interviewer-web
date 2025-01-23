@@ -161,14 +161,14 @@ export const TimelineLayout = ({ interviews }) => {
     <div>
       <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
         <div className="text-2xl font-medium ml-8"> <h1>Total Interviews</h1>
-        <div className="text-4xl font-medium mt-2">{totalInterviews}
-        <div className="flex justify-end w-60 aspect-square ml-auto mr-32 -mt-28">
-          <Lottie animationData={interviewAnimation} />
+          <div className="text-4xl font-medium mt-2">{totalInterviews}
+            <div className="flex justify-end w-60 aspect-square ml-auto mr-32 -mt-28">
+              <Lottie animationData={interviewAnimation} />
+            </div>
+
+          </div>
         </div>
-        
-        </div>
-        </div>
-        
+
       </div>
 
       <h2 className="text-2xl font-medium">Upcoming Interviews</h2>
@@ -201,9 +201,6 @@ export const TimelineLayout = ({ interviews }) => {
                   className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center font-thin`}
                 />
 
-
-
-                {/* <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle> */}
                 <div className="flex justify-between items-center w-full ">
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
                   <button
@@ -215,8 +212,8 @@ export const TimelineLayout = ({ interviews }) => {
                 </div>
               </TimelineHeader>
               <div className="bg-[#18181E]">
-                <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B]'>
-                  <div className="w-[90%]">
+                <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B] '>
+                  <div className="w-[90%] ">
                     {isExpanded
                       ? getPlainTextFromHtml(interview.interview.jobDescription)
                       : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
@@ -224,16 +221,16 @@ export const TimelineLayout = ({ interviews }) => {
                   {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
                   <Accordion type="single" collapsible>
                     <AccordionItem value="item-1">
-                      <div className="flex justify-end">
+                      {/* <div className="flex justify-end">
                         <AccordionTrigger
                           onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
                           className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
                         >
                           {isExpanded ? "Show Less" : "More Details"}
                         </AccordionTrigger>
-                      </div>
-                      <AccordionContent className="bg-[#18181E] p-4 shadow-md">
-                        <div className="space-y-2 text-white">
+                      </div> */}
+                      <AccordionContent className="bg-[#18181E] p-4 shadow-md ">
+                        <div className="space-y-2 text-white mt-4 ">
                           <div>
                             <span className="font-medium">Interview ID:</span>
                             <span className="ml-2">{interview.interviewId}</span>
@@ -260,6 +257,15 @@ export const TimelineLayout = ({ interviews }) => {
                           </div>
                         </div>
                       </AccordionContent>
+                      {/* Move the button to the bottom of the AccordionContent */}
+                      <div className="flex justify-end -mt-4">
+                        <AccordionTrigger
+                          onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
+                          className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
+                        >
+                          {isExpanded ? "Show Less" : "More Details"}
+                        </AccordionTrigger>
+                      </div>
                     </AccordionItem>
                   </Accordion>
 

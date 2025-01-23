@@ -51,7 +51,7 @@ const TimelineTime = ({timeBgColor, className, variant = "default", ...props }) 
       {...props}
     >
       <div className="px-2 py-6 bg-[#25252F] rounded-xl aspect-square relative h-[100px]">
-        <div className= {` ${timeBgColor} absolute h-[15px] aspect-square top-2 right-2 rounded-full`}>
+        <div className= {` ${timeBgColor} absolute h-[12px] aspect-square top-2 right-2 rounded-full`}>
           
         </div>
         <div className="text-xl font-semibold text-white">{props.date}</div>
