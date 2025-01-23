@@ -150,15 +150,15 @@ function InterviewRoomAnalizerDashboard({
                 {candidateAnswers?.question}
               </p>
             </div>
-            <div className=" w-full mt-2">
-              <h1 className=" py-3 font-semibold text-lg">
+            <div className=" w-full bg-blue-700/20 mt-5 text-gray-400 border-2 border-blue-700 px-4 py-3 rounded-lg">
+              <h1 className=" font-semibold text-lg">
                 Candidate&apos;s Answer
               </h1>
               <p className=" text-sm text-gray-400">
                 {candidateAnswers?.answer}
               </p>
             </div>
-            <div className=" w-full rounded-lg bg-gray-600/30 py-4 px-7 mt-5">
+            <div className=" w-full bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg py-4 px-7">
               <h1 className=" text-2xl font-semibold">Analysis with AI</h1>
               <div className=" mt-2">
                 <div className=" w-full">
