@@ -42,8 +42,6 @@ export const TimelineLayout = ({ interviews }) => {
   const [copied, setCopied] = useState(false);
   const [expandedInterviewId, setExpandedInterviewId] = useState(null); 
   const [copiedInterviewIds, setCopiedInterviewIds] = useState({});
-
-
   const totalInterviews = interviews.length;
 
   const formatDate = (date) => {
@@ -221,7 +219,7 @@ export const TimelineLayout = ({ interviews }) => {
                     <div className="flex justify-end">
                     <AccordionTrigger
                         onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
-                        className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2"
+                        className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
                       >
                         {isExpanded ? "Show Less" : "More Details"}
                       </AccordionTrigger>
