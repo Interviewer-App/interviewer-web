@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import socket from "../../../lib/utils/socket";
 
-import { useEffect, useState, useCallback, use } from "react";
+import { useEffect, useState, useCallback } from "react";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
@@ -30,119 +30,13 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [answeredQuestionNo, setAnsweredQuestionNO] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [numberOfAnswers, setNumberOfAnswers] = useState(0);
-  const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
+  // const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
   const [sessionId, setSessionId] = useState(null);
   const [interviewCategories, setInterviewCategories] = useState([]);
   const [categoryMarks, setCategoryMarks] = useState([]);
   const [tab, setTab] = useState("DASHBOARD");
-  const [questionList, setQuestionList] = useState([
-    {
-      questionID: "cm67gp7lp0006lf344z8qkahw",
-      sessionID: "cm67gmy4d0003lf34rrjvx1n6",
-      questionCategory: null,
-      questionText:
-        "Describe the event loop in Node.js and how it handles asynchronous operations. Provide an example of a scenario where understanding the event loop is crucial for debugging.",
-      explanation:
-        "This assesses the candidate's understanding of Node.js's core asynchronous architecture and their ability to apply this knowledge for debugging, critical for writing efficient Node.js applications.",
-      isAnswered: true,
-      estimatedTimeMinutes: 10,
-      aiContext: "Generated for SE (Junior)",
-      diffcultyLevel: null,
-      type: "OPEN_ENDED",
-      createdAt: "2025-01-22T05:26:57.470Z",
-      updatedAt: "2025-01-22T05:26:57.470Z",
-      usageFrequency: 0,
-      interviewResponses: {
-        responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
-        score: { score: 10 },
-      },
-    },
-    {
-      questionID: "cm67gp7oi0007lf34ch9i9m8k",
-      sessionID: "cm67gmy4d0003lf34rrjvx1n6",
-      questionCategory: null,
-      questionText:
-        "Write a simple function in Java that takes an array of integers and returns the sum of all even numbers in the array.",
-      explanation:
-        "This evaluates the candidate's basic Java coding skills, their ability to work with arrays, and their understanding of fundamental programming logic, which are essential for developing backend services.",
-      isAnswered: true,
-      estimatedTimeMinutes: 15,
-      aiContext: "Generated for SE (Junior)",
-      diffcultyLevel: null,
-      type: "CODING",
-      createdAt: "2025-01-22T05:26:57.470Z",
-      updatedAt: "2025-01-22T05:26:57.470Z",
-      usageFrequency: 0,
-      interviewResponses: {
-        responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
-        score: { score: 10 },
-      },
-    },
-    {
-      questionID: "cm67gp7sa0008lf34qaz3iq9l",
-      sessionID: "cm67gmy4d0003lf34rrjvx1n6",
-      questionCategory: null,
-      questionText:
-        "Explain how you would implement client-side validation in a React form. Discuss the different ways you can validate user input and how you would handle error messages to give the user a good experience.",
-      explanation:
-        "This question assesses the candidate's understanding of form handling and validation in React, their knowledge of best practices, and their ability to consider user experience when writing frontend applications. It is also relevant to building good user interfaces.",
-      isAnswered: false,
-      estimatedTimeMinutes: 15,
-      aiContext: "Generated for SE (Junior)",
-      diffcultyLevel: null,
-      type: "OPEN_ENDED",
-      createdAt: "2025-01-22T05:26:57.470Z",
-      updatedAt: "2025-01-22T05:26:57.470Z",
-      usageFrequency: 0,
-      interviewResponses: { score: { score: 10 } },
-    },
-    {
-      questionID: "cm67gp7t90009lf34ngzus30f",
-      sessionID: "cm67gmy4d0003lf34rrjvx1n6",
-      questionCategory: null,
-      questionText:
-        "Explain the concept of components in React and describe the difference between functional components and class components. In what situations would you prefer one over the other?",
-      explanation:
-        "This assesses the candidate's understanding of React's fundamental building blocks, their ability to reason about different component types, and their awareness of best practices when building user interfaces.",
-      isAnswered: true,
-      estimatedTimeMinutes: 10,
-      aiContext: "Generated for SE (Junior)",
-      diffcultyLevel: null,
-      type: "OPEN_ENDED",
-      createdAt: "2025-01-22T05:26:57.470Z",
-      updatedAt: "2025-01-22T05:26:57.470Z",
-      usageFrequency: 0,
-      interviewResponses: {
-        responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
-        score: { score: 10 },
-      },
-    },
-    {
-      questionID: "cm67gp7u4000alf344r2ei7bq",
-      sessionID: "cm67gmy4d0003lf34rrjvx1n6",
-      questionCategory: null,
-      questionText:
-        "Given a JSON object, write a Node.js function to extract specific data based on a provided key path. For example, given the object `{a: {b: {c: 'value'}}}`, and the path 'a.b.c', it should return 'value'. Handle cases where the path does not exist.",
-      explanation:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js and their skill in writing robust code that handles different scenarios, like missing values.",
-      isAnswered: true,
-      estimatedTimeMinutes: 20,
-      aiContext: "Generated for SE (Junior)",
-      diffcultyLevel: null,
-      type: "CODING",
-      createdAt: "2025-01-22T05:26:57.470Z",
-      updatedAt: "2025-01-22T05:26:57.470Z",
-      usageFrequency: 0,
-      interviewResponses: {
-        responseText:
-        "This assesses the candidate's ability to manipulate data structures using JavaScript in Node.js",
-        score: { score: 10 },
-      },
-    },
-  ]);
+  const [questionList, setQuestionList] = useState([]);
+  const [isQuestionsAvailable, setIsQuestionAvailabe] = useState(false);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -153,60 +47,71 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     unwrapParams();
   }, [params]);
 
+
+
   useEffect(() => {
-    setIsSubmitAnswers(true);
-    setCandidateAnswers({
-      question:
-        "Explain the core principles of Object-Oriented Programming (OOP) and how you would apply them in a Java project to ensure maintainability and scalability.",
-      answer: "incapsulation",
+    socket.on("questions", (data) => {
+      debugger
+      setQuestionList(data.questions)
+      setIsQuestionAvailabe(true)
     });
-    setAnaliyzeResponse({
-      relevanceScore: 10,
-      keyStrengths: [],
-      areasOfImprovement: [
-        "Lack of explanation of OOP principles",
-        "Incomplete response",
-        "Did not mention other core principles of OOP",
-        "Did not mention application in Java project",
-        "Did not discuss maintainability and scalability",
-      ],
-      alignment: "Very Low",
-      followUpQuestions: [
-        "Could you elaborate on what encapsulation means to you in the context of OOP?",
-        "Besides encapsulation, what are the other core principles of OOP?",
-        "How would you apply encapsulation, and other OOP principles, to build a maintainable and scalable Java application?",
-      ],
-    });
-    setAnsweredQuestionNO(1);
-    setNumOfQuestions(5);
-    setTotalScore(10);
-    setNumberOfAnswers(1);
-    // socket.on("answerSubmitted", (data) => {
-    //   setIsSubmitAnswers(true);
-    //   setCandidateAnswers({
-    //     question: data.questionText,
-    //     answer: data.answerText,
-    //   });
-    //   setAnaliyzeResponse(data.metrics);
-    //   setAnsweredQuestionNO(data.questionNumber);
-    //   setNumOfQuestions(data.numOfQuestions);
-    //   setTotalScore(data.totalScore.totalScore);
-    //   setNumberOfAnswers(data.totalScore.numberOfAnswers);
-    //   // router.push(`/interview/${sessionId}/question`);
+      
+    // setIsSubmitAnswers(true);
+    // setCandidateAnswers({
+    //   question:
+    //     "Explain the core principles of Object-Oriented Programming (OOP) and how you would apply them in a Java project to ensure maintainability and scalability.",
+    //   answer: "incapsulation",
     // });
+    // setAnaliyzeResponse({
+    //   relevanceScore: 10,
+    //   keyStrengths: [],
+    //   areasOfImprovement: [
+    //     "Lack of explanation of OOP principles",
+    //     "Incomplete response",
+    //     "Did not mention other core principles of OOP",
+    //     "Did not mention application in Java project",
+    //     "Did not discuss maintainability and scalability",
+    //   ],
+    //   alignment: "Very Low",
+    //   followUpQuestions: [
+    //     "Could you elaborate on what encapsulation means to you in the context of OOP?",
+    //     "Besides encapsulation, what are the other core principles of OOP?",
+    //     "How would you apply encapsulation, and other OOP principles, to build a maintainable and scalable Java application?",
+    //   ],
+    // });
+    // setAnsweredQuestionNO(1);
+    // setNumOfQuestions(5);
+    // setTotalScore(10);
+    // setNumberOfAnswers(1);
+    socket.on("answerSubmitted", (data) => {
+      setIsSubmitAnswers(true);
+      setCandidateAnswers({
+        question: data.questionText,
+        answer: data.answerText,
+      });
+      setAnaliyzeResponse(data.metrics);
+      setAnsweredQuestionNO(data.questionNumber);
+      setNumOfQuestions(data.numOfQuestions);
+      setTotalScore(data.totalScore.totalScore);
+      setNumberOfAnswers(data.totalScore.numberOfAnswers);
+      setIsQuestionAvailabe(true)
+      // router.push(`/interview/${sessionId}/question`);
+    });
 
-    // return () => {
-    //   socket.off("answerSubmitted");
-    // };
+
+    return () => {
+      socket.off("answerSubmitted");
+      // socket.off("questions");
+    };
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeNow(new Date().toLocaleTimeString());
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTimeNow(new Date().toLocaleTimeString());
+  //   }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const nextQuestion = () => {
     const data = {
@@ -215,18 +120,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     socket.emit("nextQuestion", data);
   };
 
-  if (status === "loading") {
-    return (
-      <>
-        <Loading />
-      </>
-    );
-  } else {
-    if (session.user.role !== "COMPANY") {
-      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
-      redirect(loginURL);
-    }
-  }
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -279,6 +172,30 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     setTab(tab);
   };
 
+  const leaveRoom = async (e) => {
+    const session = await getSession();
+
+    const userId = session?.user?.companyID;
+    const data = {
+      sessionId,
+      userId
+    }
+    socket.emit("leaveInterviewSession", data);
+  };
+  
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== "COMPANY") {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
+
   return (
     <>
       <div className=" h-lvh">
@@ -320,18 +237,20 @@ const InterviewRoomAnalizerPage = ({ params }) => {
               Candidate Profile
             </button>
           </div>
-          <button className=" text-sm bg-red-700 py-1 h-11 px-4 rounded-md">
+          <button className=" text-sm bg-red-700 py-1 h-11 px-4 rounded-md" onClick={leaveRoom}>
             Leav Session
           </button>
         </div>
 
         {tab === "DASHBOARD" && (
-          <InterviewRoomAnalizerDashboard
+          
+            <InterviewRoomAnalizerDashboard
             analiyzeResponse={analiyzeResponse}
             candidateAnswers={candidateAnswers}
             sessionId={sessionId}
             questionList={questionList}
           />
+          
         )}
         {tab === "SCORE" && (
           <InterviewRoomAnalizerScore

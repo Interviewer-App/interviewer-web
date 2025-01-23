@@ -216,14 +216,14 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
             <button
               type="button"
               onClick={updateInterviewCategory}
-              className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
             >
               Update Category
             </button>
             </>) : (<>
               <button
               type="submit"
-              className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
             >
               Submit Category
             </button>

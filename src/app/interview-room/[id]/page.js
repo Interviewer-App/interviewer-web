@@ -49,6 +49,7 @@ const InterviewRoomPage = ({ params }) => {
   const [questions, setQuestions] = useState([]); // Example questions
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
   const [code, setCode] = useState(`Write your code here`);
+  const [question, setQuestion] = useState({}); // Example questions
 
   const {
     isListening,
@@ -68,20 +69,21 @@ const InterviewRoomPage = ({ params }) => {
   };
 
   const handleSubmit = async () => {
+    debugger
     const session = await getSession();
 
     const role = session?.user?.role;
     const candidateId = session?.user?.candidateID;
 
-    if (transcript.trim() !== "") {
-      setActiveStep((prevStep) => {
-        const nextStep = Math.min(prevStep + 1, questions.length - 1);
-        return nextStep;
-      });
-    }
-    const question = questions[activeStep];
-    const questionNumber = activeStep + 1;
-    socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText, questionNumber: questionNumber, numOfQuestions: questions.length });
+    // if (transcript.trim() !== "") {
+    //   setActiveStep((prevStep) => {
+    //     const nextStep = Math.min(prevStep + 1, questions.length - 1);
+    //     return nextStep;
+    //   });
+    // }
+    // const question = questions[activeStep];
+    // const questionNumber = activeStep + 1;
+    socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText});
     stopListening();
     setTranscript("");
   };
@@ -110,10 +112,16 @@ const InterviewRoomPage = ({ params }) => {
 
 
   useEffect(() => {
-    socket.on('questions', (data) => {
-      console.log('Received questions:', data.questions);
-      setQuestions(data.questions);
+    // socket.on('questions', (data) => {
+    //   debugger
+    //   console.log('Received questions:', data.questions);
+    //   setQuestions(data.questions);
+    //   setIsQuestionAvailabe(true);
+    // });
+    socket.on('question', (data) => {
+      debugger
       setIsQuestionAvailabe(true);
+      setQuestion(data.question)
     });
 
 
@@ -171,65 +179,63 @@ const InterviewRoomPage = ({ params }) => {
           <div className="w-[70%] max-w-[1100px]">
             {/* Swiper Component with Questions */}
             <div className="relative w-full py-9">
-              <SwiperComponent
+              {/* <SwiperComponent
                 ref={swiperRef}
                 questions={questions}
                 onSlideChange={(index) => setActiveStep(index)} // Slide change handler
-              />
+              /> */}
+              <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
+                <h1 className="text-2xl font-semibold">Question </h1>
+                <p className="text-lg text-white pt-5">{question.questionText}</p>
+                <p className="text-sm text-gray-600">
+                  Estimated Time: {question.estimatedTimeMinutes} minutes
+                </p>
+              </div>
             </div>
             <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
               <div className="w-[70%] max-w-[1100px]">
                 <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
-                  {questions.type === "OPEN_ENDED" ?
+                  {/* {questions.type === "OPEN_ENDED" ?
                     (<>
-                      <textarea
-                        value={transcript} // Use combined answer (typed or transcript)
-                        onChange={handleAnswerChange} // Handle typing
-                        placeholder="your answer here..."
-                        className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
-                      />
+                      
                     </>) :
                     (<div data-color-mode="dark">
-                      {/* <CodeEditor
-                        value={code}
-                        language="js"
-                        placeholder="Please enter JS code."
-                        onChange={(evn) => setCode(evn.target.value)}
-                        padding={15}
-                        style={{
-                          backgroundColor: "#f5f5f5",
-                          fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                        }}
-                      /> */
+                   
                       <Editor
-                      content={code}
-                      onChange={(evn) => setCode(evn.target.value)}
+                      content={transcript}
+                      onChange={(evn) => setTranscript(evn.target.value)}
                       placeholder="Write your post"
                       readOnly={false}
                       required
                       className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
-                      }
+                      
 
-                    </div>)}
+                    </div>)} */}
+                  <textarea
+                    value={transcript} // Use combined answer (typed or transcript)
+                    onChange={handleAnswerChange} // Handle typing
+                    placeholder="your answer here..."
+                    className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
+                  />
 
                 </div>
 
                 {/* Custom Stepper (Progress Bar) */}
-                <div className="w-full mt-8">
+                {/* <div className="w-full mt-8">
                   <div className="flex items-center mb-3">
                     <span className="text-sm text-gray-400">
                       Step {activeStep + 1} of {questions.length}
                     </span>
                   </div>
 
-                  {/* Progress bar */}
                   <div className="relative w-full h-2 bg-gray-400 rounded-full">
                     <div
                       className="absolute top-0 left-0 h-full bg-blue-400 rounded-full transition-all duration-300"
                       style={{ width: `${progress}%` }}
                     ></div>
                   </div>
-                </div>
+                </div> */}
+
 
                 {/* Submit Button */}
                 <div className="flex justify-center">
@@ -323,10 +329,14 @@ const InterviewRoomPage = ({ params }) => {
             </h1>
           </div>
         </div>
+
+        {/* <VideoCall
+          sessionId={sessionId}
+          role="CANDIDATE"
+        /> */}
         <div className=" w-full flex flex-col justify-center items-center mb-16">
           <PuffLoader color="#ffffff" />
         </div>
-        <VideoCall sessionId={sessionId} />
         <div className=" w-full flex flex-col justify-center] items-center">
           <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
             Waiting for the company to start the interview session. Please hold on until the session begins.

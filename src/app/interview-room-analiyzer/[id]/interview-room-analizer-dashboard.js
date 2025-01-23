@@ -20,6 +20,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiInformation2Line } from "react-icons/ri";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
+import VideoCall from "@/components/video/video";
 
 function InterviewRoomAnalizerDashboard({
   analiyzeResponse,
@@ -94,7 +95,12 @@ function InterviewRoomAnalizerDashboard({
             <ResizableHandle />
             <ResizablePanel defaultSize={40}>
               <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel defaultSize={40}></ResizablePanel>
+                <ResizablePanel defaultSize={40}>
+                  {/* <VideoCall
+                    sessionId={sessionId}
+                    role="COMPANY"
+                  /> */}
+                </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={60}>
                   <div className="h-full w-full overflow-y-auto p-6">
@@ -136,13 +142,13 @@ function InterviewRoomAnalizerDashboard({
         <ResizableHandle />
         <ResizablePanel defaultSize={140}>
           <div className=" h-full overflow-y-auto p-6 overflow-x-hidden relative">
-            <div className=" absolute top-4 right-4 w-[100px] h-[100px]">            
-                <CirculerProgress
-              marks={analiyzeResponse.relevanceScore}
-              catorgory="Score"
-              titleSize="text-lg"
-              subTitleSize="text-[10px]"
-            /></div>
+            <div className=" absolute top-4 right-4 w-[100px] h-[100px]">
+              <CirculerProgress
+                marks={analiyzeResponse.relevanceScore}
+                catorgory="Score"
+                titleSize="text-lg"
+                subTitleSize="text-[10px]"
+              /></div>
             <h1 className=" text-3xl font-semibold">Live Analysis Result</h1>
             <div className=" w-full mt-2">
               <h1 className=" py-3 font-semibold text-lg">Question</h1>
