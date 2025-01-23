@@ -128,59 +128,59 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   //   return () => clearInterval(interval);
   // }, []);
 
-  const nextQuestion = () => {
-    const data = {
-      sessionId: sessionId,
-    };
-    socket.emit("nextQuestion", data);
-  };
+  // const nextQuestion = () => {
+  //   const data = {
+  //     sessionId: sessionId,
+  //   };
+  //   socket.emit("nextQuestion", data);
+  // };
 
-  useEffect(() => {
-    const fetchInterviewCategories = async () => {
-      try {
-        const session = await getSession();
-        const companyId = session?.user?.companyID;
-        const response = await getInterviewCategoryCompanyById(companyId);
-        if (response) {
-          setInterviewCategories(response.data.categories);
-        }
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: `Error fetching interview categories: ${error}`,
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
-    };
-    fetchInterviewCategories();
-  }, []);
+  // useEffect(() => {
+  //   const fetchInterviewCategories = async () => {
+  //     try {
+  //       const session = await getSession();
+  //       const companyId = session?.user?.companyID;
+  //       const response = await getInterviewCategoryCompanyById(companyId);
+  //       if (response) {
+  //         setInterviewCategories(response.data.categories);
+  //       }
+  //     } catch (error) {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Uh oh! Something went wrong.",
+  //         description: `Error fetching interview categories: ${error}`,
+  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //       });
+  //     }
+  //   };
+  //   fetchInterviewCategories();
+  // }, []);
 
-  useEffect(() => {
-    if (interviewCategories.length > 0) {
-      setCategoryMarks((prev) => {
-        const existingIds = new Set(prev.map((item) => item.categoryId));
-        const newMarks = interviewCategories
-          .filter((category) => !existingIds.has(category.categoryId))
-          .map((category) => ({
-            categoryId: category.categoryId,
-            categoryName: category.categoryName,
-            marks: 10,
-          }));
-        return [...prev, ...newMarks];
-      });
-    }
-  }, [interviewCategories]);
+  // useEffect(() => {
+  //   if (interviewCategories.length > 0) {
+  //     setCategoryMarks((prev) => {
+  //       const existingIds = new Set(prev.map((item) => item.categoryId));
+  //       const newMarks = interviewCategories
+  //         .filter((category) => !existingIds.has(category.categoryId))
+  //         .map((category) => ({
+  //           categoryId: category.categoryId,
+  //           categoryName: category.categoryName,
+  //           marks: 10,
+  //         }));
+  //       return [...prev, ...newMarks];
+  //     });
+  //   }
+  // }, [interviewCategories]);
 
-  const handleCategoryMarksChange = (category, value) => {
-    setCategoryMarks((prev) =>
-      prev.map((item) =>
-        item.categoryId === category.categoryId
-          ? { ...item, marks: value }
-          : item
-      )
-    );
-  };
+  // const handleCategoryMarksChange = (category, value) => {
+  //   setCategoryMarks((prev) =>
+  //     prev.map((item) =>
+  //       item.categoryId === category.categoryId
+  //         ? { ...item, marks: value }
+  //         : item
+  //     )
+  //   );
+  // };
 
   const handleTabChange = (tab) => {
     setTab(tab);

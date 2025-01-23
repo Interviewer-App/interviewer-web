@@ -145,7 +145,7 @@ function InterviewRoomAnalizerOther({
       {noteModalOpen && (
         <AddCategoryNote
           setNoteModalOpen={setNoteModalOpen}
-          selectedCategoryId={selectedCategoryScoreId}
+          selectedCategoryScoreId={selectedCategoryScoreId}
           categoryName={selectedCategoryName}
         />
       )}
