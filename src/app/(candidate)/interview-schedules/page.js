@@ -113,7 +113,7 @@ const InterviewSchedulePage = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Interview Session</BreadcrumbPage>
+                  <BreadcrumbPage>Interview schedules</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
