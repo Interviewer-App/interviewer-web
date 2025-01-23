@@ -76,7 +76,7 @@ function CirculerProgress({ marks, catorgory, subTitleSize, titleSize }) {
         </svg>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-900 dark:text-gray-50">
           <p className={`${titleSize} font-bold text-gray-900 dark:text-gray-50 text-center`}>
-            {marks || 0}%
+            {parseInt(marks || 0).toFixed(2)}%
           </p>
           <p className={` ${subTitleSize} text-gray-500 text-center`}>{catorgory}</p>
         </div>
