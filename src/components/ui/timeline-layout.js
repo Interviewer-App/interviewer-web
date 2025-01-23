@@ -196,7 +196,7 @@ export const TimelineLayout = ({ interviews }) => {
               ? "bg-[#7DDA6A]"
             : ismedium
               ? "bg-[#F4BB50]"
-              : "bg-gray-900 hover:bg-gray-600";
+              : "bg-gray-900";
 
           return (
             <TimelineItem key={interview.scheduleID} className=''>
