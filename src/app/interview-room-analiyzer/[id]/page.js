@@ -18,6 +18,8 @@ import { Slider } from "@/components/ui/slider";
 import InterviewRoomAnalizerDashboard from "./interview-room-analizer-dashboard";
 import InterviewRoomAnalizerScore from "./interview-room-analizer-score";
 import InterviewRoomAnalizerOther from "./interview-room-analizer-other";
+import InterviewRoomAnalizerCandidateProfile from "./interview-room-analizer-candidate-profile";
+import { use } from "react";
 
 const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -29,6 +31,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [numOfQuestions, setNumOfQuestions] = useState(0);
   const [answeredQuestionNo, setAnsweredQuestionNO] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
+  const [overollScore, setOverollScore] = useState(0);
   const [numberOfAnswers, setNumberOfAnswers] = useState(0);
   // const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
   const [sessionId, setSessionId] = useState(null);
@@ -37,6 +40,10 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [tab, setTab] = useState("DASHBOARD");
   const [questionList, setQuestionList] = useState([]);
   const [isQuestionsAvailable, setIsQuestionAvailabe] = useState(false);
+  const [categoryScores , setCategoryScores] = useState([]);
+  const [sessionData, setSessionData] = useState({
+    
+  });
 
   const { toast } = useToast();
   useEffect(() => {
@@ -47,13 +54,14 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     unwrapParams();
   }, [params]);
 
-
+  useEffect(() => {
+    setNumOfQuestions(questionList.length);
+  }, [questionList]);
 
   useEffect(() => {
     socket.on("questions", (data) => {
-      debugger
-      setQuestionList(data.questions)
-      setIsQuestionAvailabe(true)
+      setQuestionList(data.questions);
+      setIsQuestionAvailabe(true);
     });
 
     // setIsSubmitAnswers(true);
@@ -91,13 +99,21 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       });
       setAnaliyzeResponse(data.metrics);
       setAnsweredQuestionNO(data.questionNumber);
-      setNumOfQuestions(data.numOfQuestions);
-      setTotalScore(data.totalScore.totalScore);
+      setTotalScore(data.totalScore.score);
       setNumberOfAnswers(data.totalScore.numberOfAnswers);
-      setIsQuestionAvailabe(true)
+      setIsQuestionAvailabe(true);
       // router.push(`/interview/${sessionId}/question`);
     });
 
+    socket.on("totalScore", (data) => {
+      setOverollScore(data.totalScore.totalScore);
+      setSessionData(data.totalScore.session);
+    });
+   
+    socket.on("categoryScores", (data) => {
+      debugger;
+      setCategoryScores(data.categoryScores.categoryScores);
+    });
 
     return () => {
       socket.off("answerSubmitted");
@@ -119,7 +135,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     };
     socket.emit("nextQuestion", data);
   };
-
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -178,8 +193,8 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     const userId = session?.user?.companyID;
     const data = {
       sessionId,
-      userId
-    }
+      userId,
+    };
     socket.emit("leaveInterviewSession", data);
   };
 
@@ -237,7 +252,10 @@ const InterviewRoomAnalizerPage = ({ params }) => {
               Candidate Profile
             </button>
           </div>
-          <button className=" text-sm bg-red-700 py-1 h-11 px-4 rounded-md" onClick={leaveRoom}>
+          <button
+            className=" text-sm bg-red-700 py-1 h-11 px-4 rounded-md"
+            onClick={leaveRoom}
+          >
             Leave Session
           </button>
         </div>
@@ -255,6 +273,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             numberOfAnswers={numberOfAnswers}
             numOfQuestions={numOfQuestions}
             totalScore={totalScore}
+            overollScore={overollScore}
             analiyzeResponse={analiyzeResponse}
             answeredQuestionNo={answeredQuestionNo}
             questionList={questionList}
@@ -265,6 +284,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             categoryScores={categoryScores}
             setCategoryScores={setCategoryScores}
             sessionId={sessionId}
+          />
+        )}
+        {tab === "CANDIDATE_PROFILE" && (
+          <InterviewRoomAnalizerCandidateProfile
+            candidateId={sessionData.candidateId}
           />
         )}
         {/* <ResizablePanelGroup
