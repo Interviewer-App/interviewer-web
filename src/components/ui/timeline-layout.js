@@ -7,17 +7,6 @@ import {
   TimelineHeader
 } from "@/components/ui/timeline"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -52,23 +41,10 @@ export const TimelineLayout = ({ interviews }) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [expandedInterviewId, setExpandedInterviewId] = useState(null); 
+  const [copiedInterviewIds, setCopiedInterviewIds] = useState({});
 
 
   const totalInterviews = interviews.length;
-
-  // useEffect(() => {
-
-  //     const fetchInterview = async () => {
-  //       try {
-  //         const response = await getInterviewById(interviewId);
-  //         setInterviewDetail(response.data);
-  //         console.log('fetched Interview:', response);
-  //       } catch (error) {
-  //         console.log("Error fetching interviews:", error);
-  //       }
-  //     };
-  //     if (interviewId) fetchInterview();
-  //   }, [interviewId, status]);
 
   const formatDate = (date) => {
     const options = { month: 'short', day: 'numeric' };
@@ -88,14 +64,24 @@ export const TimelineLayout = ({ interviews }) => {
   const handleCopy = (interviewId) => {
     navigator.clipboard.writeText(interviewId)
       .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+        // Set the copied state for the specific interview
+        setCopiedInterviewIds(prevState => ({
+          ...prevState,
+          [interviewId]: true
+        }));
+  
+        // Reset the copied state after 2 seconds
+        setTimeout(() => {
+          setCopiedInterviewIds(prevState => ({
+            ...prevState,
+            [interviewId]: false
+          }));
+        }, 2000); // Reset after 2 seconds
       })
       .catch((err) => console.log("Failed to copy text: ", err));
   };
 
   const joinInterviewSession = async (interview) => {
-
     // e.preventDefault();
     try {
       const session = await getSession();
@@ -184,11 +170,11 @@ export const TimelineLayout = ({ interviews }) => {
         {interviews.map((interview) => {
           const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
           const isExpanded = expandedInterviewId === interview.scheduleID;
-
+          const isCopied = copiedInterviewIds[interview.interviewId];
           // Time differnce dynamic class definations
-          const isClose = timeDifference <= 180 && timeDifference > 0; //adjust the time whatever values you prefer
+          const isClose = timeDifference <= 30 && timeDifference > 0; //adjust the time whatever values you prefer
           const isFar = timeDifference > 180; 
-          const ismedium=timeDifference < 60 && timeDifference > 0;
+          const ismedium=timeDifference <= 60 && timeDifference > 0;
 
           const timeBgColor = isClose
             ? "bg-[#F4BB50]"
@@ -246,13 +232,13 @@ export const TimelineLayout = ({ interviews }) => {
                           <span className="font-medium">Interview ID:</span>
                           <span className="ml-2">{interview.interviewId}</span>
                           <button
-                            onClick={() => handleCopy(interview.interviewId)}
-                            className="ml-4 text-blue-500 hover:text-blue-700"
-                            title="Copy Interview ID"
-                          >
-                            <ClipboardList className="w-5 h-5 inline" />
-                            {"Copy"}
-                          </button>
+                          onClick={() => handleCopy(interview.interviewId)}
+                          className="ml-4 text-blue-500 hover:text-blue-700"
+                          title="Copy Interview ID"
+                        >
+                          <ClipboardList className="w-5 h-5 inline" />
+                          {isCopied ? "Copied!" : "Copy"}
+                        </button>
                         </div>
                         <div>
                           <span className="font-medium">Interview Category:</span>
