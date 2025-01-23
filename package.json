@@ -50,6 +50,7 @@
     "flowbite": "^2.5.2",
     "jwt-decode": "^4.0.0",
     "lexical": "^0.23.1",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.469.0",
     "next": "15.0.4",
     "next-auth": "^4.24.11",

@@ -22,6 +22,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { getInterviewById } from "@/lib/api/interview";
 import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
+import Lottie from "lottie-react";
+import interviewAnimation from '../../components/ui/animation/interviewAnimation'
 export const TimelineLayout = ({ interviews }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -40,7 +42,7 @@ export const TimelineLayout = ({ interviews }) => {
   const handleClose = () => setIsSheetOpen(false);
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
-  const [expandedInterviewId, setExpandedInterviewId] = useState(null); 
+  const [expandedInterviewId, setExpandedInterviewId] = useState(null);
   const [copiedInterviewIds, setCopiedInterviewIds] = useState({});
   const totalInterviews = interviews.length;
 
@@ -67,7 +69,7 @@ export const TimelineLayout = ({ interviews }) => {
           ...prevState,
           [interviewId]: true
         }));
-  
+
         // Reset the copied state after 2 seconds
         setTimeout(() => {
           setCopiedInterviewIds(prevState => ({
@@ -157,9 +159,15 @@ export const TimelineLayout = ({ interviews }) => {
 
   return (
     <div>
-      <div className="bg-zinc-900 text-white py-10 rounded-lg mb-6 mt-12 max-w-full text-left ">
-        <h2 className="text-2xl font-medium ml-8">Total Interviews</h2>
-        <p className="text-4xl font-medium mt-2 ml-8">{totalInterviews}</p>
+      <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
+        <div className="text-2xl font-medium ml-8"> <h1>Total Interviews</h1>
+        <div className="text-4xl font-medium mt-2">{totalInterviews}
+        <div className="flex justify-end w-60 aspect-square ml-auto mr-32 -mt-28">
+          <Lottie animationData={interviewAnimation} />
+        </div>
+        
+        </div>
+        </div>
         
       </div>
 
@@ -171,16 +179,16 @@ export const TimelineLayout = ({ interviews }) => {
           const isCopied = copiedInterviewIds[interview.interviewId];
           // Time differnce dynamic class definations
           const isClose = timeDifference <= 30 && timeDifference > 0; //adjust the time whatever values you prefer
-          const isFar = timeDifference > 180; 
-          const ismedium=timeDifference <= 60 && timeDifference > 0;
+          const isFar = timeDifference > 180;
+          const ismedium = timeDifference <= 60 && timeDifference > 0;
 
           const timeBgColor = isClose
             ? "bg-[#F4BB50]"
             : isFar
               ? "bg-[#7DDA6A]"
-            : ismedium
-              ? "bg-[#F4BB50]"
-              : "bg-gray-900";
+              : ismedium
+                ? "bg-[#F4BB50]"
+                : "bg-gray-900";
 
           return (
             <TimelineItem key={interview.scheduleID} className=''>
@@ -192,8 +200,8 @@ export const TimelineLayout = ({ interviews }) => {
                   timeBgColor={timeBgColor}
                   className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center font-thin`}
                 />
-       
-                
+
+
 
                 {/* <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle> */}
                 <div className="flex justify-between items-center w-full ">
@@ -207,56 +215,56 @@ export const TimelineLayout = ({ interviews }) => {
                 </div>
               </TimelineHeader>
               <div className="bg-[#18181E]">
-              <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B]'>
-              <div className="w-[90%]">
-                  {isExpanded
-                    ? getPlainTextFromHtml(interview.interview.jobDescription)
-                    : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
-                </div>
-                {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="item-1">
-                    <div className="flex justify-end">
-                    <AccordionTrigger
-                        onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
-                        className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
-                      >
-                        {isExpanded ? "Show Less" : "More Details"}
-                      </AccordionTrigger>
-                    </div>
-                    <AccordionContent className="bg-[#18181E] p-4 shadow-md">
-                      <div className="space-y-2 text-white">
-                        <div>
-                          <span className="font-medium">Interview ID:</span>
-                          <span className="ml-2">{interview.interviewId}</span>
-                          <button
-                          onClick={() => handleCopy(interview.interviewId)}
-                          className="ml-4 text-blue-500 hover:text-blue-700"
-                          title="Copy Interview ID"
+                <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B]'>
+                  <div className="w-[90%]">
+                    {isExpanded
+                      ? getPlainTextFromHtml(interview.interview.jobDescription)
+                      : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
+                  </div>
+                  {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                      <div className="flex justify-end">
+                        <AccordionTrigger
+                          onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
+                          className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
                         >
-                          <ClipboardList className="w-5 h-5 inline" />
-                          {isCopied ? "Copied!" : "Copy"}
-                        </button>
-                        </div>
-                        <div>
-                          <span className="font-medium">Interview Category:</span>
-                          <span className="ml-2">{interview.interview.interviewCategory}</span>
-                        </div>
-                        <div>
-                          <span className="font-medium">End Date:</span>
-                          <span className="ml-2">{formatDateMoreDetailsSection(interview?.interview?.endDate)}</span>
-                        </div>
-                        <div>
-                          <span className="font-medium">Company Name:</span>
-                          <span className="ml-2">{interview.interview.company.companyName}</span>
-                        </div>
+                          {isExpanded ? "Show Less" : "More Details"}
+                        </AccordionTrigger>
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                      <AccordionContent className="bg-[#18181E] p-4 shadow-md">
+                        <div className="space-y-2 text-white">
+                          <div>
+                            <span className="font-medium">Interview ID:</span>
+                            <span className="ml-2">{interview.interviewId}</span>
+                            <button
+                              onClick={() => handleCopy(interview.interviewId)}
+                              className="ml-4 text-blue-500 hover:text-blue-700"
+                              title="Copy Interview ID"
+                            >
+                              <ClipboardList className="w-5 h-5 inline" />
+                              {isCopied ? "Copied!" : "Copy"}
+                            </button>
+                          </div>
+                          <div>
+                            <span className="font-medium">Interview Category:</span>
+                            <span className="ml-2">{interview.interview.interviewCategory}</span>
+                          </div>
+                          <div>
+                            <span className="font-medium">End Date:</span>
+                            <span className="ml-2">{formatDateMoreDetailsSection(interview?.interview?.endDate)}</span>
+                          </div>
+                          <div>
+                            <span className="font-medium">Company Name:</span>
+                            <span className="ml-2">{interview.interview.company.companyName}</span>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
 
-              </TimelineDescription>
+                </TimelineDescription>
               </div>
             </TimelineItem>
           );
