@@ -111,7 +111,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
    
     socket.on("categoryScores", (data) => {
-      debugger;
       setCategoryScores(data.categoryScores.categoryScores);
     });
 

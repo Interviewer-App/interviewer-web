@@ -69,7 +69,6 @@ const InterviewRoomPage = ({ params }) => {
   };
 
   const handleSubmit = async () => {
-    debugger
     const session = await getSession();
 
     const role = session?.user?.role;
@@ -119,7 +118,6 @@ const InterviewRoomPage = ({ params }) => {
     //   setIsQuestionAvailabe(true);
     // });
     socket.on('question', (data) => {
-      debugger
       setIsQuestionAvailabe(true);
       setQuestion(data.question)
     });

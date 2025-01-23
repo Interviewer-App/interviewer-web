@@ -15,7 +15,7 @@ import { ToastAction } from "@/components/ui/toast";
 import Editor from "@/components/rich-text/editor";
 import { LuNotebookPen } from "react-icons/lu";
 import { getInterviewCategoryByInterviewId } from "@/lib/api/interview-category";
-
+import socket from "@/lib/utils/socket";
 function InterviewRoomAnalizerOther({
   setCategoryScores,
   categoryScores,
@@ -60,6 +60,8 @@ function InterviewRoomAnalizerOther({
           : item
       )
     );
+    socket.emit("submitCategoryScore",  { sessionId: sessionId, categoryScoreId: category.categoryScoreId, score: value[0] })
+
   };
 
   return (
@@ -108,7 +110,7 @@ function InterviewRoomAnalizerOther({
                   <p>100</p>
                 </div>
                 <Slider
-                  defaultValue={[10]}
+                  defaultValue={[category.score]}
                   max={100}
                   step={1}
                   marks={category.score}

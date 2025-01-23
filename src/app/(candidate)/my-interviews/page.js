@@ -22,7 +22,6 @@ const MyInterviews = () => {
 
     useEffect(() => {
       const fetchUserJoinedInterviews = async () => {
-        // debugger
         try {
           setLoading(true);
           const session = await getSession();
