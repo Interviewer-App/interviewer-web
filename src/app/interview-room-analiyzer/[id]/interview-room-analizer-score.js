@@ -51,7 +51,7 @@ function InterviewRoomAnalizerScore({
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <RiInformation2Line className="text-orange-400 text-[18px] ml-2 inline-block" />
+                          <RiInformation2Line className="text-orange-400 text-[18px] ml-2 inline-block cursor-pointer" />
                         </TooltipTrigger>
                         <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
                           <p className=" w-[500px] text-gray-300">

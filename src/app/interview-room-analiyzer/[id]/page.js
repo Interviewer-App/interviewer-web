@@ -55,7 +55,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       setQuestionList(data.questions)
       setIsQuestionAvailabe(true)
     });
-      
+
     // setIsSubmitAnswers(true);
     // setCandidateAnswers({
     //   question:
@@ -182,7 +182,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     }
     socket.emit("leaveInterviewSession", data);
   };
-  
+
   if (status === "loading") {
     return (
       <>
@@ -238,19 +238,17 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             </button>
           </div>
           <button className=" text-sm bg-red-700 py-1 h-11 px-4 rounded-md" onClick={leaveRoom}>
-            Leav Session
+            Leave Session
           </button>
         </div>
 
         {tab === "DASHBOARD" && (
-          
-            <InterviewRoomAnalizerDashboard
+          <InterviewRoomAnalizerDashboard
             analiyzeResponse={analiyzeResponse}
             candidateAnswers={candidateAnswers}
             sessionId={sessionId}
             questionList={questionList}
           />
-          
         )}
         {tab === "SCORE" && (
           <InterviewRoomAnalizerScore
@@ -264,8 +262,9 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         )}
         {tab === "OTHER" && (
           <InterviewRoomAnalizerOther
-            categoryMarks={categoryMarks}
-            setCategoryMarks={setCategoryMarks}
+            categoryScores={categoryScores}
+            setCategoryScores={setCategoryScores}
+            sessionId={sessionId}
           />
         )}
         {/* <ResizablePanelGroup

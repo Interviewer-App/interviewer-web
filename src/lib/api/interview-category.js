@@ -49,6 +49,26 @@ export const getInterviewCategoryCompanyById = async (companyId) => {
         throw error;
     }
 }
+
+export const getInterviewCategoryByInterviewId = async (sessionId) => {
+    try{
+        const response = await axiosInstance.get(`/categories/category-assigned/${sessionId}`);
+        return response;
+    } catch(error){
+        console.log('Error fetching category:', error);
+        throw error;
+    }
+}
+
+export const addNoteForCategory = async (categoryScoreId, data) => {
+    try{
+        const response = await axiosInstance.patch(`/categories/category-score/${categoryScoreId}`);
+        return response;
+    } catch(error){
+        console.log('Error updating category:', error);
+        throw error;
+    }
+}
   
 
 export {fetchInterCategories,createCategory,deleteCategory,updateCategory};
