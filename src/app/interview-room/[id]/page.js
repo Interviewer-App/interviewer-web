@@ -54,7 +54,7 @@ const InterviewRoomPage = ({ params }) => {
   const [code, setCode] = useState(`Write your code here`);
   const [question, setQuestion] = useState({}); // Example questions
   const [isQuestionCompleted, setIsQuestionCompleted] = useState(false); // Example questions
-
+  const [isSubmitBtnAvailable, setIsSubmitBtnAvailable] = useState(true);
   const {
     isListening,
     transcript,
@@ -89,6 +89,7 @@ const InterviewRoomPage = ({ params }) => {
     socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText });
     stopListening();
     setTranscript("");
+    setIsSubmitBtnAvailable(false)
   };
   // Update swiper on activeStep change
   // useEffect(() => {
@@ -132,9 +133,12 @@ const InterviewRoomPage = ({ params }) => {
     socket.on('question', (data) => {
       debugger
       if (data.question) {
+        
         setIsQuestionAvailabe(true);
         setQuestion(data.question)
+        setIsSubmitBtnAvailable(true)
       } else {
+        setIsQuestionAvailabe(false);
         setIsQuestionCompleted(true)
       }
 
@@ -259,20 +263,22 @@ const InterviewRoomPage = ({ params }) => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center">
-                  {activeStep < 4 ? (<button
+                  {isSubmitBtnAvailable && (
+                    <button
                     onClick={handleSubmit}
                     disabled={!transcript}
                     className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
                   >
                     Submit Answer
-                  </button>) : (
-                    <button
-                      // onClick={handleSubmit}
-                      // disabled={!transcript}
+                  </button>
+                  )}
+                  
+                    {/* <button
+                      
                       className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
                     >
                       Finish Attempt
-                    </button>)}
+                    </button> */}
                 </div>
               </div>
             </div>

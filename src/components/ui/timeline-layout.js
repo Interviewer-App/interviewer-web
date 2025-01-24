@@ -182,7 +182,7 @@ export const TimelineLayout = ({ interviews }) => {
         <div className="flex justify-between items-start">
           <div className="bg-[#18181E] py-4 px-6 rounded-xl">
             <h2 className="text-3xl font-bold text-white mb-1">Total Interviews</h2>
-            <div className="text-4xl font-bold text-white text-center">2</div>
+            <div className="text-4xl font-bold text-white text-center">{totalInterviews}</div>
           </div>
           <span className="text-xs font-medium bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
             Active

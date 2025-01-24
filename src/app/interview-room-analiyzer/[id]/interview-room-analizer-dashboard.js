@@ -27,12 +27,15 @@ function InterviewRoomAnalizerDashboard({
   candidateAnswers,
   sessionId,
   questionList,
+  availableQuestion,
+  setAnaliyzeResponse
 }) {
   const nextQuestion = () => {
     const data = {
       sessionId: sessionId,
     };
     socket.emit("nextQuestion", data);
+    setAnaliyzeResponse({})
   };
 
   return (
@@ -100,6 +103,16 @@ function InterviewRoomAnalizerDashboard({
                     sessionId={sessionId}
                     role="COMPANY"
                   /> */}
+                  <div className="h-full w-full overflow-y-auto p-6">
+                    <div>
+                      <h1 className=" text-3xl font-semibold">
+                        Available Question
+                      </h1>
+                      <div className=" mt-3 rounded-lg">
+                        {availableQuestion.questionText}
+                      </div>
+                    </div>
+                  </div>
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={60}>

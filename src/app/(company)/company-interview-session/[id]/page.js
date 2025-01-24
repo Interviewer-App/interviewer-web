@@ -82,7 +82,7 @@ function InterviewSessionPreviewPage({ params }) {
         userId: userId,
         role: role,
       });
-      router.push(`/interview-room-analiyzer/${sessionId}`);
+      router.push(`/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`);
     }
   };
 
