@@ -37,4 +37,16 @@ export const getCandidateById = async (candidateId) => {
   }
 };
 
+export const submitSurvey = async (answers) => {
+  try {
+    const response = await axiosInstance.post(
+      `/users/user/servey/`, answers
+    );
+    return response;
+  } catch (error) {
+    console.log("Error saving survey answers:", error);
+    throw error;
+  }
+};
+
 export { fetchUsers };
