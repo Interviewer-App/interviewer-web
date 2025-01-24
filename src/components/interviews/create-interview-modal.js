@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
@@ -47,7 +48,12 @@ import StepConnector, {
 } from "@mui/material/StepConnector";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 // import Editor from "../rich-text/editor";
-import QuillEditor from "../quillEditor";
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(
+  () => import('@/components/quillEditor'),
+  { ssr: false }
+)
+
 
 const QontoStepIconRoot = styled("div")(({ theme }) => ({
   color: "#eaeaf0",

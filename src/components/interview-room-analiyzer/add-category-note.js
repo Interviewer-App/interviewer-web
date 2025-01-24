@@ -1,12 +1,19 @@
+'use client'
 import React, { useState } from "react";
 import { MdClose } from "react-icons/md";
 // import Editor from "../rich-text/editor";
+import dynamic from 'next/dynamic'
 
 // Toast
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { addNoteForCategory } from "@/lib/api/interview-category";
-import QuillEditor from "../quillEditor";
+// import QuillEditor from "@/components/quillEditor";
+
+const QuillEditor = dynamic(
+  () => import('@/components/quillEditor'),
+  { ssr: false }
+)
 
 function AddCategoryNote({
   selectedCategoryScoreId,
@@ -38,6 +45,7 @@ function AddCategoryNote({
           description: `The Note has been updated successfully.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
+        setNoteModalOpen(false)
       }
     } catch (error) {
       if (error.response) {

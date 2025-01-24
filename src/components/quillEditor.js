@@ -1,9 +1,11 @@
+'use client'
 import { useEffect } from 'react';
 import 'quill/dist/quill.snow.css'; // import Quill's CSS
 import Quill from 'quill'; // import Quill library
 
 const QuillEditor = ({value,placeholder,onChange }) => {
   useEffect(() => {
+    if (typeof document !== "undefined") {
     // Initialize the Quill editor when the component mounts
     const quill = new Quill('#editor', {
       theme: 'snow',
@@ -29,6 +31,7 @@ const QuillEditor = ({value,placeholder,onChange }) => {
       }
       `;
       document.head.appendChild(style);
+  }
     }, []);
 
   return (

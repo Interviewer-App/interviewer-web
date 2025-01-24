@@ -77,7 +77,11 @@ import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import InvitedCandidates from "@/components/interviews/invite-candidates";
 import InterviewCharts from "@/components/interviews/interviewCharts";
-import QuillEditor from "@/components/quillEditor";
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(
+  () => import('@/components/quillEditor'),
+  { ssr: false }
+)
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
