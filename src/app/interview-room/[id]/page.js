@@ -1,7 +1,7 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import socket from '../../../lib/utils/socket';
+import socket from "../../../lib/utils/socket";
 import { useEffect, useState, useRef } from "react";
 
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
@@ -24,15 +24,21 @@ import bgGrid from "@/assets/grid-bg.svg";
 import bgGrain from "@/assets/grain-bg.svg";
 import Carousel from "@/components/ui/carousel";
 import SwiperComponent from "@/components/ui/swiperComponent";
-import '../../../styles/swiper/swiperStyles.css'
+import "../../../styles/swiper/swiperStyles.css";
 import { PuffLoader } from "react-spinners";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect, useSearchParams } from 'next/navigation';
-import { useSession, getSession } from "next-auth/react"
+import {
+  usePathname,
+  useRouter,
+  redirect,
+  useSearchParams,
+} from "next/navigation";
+import { useSession, getSession } from "next-auth/react";
 import { CodeBlock } from "@/components/ui/code-block";
-import CodeEditor from '@uiw/react-textarea-code-editor';
+import CodeEditor from "@uiw/react-textarea-code-editor";
 // import Editor from "@/components/rich-text/editor";
 import VideoCall from "@/components/video/video";
+import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -55,20 +61,22 @@ const InterviewRoomPage = ({ params }) => {
   const [question, setQuestion] = useState({}); // Example questions
   const [isQuestionCompleted, setIsQuestionCompleted] = useState(false); // Example questions
   const [isSubmitBtnAvailable, setIsSubmitBtnAvailable] = useState(true);
+  const [totalScore, setTotalScore] = useState(0);
+  const [numberOfAnswers, setNumberOfAnswers] = useState(0);
   const {
     isListening,
     transcript,
     recordingComplete,
     startListening,
     stopListening,
-    setTranscript
+    setTranscript,
   } = useSpeechRecognition({ continuous: true });
 
   const startStopListening = () => {
     isListening ? stopListening() : startListening();
   };
   const handleAnswerChange = (e) => {
-    // setAnswer(e.target.value); 
+    // setAnswer(e.target.value);
     setTranscript(e.target.value);
   };
 
@@ -86,15 +94,21 @@ const InterviewRoomPage = ({ params }) => {
     // }
     // const question = questions[activeStep];
     // const questionNumber = activeStep + 1;
-    socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText });
+    socket.emit("submitAnswer", {
+      sessionId: question.sessionID,
+      questionId: question.questionID,
+      candidateId: candidateId,
+      answerText: transcript,
+      questionText: question.questionText,
+    });
     stopListening();
     setTranscript("");
-    setIsSubmitBtnAvailable(false)
+    setIsSubmitBtnAvailable(false);
   };
   // Update swiper on activeStep change
   // useEffect(() => {
   //     if (swiperRef.current && swiperRef.current.swiper) {
-  //         swiperRef.current.swiper.slideTo(activeStep); 
+  //         swiperRef.current.swiper.slideTo(activeStep);
   //     }
   // }, [activeStep]);
 
@@ -102,9 +116,6 @@ const InterviewRoomPage = ({ params }) => {
   const handleSlideChange = (index) => {
     setActiveStep(index); // Updates active step when slide changes
   };
-
-
-
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -114,15 +125,14 @@ const InterviewRoomPage = ({ params }) => {
     unwrapParams();
   }, [params]);
 
-
   useEffect(() => {
-    debugger
+    debugger;
     const data = {
       sessionId: sessionID,
       userId: userId,
-      role: 'CANDIDATE'
-    }
-    socket.emit('joinInterviewSession', data);
+      role: "CANDIDATE",
+    };
+    socket.emit("joinInterviewSession", data);
 
     // socket.on('questions', (data) => {
     //   debugger
@@ -130,43 +140,42 @@ const InterviewRoomPage = ({ params }) => {
     //   setQuestions(data.questions);
     //   setIsQuestionAvailabe(true);
     // });
-    socket.on('question', (data) => {
-      debugger
+    socket.on("question", (data) => {
+      debugger;
       if (data.question) {
-        
         setIsQuestionAvailabe(true);
-        setQuestion(data.question)
-        setIsSubmitBtnAvailable(true)
+        setQuestion(data.question);
+        setIsSubmitBtnAvailable(true);
       } else {
         setIsQuestionAvailabe(false);
-        setIsQuestionCompleted(true)
+        setIsQuestionCompleted(true);
       }
-
     });
-
 
     socket.on("navigateNextQuestion", (data) => {
       if (!data.followUpQuestion) {
-        const nextquestion = activeStep + 1
+        const nextquestion = activeStep + 1;
         if (swiperRef.current && swiperRef.current.swiper) {
           swiperRef.current.swiper.slideTo(nextquestion);
         }
       }
 
-      setTranscript('')
-      setAnswer('')
+      setTranscript("");
+      setAnswer("");
       stopListening();
-
     });
 
+    socket.on("answerSubmitted", (data) => {
+      setTotalScore(data.totalScore.score);
+      setNumberOfAnswers(data.totalScore.numberOfAnswers);
+    });
 
     return () => {
-      socket.off('joinInterviewSession');
-      socket.off('questions');
-      socket.off('navigateNextQuestion');
+      socket.off("joinInterviewSession");
+      socket.off("questions");
+      socket.off("navigateNextQuestion");
     };
   }, []);
-
 
   const combinedAnswer = answer || transcript;
 
@@ -178,7 +187,6 @@ const InterviewRoomPage = ({ params }) => {
     return () => clearInterval(interval);
   }, []);
 
-
   if (status === "loading") {
     return (
       <>
@@ -186,7 +194,7 @@ const InterviewRoomPage = ({ params }) => {
       </>
     );
   } else {
-    if (session.user.role !== 'CANDIDATE') {
+    if (session.user.role !== "CANDIDATE") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
@@ -194,32 +202,34 @@ const InterviewRoomPage = ({ params }) => {
 
   return (
     <>
-      {isQuestionAvailabe ? (<>
-        <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
-          <div className="absolute inset-0 bg-black -z-20"></div>
-          <div className="w-[70%] max-w-[1100px]">
-            {/* Swiper Component with Questions */}
+      {isQuestionAvailabe ? (
+        <>
+          <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
+            <div className="absolute inset-0 bg-black -z-20"></div>
+            <div className="w-[70%] max-w-[1100px]">
+              {/* Swiper Component with Questions */}
 
-            <div className="relative w-full py-9">
-              {/* <SwiperComponent
+              <div className="relative w-full py-9">
+                {/* <SwiperComponent
                 ref={swiperRef}
                 questions={questions}
                 onSlideChange={(index) => setActiveStep(index)} // Slide change handler
               /> */}
-              <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
-                <h1 className="text-2xl font-semibold">Question </h1>
-                <p className="text-lg text-white pt-5">{question.questionText}</p>
-                <p className="text-sm text-gray-600">
-                  Estimated Time: {question.estimatedTimeMinutes} minutes
-                </p>
+                <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
+                  <h1 className="text-2xl font-semibold">Question </h1>
+                  <p className="text-lg text-white pt-5">
+                    {question.questionText}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Estimated Time: {question.estimatedTimeMinutes} minutes
+                  </p>
+                </div>
               </div>
-            </div>
 
-
-            <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
-              <div className="w-[70%] max-w-[1100px]">
-                <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
-                  {/* {questions.type === "OPEN_ENDED" ?
+              <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
+                <div className="w-[70%] max-w-[1100px]">
+                  <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
+                    {/* {questions.type === "OPEN_ENDED" ?
                     (<>
                       
                     </>) :
@@ -235,17 +245,16 @@ const InterviewRoomPage = ({ params }) => {
                       
 
                     </div>)} */}
-                  <textarea
-                    value={transcript} // Use combined answer (typed or transcript)
-                    onChange={handleAnswerChange} // Handle typing
-                    placeholder="your answer here..."
-                    className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
-                  />
+                    <textarea
+                      value={transcript} // Use combined answer (typed or transcript)
+                      onChange={handleAnswerChange} // Handle typing
+                      placeholder="your answer here..."
+                      className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
+                    />
+                  </div>
 
-                </div>
-
-                {/* Custom Stepper (Progress Bar) */}
-                {/* <div className="w-full mt-8">
+                  {/* Custom Stepper (Progress Bar) */}
+                  {/* <div className="w-full mt-8">
                   <div className="flex items-center mb-3">
                     <span className="text-sm text-gray-400">
                       Step {activeStep + 1} of {questions.length}
@@ -260,35 +269,34 @@ const InterviewRoomPage = ({ params }) => {
                   </div>
                 </div> */}
 
+                  {/* Submit Button */}
+                  <div className="flex justify-center">
+                    {isSubmitBtnAvailable && (
+                      <button
+                        onClick={handleSubmit}
+                        disabled={!transcript}
+                        className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+                      >
+                        Submit Answer
+                      </button>
+                    )}
 
-                {/* Submit Button */}
-                <div className="flex justify-center">
-                  {isSubmitBtnAvailable && (
-                    <button
-                    onClick={handleSubmit}
-                    disabled={!transcript}
-                    className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
-                  >
-                    Submit Answer
-                  </button>
-                  )}
-                  
                     {/* <button
                       
                       className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
                     >
                       Finish Attempt
                     </button> */}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="w-[70%]">
-            <h1 className="text-2xl font-semibold text-center w-full pb-5">
-              What is Your Answer?
-            </h1>
-            <div className="rounded-lg w-full">
-              {/* {(isListening ) && (
+            <div className="w-[70%]">
+              <h1 className="text-2xl font-semibold text-center w-full pb-5">
+                What is Your Answer?
+              </h1>
+              <div className="rounded-lg w-full">
+                {/* {(isListening ) && (
                 <div className="w-full m-auto min-h-[100px] rounded-lg px-6 py-5 bg-gradient-to-br from-[#2e3036] to-[#282a2e] text-white">
                   <div className="flex-1 flex w-full justify-between">
                     <div className="space-y-1">
@@ -311,53 +319,78 @@ const InterviewRoomPage = ({ params }) => {
                   )}
                 </div>
               )} */}
-              <div className="flex items-center w-full">
-                {isListening ? (
-                  <button
-                    onClick={stopListening}
-                    className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
-                  >
-                    <svg
-                      className="w-8 h-8"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                <div className="flex items-center w-full">
+                  {isListening ? (
+                    <button
+                      onClick={stopListening}
+                      className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
                     >
-                      <path fill="white" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
-                  </button>
-                ) : (
-                  <button
-                    onClick={startListening}
-                    className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
-                  >
-                    <svg
-                      viewBox="0 0 256 256"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-8 h-8 text-white"
+                      <svg
+                        className="w-8 h-8"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill="white"
+                          d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                        />
+                      </svg>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={startListening}
+                      className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
                     >
-                      <path
-                        fill="currentColor"
-                        d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
-                      />
-                    </svg>
-                  </button>
-                )}
+                      <svg
+                        viewBox="0 0 256 256"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-8 h-8 text-white"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </>) : (
+        </>
+      ) : (
         <>
-          {isQuestionCompleted ?
-
-            (<>
-              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-
+          {isQuestionCompleted ? (
+            <>
+              <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
+                <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">You have Successfully Completed Your Interview</h1>
+                <div className="  text-gray-400 py-8 flex flex-col items-center justify-center w-full mt-5 rounded-lg">
+                  <h1 className=" text-2xl font-semibold text-center">
+                    Total Score
+                  </h1>
+                  <h2 className=" text-base text-gray-500 text-center">
+                    {" "}
+                    {numberOfAnswers}/{numberOfAnswers } Questions
+                  </h2>
+                  <CirculerProgress
+                    marks={totalScore}
+                    catorgory="Total score"
+                    titleSize="text-3xl"
+                    subTitleSize="text-sm"
+                  />
+                  <p className=" text-gray-300 text-center">
+                    {parseInt(totalScore || 0).toFixed(2)}% Accurate with
+                    expected answers
+                  </p>
+                  <p className=" text-sm text-gray-500 text-center">
+                    Showing Total Score for {numberOfAnswers} out of{" "}
+                    {numberOfAnswers} question
+                  </p>
+                </div>
               </div>
-            </>) :
-
-            (<>
-
+            </>
+          ) : (
+            <>
               <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
                 <div className=" w-full flex flex-col justify-center items-center mb-14">
                   <div className=" w-full flex flex-col justify-center items-center">
@@ -372,17 +405,16 @@ const InterviewRoomPage = ({ params }) => {
                 </div>
                 <div className=" w-full flex flex-col justify-center] items-center">
                   <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-                    Waiting for the company to start the interview session. Please hold on until the session begins.
+                    Waiting for the company to start the interview session.
+                    Please hold on until the session begins.
                   </p>
                   <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
                     Generating interview questions. Please hold on...
                   </p>
                 </div>
               </div>
-
-            </>)}
-
-
+            </>
+          )}
         </>
       )}
     </>
