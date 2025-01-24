@@ -109,18 +109,8 @@ export default function InterviewPreviewPage({ params }) {
   const [inputCatagory, setInputCatagory] = useState("");
   const [totalPercentage, setTotalPercentage] = useState(0);
   const [inputScheduleDate, setInputScheduleDate] = useState(new Date());
-  const [inputScheduleStartTime, setInputScheduleStartTime] = useState(
-    new Date().toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
-  const [inputScheduleEndTime, setInputScheduleEndTime] = useState(
-    new Date().toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
+  const [inputScheduleStartTime, setInputScheduleStartTime] = useState("");
+  const [inputScheduleEndTime, setInputScheduleEndTime] = useState("");
   const [scheduleList, setScheduleList] = useState([]);
   const [dateRange, setDateRange] = useState({});
 
@@ -485,23 +475,29 @@ export default function InterviewPreviewPage({ params }) {
         schedules: scheduleList
           .filter((schedule) => !schedule.isBooked)
           .map((schedule) => {
-            const date = new Date(schedule.date);
+            const startDate = new Date(schedule.date);
+            const endDate = new Date(schedule.date);
 
             const [startHours, startMinutes] = schedule.startTime
               .split(":")
               .map(Number);
-            date.setUTCHours(startHours, startMinutes, 0, 0);
-            const startIsoString = date.toISOString();
+            const localStart = new Date(
+              startDate.setHours(startHours, startMinutes, 0, 0)
+            );
 
             const [endHours, endMinutes] = schedule.endTime
               .split(":")
               .map(Number);
-            date.setUTCHours(endHours, endMinutes, 0, 0);
-            const endIsoString = date.toISOString();
+            const localend = new Date(
+              endDate.setHours(endHours, endMinutes, 0, 0)
+            );
+
+            const startDateUtc = localStart.toISOString();
+            const endDateUtc = localend.toISOString();
 
             return {
-              startTime: startIsoString,
-              endTime: endIsoString,
+              startTime: startDateUtc,
+              endTime: endDateUtc,
             };
           }),
       });
@@ -763,7 +759,7 @@ export default function InterviewPreviewPage({ params }) {
                   </h1>
                 </div>
               </div>
-              <InterviewCharts/>
+              <InterviewCharts />
             </div>
           )}
 
@@ -1388,32 +1384,40 @@ export default function InterviewPreviewPage({ params }) {
           )}
           {tab === "invitation" && (
             <>
-            <div className="w-full h-fit bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
-              <div className=" w-full flex items-center justify-between">
-                <div>
-                  <h1 className=" text-2xl font-semibold">Invite Candidate</h1>
-                  <p className=" text-sm text-gray-500 py-3">
-                    You can now invite the desired candidate by using their
-                    email address. Ensure the email is accurate before sending
-                    the invitation.
-                  </p>
-                </div>
+              <div className="w-full h-fit bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
+                <div className=" w-full flex items-center justify-between">
+                  <div>
+                    <h1 className=" text-2xl font-semibold">
+                      Invite Candidate
+                    </h1>
+                    <p className=" text-sm text-gray-500 py-3">
+                      You can now invite the desired candidate by using their
+                      email address. Ensure the email is accurate before sending
+                      the invitation.
+                    </p>
+                  </div>
 
-                <div
-                  onClick={() => setInviteModalOpen(true)}
-                  className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
-                >
-                  Invite Candidates
+                  <div
+                    onClick={() => setInviteModalOpen(true)}
+                    className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
+                  >
+                    Invite Candidates
+                  </div>
                 </div>
               </div>
-            </div>
-            <InvitedCandidates interviewId={interviewId} inviteModalOpen={inviteModalOpen}/>
+              <InvitedCandidates
+                interviewId={interviewId}
+                inviteModalOpen={inviteModalOpen}
+              />
             </>
           )}
         </div>
       </SidebarInset>
       {inviteModalOpen && (
-        <InviteCandidateModal setInviteModalOpen={setInviteModalOpen} interviewId={interviewId}/>
+        <InviteCandidateModal
+          setInviteModalOpen={setInviteModalOpen}
+          interviewId={interviewId}
+        />
       )}
     </>
   );
