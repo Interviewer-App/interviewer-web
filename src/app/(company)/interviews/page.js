@@ -94,7 +94,7 @@ const InterviewsPage = () => {
           </div>
         </header>
 
-        <div className=" px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
+        <div className=" px-9 py-4 w-full bg-black max-w-[1500px] mx-auto h-full">
           <div className=" flex items-center justify-between">
             <h1 className=" text-4xl font-semibold">Interviews</h1>
             {!isAnyInterviews && (

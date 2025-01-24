@@ -73,7 +73,7 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
   };
 
   return (
-    <div className=" w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
+    <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
       <h1 className=" text-3xl font-semibold">Candidate Profile</h1>
       <div className=" w-full flex flex-col md:flex-row justify-center md:justify-start items-center mt-9">
         <Avatar className=" h-28 w-28 md:h-40 md:w-40 ">

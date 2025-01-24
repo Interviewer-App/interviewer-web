@@ -114,8 +114,8 @@ const InterviewCategoryPage = () => {
             </Breadcrumb>
           </div>
         </header>
-
-        <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
+ 
+        <div className="px-9 py-4 w-full max-w-[1500px] bg-black mx-auto h-full">
   <h1 className="text-3xl font-semibold">Categories</h1>
   <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
     <div className="flex items-center justify-between mb-5">

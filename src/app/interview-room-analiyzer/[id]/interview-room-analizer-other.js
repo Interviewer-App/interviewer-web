@@ -65,7 +65,7 @@ function InterviewRoomAnalizerOther({
   };
 
   return (
-    <div className=" w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
+    <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
       <h1 className=" text-3xl font-semibold">Other categories</h1>
       <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-5">
         <div className=" w-full md:w-[60%] md:pr-8 md:border-r-2 border-gray-700/20 min-h-[500px]">

@@ -120,7 +120,7 @@ function InterviewSessionPreviewPage({ params }) {
           </div>
         </header>
         <div className=" w-full">
-          <div className="px-9 py-4 w-full max-w-[1500px] mx-auto">
+          <div className="px-9 py-4 w-full max-w-[1500px] bg-black mx-auto">
             <h1 className=" text-4xl font-semibold">Session Preview</h1>
             <div className=" flex flex-col md:flex-row items-center justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-5">
               <div className=" w-full md:w-[50%] ">

@@ -57,7 +57,7 @@ function InterviewRoomAnalizerDashboard({
   };
 
   return (
-    <div className=" h-[90%] w-full">
+    <div className=" h-[90%] w-full bg-black">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={160}>
           <ResizablePanelGroup direction="vertical">

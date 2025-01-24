@@ -205,7 +205,7 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
             </DropdownMenu>
           </div>
           </div>
-          <div className=" flex w-full justify-center w-full mt-4">
+          <div className=" flex w-full justify-center mt-4">
             <button type="submit" className=" py-2.5 bg-white text-black text-sm font-semibold rounded-lg px-5 w-full">
               Send Invitation
             </button>

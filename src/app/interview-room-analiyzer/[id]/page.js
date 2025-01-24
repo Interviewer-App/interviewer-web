@@ -229,7 +229,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
   return (
     <>
-      <div className=" h-lvh">
+      <div className=" h-lvh bg-black">
         <div className=" w-full fixed bottom-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-1000">
           <ResponsiveAppBar pages={pages} />
         </div>

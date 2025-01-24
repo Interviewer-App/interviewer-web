@@ -30,7 +30,7 @@ function InterviewRoomAnalizerScore({
     }));
   };
   return (
-    <div className=" w-[90%] max-w-[1500px] mx-auto h-full p-6">
+    <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6">
       <h1 className=" text-3xl font-semibold">Marks Overview</h1>
       <div className=" w-full flex flex-col-reverse md:flex-row justify-between items-start mt-9">
         <div className=" w-full md:w-[65%] mt-10 md:mt-0 md:mb-10">

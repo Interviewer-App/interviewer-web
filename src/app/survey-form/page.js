@@ -338,8 +338,8 @@ function SurveyPage() {
   };
 
   return (
-    <div className=" h-full md:h-lvh w-full text-white flex justify-center items-center">
-      <div className=" w-[90%] py-8 md:w-[55%] max-w-[900px] mx-auto">
+    <div className=" h-full md:h-lvh w-full text-white bg-black flex justify-center items-center">
+      <div className=" w-[90%] py-8 md:w-[55%] bg-black max-w-[900px] mx-auto">
         <SurveySwiperComponent
           ref={swiperRef}
           questions={
