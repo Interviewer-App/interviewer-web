@@ -1,11 +1,14 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, use, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 const ServeySwiperComponent = forwardRef(
-  ({ questions, onSlideChange }, ref) => {
-    const [questionsState, setQuestionsState] = useState(questions);
+  ({ questions, onSlideChange, setQuestionsState, questionsState }, ref) => {
     const [textAnswer, setTextAnswer] = useState("");
+
+    useEffect(() => {
+      setQuestionsState(questions);
+    }, []);
 
     const handleSelect = (question, answer) => {
       setQuestionsState((prevQuestions) =>
@@ -28,11 +31,6 @@ const ServeySwiperComponent = forwardRef(
         })
       );
     };
-
-    useEffect(() => {
-      console.log(questionsState);
-      setTextAnswer("");
-    }, [onSlideChange]);
 
     return (
       <Swiper
@@ -59,17 +57,17 @@ const ServeySwiperComponent = forwardRef(
               </p>
 
               {question.type === "MCQ" && (
-                <div className=" w-[80%] mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-2">
-                  {question.options.map((option, index) => (
+                <div className="w-[80%] mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-2">
+                  {question.options.map((option) => (
                     <div key={option.id}>
                       <span
-                        onClick={() => handleSelect(question, option.id)}
-                        className={` ${
+                        onClick={() => handleSelect(question, option.answer)}
+                        className={`${
                           questionsState.find((q) => q.Id === question.Id)
-                            ?.givenAnswer === option.id
+                            ?.givenAnswer === option.answer
                             ? "border-blue-700 text-blue-400 bg-blue-700/20"
                             : "border-gray-700 text-gray-400 bg-gray-700/20"
-                        } border-2  flex items-center h-16 justify-start px-4 my-2 cursor-pointer rounded-md`}
+                        } border-2 flex items-center h-16 justify-start px-4 my-2 cursor-pointer rounded-md`}
                       >
                         {option.answer}
                       </span>
@@ -77,16 +75,17 @@ const ServeySwiperComponent = forwardRef(
                   ))}
                 </div>
               )}
+
               {question.type === "MULTIPLE_CHOICE" && (
-                <div className=" w-[80%] mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-2">
+                <div className="w-[80%] mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-2">
                   {question.options.map((option) => (
                     <div key={option.id}>
                       <span
-                        onClick={() => handleSelect(question, option.id)}
+                        onClick={() => handleSelect(question, option.answer)}
                         className={`${
                           questionsState
                             .find((q) => q.Id === question.Id)
-                            ?.givenAnswer.includes(option.id)
+                            ?.givenAnswer?.includes(option.answer)
                             ? "border-blue-700 text-blue-400 bg-blue-700/20"
                             : "border-gray-700 text-gray-400 bg-gray-700/20"
                         } border-2 flex items-center h-16 justify-start px-4 my-2 rounded-md cursor-pointer`}
@@ -97,6 +96,7 @@ const ServeySwiperComponent = forwardRef(
                   ))}
                 </div>
               )}
+
               {question.type === "OPEN_ENDED" && (
                 <div className=" w-full mx-auto mt-8">
                   <textarea
