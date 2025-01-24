@@ -68,7 +68,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("question", (data) => {
-      debugger
+
       if (data.question) {
         setAvailableQuestion(data.question);
       }
@@ -76,7 +76,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
 
     socket.on("questions", (data) => {
-      debugger
+    
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
     });
