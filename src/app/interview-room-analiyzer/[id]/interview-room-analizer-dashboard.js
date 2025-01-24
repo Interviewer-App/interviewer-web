@@ -11,6 +11,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import socket from "../../../lib/utils/socket";
 
@@ -36,6 +47,13 @@ function InterviewRoomAnalizerDashboard({
     };
     socket.emit("nextQuestion", data);
     setAnaliyzeResponse({})
+  };
+
+  const handleFollowUpQuestion = (question) => {
+    socket.emit("nextQuestion", {
+      sessionId: sessionId,
+      followUpQuestion: question,
+    });
   };
 
   return (
@@ -109,7 +127,7 @@ function InterviewRoomAnalizerDashboard({
                         Available Question
                       </h1>
                       <div className=" mt-3 rounded-lg">
-                        {availableQuestion.questionText}
+                        {availableQuestion?.questionText}
                       </div>
                     </div>
                   </div>
@@ -130,16 +148,43 @@ function InterviewRoomAnalizerDashboard({
                             >
                               <div className=" pr-2">{question}</div>
                               <div>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <IoMdAddCircleOutline className="text-blue-500 text-[22px] cursor-pointer" />
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Add as Next Question</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
+                                <AlertDialog>
+                                  <AlertDialogTrigger>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <IoMdAddCircleOutline className="text-blue-500 text-[22px] cursor-pointer" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Add as Next Question</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </AlertDialogTrigger>
+
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>
+                                        Are you sure you want to add as next question?
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => {handleFollowUpQuestion(question)}}
+                                        className="h-[40px] font-medium"
+                                      >
+                                        Add
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </div>
                             </div>
                           )
@@ -161,7 +206,8 @@ function InterviewRoomAnalizerDashboard({
                 catorgory="Score"
                 titleSize="text-lg"
                 subTitleSize="text-[10px]"
-              /></div>
+              />
+            </div>
             <h1 className=" text-3xl font-semibold">Live Analysis Result</h1>
             <div className=" w-full mt-2">
               <h1 className=" py-3 font-semibold text-lg">Question</h1>

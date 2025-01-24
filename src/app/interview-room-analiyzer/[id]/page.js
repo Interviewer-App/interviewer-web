@@ -19,7 +19,6 @@ import InterviewRoomAnalizerDashboard from "./interview-room-analizer-dashboard"
 import InterviewRoomAnalizerScore from "./interview-room-analizer-score";
 import InterviewRoomAnalizerOther from "./interview-room-analizer-other";
 import InterviewRoomAnalizerCandidateProfile from "./interview-room-analizer-candidate-profile";
-import { use } from "react";
 
 const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -45,7 +44,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [isQuestionsAvailable, setIsQuestionAvailabe] = useState(false);
   const [categoryScores, setCategoryScores] = useState([]);
   const [sessionData, setSessionData] = useState({});
-  const [availableQuestion, setAvailableQuestion] = useState();
+  const [availableQuestion, setAvailableQuestion] = useState({});
 
 
   const { toast } = useToast();
@@ -69,6 +68,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("question", (data) => {
+      debugger
       if (data.question) {
         setAvailableQuestion(data.question);
       }
@@ -76,6 +76,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
 
     socket.on("questions", (data) => {
+      debugger
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
     });
