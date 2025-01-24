@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 
 // React Icons
-import Editor from "@/components/rich-text/editor";
+// import Editor from "@/components/rich-text/editor";
 import { LuNotebookPen } from "react-icons/lu";
 import { getInterviewCategoryByInterviewId } from "@/lib/api/interview-category";
 import socket from "@/lib/utils/socket";

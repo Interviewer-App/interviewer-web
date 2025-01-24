@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { MdClose } from "react-icons/md";
-import Editor from "../rich-text/editor";
+// import Editor from "../rich-text/editor";
 
 // Toast
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { addNoteForCategory } from "@/lib/api/interview-category";
+import QuillEditor from "../quillEditor";
 
 function AddCategoryNote({
   selectedCategoryScoreId,
@@ -82,14 +83,16 @@ function AddCategoryNote({
           <MdClose className=" text-2xl" />
         </button>
         <div>
-          <Editor
+          {/* <Editor
             content={note}
             onChange={setNote}
             placeholder="Write your note"
             readOnly={false}
             required
             className=" w-full text-sm border-2 border-gray-700 rounded-lg placeholder-[#737883] px-6 py-3 rich-text"
-          />
+          /> */
+          <QuillEditor value={note} onChange={setNote} placeholder='Enter you note...'/>
+          }
           <button
             onClick={handleAddNote}
             className=" md:float-right mt-5 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
