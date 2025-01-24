@@ -27,7 +27,7 @@ import SwiperComponent from "@/components/ui/swiperComponent";
 import '../../../styles/swiper/swiperStyles.css'
 import { PuffLoader } from "react-spinners";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
+import { usePathname, useRouter, redirect, useSearchParams } from 'next/navigation';
 import { useSession, getSession } from "next-auth/react"
 import { CodeBlock } from "@/components/ui/code-block";
 import CodeEditor from '@uiw/react-textarea-code-editor';
@@ -38,6 +38,9 @@ const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const swiperRef = useRef(null); // Reference for the Swiper component
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("candidateId");
+  const sessionID = searchParams.get("sessionID");
 
   // const { socket } = useSocket();
   const { toast } = useToast();
@@ -50,6 +53,7 @@ const InterviewRoomPage = ({ params }) => {
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
   const [code, setCode] = useState(`Write your code here`);
   const [question, setQuestion] = useState({}); // Example questions
+  const [isQuestionCompleted, setIsQuestionCompleted] = useState(false); // Example questions
 
   const {
     isListening,
@@ -82,7 +86,7 @@ const InterviewRoomPage = ({ params }) => {
     // }
     // const question = questions[activeStep];
     // const questionNumber = activeStep + 1;
-    socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText});
+    socket.emit('submitAnswer', { sessionId: question.sessionID, questionId: question.questionID, candidateId: candidateId, answerText: transcript, questionText: question.questionText });
     stopListening();
     setTranscript("");
   };
@@ -111,6 +115,14 @@ const InterviewRoomPage = ({ params }) => {
 
 
   useEffect(() => {
+    debugger
+    const data = {
+      sessionId: sessionID,
+      userId: userId,
+      role: 'CANDIDATE'
+    }
+    socket.emit('joinInterviewSession', data);
+
     // socket.on('questions', (data) => {
     //   debugger
     //   console.log('Received questions:', data.questions);
@@ -118,8 +130,14 @@ const InterviewRoomPage = ({ params }) => {
     //   setIsQuestionAvailabe(true);
     // });
     socket.on('question', (data) => {
-      setIsQuestionAvailabe(true);
-      setQuestion(data.question)
+      debugger
+      if (data.question) {
+        setIsQuestionAvailabe(true);
+        setQuestion(data.question)
+      } else {
+        setIsQuestionCompleted(true)
+      }
+
     });
 
 
@@ -139,8 +157,9 @@ const InterviewRoomPage = ({ params }) => {
 
 
     return () => {
-      // socket.off('questions');
-      // socket.off('navigateNextQuestion');
+      socket.off('joinInterviewSession');
+      socket.off('questions');
+      socket.off('navigateNextQuestion');
     };
   }, []);
 
@@ -176,6 +195,7 @@ const InterviewRoomPage = ({ params }) => {
           <div className="absolute inset-0 bg-black -z-20"></div>
           <div className="w-[70%] max-w-[1100px]">
             {/* Swiper Component with Questions */}
+
             <div className="relative w-full py-9">
               {/* <SwiperComponent
                 ref={swiperRef}
@@ -190,6 +210,8 @@ const InterviewRoomPage = ({ params }) => {
                 </p>
               </div>
             </div>
+
+
             <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
               <div className="w-[70%] max-w-[1100px]">
                 <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
@@ -318,32 +340,45 @@ const InterviewRoomPage = ({ params }) => {
             </div>
           </div>
         </div>
-      </>) : (<div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-        <div className=" w-full flex flex-col justify-center items-center mb-14">
-          <div className=" w-full flex flex-col justify-center items-center">
-            <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
-            <h1 className=" font-semibold text-3xl py-3">
-              Time now: {timeNow}
-            </h1>
-          </div>
-        </div>
+      </>) : (
+        <>
+          {isQuestionCompleted ?
 
-        {/* <VideoCall
-          sessionId={sessionId}
-          role="CANDIDATE"
-        /> */}
-        <div className=" w-full flex flex-col justify-center items-center mb-16">
-          <PuffLoader color="#ffffff" />
-        </div>
-        <div className=" w-full flex flex-col justify-center] items-center">
-          <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-            Waiting for the company to start the interview session. Please hold on until the session begins.
-          </p>
-          <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-            Generating interview questions. Please hold on...
-          </p>
-        </div>
-      </div>)}
+            (<>
+              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+
+              </div>
+            </>) :
+
+            (<>
+
+              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+                <div className=" w-full flex flex-col justify-center items-center mb-14">
+                  <div className=" w-full flex flex-col justify-center items-center">
+                    <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+                    <h1 className=" font-semibold text-3xl py-3">
+                      Time now: {timeNow}
+                    </h1>
+                  </div>
+                </div>
+                <div className=" w-full flex flex-col justify-center items-center mb-16">
+                  <PuffLoader color="#ffffff" />
+                </div>
+                <div className=" w-full flex flex-col justify-center] items-center">
+                  <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+                    Waiting for the company to start the interview session. Please hold on until the session begins.
+                  </p>
+                  <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+                    Generating interview questions. Please hold on...
+                  </p>
+                </div>
+              </div>
+
+            </>)}
+
+
+        </>
+      )}
     </>
   );
 };

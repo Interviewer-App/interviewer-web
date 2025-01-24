@@ -108,7 +108,7 @@ export const TimelineLayout = ({ interviews }) => {
           role: role
         }
         socket.emit('joinInterviewSession', data);
-        router.push(`/interview-room/${sessionId}`);
+        router.push(`/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`);
       }
     } catch (err) {
       if (err.response) {
@@ -159,7 +159,7 @@ export const TimelineLayout = ({ interviews }) => {
 
   return (
     <div>
-      <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
+      {/* <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
 
         <div className="flex justify-between px-3">
           <div className="flex-col ml-8 mt-12">
@@ -169,25 +169,56 @@ export const TimelineLayout = ({ interviews }) => {
             </div>
           </div>
           <div className="flex-col">
-            {/* <div className="text-2xl font-medium ml-8"> */}
               <div className="flex justify-end w-60 aspect-square ml-auto -mt-8">
                 <Lottie animationData={interviewAnimation} />
               </div>
-            {/* </div> */}
           </div>
         </div>
 
-        {/* <div className="text-2xl font-medium ml-8"> <h1>Total Interviews</h1>
-          <div className="text-4xl font-medium mt-2">{totalInterviews}
-            <div className="flex justify-end w-60 aspect-square ml-auto mr-32 -mt-28">
-              <Lottie animationData={interviewAnimation} />
-            </div>
+      </div> */}
+              <div className="max-w-2xl rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-6 mx-auto flex gap-6 shadow-xl hover:shadow-2xl transition-shadow">
+      {/* Left Content */}
+      <div className="flex-1 space-y-6">
+        <div className="flex justify-between items-start">
+          <div className="bg-[#18181E] py-4 px-6 rounded-xl">
+            <h2 className="text-3xl font-bold text-white mb-1">Total Interviews</h2>
+            <div className="text-4xl font-bold text-white text-center">2</div>
           </div>
-        </div> */}
+          <span className="text-xs font-medium bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
+            Active
+          </span>
+        </div>
 
+        {/* Stats Container */}
+        <div className="space-y-4 p-4 bg-zinc-800/50 rounded-lg">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+              <span className="text-sm text-zinc-400">Completed</span>
+            </div>
+            <span className="text-sm font-medium text-white">0</span>
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-zinc-400">Pending</span>
+            </div>
+            <span className="text-sm font-medium text-white">2</span>
+          </div>
+        </div>
       </div>
 
-      <h2 className="text-2xl font-medium">Upcoming Interviews</h2>
+      {/* Lottie Animation */}
+      <div className="hidden md:flex w-48 aspect-square -mr-4 -my-4">
+        <Lottie 
+          animationData={interviewAnimation}
+          className="hover:scale-105 transition-transform"
+        />
+      </div>
+    </div>
+
+      {/* <h2 className="text-2xl font-medium">Upcoming Interviews</h2> */}
       <Timeline className="mt-8">
         {interviews.map((interview) => {
           const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
