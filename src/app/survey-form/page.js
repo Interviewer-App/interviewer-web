@@ -1,13 +1,22 @@
 "use client";
 import React, { use, useEffect, useRef, useState } from "react";
 import SurveySwiperComponent from "@/components/ui/survey-swiper";
+import { submitSurvey } from "@/lib/api/users";
+import { getSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 function SurveyPage() {
   const swiperRef = useRef(null);
-  const [userRole, setUserRole] = useState("company");
+  const [userRole, setUserRole] = useState("");
   const [questions, setQuestions] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  const { toast } = useToast();
+  const router = useRouter();
+  const [questionsState, setQuestionsState] = useState([]);
+  const [id, setId] = useState("");
   const [companyQuestions, setCompanyQuestions] = useState([
     {
       Id: 1,
@@ -62,7 +71,8 @@ function SurveyPage() {
     },
     {
       Id: 5,
-      question: "Which interview types do you find most effective for evaluating candidates?",
+      question:
+        "Which interview types do you find most effective for evaluating candidates?",
       type: "MCQ",
       options: [
         { id: 1, answer: "Technical interview" },
@@ -89,7 +99,8 @@ function SurveyPage() {
     },
     {
       Id: 7,
-      question: "How important is it for you to receive feedback from candidates after an interview?",
+      question:
+        "How important is it for you to receive feedback from candidates after an interview?",
       type: "MCQ",
       options: [
         { id: 1, answer: "Very important" },
@@ -97,13 +108,13 @@ function SurveyPage() {
         { id: 3, answer: "Neutral" },
         { id: 4, answer: "Somewhat unimportant" },
         { id: 5, answer: "Not important at all" },
-
       ],
       givenAnswer: null,
     },
     {
       Id: 8,
-      question: "Which communication channels do you prefer for interview updates and notifications?",
+      question:
+        "Which communication channels do you prefer for interview updates and notifications?",
       type: "MULTIPLE_CHOICE",
       options: [
         { id: 1, answer: "Email" },
@@ -111,24 +122,23 @@ function SurveyPage() {
         { id: 3, answer: "In-app notifications" },
         { id: 4, answer: "Phone calls" },
         { id: 5, answer: "Other" },
-
       ],
       givenAnswer: [],
     },
     {
       Id: 9,
-      question: "What features would you like to see in a hiring and interview management app?",
+      question:
+        "What features would you like to see in a hiring and interview management app?",
       type: "OPEN_ENDED",
       options: "",
-      givenAnswer: '',
+      givenAnswer: "",
     },
   ]);
 
   const [candidateQuestions, setCandidateQuestions] = useState([
     {
       Id: 1,
-      question:
-        "What are your primary goals in searching for a new job?",
+      question: "What are your primary goals in searching for a new job?",
       type: "MULTIPLE_CHOICE",
       options: [
         { id: 1, answer: "Career advancement" },
@@ -141,8 +151,7 @@ function SurveyPage() {
     },
     {
       Id: 2,
-      question:
-        "Which interview formats do you prefer?",
+      question: "Which interview formats do you prefer?",
       type: "MULTIPLE_CHOICE",
       options: [
         { id: 1, answer: "Technical interview" },
@@ -155,8 +164,7 @@ function SurveyPage() {
     },
     {
       Id: 3,
-      question:
-        "What do you find most challenging in your job search process?",
+      question: "What do you find most challenging in your job search process?",
       type: "MULTIPLE_CHOICE",
       options: [
         { id: 1, answer: "Finding relevant job opportunities" },
@@ -220,12 +228,35 @@ function SurveyPage() {
   ]);
 
   useEffect(() => {
-    const progress = ((activeStep + 1) / (userRole === "candidate" ? candidateQuestions : companyQuestions).length) * 100;
+    const fetchSession = async () => {
+      const session = await getSession();
+      const role = session?.user?.role;
+      if (role === "CANDIDATE") {
+        const candidateId = session?.user?.candidateID;
+        setId(candidateId);
+        setQuestions(candidateQuestions);
+      } else if (role === "COMPANY") {
+        const companyId = session?.user?.companyID;
+        setId(companyId);
+        setQuestions(companyQuestions);
+      }
+      setUserRole(role);
+    };
+
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    const progress =
+      ((activeStep + 1) /
+        (userRole === "CANDIDATE" ? candidateQuestions : companyQuestions)
+          .length) *
+      100;
     setProgress(progress);
   }, [activeStep, candidateQuestions, companyQuestions]);
 
   useEffect(() => {
-    if (userRole === "candidate") {
+    if (userRole === "CANDIDATE") {
       setQuestions(candidateQuestions);
     } else {
       setQuestions(companyQuestions);
@@ -233,7 +264,12 @@ function SurveyPage() {
   }, [userRole]);
 
   const handleNext = () => {
-    if (activeStep < (userRole === "candidate" ? candidateQuestions : companyQuestions).length - 1) {
+    if (
+      activeStep <
+      (userRole === "CANDIDATE" ? candidateQuestions : companyQuestions)
+        .length -
+        1
+    ) {
       swiperRef.current.swiper.slideNext();
     }
   };
@@ -244,14 +280,73 @@ function SurveyPage() {
     }
   };
 
+  const saveAnswer = async (e) => {
+    e.preventDefault();
+    try {
+      const answers = {
+        role: userRole,
+        id: id,
+        surveys: questionsState.map((question) => ({
+          question: question.question,
+          answer: question.givenAnswer,
+        })),
+      };
+
+      const response = await submitSurvey(answers);
+
+      if (response) {
+        toast({
+          variant: "success",
+          title: "Survey submitted successfully",
+          description: "Thank you for your feedback!",
+        });
+        if (userRole === "COMPANY") {
+          router.push("/interviews");
+        } else if (userRole === "CANDIDATE") {
+          router.push("/my-interviews");
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Answer saving failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
   return (
     <div className=" h-full md:h-lvh w-full text-white flex justify-center items-center">
       <div className=" w-[90%] py-8 md:w-[55%] max-w-[900px] mx-auto">
         <SurveySwiperComponent
           ref={swiperRef}
           questions={
-            userRole === "candidate" ? candidateQuestions : companyQuestions
+            userRole === "CANDIDATE" ? candidateQuestions : companyQuestions
           }
+          setQuestionsState={setQuestionsState}
+          questionsState={questionsState}
           onSlideChange={(index) => setActiveStep(index)}
         />
 
@@ -260,7 +355,7 @@ function SurveyPage() {
             <span className="text-sm text-gray-400">
               Step {activeStep + 1} of{" "}
               {
-                (userRole === "candidate"
+                (userRole === "CANDIDATE"
                   ? candidateQuestions
                   : companyQuestions
                 ).length
@@ -275,18 +370,34 @@ function SurveyPage() {
             ></div>
           </div>
           <div className="flex justify-between mt-5">
-            <button
-              onClick={handlePrev}
-              className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
-            >
-              prev
-            </button>
-            <button
-              onClick={handleNext}
-              className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
-            >
-              next
-            </button>
+            {activeStep !== 0 ? (
+              <button
+                onClick={handlePrev}
+                className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
+              >
+                prev
+              </button>
+            ) : (
+              <button></button>
+            )}
+            {activeStep !==
+            (userRole === "CANDIDATE" ? candidateQuestions : companyQuestions)
+              .length -
+              1 ? (
+              <button
+                onClick={handleNext}
+                className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
+              >
+                next
+              </button>
+            ) : (
+              <button
+                onClick={saveAnswer}
+                className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
+              >
+                submit
+              </button>
+            )}
           </div>
         </div>
       </div>
