@@ -65,7 +65,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import Editor from "@/components/rich-text/editor";
+// import Editor from "@/components/rich-text/editor";
 
 //API
 import { getInterviewById, updateInterview } from "@/lib/api/interview";
@@ -77,6 +77,7 @@ import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import InvitedCandidates from "@/components/interviews/invite-candidates";
 import InterviewCharts from "@/components/interviews/interviewCharts";
+import QuillEditor from "@/components/quillEditor";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -581,7 +582,12 @@ export default function InterviewPreviewPage({ params }) {
     const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
     redirect(loginURL);
   }
-
+  const handleOnChange  =  (content) => {
+    // debugger
+    // console.log('Updated Desc:', content);
+    // console.log(content);
+    setDescription(content)
+  }
   return (
     <>
       <SidebarInset>
@@ -907,7 +913,20 @@ export default function InterviewPreviewPage({ params }) {
                     <h1 className=" text-2xl font-semibold py-5  ">
                       Description
                     </h1>
-                    {editDetails ? (
+                    {/* <div
+                      className="text-justify w-full bg-transparent rounded-lg"
+                      dangerouslySetInnerHTML={{ __html: description }}
+                    /> */}
+
+                    <QuillEditor
+                      value={description}
+                      placeholder="Enter job description..." // Make sure this is passed correctly
+                      onChange={handleOnChange}
+                    />
+
+
+
+                    {/* {editDetails ? (
                       <Editor
                         content={description}
                         onChange={setDescription}
@@ -921,7 +940,7 @@ export default function InterviewPreviewPage({ params }) {
                         className="text-justify w-full bg-transparent rounded-lg"
                         dangerouslySetInnerHTML={{ __html: description }}
                       />
-                    )}
+                    )} */}
                     <div>
                       <h1 className=" text-2xl font-semibold py-5">
                         Required Skills

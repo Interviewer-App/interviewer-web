@@ -31,7 +31,7 @@ import { usePathname, useRouter, redirect, useSearchParams } from 'next/navigati
 import { useSession, getSession } from "next-auth/react"
 import { CodeBlock } from "@/components/ui/code-block";
 import CodeEditor from '@uiw/react-textarea-code-editor';
-import Editor from "@/components/rich-text/editor";
+// import Editor from "@/components/rich-text/editor";
 import VideoCall from "@/components/video/video";
 
 const InterviewRoomPage = ({ params }) => {
