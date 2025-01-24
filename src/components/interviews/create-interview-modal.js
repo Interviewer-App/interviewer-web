@@ -484,7 +484,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
   const handleOnChange  =  (content) => {
-    // debugger
     // console.log('Updated Desc:', content);
     // console.log(content);
   setJobDescription(content)

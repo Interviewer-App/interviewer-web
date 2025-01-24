@@ -16,7 +16,6 @@ const QuillEditor = ({value,placeholder,onChange }) => {
     }
 
     quill.on('text-change', () => {
-      debugger
       const content = quill.root.innerHTML; // Get content from the editor (HTML format)
       onChange(content); // Call the parent onChange handler to update the state
     });
