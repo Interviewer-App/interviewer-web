@@ -10,7 +10,6 @@ import { ToastAction } from "@/components/ui/toast";
 import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
- 
 
 import { CalendarIcon, Percent } from "lucide-react";
 
@@ -221,18 +220,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [inputPercentage, setInputPercentage] = React.useState("");
   const [categoryList, setCatagoryList] = React.useState([]);
   const [inputScheduleDate, setInputScheduleDate] = React.useState(new Date());
-  const [inputScheduleStartTime, setInputScheduleStartTime] = React.useState(
-    new Date().toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
-  const [inputScheduleEndTime, setInputScheduleEndTime] = React.useState(
-    new Date().toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
+  const [inputScheduleStartTime, setInputScheduleStartTime] =
+    React.useState("");
+  const [inputScheduleEndTime, setInputScheduleEndTime] = React.useState("");
   const [scheduleList, setScheduleList] = React.useState([]);
   const [totalPercentage, setTotalPercentage] = React.useState(0);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
@@ -420,27 +410,34 @@ export default function CreateInterviewModal({ setModalOpen }) {
             percentage: parseFloat(catagory.percentage),
           };
         }),
-        schedules: scheduleList.map((schedule) => {
-          const date = new Date(schedule.date);
+        schedules: scheduleList
+          .filter((schedule) => !schedule.isBooked)
+          .map((schedule) => {
+            const startDate = new Date(schedule.date);
+            const endDate = new Date(schedule.date);
 
-          const [startHours, startMinutes] = schedule.startTime
-            .split(":")
-            .map(Number);
-          date.setUTCHours(startHours, startMinutes, 0, 0); 
-          const startIsoString = date.toISOString(); 
+            const [startHours, startMinutes] = schedule.startTime
+              .split(":")
+              .map(Number);
+            const localStart = new Date(
+              startDate.setHours(startHours, startMinutes, 0, 0)
+            );
 
+            const [endHours, endMinutes] = schedule.endTime
+              .split(":")
+              .map(Number);
+            const localend = new Date(
+              endDate.setHours(endHours, endMinutes, 0, 0)
+            );
 
-          const [endHours, endMinutes] = schedule.endTime
-            .split(":")
-            .map(Number);
-          date.setUTCHours(endHours, endMinutes, 0, 0); 
-          const endIsoString = date.toISOString(); 
+            const startDateUtc = localStart.toISOString();
+            const endDateUtc = localend.toISOString();
 
-          return {
-            startTime: startIsoString,
-            endTime: endIsoString,
-          };
-        }),
+            return {
+              startTime: startDateUtc,
+              endTime: endDateUtc,
+            };
+          }),
       };
       console.log(interviewData);
       const response = await createInterview(interviewData);
@@ -519,16 +516,16 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
               <div className="mb-8 rich-text text-white">
-              <Editor
-                content={jobDescription}
-                onChange={setJobDescription}
-                placeholder="Write your post"
-                readOnly={false}
-                required
-                className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
-
+                <Editor
+                  content={jobDescription}
+                  onChange={setJobDescription}
+                  placeholder="Write your post"
+                  readOnly={false}
+                  required
+                  className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text"
+                />
               </div>
-             
+
               <Paper
                 sx={{
                   display: "flex",
@@ -662,14 +659,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
                               onSelect={setInputScheduleDate}
                               initialFocus
                               disabled={(d) => {
-                                const startDate = new Date(
-                                  date.from
-                                );
+                                const startDate = new Date(date.from);
                                 const endDate = new Date(date.to);
 
-                                return (
-                                  d < startDate || d > endDate
-                                );
+                                return d < startDate || d > endDate;
                               }}
                             />
                           </PopoverContent>
