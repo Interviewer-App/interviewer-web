@@ -49,4 +49,16 @@ export const submitSurvey = async (answers) => {
   }
 };
 
+export const deleteUserByEmail = async (email) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/users/email/${email}`, 
+    );
+    return response;
+  } catch (error) {
+    console.log("Error deleting user account:", error);
+    throw error;
+  }
+};
+
 export { fetchUsers };
