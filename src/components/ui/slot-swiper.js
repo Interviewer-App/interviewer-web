@@ -82,7 +82,7 @@ const SlotSwiperComponent = forwardRef(
       >
         {scheduling.map((schedule, index) => (
           <SwiperSlide key={index}>
-            <div className=" w-full h-[300px] text-white shadow-md ">
+            <div className=" w-full h-[300px] text-white bg-transparent shadow-md ">
               <p className="text-lg text-white py-5 w-full text-center">
                 {new Date(schedule.date).toLocaleDateString("en-GB", {
                   day: "numeric",
