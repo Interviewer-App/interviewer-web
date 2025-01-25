@@ -1,6 +1,6 @@
 import { createInterviewSession } from "@/lib/api/interview-session";
 import { getSession } from "next-auth/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import  socket  from '../../lib/utils/socket';
@@ -11,12 +11,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { useRouter, useSearchParams, redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 export default function InterviewScheduleCard({ index, interview,showButton=true}) {
     const { toast } = useToast();
-    // const { socket } = useSocket();
+
    const router = useRouter();
 
     const handleClick = () => {
@@ -36,7 +36,7 @@ export default function InterviewScheduleCard({ index, interview,showButton=true
           scheduledAt: interview.scheduledAt,
           interviewStatus: "toBeConducted",
         };
-        // console.log(interviewData);
+
         const response = await createInterviewSession(interviewSessionData);
   
         if (response) {
@@ -95,8 +95,8 @@ export default function InterviewScheduleCard({ index, interview,showButton=true
           <TooltipContent>{interview.jobTitle || ""}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <h3 className=" text-sm md:text-base">Date: {new Date(interview.scheduledDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</h3>
-      <h3 className=" text-sm md:text-base">Time: {new Date(interview.scheduledAt).toLocaleTimeString()}</h3>
+      <h3 className=" text-sm md:text-base">Start Date: {new Date(interview.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</h3>
+      <h3 className=" text-sm md:text-base">end Date: {new Date(interview.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</h3>
       {showButton && (
       <button
         type="button"
