@@ -93,8 +93,6 @@ export const TimelineLayout = ({ interviews }) => {
         scheduledAt: interview.startTime,
         interviewStatus: "toBeConducted",
       };
-      console.log("Interview Data:", interview);
-      console.log("Session ID:", session?.user?.candidateID);
 
       const response = await createInterviewSession(interviewSessionData);
 
