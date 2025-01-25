@@ -1,23 +1,23 @@
 'use client'
-import { useEffect } from 'react';
-import 'quill/dist/quill.snow.css'; // import Quill's CSS
-import Quill from 'quill'; // import Quill library
+import { useEffect, useRef } from 'react';
+import 'quill/dist/quill.snow.css'; 
+import Quill from 'quill'; 
 
-const QuillEditor = ({value,placeholder,onChange }) => {
+const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
+  const quillRef = useRef(null);
+
   useEffect(() => {
     if (typeof document !== "undefined") {
-    // Initialize the Quill editor when the component mounts
-    const quill = new Quill('#editor', {
+    const quill = new Quill(`#${editorId}`, {
       theme: 'snow',
       placeholder: placeholder || 'Write something...',
     });
-    if (value) {
-      quill.root.innerHTML = value;
-    }
+
+    quillRef.current = quill;
 
     quill.on('text-change', () => {
-      const content = quill.root.innerHTML; // Get content from the editor (HTML format)
-      onChange(content); // Call the parent onChange handler to update the state
+      const content = quill.root.innerHTML; 
+      onChange(content); 
     });
       const style = document.createElement('style');
       style.innerHTML = `
@@ -31,12 +31,17 @@ const QuillEditor = ({value,placeholder,onChange }) => {
       `;
       document.head.appendChild(style);
   }
-    }, []);
+    }, [editorId]);
+
+      useEffect(() => {
+    if (quillRef.current && value !== undefined) {
+      quillRef.current.root.innerHTML = value;
+    }
+  }, [value]);
 
   return (
     <div>
-      <div id="editor" style={{ minHeight: '100px'}} className='quill-editor'>
-        
+      <div id={editorId} style={{ minHeight: '100px'}} className='quill-editor'>
       </div>
     </div>
   );
