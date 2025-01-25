@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import socket from "../../../lib/utils/socket";
+import VideoCall from "@/components/video/video";
 
 // React Icons
 import { ImCross } from "react-icons/im";
@@ -31,7 +32,6 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiInformation2Line } from "react-icons/ri";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
-import VideoCall from "@/components/video/video";
 
 function InterviewRoomAnalizerDashboard({
   analiyzeResponse,
@@ -57,7 +57,7 @@ function InterviewRoomAnalizerDashboard({
   };
 
   return (
-    <div className=" h-[90%] w-full bg-black">
+    <div className=" h-[90vh] w-full bg-black">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={160}>
           <ResizablePanelGroup direction="vertical">
