@@ -537,7 +537,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 required
                 className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" /> */}
 
-                <QuillEditor placeholder="Job Description here..."
+                <QuillEditor
+                editorId={"jobDescription"}
+                 placeholder="Job Description here..."
                 onChange={handleOnChange}
                  />
 
