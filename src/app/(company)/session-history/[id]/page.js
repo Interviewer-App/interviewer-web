@@ -20,13 +20,15 @@ import { ToastAction } from "@/components/ui/toast";
 import { FaDotCircle } from "react-icons/fa";
 import { getInterviewSessionScoreById } from "@/lib/api/answer";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
-import { useSession, getSession } from "next-auth/react"
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession, getSession } from "next-auth/react";
+import { set } from "zod";
 
 function SessionHistoryPage({ params }) {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [sessionId, setSessionId] = useState(null);
+  const [interviewId, setInterviewId] = useState(null);
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionScoreDetails, setSessionScoreDetails] = useState({});
   const { toast } = useToast();
@@ -45,6 +47,7 @@ function SessionHistoryPage({ params }) {
         const response = await getInterviewSessionHistoryById(sessionId);
         if (response.data) {
           setSessionDetails(response.data);
+          setInterviewId(response.data.interview.interviewID);
         }
       } catch (error) {
         toast({
@@ -79,7 +82,6 @@ function SessionHistoryPage({ params }) {
     if (sessionId) fetchSessionScoreDetails();
   }, [sessionId, toast]);
 
-
   if (status === "loading") {
     return (
       <>
@@ -87,7 +89,7 @@ function SessionHistoryPage({ params }) {
       </>
     );
   } else {
-    if (session.user.role !== 'COMPANY') {
+    if (session.user.role !== "COMPANY") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
@@ -103,15 +105,24 @@ function SessionHistoryPage({ params }) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Company</BreadcrumbLink>
+                  <BreadcrumbLink
+                    href="/interviews"
+                    className=" cursor-pointer"
+                  >
+                    Interviews
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Session</BreadcrumbLink>
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
+                  <BreadcrumbLink
+                    href={`/interviews/${encodeURIComponent(interviewId)}`}
+                  >
+                    Interview details
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Session History</BreadcrumbPage>
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
+                  <BreadcrumbPage>Session history</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -133,15 +144,20 @@ function SessionHistoryPage({ params }) {
                   <li className=" text-base pt-3 text-gray-400 mt-5">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Scheduled Date:{" "}
-                    {new Date(
-                      sessionDetails?.interview?.scheduledDate
-                    ).toLocaleDateString() || ""}
+                    {new Date(sessionDetails?.scheduledDate).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    ) || ""}
                   </li>
                   <li className=" text-base pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Scheduled Time:{" "}
                     {new Date(
-                      sessionDetails?.interview?.scheduledAt
+                      sessionDetails?.scheduledAt
                     ).toLocaleTimeString() || ""}
                   </li>
                   <li className=" text-base pt-1 text-gray-400">

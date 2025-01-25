@@ -32,17 +32,17 @@ import socket from "../../../lib/utils/socket";
 import NoData from "@/assets/nodata.png";
 import Image from "next/image";
 import Loading from "@/app/loading";
-import { usePathname , useRouter, redirect } from 'next/navigation';
-import { useSession } from "next-auth/react"
-import { Filter   } from "lucide-react";
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Filter } from "lucide-react";
 const InterviewSchedulePage = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [interviews, setInterviews] = useState([]);
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
-  const [sordBy, setSortBy] = useState('');
-  const [datePosted, setDatePosted] = useState('');
-  const [interviewCategory, setInterviewCategory] = useState('');
+  const [sordBy, setSortBy] = useState("");
+  const [datePosted, setDatePosted] = useState("");
+  const [interviewCategory, setInterviewCategory] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [keyWords, setKeyWords] = useState("");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -85,7 +85,6 @@ const InterviewSchedulePage = () => {
     setIsSheetOpen(false);
   };
 
-
   if (status === "loading") {
     return (
       <>
@@ -93,7 +92,7 @@ const InterviewSchedulePage = () => {
       </>
     );
   } else {
-    if (session.user.role !== 'CANDIDATE') {
+    if (session.user.role !== "CANDIDATE") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
@@ -108,12 +107,8 @@ const InterviewSchedulePage = () => {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Candidate</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Interview schedules</BreadcrumbPage>
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
+                  <BreadcrumbPage>Interview Schedules</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -126,7 +121,7 @@ const InterviewSchedulePage = () => {
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger>
                 <div className=" bg-transparent border-2 border-gray-300 text-gray-300 hover:text-gray-500 hover:border-gray-500 px-2 py-2 rounded-sm cursor-pointer">
-                <Filter/>
+                  <Filter />
                 </div>
               </SheetTrigger>
               <SheetContent>

@@ -601,10 +601,10 @@ export default function InterviewPreviewPage({ params }) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Company</BreadcrumbLink>
+                  <BreadcrumbLink href="/interviews" className=" cursor-pointer">Interviews</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
                   <BreadcrumbPage>Interview details</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>

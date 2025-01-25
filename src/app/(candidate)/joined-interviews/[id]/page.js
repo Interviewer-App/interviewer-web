@@ -20,8 +20,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { FaDotCircle } from "react-icons/fa";
 import { getInterviewSessionScoreById } from "@/lib/api/answer";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
-import { useSession } from "next-auth/react"
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const JoinedInterviewsDetails = ({ params }) => {
   const { data: session, status } = useSession();
@@ -86,7 +86,7 @@ const JoinedInterviewsDetails = ({ params }) => {
       </>
     );
   } else {
-    if (session.user.role !== 'CANDIDATE') {
+    if (session.user.role !== "CANDIDATE") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
@@ -101,11 +101,13 @@ const JoinedInterviewsDetails = ({ params }) => {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Candidate</BreadcrumbLink>
+                <BreadcrumbLink href="/joined-interviews">
+                  Joined Interviews
+                </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Interview Session</BreadcrumbPage>
+              <BreadcrumbSeparator className="hidden md:block " />
+              <BreadcrumbItem className="hidden md:block cursor-pointer">
+                <BreadcrumbPage>Interview History</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

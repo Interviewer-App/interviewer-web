@@ -29,7 +29,7 @@ import InterviewCategoryModal from "../../../components/interviews/interviewCate
 import { fetchInterCategories } from "@/lib/api/interview-category";
 import { columns } from "@/components/ui/InterviewCategory-DataTable/column";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
+import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import ContactFormPreview from "@/components/ui/userDetailsForm";
 
@@ -45,49 +45,26 @@ const UserProfile = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  
   return (
     <>
-    <SidebarInset>
+      <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-3">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">candidate</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Profile</BreadcrumbPage>
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
+                  <BreadcrumbPage>User Profile</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
 
-        {/* Toggle Buttons between 'Teams' and 'Details' */}
-        
-        {/* <div className="flex space-x-4 mb-4 mx-auto">
-          <button
-            onClick={() => setTab("Team")}
-            className={`px-4 py-2 rounded-lg ${Tab === "Team" ? "bg-gradient-to-tr from-lightred to-darkred text-white" : "bg-gray-200 text-black"}`}
-          >
-            Teams
-          </button>
-          <button
-            onClick={() => setTab("Details")}
-            className={`px-4 py-2 rounded-lg ${Tab === "Details" ? "bg-gradient-to-tr from-lightred to-darkred text-white" : "bg-gray-200 text-black"}`}
-          >
-            Details
-          </button>
-        </div> */}
-
-
         <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full">
-        <h1 className="text-3xl font-semibold">User Profile</h1>
-        <div className=" w-full mt-5 ml-md mb-12">
+          <h1 className="text-3xl font-semibold">User Profile</h1>
+          <div className=" w-full mt-5 ml-md mb-12">
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("CV")}
@@ -108,8 +85,10 @@ const UserProfile = () => {
             </div>
           </div>
           {/* Title */}
-          <h1 className="text-3xl font-semibold">{Tab === "CV" ? "CV" : "Details"}</h1>
-          
+          <h1 className="text-3xl font-semibold">
+            {Tab === "CV" ? "CV" : "Details"}
+          </h1>
+
           <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
             {/* Content based on Tab */}
             {Tab === "CV" ? (
@@ -135,13 +114,20 @@ const UserProfile = () => {
                   )}
                 </div>
 
-                {modalOpen && <InterviewCategoryModal setModalOpen={setModalOpen} isUpdated={false} />}
+                {modalOpen && (
+                  <InterviewCategoryModal
+                    setModalOpen={setModalOpen}
+                    isUpdated={false}
+                  />
+                )}
 
                 {/* Pagination */}
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
-                      <PaginationPrevious onClick={() => handlePreviousPage()} />
+                      <PaginationPrevious
+                        onClick={() => handlePreviousPage()}
+                      />
                     </PaginationItem>
                     <PaginationItem>
                       <PaginationLink onClick={() => handlePage(page + 1)}>
@@ -165,17 +151,19 @@ const UserProfile = () => {
             ) : (
               // Sample content for Details Tab
               <div className="text-white">
-              <h2 className="text-xl font-semibold">Details Form</h2>
-              <div className="w-full"> {/* Added max-width and full width to left-align */}
-                <ContactFormPreview />
+                <h2 className="text-xl font-semibold">Details Form</h2>
+                <div className="w-full">
+                  {" "}
+                  {/* Added max-width and full width to left-align */}
+                  <ContactFormPreview />
+                </div>
               </div>
-            </div>
             )}
           </div>
         </div>
       </SidebarInset>
     </>
-  )
-}
+  );
+};
 
-export default UserProfile
+export default UserProfile;

@@ -21,15 +21,15 @@ import QuestionDisplayCard from "@/components/company/question-display-card";
 import CreateQuestionModal from "@/components/company/create-question-modal";
 import GenerateQuestionModal from "@/components/company/generate-question-modal";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
-import { useSession } from "next-auth/react"
-
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function InterviewSessionPreviewPage({ params }) {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [sessionId, setSessionId] = useState(null);
   const [sessionDetails, setSessionDetails] = useState({});
+  const [interviewId, setInterviewId] = useState(null);
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
@@ -56,6 +56,8 @@ function InterviewSessionPreviewPage({ params }) {
         // console.log(response.data.questions.explnations);
         if (response.data) {
           setSessionDetails(response.data);
+          setInterviewId(response.data.interview.interviewID);
+          // console.log(response.data.interviewId);
         }
       } catch (error) {
         toast({
@@ -82,7 +84,9 @@ function InterviewSessionPreviewPage({ params }) {
         userId: userId,
         role: role,
       });
-      router.push(`/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`);
+      router.push(
+        `/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
+      );
     }
   };
 
@@ -93,11 +97,15 @@ function InterviewSessionPreviewPage({ params }) {
       </>
     );
   } else {
-    if (session.user.role !== 'COMPANY') {
+    if (session.user.role !== "COMPANY") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
   }
+
+  useEffect(() => {
+    console.log("interviewId", interviewId);
+  }, [interviewId]);
 
   return (
     <>
@@ -109,11 +117,24 @@ function InterviewSessionPreviewPage({ params }) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Company</BreadcrumbLink>
+                  <BreadcrumbLink
+                    href="/interviews"
+                    className=" cursor-pointer"
+                  >
+                    Interviews
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Session Preview</BreadcrumbPage>
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
+                  <BreadcrumbLink
+                    href={`/interviews/${encodeURIComponent(interviewId)}`}
+                  >
+                    Interview details
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem className="hidden md:block cursor-pointer">
+                  <BreadcrumbPage>Session details</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -132,22 +153,26 @@ function InterviewSessionPreviewPage({ params }) {
                 </h1>
                 <p className=" text-base pt-3 text-gray-400">
                   Scheduled Date:{" "}
-                  {new Date(
-                    sessionDetails?.interview?.scheduledDate
-                  ).toLocaleDateString() || ""}
+                  {new Date(sessionDetails?.scheduledDate).toLocaleDateString(
+                    "en-US",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  ) || ""}
                 </p>
                 <p className=" text-base pt-1 text-gray-400">
                   Scheduled Time:{" "}
-                  {new Date(
-                    sessionDetails?.interview?.scheduledAt
-                  ).toLocaleTimeString() || ""}
+                  {new Date(sessionDetails?.scheduledAt).toLocaleTimeString() ||
+                    ""}
                 </p>
               </div>
               <div className=" w-full md:w-[50%] flex items-center justify-start md:justify-end mt-5 md:mt-0">
                 <button
                   type="button"
                   onClick={interviewStart}
-                  className=" h-12 min-w-[150px] w-[280px] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+                  className=" h-12 min-w-[150px] w-[170px] cursor-pointer rounded-lg text-center text-base text-white bg-darkred font-semibold"
                 >
                   Start Interview
                 </button>
@@ -161,14 +186,14 @@ function InterviewSessionPreviewPage({ params }) {
                 </h1>
                 <div className=" w-full flex items-center justify-end">
                   <button
-                    className=" h-12 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm md:text-base text-white font-semibold"
+                    className=" h-12 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm md:text-base text-black font-semibold"
                     onClick={() => setGenerateModalOpen(true)}
                   >
                     Genarate questions
                   </button>
                   <button
                     onClick={() => setModalOpen(true)}
-                    className=" h-12 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-sm md:text-base text-white font-semibold"
+                    className=" h-12 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center text-sm md:text-base font-semibold"
                   >
                     {" "}
                     + Add Question
@@ -204,7 +229,6 @@ function InterviewSessionPreviewPage({ params }) {
           )}
         </div>
       </SidebarInset>
-
     </>
   );
 }

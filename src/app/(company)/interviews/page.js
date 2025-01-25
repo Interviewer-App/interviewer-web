@@ -25,11 +25,11 @@ import { ToastAction } from "@/components/ui/toast";
 import NoData from "@/assets/nodata.png";
 import Image from "next/image";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect } from 'next/navigation';
-import { useSession, getSession } from "next-auth/react"
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession, getSession } from "next-auth/react";
 
 const InterviewsPage = () => {
-  const { data: session , status} = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const [interviews, setInterviews] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,7 +46,6 @@ const InterviewsPage = () => {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
-
       } catch (error) {
         toast({
           variant: "destructive",
@@ -59,7 +58,6 @@ const InterviewsPage = () => {
     fetchInterviews();
   }, [modalOpen]);
 
-
   if (status === "loading") {
     return (
       <>
@@ -67,7 +65,7 @@ const InterviewsPage = () => {
       </>
     );
   } else {
-    if (session.user.role !== 'COMPANY') {
+    if (session.user.role !== "COMPANY") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
@@ -82,12 +80,13 @@ const InterviewsPage = () => {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Company</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Interviews</BreadcrumbPage>
+                  <BreadcrumbPage
+                    href="/interviews"
+                    className=" hidden md:block cursor-pointer"
+                  >
+                    Interviews
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>

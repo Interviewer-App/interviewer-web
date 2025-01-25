@@ -191,16 +191,15 @@ const InterviewScheduleDetailsPage = ({ params }) => {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Candidate</BreadcrumbLink>
+                  <BreadcrumbLink href="/interview-schedules">
+                    Interview Schedules
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Interview Session</BreadcrumbPage>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Interview Details </BreadcrumbPage>
+                  <BreadcrumbPage className="hidden md:block">
+                    Interview Details
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
