@@ -76,6 +76,7 @@ const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
 
+
 const UserProfile = () => {
   const [Tab, setTab] = useState("details");
   const { data: session, status } = useSession();
