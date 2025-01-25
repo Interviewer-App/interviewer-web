@@ -1,8 +1,10 @@
-import React, { use, useEffect, useMemo, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import React, { use, useEffect, useState } from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getCandidateById } from "@/lib/api/users";
+import { FaDiscord, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+import { FaFacebookSquare } from "react-icons/fa";
 
 function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
   const [candidateDetails, setCandidateDetails] = useState({});
@@ -154,6 +156,44 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
               <p className=" text-md">{candidateDetails?.user?.contactNo}</p>
             </div>
           </div>
+          <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
+                    <h2 className=" text-xl font-semibold">Social Media</h2>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
+                      <FaLinkedin className=" text-3xl" />
+                      <p
+                        type="text"
+                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+                      >Linkedin url</p>
+                    </div>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
+                      <FaGithub className=" text-3xl" />
+                      <p
+                        type="text"
+                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+                      >Github Url</p>
+                    </div>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
+                      <FaFacebookSquare className=" text-3xl" />
+                      <p
+                        type="text"
+                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+                      >Facebook Url</p>
+                    </div>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
+                      <FaXTwitter className=" text-3xl" />
+                      <p
+                        type="text"
+                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+                      >X Url</p>
+                    </div>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
+                      <FaDiscord className=" text-3xl" />
+                      <p
+                        type="text"
+                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+                      >Discord Url</p>
+                    </div>
+                  </div>
           <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
             <h2 className=" text-xl font-semibold">Resume</h2>
           </div>
