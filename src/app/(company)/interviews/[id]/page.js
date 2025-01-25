@@ -922,6 +922,7 @@ export default function InterviewPreviewPage({ params }) {
                     /> */}
 
                     <QuillEditor
+                    editorId={"description"}
                       value={description}
                       placeholder="Enter job description..." // Make sure this is passed correctly
                       onChange={handleOnChange}
