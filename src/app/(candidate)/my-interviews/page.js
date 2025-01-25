@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import { fetchJoinedInterviews } from "@/lib/api/interview-session";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -30,6 +30,7 @@ const MyInterviews = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [scheduleInterviews, setScheduleInterviews] = useState([]); // Store scheduled interviews
+  const [sortedScheduleInterviews, setSortedScheduleInterviews] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state
   const [page, setPage] = useState(1); // Page number
   const [limit, setLimit] = useState(10); // Limit of items per page
@@ -40,9 +41,6 @@ const MyInterviews = () => {
         setLoading(true);
         const session = await getSession();
         const candidateId = session?.user?.candidateID;
-        console.log("candidate ID:", candidateId);
-
-        // Fetch scheduled interviews
         const response = await getScheduledInterview(candidateId);
         setScheduleInterviews(response.data.schedules);
         console.log("Fetched scheduled interviews:", response.data.schedules);
@@ -55,6 +53,16 @@ const MyInterviews = () => {
 
     fetchUserJoinedInterviews();
   }, [page, limit]);
+
+  useEffect(() => {
+    const currentTime = new Date();
+
+    const filteredAndSortedArray = [...scheduleInterviews]
+      .filter((interview) => new Date(interview.startTime) > currentTime)
+      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+    setSortedScheduleInterviews(filteredAndSortedArray);
+  }, [scheduleInterviews]);
 
   if (status === "loading") {
     return <Loading />;
@@ -82,7 +90,7 @@ const MyInterviews = () => {
       </header>
       <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
         <h1 className="text-3xl font-semibold">My Interviews</h1>
-        <TimelineLayout interviews={scheduleInterviews} />
+        <TimelineLayout interviews={sortedScheduleInterviews} />
       </div>
     </SidebarInset>
   );
