@@ -99,7 +99,7 @@ function AddCategoryNote({
             required
             className=" w-full text-sm border-2 border-gray-700 rounded-lg placeholder-[#737883] px-6 py-3 rich-text"
           /> */
-          <QuillEditor value={note} onChange={setNote} placeholder='Enter you note...'/>
+          <QuillEditor editorId={"note"} value={note} onChange={setNote} placeholder='Enter you note...'/>
           }
           <button
             onClick={handleAddNote}
