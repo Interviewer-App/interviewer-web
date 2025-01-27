@@ -54,15 +54,16 @@ const MyInterviews = () => {
     fetchUserJoinedInterviews();
   }, [page, limit]);
 
-  useEffect(() => {
-    const currentTime = new Date();
+  // useEffect(() => {
+  //   const currentTime = new Date();
 
-    const filteredAndSortedArray = [...scheduleInterviews]
-      .filter((interview) => new Date(interview.startTime) > currentTime)
-      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+  //   const filteredAndSortedArray = [...scheduleInterviews]
+  //     .filter((interview) => new Date(interview.startTime) > currentTime)
+  //     .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
-    setSortedScheduleInterviews(filteredAndSortedArray);
-  }, [scheduleInterviews]);
+  //   setSortedScheduleInterviews(filteredAndSortedArray);
+  // }, [scheduleInterviews]);
+  useEffect(() => { const currentDate = new Date(); currentDate.setHours(0, 0, 0, 0); const filteredAndSortedArray = [...scheduleInterviews] .filter((interview) => { const interviewDate = new Date(interview.startTime); interviewDate.setHours(0, 0, 0, 0); return interviewDate >= currentDate; }) .sort((a, b) => new Date(a.startTime) - new Date(b.startTime)); setSortedScheduleInterviews(filteredAndSortedArray); }, [scheduleInterviews]);
 
   if (status === "loading") {
     return <Loading />;
