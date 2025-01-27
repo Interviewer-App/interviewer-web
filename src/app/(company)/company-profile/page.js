@@ -23,11 +23,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { DataTable } from "@/components/ui/InterviewCategory-DataTable/Datatable";
+import { DataTable } from "@/components/ui/companyProfile-DataTable/Datatable";
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
 import InterviewCategoryModal from "../../../components/interviews/interviewCategoryModal";
 import { fetchInterCategories } from "@/lib/api/interview-category";
-import { columns } from "@/components/ui/InterviewCategory-DataTable/column";
+import { columns } from "@/components/ui/companyProfile-DataTable/column";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
@@ -40,6 +40,7 @@ import ContactFormPreview from "@/components/ui/userDetailsForm";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
+import CreateTeamModal from "@/components/company/create-team-modal";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -245,7 +246,7 @@ const InterviewCategoryPage = () => {
                   {/* Add Category Button */}
                   <button
                     onClick={() => setModalOpen(true)}
-                    className="rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+                    className="rounded-lg bg-white text-sm font-semibold text-black px-5 py-2"
                   >
                     +Add Team
                   </button>
@@ -254,17 +255,14 @@ const InterviewCategoryPage = () => {
                 {/* Data Table for Team */}
                 <div>
                   {loading ? (
-                    <div>Loading interview sessions...</div>
+                    <div>Loading teams...</div>
                   ) : (
                     <DataTable columns={columns} data={categories} />
                   )}
                 </div>
 
                 {modalOpen && (
-                  <InterviewCategoryModal
-                    setModalOpen={setModalOpen}
-                    isUpdated={false}
-                  />
+                  <CreateTeamModal setModalOpen={setModalOpen}/>
                 )}
 
                 {/* Pagination */}
@@ -309,7 +307,7 @@ const InterviewCategoryPage = () => {
                     <div
                       className={` ${
                         isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3`}
+                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-1 py-2`}
                       dangerouslySetInnerHTML={{
                         __html: description || "No Description",
                       }}
@@ -317,7 +315,7 @@ const InterviewCategoryPage = () => {
                     <div
                       className={`${
                         isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      } mt-2 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"description"}
