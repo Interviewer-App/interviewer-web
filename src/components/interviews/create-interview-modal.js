@@ -529,14 +529,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
               <div className="mb-8 rich-text text-white">
-              {/* <Editor
-                content={jobDescription}
-                onChange={setJobDescription}
-                placeholder="Write your post"
-                readOnly={false}
-                required
-                className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" /> */}
-
                 <QuillEditor
                 editorId={"jobDescription"}
                  placeholder="Job Description here..."
