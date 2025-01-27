@@ -45,7 +45,7 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
       useEffect(() => {
     if (quillRef.current && value !== undefined) {
       const quill = quillRef.current;
-      // quillRef.current.root.innerHTML = value;
+
       const currentContent = quill.root.innerHTML;
       if (!currentContent.includes(value)) {
         quill.clipboard.dangerouslyPasteHTML(currentContent + value);
