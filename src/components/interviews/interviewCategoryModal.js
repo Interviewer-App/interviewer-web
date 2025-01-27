@@ -126,7 +126,6 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
         return;
       }
 
-      
       const response = await updateCategory(interviewCategoryDetails.categoryId, {
         categoryName,
         description,
