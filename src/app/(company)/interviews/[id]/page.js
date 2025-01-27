@@ -916,17 +916,17 @@ export default function InterviewPreviewPage({ params }) {
                     <h1 className=" text-2xl font-semibold py-5  ">
                       Description
                     </h1>
-                    {/* <div
-                      className="text-justify w-full bg-transparent rounded-lg"
+                    <div
+                      className={` ${editDetails ? 'hidden' : 'block'} text-justify w-full bg-transparent rounded-lg`}
                       dangerouslySetInnerHTML={{ __html: description }}
-                    /> */}
+                    />
 
-                    <QuillEditor
+                    {editDetails && (<QuillEditor
                     editorId={"description"}
                       value={description}
-                      placeholder="Enter job description..." // Make sure this is passed correctly
+                      placeholder="Enter job description..." 
                       onChange={handleOnChange}
-                    />
+                    />)}
 
 
 
