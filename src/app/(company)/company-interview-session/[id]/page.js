@@ -79,11 +79,11 @@ function InterviewSessionPreviewPage({ params }) {
     const role = session?.user?.role;
     const userId = session?.user?.id;
     if (sessionId && userId && role) {
-      socket.emit("joinInterviewSession", {
-        sessionId: sessionId,
-        userId: userId,
-        role: role,
-      });
+      // socket.emit("joinInterviewSession", {
+      //   sessionId: sessionId,
+      //   userId: userId,
+      //   role: role,
+      // });
       router.push(
         `/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
       );

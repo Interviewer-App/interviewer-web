@@ -105,7 +105,7 @@ export const TimelineLayout = ({ interviews }) => {
           userId: userId,
           role: role
         }
-        socket.emit('joinInterviewSession', data);
+        // socket.emit('joinInterviewSession', data);
         router.push(`/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`);
       }
     } catch (err) {

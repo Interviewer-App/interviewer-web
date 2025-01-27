@@ -36,9 +36,10 @@ import {
 import { useSession, getSession } from "next-auth/react";
 import { CodeBlock } from "@/components/ui/code-block";
 // import Editor from "@/components/rich-text/editor";
-import VideoCall from "@/components/video/video";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import CodeEditor from '@/components/CodeEditor/CodeEditor'
+import { StreamVideoCall } from "@/components/video/StreamVideoCall";
+
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -142,10 +143,8 @@ const InterviewRoomPage = ({ params }) => {
     //   setIsQuestionAvailabe(true);
     // });
     socket.on("question", (data) => {
-      // debugger
       if (data.question) {
         setQuestionType(data.question.type);
-        // debugger
         setIsQuestionAvailabe(true);
         setQuestion(data.question);
         setIsSubmitBtnAvailable(true);
@@ -207,6 +206,7 @@ const InterviewRoomPage = ({ params }) => {
     <>
       {isQuestionAvailabe ? (
         <>
+            <StreamVideoCall callId={sessionID} />
           {questionType === "OPEN_ENDED" ? (
             <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
               <div className="absolute inset-0 bg-black -z-20"></div>

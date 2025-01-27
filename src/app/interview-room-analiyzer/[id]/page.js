@@ -61,11 +61,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   }, [questionList]);
 
   useEffect(() => {
-    socket.emit("joinInterviewSession", {
-      sessionId: sessionID,
-      userId: userID,
-      role: 'COMPANY',
-    });
+    // socket.emit("joinInterviewSession", {
+    //   sessionId: sessionID,
+    //   userId: userID,
+    //   role: 'COMPANY',
+    // });
 
     socket.on("question", (data) => {
 
@@ -133,7 +133,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
     return () => {
       socket.off("answerSubmitted");
-      // socket.off("questions");
+      socket.off("joinInterviewSession");
+      socket.off("categoryScores");
+      socket.off("totalScore");
+      socket.off("question");
+      socket.off("questions");
     };
   }, []);
 

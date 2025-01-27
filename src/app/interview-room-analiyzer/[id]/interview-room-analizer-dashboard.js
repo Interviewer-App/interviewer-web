@@ -32,6 +32,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiInformation2Line } from "react-icons/ri";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
+import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 
 function InterviewRoomAnalizerDashboard({
   analiyzeResponse,
@@ -117,6 +118,7 @@ function InterviewRoomAnalizerDashboard({
             <ResizablePanel defaultSize={40}>
               <ResizablePanelGroup direction="horizontal">
                 <ResizablePanel defaultSize={40}>
+                   <StreamVideoCall callId={sessionId} />
                   {/* <VideoCall
                     sessionId={sessionId}
                     role="COMPANY"
