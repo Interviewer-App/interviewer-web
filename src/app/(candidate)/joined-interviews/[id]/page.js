@@ -130,14 +130,19 @@ const JoinedInterviewsDetails = ({ params }) => {
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
                   Scheduled Date:{" "}
                   {new Date(
-                    sessionDetails?.interview?.scheduledDate
-                  ).toLocaleDateString() || ""}
+                    sessionDetails?.scheduledDate
+                  ).toLocaleDateString("en-GB",
+                  {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }) || ""}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
                   Scheduled Time:{" "}
                   {new Date(
-                    sessionDetails?.interview?.scheduledAt
+                    sessionDetails?.scheduledAt
                   ).toLocaleTimeString() || ""}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
@@ -146,7 +151,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
-                  Total score: {sessionScoreDetails?.totalScore || 0}
+                  Total score: {sessionDetails?.score || 0}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
@@ -167,11 +172,11 @@ const JoinedInterviewsDetails = ({ params }) => {
               {sessionDetails?.questions?.length || 0} Questions
             </h2>
             <CirculerProgress
-              marks={sessionScoreDetails?.totalScore || 0}
+              marks={sessionDetails?.score || 0}
               catorgory="Total score"
             />
             <p className=" text-gray-300 text-center">
-              {sessionScoreDetails?.totalScore || 0}% Accurate with expected
+              {sessionDetails?.score || 0}% Accurate with expected
               answers
             </p>
             <p className=" text-sm text-gray-500 text-center">
