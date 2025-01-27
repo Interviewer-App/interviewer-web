@@ -3,12 +3,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 const ServeySwiperComponent = forwardRef(
-  ({ questions, onSlideChange, setQuestionsState, questionsState }, ref) => {
+  ({ questions, setQuestionsState, questionsState, setActiveStep }, ref) => {
     const [textAnswer, setTextAnswer] = useState("");
-
-    useEffect(() => {
-      setQuestionsState(questions);
-    }, []);
 
     const handleSelect = (question, answer) => {
       setQuestionsState((prevQuestions) =>
@@ -18,13 +14,13 @@ const ServeySwiperComponent = forwardRef(
               const newGivenAnswer = q.givenAnswer.includes(answer)
                 ? q.givenAnswer.filter((option) => option !== answer)
                 : [...q.givenAnswer, answer];
-              return { ...q, givenAnswer: newGivenAnswer };
+              return { ...q, givenAnswer: newGivenAnswer, isAnswered: newGivenAnswer.length > 0 };
             }
             if (q.type === "MCQ") {
-              return { ...q, givenAnswer: answer };
+              return { ...q, givenAnswer: answer, isAnswered: answer !== null };
             }
             if (q.type === "OPEN_ENDED") {
-              return { ...q, givenAnswer: textAnswer };
+              return { ...q, givenAnswer: textAnswer, isAnswered: textAnswer.trim() !== "" };
             }
           }
           return q;
@@ -37,7 +33,7 @@ const ServeySwiperComponent = forwardRef(
         ref={ref}
         spaceBetween={50}
         slidesPerView={1}
-        onSlideChange={(swiper) => onSlideChange(swiper.activeIndex)}
+        onSlideChange={(swiper) => setActiveStep(swiper.activeIndex)}
         speed={500}
         effect="slide"
         grabCursor={false}
