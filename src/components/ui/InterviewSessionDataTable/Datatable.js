@@ -47,7 +47,7 @@ export function DataTable({ columns, data }) {
 
     const handleMyInterviewSessionDetail = (row) => {
         if(row.original.interviewStatus){
-            router.push(`/joined-interviews/${encodeURIComponent(row.original.interviewStatus)}`);
+            router.push(`/joined-interviews/${encodeURIComponent(row.original.sessionId)}`);
         }
     }
 
