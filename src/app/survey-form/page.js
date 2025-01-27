@@ -15,8 +15,9 @@ function SurveyPage() {
   const [progress, setProgress] = useState(0);
   const { toast } = useToast();
   const router = useRouter();
-  const [questionsState, setQuestionsState] = useState([]);
   const [id, setId] = useState("");
+  const [nextButtonActive, setNextButtonActive] = useState(false);
+  const [questionsState, setQuestionsState] = useState([]);
   const [companyQuestions, setCompanyQuestions] = useState([
     {
       Id: 1,
@@ -29,6 +30,7 @@ function SurveyPage() {
         { id: 4, answer: "1,000+ employees" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 2,
@@ -43,6 +45,7 @@ function SurveyPage() {
         { id: 6, answer: "Other" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 3,
@@ -56,6 +59,7 @@ function SurveyPage() {
         { id: 5, answer: "Other" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 4,
@@ -68,6 +72,7 @@ function SurveyPage() {
         { id: 4, answer: " More than 20 roles" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 5,
@@ -82,6 +87,7 @@ function SurveyPage() {
         { id: 5, answer: "Phone/Skype interview" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 6,
@@ -96,6 +102,7 @@ function SurveyPage() {
         { id: 6, answer: "Other" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 7,
@@ -110,6 +117,7 @@ function SurveyPage() {
         { id: 5, answer: "Not important at all" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 8,
@@ -124,6 +132,7 @@ function SurveyPage() {
         { id: 5, answer: "Other" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 9,
@@ -132,6 +141,7 @@ function SurveyPage() {
       type: "OPEN_ENDED",
       options: "",
       givenAnswer: "",
+      isAnswered: false,
     },
   ]);
 
@@ -148,6 +158,7 @@ function SurveyPage() {
         { id: 5, answer: "Improve work environment" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 2,
@@ -161,6 +172,7 @@ function SurveyPage() {
         { id: 5, answer: "Phone/Skype interview" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 3,
@@ -174,6 +186,7 @@ function SurveyPage() {
         { id: 5, answer: "Lack of feedback from employers" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 4,
@@ -188,6 +201,7 @@ function SurveyPage() {
         { id: 5, answer: "Not important at all" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 5,
@@ -202,6 +216,7 @@ function SurveyPage() {
         { id: 5, answer: "Other" },
       ],
       givenAnswer: [],
+      isAnswered: false,
     },
     {
       Id: 6,
@@ -216,6 +231,7 @@ function SurveyPage() {
         { id: 5, answer: "Not willing at all" },
       ],
       givenAnswer: null,
+      isAnswered: false,
     },
     {
       Id: 7,
@@ -224,58 +240,51 @@ function SurveyPage() {
       type: "OPEN_ENDED",
       options: "",
       givenAnswer: "",
+      isAnswered: false,
     },
   ]);
 
   useEffect(() => {
+    debugger;
     const fetchSession = async () => {
       const session = await getSession();
       const role = session?.user?.role;
-      if (role === "CANDIDATE") {
-        const candidateId = session?.user?.candidateID;
-        setId(candidateId);
-        setQuestions(candidateQuestions);
-      } else if (role === "COMPANY") {
-        const companyId = session?.user?.companyID;
-        setId(companyId);
-        setQuestions(companyQuestions);
-      }
+      const userId =
+        role === "CANDIDATE"
+          ? session?.user?.candidateID
+          : session?.user?.companyID;
+
+      setId(userId);
       setUserRole(role);
+      const selectedQuestions =
+        role === "CANDIDATE" ? candidateQuestions : companyQuestions;
+      setQuestions(selectedQuestions);
+      setQuestionsState(selectedQuestions.map((q) => ({ ...q })));
     };
 
     fetchSession();
   }, []);
 
   useEffect(() => {
-    const progress =
-      ((activeStep + 1) /
-        (userRole === "CANDIDATE" ? candidateQuestions : companyQuestions)
-          .length) *
-      100;
-    setProgress(progress);
-  }, [activeStep, candidateQuestions, companyQuestions]);
+    if (questions.length) {
+      setProgress(((activeStep + 1) / questions.length) * 100);
+    }
+  }, [activeStep, questions]);
 
   useEffect(() => {
-    if (userRole === "CANDIDATE") {
-      setQuestions(candidateQuestions);
-    } else {
-      setQuestions(companyQuestions);
+    if (questionsState[activeStep]) {
+      setNextButtonActive(questionsState[activeStep].isAnswered);
     }
-  }, [userRole]);
+  }, [activeStep, questionsState]);
 
   const handleNext = () => {
-    if (
-      activeStep <
-      (userRole === "CANDIDATE" ? candidateQuestions : companyQuestions)
-        .length -
-        1
-    ) {
+    if (swiperRef.current?.swiper && activeStep < questions.length - 1) {
       swiperRef.current.swiper.slideNext();
     }
   };
 
   const handlePrev = () => {
-    if (activeStep > 0) {
+    if (swiperRef.current?.swiper && activeStep > 0) {
       swiperRef.current.swiper.slidePrev();
     }
   };
@@ -342,12 +351,11 @@ function SurveyPage() {
       <div className=" w-[90%] py-8 md:w-[55%] bg-black max-w-[900px] mx-auto">
         <SurveySwiperComponent
           ref={swiperRef}
-          questions={
-            userRole === "CANDIDATE" ? candidateQuestions : companyQuestions
-          }
+          questions={questions}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
           setQuestionsState={setQuestionsState}
           questionsState={questionsState}
-          onSlideChange={(index) => setActiveStep(index)}
         />
 
         <div className="w-full mt-8">
@@ -386,14 +394,18 @@ function SurveyPage() {
               1 ? (
               <button
                 onClick={handleNext}
-                className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
+                className={` ${
+                  nextButtonActive ? "block" : "hidden"
+                } bg-white text-black text-sm font-semibold py-1 px-4 rounded-md`}
               >
                 next
               </button>
             ) : (
               <button
                 onClick={saveAnswer}
-                className=" bg-white text-black text-sm font-semibold py-1 px-4 rounded-md"
+                className={`  ${
+                  nextButtonActive ? "block" : "hidden"
+                } bg-white text-black text-sm font-semibold py-1 px-4 rounded-md`}
               >
                 submit
               </button>
