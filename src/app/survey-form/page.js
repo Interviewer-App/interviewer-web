@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SurveySwiperComponent from "@/components/ui/survey-swiper";
 import { submitSurvey } from "@/lib/api/users";
 import { getSession } from "next-auth/react";
@@ -245,7 +245,6 @@ function SurveyPage() {
   ]);
 
   useEffect(() => {
-    debugger;
     const fetchSession = async () => {
       const session = await getSession();
       const role = session?.user?.role;
