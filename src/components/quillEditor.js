@@ -15,6 +15,15 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
 
     quillRef.current = quill;
 
+    if (value) {
+      quill.setContents(quill.clipboard.convert(value));
+    }
+
+    quill.on('text-change', () => {
+      const content = quill.root.innerHTML;
+      onChange(content);
+    });
+
     quill.on('text-change', () => {
       const content = quill.root.innerHTML; 
       onChange(content); 
@@ -35,7 +44,12 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
 
       useEffect(() => {
     if (quillRef.current && value !== undefined) {
-      quillRef.current.root.innerHTML = value;
+      const quill = quillRef.current;
+      // quillRef.current.root.innerHTML = value;
+      const currentContent = quill.root.innerHTML;
+      if (!currentContent.includes(value)) {
+        quill.clipboard.dangerouslyPasteHTML(currentContent + value);
+      }
     }
   }, [value]);
 
