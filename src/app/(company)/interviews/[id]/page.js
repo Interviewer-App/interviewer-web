@@ -928,23 +928,6 @@ export default function InterviewPreviewPage({ params }) {
                       onChange={handleOnChange}
                     />)}
 
-
-
-                    {/* {editDetails ? (
-                      <Editor
-                        content={description}
-                        onChange={setDescription}
-                        placeholder="Write your post"
-                        readOnly={false}
-                        required
-                        className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text"
-                      />
-                    ) : (
-                      <div
-                        className="text-justify w-full bg-transparent rounded-lg"
-                        dangerouslySetInnerHTML={{ __html: description }}
-                      />
-                    )} */}
                     <div>
                       <h1 className=" text-2xl font-semibold py-5">
                         Required Skills
