@@ -143,9 +143,9 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
             <MdClose className=" text-2xl" />
           </button>
           <p className=" text-sm text-gray-500 py-2">
-            Enter the candidate's email address and click the "Send Invitation"
+            Enter the candidate&apos;s email address and click the &quot;Send Invitation&quot;
             button. Once submitted, an interview session link will be sent
-            directly to the candidate's email.
+            directly to the candidate&apos;s email.
           </p>
           <form onSubmit={handleSubmit}>
             <div className=" flex w-full justify-between space-x-2 mt-5">

@@ -72,6 +72,10 @@ function InterviewSessionPreviewPage({ params }) {
     fetchSessionDetails();
   }, [sessionId, generateModalOpen, isQuestionEdit, modalOpen]);
 
+  useEffect(() => {
+    console.log("interviewId", interviewId);
+  }, [interviewId]);
+
   const interviewStart = async (e) => {
     const session = await getSession();
 
@@ -103,9 +107,7 @@ function InterviewSessionPreviewPage({ params }) {
     }
   }
 
-  useEffect(() => {
-    console.log("interviewId", interviewId);
-  }, [interviewId]);
+
 
   return (
     <>
