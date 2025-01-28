@@ -33,18 +33,22 @@ import {
   redirect,
   useSearchParams,
 } from "next/navigation";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { useSession, getSession } from "next-auth/react";
 import { CodeBlock } from "@/components/ui/code-block";
 // import Editor from "@/components/rich-text/editor";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
-import CodeEditor from '@/components/CodeEditor/CodeEditor'
+import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
-
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const swiperRef = useRef(null); // Reference for the Swiper component
+  const swiperRef = useRef(null);
   const searchParams = useSearchParams();
   const userId = searchParams.get("candidateId");
   const sessionID = searchParams.get("sessionID");
@@ -53,14 +57,14 @@ const InterviewRoomPage = ({ params }) => {
   const { toast } = useToast();
   const [sessionId, setSessionId] = useState(null);
   const [isQuestionAvailabe, setIsQuestionAvailabe] = useState(false);
-  const [recordedAnswer, setRecordedAnswer] = useState(""); // State for stored transcript
+  const [recordedAnswer, setRecordedAnswer] = useState("");
   const [answer, setAnswer] = useState("");
   const [activeStep, setActiveStep] = useState(0);
-  const [questions, setQuestions] = useState([]); // Example questions
+  const [questions, setQuestions] = useState([]);
   const [timeNow, setTimeNow] = useState(() => new Date().toLocaleTimeString());
   const [code, setCode] = useState(`Write your code here`);
-  const [question, setQuestion] = useState({}); // Example questions
-  const [isQuestionCompleted, setIsQuestionCompleted] = useState(false); // Example questions
+  const [question, setQuestion] = useState({});
+  const [isQuestionCompleted, setIsQuestionCompleted] = useState(false);
   const [isSubmitBtnAvailable, setIsSubmitBtnAvailable] = useState(true);
   const [totalScore, setTotalScore] = useState(0);
   const [numberOfAnswers, setNumberOfAnswers] = useState(0);
@@ -78,13 +82,10 @@ const InterviewRoomPage = ({ params }) => {
     isListening ? stopListening() : startListening();
   };
   const handleAnswerChange = (e) => {
-    // setAnswer(e.target.value);
     setTranscript(e.target.value);
   };
 
-
   const handleSubmit = async () => {
-
     const session = await getSession();
 
     const role = session?.user?.role;
@@ -118,7 +119,7 @@ const InterviewRoomPage = ({ params }) => {
 
   const progress = ((activeStep + 1) / questions.length) * 100;
   const handleSlideChange = (index) => {
-    setActiveStep(index); // Updates active step when slide changes
+    setActiveStep(index);
   };
 
   useEffect(() => {
@@ -137,11 +138,6 @@ const InterviewRoomPage = ({ params }) => {
     };
     socket.emit("joinInterviewSession", data);
 
-    // socket.on('questions', (data) => {
-    //   console.log('Received questions:', data.questions);
-    //   setQuestions(data.questions);
-    //   setIsQuestionAvailabe(true);
-    // });
     socket.on("question", (data) => {
       if (data.question) {
         setQuestionType(data.question.type);
@@ -204,271 +200,217 @@ const InterviewRoomPage = ({ params }) => {
 
   return (
     <>
-      {isQuestionAvailabe ? (
-        <>
-            <StreamVideoCall callId={sessionID} />
-          {questionType === "OPEN_ENDED" ? (
-            <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
-              <div className="absolute inset-0 bg-black -z-20"></div>
-              <div className="w-[70%] max-w-[1100px]">
-                {/* Swiper Component with Questions */}
-
-                <div className="relative w-full py-9">
-                  {/* <SwiperComponent
-                ref={swiperRef}
-                questions={questions}
-                onSlideChange={(index) => setActiveStep(index)} // Slide change handler
-              /> */}
-                  <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
-                    <h1 className="text-2xl font-semibold">Question </h1>
-                    <p className="text-lg text-white pt-5">
-                      {question.questionText}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Estimated Time: {question.estimatedTimeMinutes} minutes
-                    </p>
-                  </div>
-                </div>
-
-                <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="min-h-[calc-100vh-4rem-1px] bg-black text-white mx-auto"
+      >
+        <ResizablePanel
+          defaultSize={250}
+        >
+          {isQuestionAvailabe ? (
+            <>
+              {questionType === "OPEN_ENDED" ? (
+                <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
+                  <div className="absolute inset-0 bg-black -z-20"></div>
                   <div className="w-[70%] max-w-[1100px]">
-                    <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
-                      {/* {questions.type === "OPEN_ENDED" ?
-                    (<>
-                      
-                    </>) :
-                    (<div data-color-mode="dark">
-                   
-                      <Editor
-                      content={transcript}
-                      onChange={(evn) => setTranscript(evn.target.value)}
-                      placeholder="Write your post"
-                      readOnly={false}
-                      required
-                      className=" w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 rich-text" />
-                      
+                    {/* Swiper Component with Questions */}
 
-                    </div>)} */}
-                      {/* <textarea
-                      value={transcript} // Use combined answer (typed or transcript)
-                      onChange={handleAnswerChange} // Handle typing
-                      placeholder="your answer here..."
-                      className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
-                    /> */}
-                      <div>
-
-                        <textarea
-                          value={transcript}
-                          onChange={handleAnswerChange}
-                          placeholder="your answer here..."
-                          className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
-                        />
-
+                    <div className="relative w-full py-9">
+                      <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
+                        <h1 className="text-2xl font-semibold">Question </h1>
+                        <p className="text-lg text-white pt-5">
+                          {question.questionText}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Estimated Time: {question.estimatedTimeMinutes}{" "}
+                          minutes
+                        </p>
                       </div>
                     </div>
 
-                    {/* Custom Stepper (Progress Bar) */}
-                    {/* <div className="w-full mt-8">
-                  <div className="flex items-center mb-3">
-                    <span className="text-sm text-gray-400">
-                      Step {activeStep + 1} of {questions.length}
-                    </span>
+                    <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
+                      <div className="w-[70%] max-w-[1100px]">
+                        <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
+                          <div>
+                            <textarea
+                              value={transcript}
+                              onChange={handleAnswerChange}
+                              placeholder="your answer here..."
+                              className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="flex justify-center">
+                          {isSubmitBtnAvailable && (
+                            <button
+                              onClick={handleSubmit}
+                              disabled={!transcript}
+                              className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+                            >
+                              Submit Answer
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="relative w-full h-2 bg-gray-400 rounded-full">
-                    <div
-                      className="absolute top-0 left-0 h-full bg-blue-400 rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    ></div>
-                  </div>
-                </div> */}
-
-                    {/* Submit Button */}
-                    <div className="flex justify-center">
-                      {isSubmitBtnAvailable && (
-                        <button
-                          onClick={handleSubmit}
-                          disabled={!transcript}
-                          className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
-                        >
-                          Submit Answer
-                        </button>
-                      )}
-
-                      {/* <button
-                      
-                      className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
-                    >
-                      Finish Attempt
-                    </button> */}
+                  <div className="w-[70%]">
+                    <h1 className="text-2xl font-semibold text-center w-full pb-5">
+                      What is Your Answer?
+                    </h1>
+                    <div className="rounded-lg w-full">
+                      <div className="flex items-center w-full">
+                        {isListening ? (
+                          <button
+                            onClick={stopListening}
+                            className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
+                          >
+                            <svg
+                              className="w-8 h-8"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                fill="white"
+                                d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                              />
+                            </svg>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={startListening}
+                            className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
+                          >
+                            <svg
+                              viewBox="0 0 256 256"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-8 h-8 text-white"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-[70%]">
-                <h1 className="text-2xl font-semibold text-center w-full pb-5">
-                  What is Your Answer?
-                </h1>
-                <div className="rounded-lg w-full">
-                  {/* {(isListening ) && (
-                <div className="w-full m-auto min-h-[100px] rounded-lg px-6 py-5 bg-gradient-to-br from-[#2e3036] to-[#282a2e] text-white">
-                  <div className="flex-1 flex w-full justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none text-white pb-1">
-                        {recordingComplete ? "Recorded" : "Recording"}
-                      </p>
-                      <p className="text-sm text-muted-foreground text-[#8a8b8d]">
-                        {recordingComplete ? "Thanks for talking." : "Start speaking..."}
-                      </p>
-                    </div>
-                    {isListening && (
-                      <div className="rounded-full w-4 h-4 bg-red-400 animate-pulse" />
-                    )}
-                  </div>
-    
-                  {transcript && (
-                    <div className="border rounded-md p-2 h-full mt-4">
-                      <p className="mb-0 ">{transcript}</p>
-                    </div>
-                  )}
-                </div>
-              )} */}
-                  <div className="flex items-center w-full">
-                    {isListening ? (
-                      <button
-                        onClick={stopListening}
-                        className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
-                      >
-                        <svg
-                          className="w-8 h-8"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fill="white"
-                            d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
-                          />
-                        </svg>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={startListening}
-                        className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
-                      >
-                        <svg
-                          viewBox="0 0 256 256"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-8 h-8 text-white"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
-                          />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) :
-            (
-              <CodeEditor question={question.questionText} handleSubmit={handleSubmit} setTranscript={setTranscript} />)}
-        </>
-      ) : (
-        <>
-          {isQuestionCompleted ? (
-            <>
-              <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
-                <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">You have Successfully Completed Your Interview</h1>
-                <div className="  text-gray-400 py-8 flex flex-col items-center justify-center w-full mt-5 rounded-lg">
-                  <h1 className=" text-2xl font-semibold text-center">
-                    Total Score
-                  </h1>
-                  <h2 className=" text-base text-gray-500 text-center">
-                    {" "}
-                    {numberOfAnswers}/{numberOfAnswers} Questions
-                  </h2>
-                  <CirculerProgress
-                    marks={totalScore}
-                    catorgory="Total score"
-                    titleSize="text-3xl"
-                    subTitleSize="text-sm"
-                  />
-                  <p className=" text-gray-300 text-center">
-                    {parseInt(totalScore || 0).toFixed(2)}% Accurate with
-                    expected answers
-                  </p>
-                  <p className=" text-sm text-gray-500 text-center">
-                    Showing Total Score for {numberOfAnswers} out of{" "}
-                    {numberOfAnswers} question
-                  </p>
-                </div>
-                <div className="flex items-center w-full">
-                  {isListening ? (
-                    <button
-                      onClick={stopListening}
-                      className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
-                    >
-                      <svg
-                        className="w-8 h-8"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill="white"
-                          d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
-                        />
-                      </svg>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={startListening}
-                      className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
-                    >
-                      <svg
-                        viewBox="0 0 256 256"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-8 h-8 text-white"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              </div>
+              ) : (
+                <CodeEditor
+                  question={question.questionText}
+                  handleSubmit={handleSubmit}
+                  setTranscript={setTranscript}
+                />
+              )}
             </>
           ) : (
             <>
-              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-                <div className=" w-full flex flex-col justify-center items-center mb-14">
-                  <div className=" w-full flex flex-col justify-center items-center">
-                    <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
-                    <h1 className=" font-semibold text-3xl py-3">
-                      Time now: {timeNow}
+              {isQuestionCompleted ? (
+                <>
+                  <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
+                    <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">
+                      You have Successfully Completed Your Interview
                     </h1>
+                    <div className="  text-gray-400 py-8 flex flex-col items-center justify-center w-full mt-5 rounded-lg">
+                      <h1 className=" text-2xl font-semibold text-center">
+                        Total Score
+                      </h1>
+                      <h2 className=" text-base text-gray-500 text-center">
+                        {" "}
+                        {numberOfAnswers}/{numberOfAnswers} Questions
+                      </h2>
+                      <CirculerProgress
+                        marks={totalScore}
+                        catorgory="Total score"
+                        titleSize="text-3xl"
+                        subTitleSize="text-sm"
+                      />
+                      <p className=" text-gray-300 text-center">
+                        {parseInt(totalScore || 0).toFixed(2)}% Accurate with
+                        expected answers
+                      </p>
+                      <p className=" text-sm text-gray-500 text-center">
+                        Showing Total Score for {numberOfAnswers} out of{" "}
+                        {numberOfAnswers} question
+                      </p>
+                    </div>
+                    <div className="flex items-center w-full">
+                      {isListening ? (
+                        <button
+                          onClick={stopListening}
+                          className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
+                        >
+                          <svg
+                            className="w-8 h-8"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fill="white"
+                              d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                            />
+                          </svg>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={startListening}
+                          className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
+                        >
+                          <svg
+                            viewBox="0 0 256 256"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-8 h-8 text-white"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                            />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className=" w-full flex flex-col justify-center items-center mb-16">
-                  <PuffLoader color="#ffffff" />
-                </div>
-                <div className=" w-full flex flex-col justify-center] items-center">
-                  <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-                    Waiting for the company to start the interview session.
-                    Please hold on until the session begins.
-                  </p>
-                  <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-                    Generating interview questions. Please hold on...
-                  </p>
-                </div>
-              </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+                    <div className=" w-full flex flex-col justify-center items-center mb-14">
+                      <div className=" w-full flex flex-col justify-center items-center">
+                        <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+                        <h1 className=" font-semibold text-3xl py-3">
+                          Time now: {timeNow}
+                        </h1>
+                      </div>
+                    </div>
+                    <div className=" w-full flex flex-col justify-center items-center mb-16">
+                      <PuffLoader color="#ffffff" />
+                    </div>
+                    <div className=" w-full flex flex-col justify-center] items-center">
+                      <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+                        Waiting for the company to start the interview session.
+                        Please hold on until the session begins.
+                      </p>
+                      <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+                        Generating interview questions. Please hold on...
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
             </>
           )}
-        </>
-      )}
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel
+          defaultSize={50}
+        >
+          <StreamVideoCall callId={sessionID} />
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </>
   );
 };
