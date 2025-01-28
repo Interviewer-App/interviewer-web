@@ -156,16 +156,18 @@ const ColorlibStepIconRoot = styled("div")(({ theme }) => ({
     {
       props: ({ ownerState }) => ownerState.active,
       style: {
+        color: "#000",
         backgroundImage:
-          "linear-gradient( 136deg, rgb(120,93,251) 0%, rgb(120,93,251) 50%, rgb(101,170,166) 100%)",
+          "linear-gradient( 136deg, rgb(255,255,255) 0%, rgb(255,255,255) 50%, rgb(255,255,255) 100%)",
         boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
       },
     },
     {
       props: ({ ownerState }) => ownerState.completed,
       style: {
+        color: "#000",
         backgroundImage:
-          "linear-gradient( 136deg, rgb(120,93,251) 0%, rgb(120,93,251) 50%, rgb(101,170,166) 100%)",
+          "linear-gradient( 136deg, rgb(255,255,255) 0%, rgb(255,255,255) 50%, rgb(255,255,255) 100%)",
       },
     },
   ],
@@ -528,7 +530,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 required
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
-              <div className="mb-8 rich-text text-white">
+              <div className="mb-5 rich-text text-white">
                 <QuillEditor
                 editorId={"jobDescription"}
                  placeholder="Job Description here..."
@@ -544,7 +546,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   flexWrap: "wrap",
                   listStyle: "none",
                   p: 0.5,
-                  m: 0,
+                  mt: 0,
                   backgroundColor: "#32353b",
                   color: "white",
                 }}
