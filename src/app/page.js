@@ -147,7 +147,7 @@ export default function Home() {
             height="32"
             decoding="async"
             data-nimg="1"
-            style="color:transparent"
+            // style="color:transparent"
             src={google}
             className=" mt-5 md:mt-0"
           />
@@ -158,7 +158,7 @@ export default function Home() {
             height="38"
             decoding="async"
             data-nimg="1"
-            style="color:transparent"
+            // style="color:transparent"
             src={spotify}
             className=" mt-5 md:mt-0"
           />
@@ -169,7 +169,7 @@ export default function Home() {
             height="35"
             decoding="async"
             data-nimg="1"
-            style="color:transparent"
+            // style="color:transparent"
             src={samsung}
             className=" mt-5 md:mt-0"
           />
@@ -180,7 +180,7 @@ export default function Home() {
             height="35"
             decoding="async"
             data-nimg="1"
-            style="color:transparent"
+            // style="color:transparent"
             src={dropbox}
             className=" mt-5 md:mt-0"
           />
@@ -191,7 +191,7 @@ export default function Home() {
             height="35"
             decoding="async"
             data-nimg="1"
-            style="color:transparent"
+            // style="color:transparent"
             src={airbnb}
             className=" mt-5 md:mt-0"
           />
