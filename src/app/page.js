@@ -129,16 +129,11 @@ export default function Home() {
               Providing solutions for every team, from small businesses to large
               enterprises, to streamline operations effortlessly.
             </p>
-            {/* <Link > */}
               <button onClick={handleAuthentication} className="bg-[#2e2850]/80 py-2 md:py-4 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium mt-5 lg:mt-10">
                 Get Started Now
               </button>
-            {/* </Link> */}
           </div>
         </div>
-        <h1 className=" w-full text-center text-2xl font-semibold">
-          Trusted by these companies
-        </h1>
         <div className=" w-[90%] max-w-[1500px] grid place-items-center place-content-center mx-auto lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 mt-10 pb-16">
           <Image
             alt="Google logo"
@@ -147,7 +142,6 @@ export default function Home() {
             height="32"
             decoding="async"
             data-nimg="1"
-            // style="color:transparent"
             src={google}
             className=" mt-5 md:mt-0"
           />
@@ -158,7 +152,6 @@ export default function Home() {
             height="38"
             decoding="async"
             data-nimg="1"
-            // style="color:transparent"
             src={spotify}
             className=" mt-5 md:mt-0"
           />
@@ -169,7 +162,6 @@ export default function Home() {
             height="35"
             decoding="async"
             data-nimg="1"
-            // style="color:transparent"
             src={samsung}
             className=" mt-5 md:mt-0"
           />
@@ -180,7 +172,6 @@ export default function Home() {
             height="35"
             decoding="async"
             data-nimg="1"
-            // style="color:transparent"
             src={dropbox}
             className=" mt-5 md:mt-0"
           />
@@ -191,7 +182,6 @@ export default function Home() {
             height="35"
             decoding="async"
             data-nimg="1"
-            // style="color:transparent"
             src={airbnb}
             className=" mt-5 md:mt-0"
           />
@@ -323,7 +313,6 @@ export default function Home() {
               height="32"
               decoding="async"
               data-nimg="1"
-              style="color:transparent"
               src="https://paddle-billing.vercel.app/assets/icons/logo/tailwind-logo.svg"
             />
             <Image
@@ -333,7 +322,6 @@ export default function Home() {
               height="32"
               decoding="async"
               data-nimg="1"
-              style="color:transparent"
               src="https://paddle-billing.vercel.app/assets/icons/logo/nextjs-logo.svg"
             />
             <Image
@@ -343,7 +331,6 @@ export default function Home() {
               height="35"
               decoding="async"
               data-nimg="1"
-              style="color:transparent"
               src="https://paddle-billing.vercel.app/assets/icons/logo/shadcn-logo.svg"
             />
           </div>
