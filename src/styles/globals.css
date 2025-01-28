@@ -39,6 +39,10 @@ body {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    --str-video__primary-color: #005fff;
+    --str-video__background-color: #ffffff;
+    --str-video__text-color: #000000;
   }
   .dark {
     --sidebar-background: 240 5.9% 10%;
@@ -56,6 +60,11 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --str-video__primary-color: #0099ff;
+    --str-video__background-color: #1a1a1a;
+    --str-video__text-color: #ffffff;
+    --str-video__secondary-background-color: #2d2d2d;
   }
   
 }
@@ -138,4 +147,46 @@ body {
 
 .ql-snow .ql-picker-options{
   background-color: #1b1d22 !important;
+}
+
+
+
+/* .dual-screen-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  height: 80vh;
+  padding: 20px;
+}
+
+.local-participant {
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px;
+}
+
+.remote-participants {
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px;
+}
+
+.controls {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+} */
+
+.str-video__call-controls__button {
+  background: var(--str-video__secondary-background-color) !important;
+  color: var(--str-video__text-color) !important;
+}
+
+.str-video__call-stats {
+  background: var(--str-video__secondary-background-color) !important;
+  color: var(--str-video__text-color) !important;
 }
