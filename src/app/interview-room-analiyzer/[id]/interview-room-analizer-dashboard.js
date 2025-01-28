@@ -40,14 +40,14 @@ function InterviewRoomAnalizerDashboard({
   sessionId,
   questionList,
   availableQuestion,
-  setAnaliyzeResponse
+  setAnaliyzeResponse,
 }) {
   const nextQuestion = () => {
     const data = {
       sessionId: sessionId,
     };
     socket.emit("nextQuestion", data);
-    setAnaliyzeResponse({})
+    setAnaliyzeResponse({});
   };
 
   const handleFollowUpQuestion = (question) => {
@@ -118,21 +118,7 @@ function InterviewRoomAnalizerDashboard({
             <ResizablePanel defaultSize={40}>
               <ResizablePanelGroup direction="horizontal">
                 <ResizablePanel defaultSize={40}>
-                   <StreamVideoCall callId={sessionId} />
-                  {/* <VideoCall
-                    sessionId={sessionId}
-                    role="COMPANY"
-                  /> */}
-                  <div className="h-full w-full overflow-y-auto p-6">
-                    <div>
-                      <h1 className=" text-3xl font-semibold">
-                        Available Question
-                      </h1>
-                      <div className=" mt-3 rounded-lg">
-                        {availableQuestion?.questionText}
-                      </div>
-                    </div>
-                  </div>
+                  <StreamVideoCall callId={sessionId} />
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={60}>
@@ -167,7 +153,8 @@ function InterviewRoomAnalizerDashboard({
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
                                       <AlertDialogTitle>
-                                        Are you sure you want to add as next question?
+                                        Are you sure you want to add as next
+                                        question?
                                       </AlertDialogTitle>
                                       <AlertDialogDescription>
                                         This action cannot be undone.
@@ -179,7 +166,9 @@ function InterviewRoomAnalizerDashboard({
                                         Cancel
                                       </AlertDialogCancel>
                                       <AlertDialogAction
-                                        onClick={() => {handleFollowUpQuestion(question)}}
+                                        onClick={() => {
+                                          handleFollowUpQuestion(question);
+                                        }}
                                         className="h-[40px] font-medium"
                                       >
                                         Add
@@ -253,6 +242,12 @@ function InterviewRoomAnalizerDashboard({
                   </p>
                 </div>
               </div>
+            </div>
+            <div className=" w-full bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg py-4 px-7">
+              <h1 className=" font-semibold text-lg">Available Question</h1>
+              <p className=" text-sm text-gray-400">
+              {availableQuestion?.questionText || ""}
+              </p>
             </div>
           </div>
         </ResizablePanel>
