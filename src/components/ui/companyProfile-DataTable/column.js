@@ -18,16 +18,6 @@ const ActionCell = ({ companyTeam }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleDelete = async () => {
-    // try {
-    //   await deleteCategory(companyTeam.teamId);
-    //   alert("Category Deleted: The interview category has been deleted successfully.");
-    // } catch (error) {
-    //   console.error("Error deleting category:", error);
-    //   toast({
-    //     title: "Error",
-    //     description: "Failed to delete the category. Please try again.",
-    //   });
-    // }
   };
 
   const handleUpdate = async () => {
@@ -58,7 +48,7 @@ const ActionCell = ({ companyTeam }) => {
       {modalOpen && (
         <CreateTeamModal
           setModalOpen={setModalOpen}
-          isUpdated={true}
+          isUpdate={true}
           companyTeam={companyTeam}
         />
       )}
@@ -90,7 +80,7 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "Email",
+    accessorKey: "email",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -102,6 +92,14 @@ export const columns = [
     ),
   },
 
+  {
+    accessorKey: "firstName",
+    header: "First Name",
+  },
+  {
+    accessorKey: "lastName",
+    header: "Last Name",
+  },
   {
     accessorKey: "role",
     header: "Role",
