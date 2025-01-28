@@ -1,6 +1,5 @@
 import React from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
-// import '../../app/styles/globals.css'
 
 export default function premiumCard({
   type,
