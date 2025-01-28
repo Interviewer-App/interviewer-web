@@ -113,9 +113,22 @@ export const getInterviewOverviewById = async (interviewId) => {
   }
 }
 
+
+export const getCompletedSessions = async (interviewId) => {
+  try{
+      const response = await axiosInstance.get(`/interview-session/comparison/${interviewId}`);
+      return response;
+  } catch(error){
+      console.log('Error fetching completed sessions:', error);
+      throw error;
+  }
+}
+
+
 export {
   fetchJoinedInterviews,
   fetchInterviewSessionsForInterview,
   getInterviewSessionById,
   getInterviewSessionHistoryById,
+  
 };
