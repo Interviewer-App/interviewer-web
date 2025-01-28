@@ -31,11 +31,17 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
       const style = document.createElement('style');
       style.innerHTML = `
       .ql-editor.ql-blank::before {
-        color: #787777 !important; 
-        font-family: 'Arial', sans-serif !important; 
+        color: #ffffff !important;
+        font-family: 'Arial', sans-serif !important;
         font-size: 15px !important;
-        font-weight: normal !important; 
-        font-style: italic !important; 
+        font-weight: normal !important;
+        font-style: normal !important;
+      }
+      .ql-container {
+        border: none !important;
+      }
+      .ql-editor {
+        outline: none !important;
       }
       `;
       document.head.appendChild(style);
@@ -54,8 +60,8 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
   }, [value]);
 
   return (
-    <div>
-      <div id={editorId} style={{ minHeight: '100px'}} className='quill-editor'>
+    <div className=' bg-[#32353b] rounded-lg'>  
+      <div id={editorId} style={{ minHeight: '100px'}} className='quill-editor '>
       </div>
     </div>
   );
