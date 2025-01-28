@@ -304,6 +304,7 @@ const InterviewRoomPage = ({ params }) => {
                   question={question.questionText}
                   handleSubmit={handleSubmit}
                   setTranscript={setTranscript}
+                  isSubmitBtnAvailable={isSubmitBtnAvailable}
                 />
               )}
             </>
