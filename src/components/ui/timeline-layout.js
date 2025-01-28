@@ -24,7 +24,7 @@ import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import Lottie from "lottie-react";
 import interviewAnimation from '../../components/ui/animation/interviewAnimation'
-export const TimelineLayout = ({ interviews }) => {
+export const TimelineLayout = ({ interviews, overview }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   //   const [interviews, setInterviews] = useState([]);
@@ -180,7 +180,7 @@ export const TimelineLayout = ({ interviews }) => {
         <div className="flex justify-between items-start">
           <div className="bg-[#18181E] py-4 px-6 rounded-xl">
             <h2 className="text-3xl font-bold text-white mb-1">Total Interviews</h2>
-            <div className="text-4xl font-bold text-white text-center">{totalInterviews}</div>
+            <div className="text-4xl font-bold text-white text-center">{overview.total}</div>
           </div>
           <span className="text-xs font-medium bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
             Active
@@ -194,7 +194,7 @@ export const TimelineLayout = ({ interviews }) => {
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               <span className="text-sm text-zinc-400">Completed</span>
             </div>
-            <span className="text-sm font-medium text-white">0</span>
+            <span className="text-sm font-medium text-white">{overview.completed}</span>
           </div>
           
           <div className="flex justify-between items-center">
@@ -202,7 +202,7 @@ export const TimelineLayout = ({ interviews }) => {
               <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
               <span className="text-sm text-zinc-400">Pending</span>
             </div>
-            <span className="text-sm font-medium text-white">2</span>
+            <span className="text-sm font-medium text-white">{overview.pending}</span>
           </div>
         </div>
       </div>
