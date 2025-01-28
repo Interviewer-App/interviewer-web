@@ -41,6 +41,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
 import CreateTeamModal from "@/components/company/create-team-modal";
+import { set } from "zod";
+import { getCompanyTeams } from "@/lib/api/user-team";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -51,7 +53,6 @@ const InterviewCategoryPage = () => {
   const pathname = usePathname();
   const [totalsessions, setTotalSessions] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [interviewSessionsSort, setInterviewSessionsSort] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [modalOpen, setModalOpen] = useState(false);
@@ -65,6 +66,22 @@ const InterviewCategoryPage = () => {
   const [contactNo, setContactNo] = useState("");
   const [email, setEmail] = useState("");
   const [isEdit, setIsEdit] = useState(false);
+  const [companyId, setCompanyId] = useState("");
+  const [teams, setTeams] = useState([{
+    "userId": "cm6fz9gam0000u7h08q2emj8y",
+    "firstName": "Information",
+    "lastName": "Company",
+    "email": "company@gmail.com",
+    "role": "ADMIN"
+},
+{
+    "userId": "cm6g2eigv0001u794xs6961rq",
+    "firstName": "Induwara",
+    "lastName": "Bhashana",
+    "email": "bhashanasirimanna@gmail.com",
+    "role": "HIRING_MANAGER"
+}])
+  const [totalTeams, setTotalTeams] = useState(0)
   const [companyDetails, setCompanyDetails] = useState({
     companyName: "Company1",
     email: "company@gmail.com",
@@ -90,21 +107,44 @@ const InterviewCategoryPage = () => {
     setEmail(companyDetails.email);
   }, [companyDetails]);
 
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const session = await getSession();
+  //       const companyId = session?.user?.companyID;
+  //       const response = await fetchInterCategories(companyId, page, limit);
+  //       setCategories(response.data.categories);
+  //       setTotalSessions(response.data.total);
+  //       setCompanyId(companyId);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchCategories();
+  // }, [page, limit, modalOpen]);
+
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchTeamData = async () => {
+      // setLoading(true);
       try {
         const session = await getSession();
         const companyId = session?.user?.companyID;
-        const response = await fetchInterCategories(companyId, page, limit);
-        setCategories(response.data.categories);
-        setTotalSessions(response.data.total);
+        await getCompanyTeams(
+          page,
+          limit,
+          companyId,
+          setTeams,
+          setTotalTeams
+        );
       } catch (error) {
-        console.log(error);
+        console.log("Error fetching teams:", error);
       }
     };
 
-    fetchCategories();
-  }, [page, limit, modalOpen]);
+      fetchTeamData();
+    
+  }, [page, limit, companyId]);
 
   const handleNextPage = () => {
     if (page * limit < totalsessions) {
@@ -153,23 +193,6 @@ const InterviewCategoryPage = () => {
             </Breadcrumb>
           </div>
         </header>
-
-        {/* Toggle Buttons between 'Teams' and 'Details' */}
-
-        {/* <div className="flex space-x-4 mb-4 mx-auto">
-          <button
-            onClick={() => setTab("Team")}
-            className={`px-4 py-2 rounded-lg ${Tab === "Team" ? "bg-gradient-to-tr from-lightred to-darkred text-white" : "bg-gray-200 text-black"}`}
-          >
-            Teams
-          </button>
-          <button
-            onClick={() => setTab("Details")}
-            className={`px-4 py-2 rounded-lg ${Tab === "Details" ? "bg-gradient-to-tr from-lightred to-darkred text-white" : "bg-gray-200 text-black"}`}
-          >
-            Details
-          </button>
-        </div> */}
 
         <div className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
           <h1 className=" text-3xl font-semibold">Company Profile</h1>
@@ -257,12 +280,16 @@ const InterviewCategoryPage = () => {
                   {loading ? (
                     <div>Loading teams...</div>
                   ) : (
-                    <DataTable columns={columns} data={categories} />
+                    <DataTable columns={columns} data={teams} />
                   )}
                 </div>
 
                 {modalOpen && (
-                  <CreateTeamModal setModalOpen={setModalOpen}/>
+                  <CreateTeamModal
+                    isUpdate={false}
+                    setModalOpen={setModalOpen}
+                    companyTeam={{}}
+                  />
                 )}
 
                 {/* Pagination */}
