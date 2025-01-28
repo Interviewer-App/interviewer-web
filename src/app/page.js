@@ -4,7 +4,6 @@ import Link from "next/link";
 import bgGrid from "../assets/grid-bg.svg";
 import bgGrain from "../assets/grain-bg.svg";
 import bgblur from "../assets/grain-blur.svg";
-import AiImage from "../assets/landing/aiImage.jpg";
 import BgRound from "../assets/landing/bground.png";
 import BgSquare from "../assets/landing/bgsquare.png";
 import BgTrangel from "../assets/landing/bgtrangel.png";
@@ -21,7 +20,6 @@ import { FiArrowUpRight } from "react-icons/fi";
 
 import PremiuCard from "../components/home/premiumCard";
 import { useState } from "react";
-import "@/styles/globals.css";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter,useSearchParams } from "next/navigation";
 
