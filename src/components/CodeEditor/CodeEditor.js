@@ -19,10 +19,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { AlertCircleIcon, BookIcon, LightbulbIcon } from "lucide-react"
 import Editor from "@monaco-editor/react"
 
-function CodeEditor({ question, handleSubmit, setTranscript }) {
+function CodeEditor({ question, handleSubmit, setTranscript,isSubmitBtnAvailable}) {
     const [selectedQuestion, setSelectedQuestion] = useState(CODING_QUESTIONS[0])
     const [language, setLanguage] = useState(LANGUAGES[0].id)
     const [code, setCode] = useState(selectedQuestion.starterCode[language])
+    const [isSubmit,setIsSubmit]=useState(false);
 
     const handleQuestionChange = questionId => {
         const question = CODING_QUESTIONS.find(q => q.id === questionId)
@@ -42,6 +43,8 @@ function CodeEditor({ question, handleSubmit, setTranscript }) {
 
     const submitCode = () => {
         handleSubmit();
+        setCode(selectedQuestion.starterCode[language]);
+        setIsSubmit(true);
     };
 
     return (
@@ -113,7 +116,7 @@ function CodeEditor({ question, handleSubmit, setTranscript }) {
                             </SelectContent>
                         </Select>
                     </div>
-                    <Editor className="max-w-[1500px] mx-auto  w-full"
+                    <Editor className="max-w-[1500px] mx-auto  w-full max-h-96"
                         defaultLanguage={language}
                         language={language}
                         theme="vs-dark"
@@ -136,16 +139,20 @@ function CodeEditor({ question, handleSubmit, setTranscript }) {
                 </ResizablePanel>
 
                 {/* <ResizableHandle withHandle /> */}
-                <div>
-                    <div className="max-w-[1500px] flex justify-center mb-20 mx-auto md:px-12 sm:px-12 mt-8">
-                        <button
-                            onClick={submitCode}
-                            className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg "
-                        >
-                            Submit Answer
-                        </button>
-                    </div>
-                </div>
+                {isSubmitBtnAvailable &&( 
+                                    <div>
+                                    <div className={`max-w-[1500px] flex justify-center mb-20 mx-auto md:px-12 sm:px-12 `}>
+                                        <button
+                                          
+                                            onClick={submitCode}
+                                            className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg "
+                                        >
+                                            Submit Answer
+                                        </button>
+                                    </div>
+                                </div>
+                )}
+
             </ResizablePanelGroup>
         </div>
     )
