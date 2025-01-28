@@ -185,7 +185,7 @@ export default function Home() {
             src={airbnb}
             className=" mt-5 md:mt-0"
           />
-        </div>
+        </div> 
       </div>
 
       {/* why this product */}
@@ -289,7 +289,7 @@ export default function Home() {
           </div>
         </div>
         <div className="isolate mx-auto grid grid-cols-1 gap-8 lg:grid-cols-3 mt-10 w-4/5 max-w-[1500px] place-items-center">
-          {/* {premiumDetails.map((detail) => (
+          {premiumDetails.map((detail) => (
             <PremiuCard
               key={detail.id}
               type={detail.type}
@@ -300,7 +300,7 @@ export default function Home() {
               features={detail.features}
               duration={duration}
             />
-          ))} */}
+          ))}
         </div>
 
         <div className=" w-4/5 mx-auto mt-20">
