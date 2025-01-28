@@ -53,7 +53,6 @@ export const sendInvitaionForCandidates = async (data) => {
 }
 
 
-export {
-  fetchSendInterviewInvitations,
-  getInterviewTimeSlotsInterviewById
-};
+// export {
+//   getInterviewTimeSlotsInterviewById
+// };
