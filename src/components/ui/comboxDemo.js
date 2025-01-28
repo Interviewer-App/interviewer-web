@@ -21,33 +21,6 @@ import {
 import { getCompletedSessions } from "@/lib/api/interview-session"
 import { useEffect,useState } from "react"
 
-// const frameworks = [
-//   {
-//     value: "next.js",
-//     label: "Next.js"
-//   },
-//   {
-//     value: "sveltekit",
-//     label: "SvelteKit"
-//   },
-//   {
-//     value: "nuxt.js",
-//     label: "Nuxt.js"
-//   },
-//   {
-//     value: "remix",
-//     label: "Remix"
-//   },
-//   {
-//     value: "astro",
-//     label: "Astro"
-//   },
-//   {
-//     value: "sasas",
-//     label: "Awqwqwstro"
-//   }, 
-// ]
-
 export function ComboboxDemo({selectedInterview}) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
