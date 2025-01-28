@@ -99,7 +99,7 @@ const InterviewsPage = () => {
             {!isAnyInterviews && (
               <button
                 onClick={() => setModalOpen(true)}
-                className=" hidden md:block rounded-lg bg-gradient-to-tr from-lightred to-darkred px-5 py-2"
+                className=" hidden md:block rounded-lg font-semibold bg-white text-black text-sm px-5 py-2"
               >
                 + Create Interview
               </button>
