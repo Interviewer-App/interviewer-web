@@ -2,18 +2,12 @@
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { use, useEffect, useState } from "react";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -24,9 +18,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { DataTable } from "@/components/ui/companyProfile-DataTable/Datatable";
-import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
-import InterviewCategoryModal from "../../../components/interviews/interviewCategoryModal";
-import { fetchInterCategories } from "@/lib/api/interview-category";
 import { columns } from "@/components/ui/companyProfile-DataTable/column";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
@@ -36,12 +27,10 @@ import { FaLinkedin } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import { FaFacebookSquare } from "react-icons/fa";
-import ContactFormPreview from "@/components/ui/userDetailsForm";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
 import CreateTeamModal from "@/components/company/create-team-modal";
-import { set } from "zod";
 import { getCompanyTeams } from "@/lib/api/user-team";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
@@ -51,12 +40,9 @@ const InterviewCategoryPage = () => {
   const [Tab, setTab] = useState("Details");
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const [totalsessions, setTotalSessions] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [modalOpen, setModalOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
@@ -66,22 +52,8 @@ const InterviewCategoryPage = () => {
   const [contactNo, setContactNo] = useState("");
   const [email, setEmail] = useState("");
   const [isEdit, setIsEdit] = useState(false);
-  const [companyId, setCompanyId] = useState("");
-  const [teams, setTeams] = useState([{
-    "userId": "cm6fz9gam0000u7h08q2emj8y",
-    "firstName": "Information",
-    "lastName": "Company",
-    "email": "company@gmail.com",
-    "role": "ADMIN"
-},
-{
-    "userId": "cm6g2eigv0001u794xs6961rq",
-    "firstName": "Induwara",
-    "lastName": "Bhashana",
-    "email": "bhashanasirimanna@gmail.com",
-    "role": "HIRING_MANAGER"
-}])
-  const [totalTeams, setTotalTeams] = useState(0)
+  const [teams, setTeams] = useState([]);
+  const [totalTeams, setTotalTeams] = useState(0);
   const [companyDetails, setCompanyDetails] = useState({
     companyName: "Company1",
     email: "company@gmail.com",
@@ -107,53 +79,32 @@ const InterviewCategoryPage = () => {
     setEmail(companyDetails.email);
   }, [companyDetails]);
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const session = await getSession();
-  //       const companyId = session?.user?.companyID;
-  //       const response = await fetchInterCategories(companyId, page, limit);
-  //       setCategories(response.data.categories);
-  //       setTotalSessions(response.data.total);
-  //       setCompanyId(companyId);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchCategories();
-  // }, [page, limit, modalOpen]);
-
   useEffect(() => {
     const fetchTeamData = async () => {
-      // setLoading(true);
       try {
         const session = await getSession();
         const companyId = session?.user?.companyID;
-        await getCompanyTeams(
-          page,
-          limit,
-          companyId,
-          setTeams,
-          setTotalTeams
-        );
+        const response = await getCompanyTeams(companyId, page, limit);
+        if (response) {
+          setTeams(response.data.team);
+          setTotalTeams(response.data.total);
+        }
       } catch (error) {
         console.log("Error fetching teams:", error);
       }
     };
 
-      fetchTeamData();
-    
-  }, [page, limit, companyId]);
+    fetchTeamData();
+  }, [page, limit, modalOpen]);
 
   const handleNextPage = () => {
-    if (page * limit < totalsessions) {
+    if (page * limit < totalTeams) {
       setPage(page + 1);
     }
   };
 
   const handlePage = (page) => {
-    if (page > 0 && page <= Math.ceil(totalsessions / limit)) {
+    if (page > 0 && page <= Math.ceil(totalTeams / limit)) {
       setPage(page);
     }
   };
@@ -260,13 +211,11 @@ const InterviewCategoryPage = () => {
           </div>
 
           <div className="w-full h-fit rounded-lg mt-5">
-            {/* Content based on Tab */}
             {Tab === "Team" ? (
               <>
                 <div className="flex items-center justify-between px-5 mb-5">
                   <h1 className="text-2xl font-semibold">Team</h1>
 
-                  {/* Add Category Button */}
                   <button
                     onClick={() => setModalOpen(true)}
                     className="rounded-lg bg-white text-sm font-semibold text-black px-5 py-2"
@@ -275,13 +224,8 @@ const InterviewCategoryPage = () => {
                   </button>
                 </div>
 
-                {/* Data Table for Team */}
                 <div>
-                  {loading ? (
-                    <div>Loading teams...</div>
-                  ) : (
-                    <DataTable columns={columns} data={teams} />
-                  )}
+                  <DataTable columns={columns} data={teams} />
                 </div>
 
                 {modalOpen && (
@@ -292,7 +236,6 @@ const InterviewCategoryPage = () => {
                   />
                 )}
 
-                {/* Pagination */}
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
@@ -320,13 +263,6 @@ const InterviewCategoryPage = () => {
                 </Pagination>
               </>
             ) : (
-              // Sample content for Details Tab
-              //   <div className="text-white">
-              //   <h2 className="text-xl font-semibold">Details Form</h2>
-              //   <div className="w-full"> {/* Added max-width and full width to left-align */}
-              //     <ContactFormPreview />
-              //   </div>
-              // </div>
               <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-8">
                 <div className=" w-full md:w-[70%] md:border-r-2 border-gray-500/20 md:pr-8">
                   <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
@@ -352,29 +288,6 @@ const InterviewCategoryPage = () => {
                       />
                     </div>
                   </div>
-                  {/* <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
-                    <h1 className=" text-xl font-semibold">Skill Highlights</h1>
-                    <div
-                      className={`${
-                        isEdit ? "hidden" : "block"
-                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3`}
-                      dangerouslySetInnerHTML={{
-                        __html: skillHighlights || "No Skill Highlight",
-                      }}
-                    />
-                    <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
-                    >
-                      <QuillEditor
-                        editorId={"skillHighlights"}
-                        value={skillHighlights}
-                        placeholder="About Skill Highlights here..."
-                        onChange={handleOnSkillHighlightsChange}
-                      />
-                    </div>
-                  </div> */}
                 </div>
                 <div className=" w-full md:w-[40%] md:px-8 md:mt-0 mt-5">
                   <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
@@ -385,86 +298,6 @@ const InterviewCategoryPage = () => {
                         {companyDetails.companyName || "Company Name"}
                       </p>
                     </div>
-                    {/* <div className=" w-full mt-5">
-                      <p className=" text-base text-gray-500">Age</p>
-                      <p className=" text-md">{age} years</p>
-                    </div> */}
-                    {/* <div className=" w-full mt-5">
-                      <p className=" text-base text-gray-500">Gender</p>
-                      <p className={` ${isEdit ? "hidden" : "block"} text-md`}>
-                        {gender}
-                      </p>
-                      <div className={` ${isEdit ? "block" : "hidden"}`}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
-                              variant="outline"
-                            >
-                              {gender
-                                ? gender.toLocaleLowerCase()
-                                : "Select Gender"}
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>
-                              Gender Catagory
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup
-                              value={gender}
-                              onValueChange={setGender}
-                            >
-                              <DropdownMenuRadioItem value="MALE">
-                                Male
-                              </DropdownMenuRadioItem>
-                              <DropdownMenuRadioItem value="FEMALE">
-                                Female
-                              </DropdownMenuRadioItem>
-                              <DropdownMenuRadioItem value="OTHER">
-                                Other
-                              </DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </div> */}
-                    {/* <div className=" w-full mt-5">
-                      <p className=" text-base text-gray-500">Date of Birth</p>
-                      <p className={` ${isEdit ? "hidden" : "block"} text-md`}>
-                        {new Date(dob).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
-                      <div className={` ${isEdit ? "block" : "hidden"}`}>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
-                                !dob && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon />
-                              {dob
-                                ? new Date(dob).toLocaleDateString()
-                                : "Date of Birth"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={dob}
-                              onSelect={setDob}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                    </div> */}
                     <div className=" w-full mt-5">
                       <p className=" text-base text-gray-500">Email</p>
                       <p className=" text-md">{email}</p>
