@@ -52,30 +52,6 @@ export function ComboboxDemo({selectedInterview}) {
     }
   }, [selectedInterview]);
 
-  // useEffect(() => {
-  //   const fetchCompletedSessions = async () => {
-  //     try {
-  //       const response = await getCompletedSessions(selectedInterview)
-  //       console.log("API Response:", response) // Log the response
-
-  //       // Check if response is an array
-  //       if (Array.isArray(response)) {
-  //         const candidateEmails = response.map((session) => session.candidate.user.email)
-  //         console.log("Candidate emails:", candidateEmails) // Log the extracted emails
-  //         setCandidates(candidateEmails) // Set the emails in state
-  //       } else {
-  //         console.error("Expected an array but got:", response)
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching completed sessions:", error)
-  //     }
-  //   }
-
-  //   if (selectedInterview) {
-  //     fetchCompletedSessions()
-  //   }
-  // }, [selectedInterview])
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
