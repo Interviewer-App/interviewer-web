@@ -23,24 +23,39 @@ import {
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
-import { getScheduledInterview } from "@/lib/api/interview";
+import { getOverviewOfCandidateInterviews, getScheduledInterview } from "@/lib/api/interview";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 
 const MyInterviews = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const [candidateId, setCandidateId] = useState(null);
   const [scheduleInterviews, setScheduleInterviews] = useState([]); // Store scheduled interviews
   const [sortedScheduleInterviews, setSortedScheduleInterviews] = useState([]);
+  const [overview, setOverview] = useState({});
   const [loading, setLoading] = useState(false); // Loading state
   const [page, setPage] = useState(1); // Page number
   const [limit, setLimit] = useState(10); // Limit of items per page
 
   useEffect(() => {
+    const fetchCandidateId = async () => {
+    try{
+      const session = await getSession();
+      const candidateId = session?.user?.candidateID;
+      
+        setCandidateId(candidateId);
+      
+    } catch(error){
+      console.error('Error fetching candidate ID:', error);
+    } 
+  }
+  fetchCandidateId();
+    }, []);
+
+  useEffect(() => {
     const fetchUserJoinedInterviews = async () => {
       try {
         setLoading(true);
-        const session = await getSession();
-        const candidateId = session?.user?.candidateID;
         const response = await getScheduledInterview(candidateId);
         setScheduleInterviews(response.data.schedules);
         console.log("Fetched scheduled interviews:", response.data.schedules);
@@ -51,19 +66,38 @@ const MyInterviews = () => {
       }
     };
 
-    fetchUserJoinedInterviews();
-  }, [page, limit]);
+    if (candidateId) fetchUserJoinedInterviews();
+  }, [candidateId]);
 
-  // useEffect(() => {
-  //   const currentTime = new Date();
+  useEffect(() => {
+    const fetchCandidateOverview = async () => {
+      try {        
+        const response = await getOverviewOfCandidateInterviews(candidateId);
+        if (response) {
+          setOverview(response.data);
+        }
+      } catch (error) {
+        console.log("Error fetching interviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   const filteredAndSortedArray = [...scheduleInterviews]
-  //     .filter((interview) => new Date(interview.startTime) > currentTime)
-  //     .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+    if (candidateId) fetchCandidateOverview();
+  }, [candidateId]);
 
-  //   setSortedScheduleInterviews(filteredAndSortedArray);
-  // }, [scheduleInterviews]);
-  useEffect(() => { const currentDate = new Date(); currentDate.setHours(0, 0, 0, 0); const filteredAndSortedArray = [...scheduleInterviews] .filter((interview) => { const interviewDate = new Date(interview.startTime); interviewDate.setHours(0, 0, 0, 0); return interviewDate >= currentDate; }) .sort((a, b) => new Date(a.startTime) - new Date(b.startTime)); setSortedScheduleInterviews(filteredAndSortedArray); }, [scheduleInterviews]);
+  useEffect(() => {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const filteredAndSortedArray = [...scheduleInterviews]
+      .filter((interview) => {
+        const interviewDate = new Date(interview.startTime);
+        interviewDate.setHours(0, 0, 0, 0);
+        return interviewDate >= currentDate;
+      })
+      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+    setSortedScheduleInterviews(filteredAndSortedArray);
+  }, [scheduleInterviews]);
 
   if (status === "loading") {
     return <Loading />;
@@ -91,7 +125,7 @@ const MyInterviews = () => {
       </header>
       <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
         <h1 className="text-3xl font-semibold">My Interviews</h1>
-        <TimelineLayout interviews={sortedScheduleInterviews} />
+        <TimelineLayout interviews={sortedScheduleInterviews} overview={overview} />
       </div>
     </SidebarInset>
   );
