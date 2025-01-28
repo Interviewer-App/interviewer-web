@@ -39,7 +39,7 @@ const InterviewComparision = () => {
   <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
     <div className="flex items-center justify-between mb-5">
       
-      <h1 className="text-2xl font-semibold">Interview comparision</h1>
+      <h1 className="text-2xl font-semibold">Candidate comparision</h1>
       
 
       {/* Add Category Button */}
