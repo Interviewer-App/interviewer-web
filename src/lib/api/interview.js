@@ -41,6 +41,16 @@ export const getScheduledInterview = async (candidateid) =>{
     }
 }
 
+export const getOverviewOfCandidateInterviews = async (candidateid) =>{
+    try {
+        const response=await axiosInstance.get(`/interview/schedules/candidate/overview/${candidateid}`);
+        return response;
+    } catch (error) {
+        console.log('Error fetching overview',error)
+        throw error;
+    }
+}
+
 export const getAllInterviews = async () => {
     try{
         const response = await axiosInstance.get(`/interview`);
