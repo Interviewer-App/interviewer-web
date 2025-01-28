@@ -61,11 +61,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   }, [questionList]);
 
   useEffect(() => {
-    // socket.emit("joinInterviewSession", {
-    //   sessionId: sessionID,
-    //   userId: userID,
-    //   role: 'COMPANY',
-    // });
+    socket.emit("joinInterviewSession", {
+      sessionId: sessionID,
+      userId: userID,
+      role: 'COMPANY',
+    });
 
     socket.on("question", (data) => {
 
