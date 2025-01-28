@@ -1,6 +1,6 @@
 import axiosInstance from "./axioinstance";
 
-const fetchSendInterviewInvitations = async (
+export const fetchSendInterviewInvitations = async (
   interviewId,
   page,
   limit,
