@@ -125,6 +125,21 @@ export const getCompletedSessions = async (interviewId) => {
 }
 
 
+export const getCompletedSessionComparision = async (data) => {
+  try{
+      const response = await axiosInstance.post(`/ai/candidate-comparison`,data);
+      return response;
+  } catch(error){
+      console.log('Error fetching completed comparision:', error);
+      throw error;
+  }
+}
+
+
+
+
+
+
 export {
   fetchJoinedInterviews,
   fetchInterviewSessionsForInterview,
