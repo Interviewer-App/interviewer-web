@@ -660,7 +660,6 @@ const UserProfile = () => {
                               selected={dob}
                               onSelect={setDob}
                               initialFocus
-                              captionLayout="dropdown-buttons"
                               fromYear={1900} 
                               toYear={new Date().getFullYear()} 
                               disabled={(date) => date > new Date()} 
