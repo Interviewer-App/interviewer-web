@@ -21,7 +21,7 @@ import {
 import { getCompletedSessions } from "@/lib/api/interview-session"
 import { useEffect,useState } from "react"
 
-export function ComboboxDemo({selectedInterview}) {
+export function ComboboxDemo({selectedInterview,onSelect,disabledEmail  }) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const [candidates, setCandidates] = useState([]); // State to store candidates
@@ -82,7 +82,9 @@ export function ComboboxDemo({selectedInterview}) {
                         onSelect={(currentValue) => {
                           setValue(currentValue === value ? "" : currentValue)
                           setOpen(false)
+                          onSelect(session.sessionId,email) // Pass the sessionId back to the parent
                         }}
+                        disabled={email === disabledEmail}
                       >
                         <Check
                           className={cn(
