@@ -194,7 +194,7 @@ const InterviewComparision = () => {
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
         setInterviews(response.data);
-        // console.log(response)
+        console.log(response)
       } catch (error) {
         toast({
           variant: "destructive",
@@ -319,7 +319,7 @@ const InterviewComparision = () => {
                           key={interview.interviewID}
                           value={interview.interviewID}
                         >
-                          {interview.jobDescription.replace(/<[^>]+>/g, "")} {/* Remove HTML tags */}
+                          {interview.jobTitle.replace(/<[^>]+>/g, "")} {/* Remove HTML tags */}
                         </SelectItem>
                       ))}
                     </SelectGroup>
