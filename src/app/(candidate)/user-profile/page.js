@@ -533,7 +533,7 @@ const UserProfile = () => {
                     <div
                       className={` ${
                         isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3`}
+                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: experience || "No Experiences",
                       }}
@@ -556,7 +556,7 @@ const UserProfile = () => {
                     <div
                       className={`${
                         isEdit ? "hidden" : "block"
-                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3`}
+                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: skillHighlights || "No Skill Highlight",
                       }}
