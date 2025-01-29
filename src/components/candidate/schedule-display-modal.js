@@ -91,7 +91,7 @@ function ScheduleDesplayModal({
   };
 
   return (
-    <div className=" fixed top-0 left-0 w-full h-full bg-transparent  bg-opacity-50 z-50 flex justify-center items-center">
+    <div className=" fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex justify-center items-center">
       <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
         <button
           onClick={() => setSlotModalOpen(false)}
