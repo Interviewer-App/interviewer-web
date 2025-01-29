@@ -37,6 +37,42 @@ export const getCandidateById = async (candidateId) => {
   }
 };
 
+export const updateCandidateById = async (candidateId, data) => {
+  try {
+    const response = await axiosInstance.patch(
+      `/users/candidate/details/${candidateId}`, data
+    );
+    return response;
+  } catch (error) {
+    console.log("Error updatinging candidate details:", error);
+    throw error;
+  }
+};
+
+export const getCompanyById = async (companyId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/users/company/details/${companyId}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error fetching company details:", error);
+    throw error;
+  }
+};
+
+export const updateCompanyById = async (companyId, data) => {
+  try {
+    const response = await axiosInstance.patch(
+      `/users/company/details/${companyId}`, data
+    );
+    return response;
+  } catch (error) {
+    console.log("Error updatinging company details:", error);
+    throw error;
+  }
+};
+
 export const submitSurvey = async (answers) => {
   try {
     const response = await axiosInstance.post(
