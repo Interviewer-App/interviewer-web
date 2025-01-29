@@ -27,11 +27,15 @@ import { FaLinkedin } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import { FaFacebookSquare } from "react-icons/fa";
+import { TbWorldWww } from "react-icons/tb";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
 import CreateTeamModal from "@/components/company/create-team-modal";
 import { getCompanyTeams } from "@/lib/api/user-team";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { getCompanyById, updateCompanyById } from "@/lib/api/users";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -48,35 +52,29 @@ const InterviewCategoryPage = () => {
   const [githubUrl, setGithubUrl] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
   const [twitterUrl, setTwitterUrl] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [discordUrl, setDiscordUrl] = useState("");
   const [contactNo, setContactNo] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [teams, setTeams] = useState([]);
   const [totalTeams, setTotalTeams] = useState(0);
-  const [companyDetails, setCompanyDetails] = useState({
-    companyName: "Company1",
-    email: "company@gmail.com",
-    contactNo: "0771234567",
-    linkedinUrl: "",
-    githubUrl: "",
-    facebookUrl: "",
-    twitterUrl: "",
-    discordUrl: "",
-    role: "COMPANY",
-    companyDescription:
-      "<p>As a <strong>software engineer</strong>, I have expertise in developing <em>scalable</em> and <em>user-centric</em> applications using modern technologies. I specialize in <strong>full-stack development</strong> with the <strong>MERN stack</strong>, creating dynamic web solutions with seamless <em>client-server</em> integration. My experience includes building cross-platform mobile applications with <strong>React Native</strong> and <strong>Expo</strong>, focusing on intuitive <em>user interfaces</em> and <em>real-time features</em>. Additionally, I have a strong grasp of backend technologies like <strong>Firebase</strong> and <strong>MongoDB</strong>, ensuring efficient data management. My problem-solving skills and ability to collaborate in <em>Agile environments</em> enable me to deliver high-quality software that meets project goals effectively.</p>",
-  });
+  const [companyId, setCompanyId] = useState("");
+  const [companyDetails, setCompanyDetails] = useState({});
+  const { toast } = useToast();
 
   useEffect(() => {
-    setDescription(companyDetails.companyDescription);
-    setLinkedinUrl(companyDetails.linkedinUrl);
-    setGithubUrl(companyDetails.githubUrl);
-    setFacebookUrl(companyDetails.facebookUrl);
-    setTwitterUrl(companyDetails.twitterUrl);
-    setDiscordUrl(companyDetails.discordUrl);
-    setContactNo(companyDetails.contactNo);
-    setEmail(companyDetails.email);
+    setDescription(companyDetails.companyDescription || "");
+    setLinkedinUrl(companyDetails.linkedInUrl || "");
+    setGithubUrl(companyDetails.githubUrl || "");
+    setFacebookUrl(companyDetails.facebookUrl || "");
+    setTwitterUrl(companyDetails.twitterUrl || "");
+    setDiscordUrl(companyDetails.discordUrl || "");
+    setWebsiteUrl(companyDetails.websiteURL || "");
+    setContactNo(companyDetails?.adminUser?.[0]?.contactNo || "");
+    setCompanyName(companyDetails.companyName || "");
+    setEmail(companyDetails?.adminUser?.[0]?.email);
   }, [companyDetails]);
 
   useEffect(() => {
@@ -103,6 +101,91 @@ const InterviewCategoryPage = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchCompanyId = async () => {
+      try {
+        const session = await getSession();
+        const companyId = session?.user?.companyID;
+        if (companyId) {
+          setCompanyId(companyId);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Company Details Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    fetchCompanyId();
+  }, []);
+
+  useEffect(() => {
+    const fetchCompanyDetails = async () => {
+      try {
+        const response = await getCompanyById(companyId);
+        if (response.data) {
+          setCompanyDetails(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Company Details Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (companyId) {
+      fetchCompanyDetails();
+    }
+  }, [companyId, isEdit]);
+
   const handlePage = (page) => {
     if (page > 0 && page <= Math.ceil(totalTeams / limit)) {
       setPage(page);
@@ -124,8 +207,58 @@ const InterviewCategoryPage = () => {
     }
   }
 
-  const handleSaveChanges = () => {
-    setIsEdit(false);
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateCompanyById(companyId, {
+        companyDescription: description,
+        contactNo: contactNo,
+        companyName,
+        websiteUrl: websiteUrl,
+        linkedInUrl: linkedinUrl,
+        githubUrl,
+        facebookUrl,
+        twitterUrl,
+        discordUrl,
+      });
+
+      if (response) {
+        toast({
+          variant: "success",
+          title: "Profile Updated",
+          description: "Your profile has been successfully updated.",
+        });
+        setIsEdit(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Profile update failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
   };
 
   return (
@@ -154,7 +287,7 @@ const InterviewCategoryPage = () => {
                   ? companyDetails?.companyName.charAt(0)
                   : ""}
                 {companyDetails?.companyName
-                  ? companyDetails?.companyName.charAt(1)
+                  ? companyDetails?.companyName.charAt(1).toUpperCase()
                   : ""}
               </AvatarFallback>
             </Avatar>
@@ -163,10 +296,10 @@ const InterviewCategoryPage = () => {
                 {companyDetails?.companyName || "Company"}{" "}
               </p>
               <p className=" text-lg md:text-xl md:text-left text-center text-gray-500">
-                {companyDetails?.email}
+                {email}
               </p>
               <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
-                {companyDetails?.role || "Candidate"}
+                {companyDetails?.adminUser?.[0]?.role || "Candidate"}
               </p>
             </div>
           </div>
@@ -272,7 +405,7 @@ const InterviewCategoryPage = () => {
                         isEdit ? "hidden" : "block"
                       } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-1 py-2`}
                       dangerouslySetInnerHTML={{
-                        __html: description || "No Description",
+                        __html: description || "Not Available",
                       }}
                     />
                     <div
@@ -294,9 +427,16 @@ const InterviewCategoryPage = () => {
                     <h2 className=" text-xl font-semibold">Company Details</h2>
                     <div className=" w-full mt-5">
                       <p className=" text-base text-gray-500">Company Name</p>
-                      <p className=" text-md">
-                        {companyDetails.companyName || "Company Name"}
-                      </p>
+                      <input
+                        type="text"
+                        readOnly={!isEdit}
+                        value={companyName || ""}
+                        placeholder="Company Name"
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
+                      />
                     </div>
                     <div className=" w-full mt-5">
                       <p className=" text-base text-gray-500">Email</p>
@@ -307,7 +447,8 @@ const InterviewCategoryPage = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={contactNo || "Contact No"}
+                        value={contactNo || ""}
+                        placeholder="not available"
                         onChange={(e) => setContactNo(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -318,11 +459,25 @@ const InterviewCategoryPage = () => {
                   <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
                     <h2 className=" text-xl font-semibold">Social Media</h2>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
+                      <TbWorldWww className=" text-3xl" />
+                      <input
+                        type="text"
+                        readOnly={!isEdit}
+                        value={websiteUrl || ""}
+                        placeholder="Website URL"
+                        onChange={(e) => setWebsiteUrl(e.target.value)}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
+                      />
+                    </div>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <FaLinkedin className=" text-3xl" />
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={linkedinUrl || "Linkedin URL"}
+                        value={linkedinUrl || ""}
+                        placeholder="Linkedin URL"
                         onChange={(e) => setLinkedinUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -334,7 +489,8 @@ const InterviewCategoryPage = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={githubUrl || "Github URL"}
+                        value={githubUrl || ""}
+                        placeholder="Github URL"
                         onChange={(e) => setGithubUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -346,7 +502,8 @@ const InterviewCategoryPage = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={facebookUrl || "Facebook URL"}
+                        value={facebookUrl || ""}
+                        placeholder="Facebook URL"
                         onChange={(e) => setFacebookUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -358,7 +515,8 @@ const InterviewCategoryPage = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={twitterUrl || "Twitter URL"}
+                        value={twitterUrl || ""}
+                        placeholder="Twitter URL"
                         onChange={(e) => setTwitterUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -370,7 +528,8 @@ const InterviewCategoryPage = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={discordUrl || "Discord URL"}
+                        value={discordUrl || ""}
+                        placeholder="Discord URL"
                         onChange={(e) => setDiscordUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
