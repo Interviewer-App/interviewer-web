@@ -917,7 +917,7 @@ export default function InterviewPreviewPage({ params }) {
                       Description
                     </h1>
                     <div
-                      className={` ${editDetails ? 'hidden' : 'block'} text-justify w-full bg-transparent rounded-lg`}
+                      className={` ${editDetails ? 'hidden' : 'block'} text-justify w-full bg-transparent rounded-lg description`}
                       dangerouslySetInnerHTML={{ __html: description }}
                     />
 
