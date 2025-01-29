@@ -254,7 +254,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                     Job Description
                   </h3>
                   <div
-                    className="ttext-gray-300 text-justify text-gray-300 text-lg leading-relaxed"
+                    className="ttext-gray-300 text-justify text-gray-300 text-lg leading-relaxed description"
                     dangerouslySetInnerHTML={{
                       __html: interviewDetail.jobDescription,
                     }}
