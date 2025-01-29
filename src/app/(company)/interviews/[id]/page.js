@@ -149,8 +149,8 @@ export default function InterviewPreviewPage({ params }) {
       {
         label: "Schedules",
         data: [0, 0],
-        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
-        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+        backgroundColor: ["rgba(111, 88, 223, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
         borderWidth: 1,
       },
     ],
@@ -468,10 +468,10 @@ export default function InterviewPreviewPage({ params }) {
               interviewStatusDetails.schedulesWithInvitations,
             ],
             backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
+              "rgba(111, 88, 223, 0.2)",
               "rgba(54, 162, 235, 0.2)",
             ],
-            borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+            borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
             borderWidth: 1,
           },
         ],
