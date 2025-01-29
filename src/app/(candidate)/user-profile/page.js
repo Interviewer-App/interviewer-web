@@ -61,7 +61,7 @@ import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import ContactFormPreview from "@/components/ui/userDetailsForm";
-import { deleteUserByEmail, getCandidateById } from "@/lib/api/users";
+import { deleteUserByEmail, getCandidateById, updateCandidateById } from "@/lib/api/users";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -72,10 +72,10 @@ import { FaGithub } from "react-icons/fa";
 import { FaFacebookSquare } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
+import { set } from "zod";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
-
 
 const UserProfile = () => {
   const [Tab, setTab] = useState("details");
@@ -156,7 +156,7 @@ const UserProfile = () => {
     setContactNo(candidateDetails?.user?.contactNo);
     setExperience(candidateDetails?.experience);
     setSkillHighlights(candidateDetails?.skillHighlights);
-    setLinkedinUrl(candidateDetails?.linkedinUrl);
+    setLinkedinUrl(candidateDetails?.linkedInUrl);
     setGithubUrl(candidateDetails?.githubUrl);
     setFacebookUrl(candidateDetails?.facebookUrl);
     setTwitterUrl(candidateDetails?.twitterUrl);
@@ -236,8 +236,59 @@ const UserProfile = () => {
     setSkillHighlights(content);
   };
 
-  const handleSaveChanges = async () => {
-    setIsEdit(false);
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateCandidateById(candidateId, {
+        experience,
+        skillHighlights,
+        linkedInUrl : linkedinUrl,
+        githubUrl,
+        facebookUrl,
+        twitterUrl,
+        discordUrl,
+        contactNo,
+        gender,
+        dob,
+      });
+
+      if (response) {
+        toast({
+          variant: "success",
+          title: "Profile Updated",
+          description: "Your profile has been successfully updated.",
+        });
+        setIsEdit(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Profile update failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
   };
 
   const deleteAccountHandler = async () => {
@@ -419,14 +470,14 @@ const UserProfile = () => {
             {Tab === "document" && (
               <div className=" w-full">
                 <div className="flex items-center justify-between mb-5">
-                  <h1 className="text-2xl font-semibold">Curriculum vitae</h1>
+                  <h1 className="text-2xl font-semibold">Documents</h1>
 
                   {/* Add Category Button */}
                   <button
                     onClick={() => setModalOpen(true)}
-                    className="rounded-lg text-sm font-semibold bg-white text-black h-11 px-5"
+                    className="rounded-full text-3xl font-semibold bg-white text-black h-12 aspect-square"
                   >
-                    +Add CV
+                    +
                   </button>
                 </div>
 
@@ -609,6 +660,10 @@ const UserProfile = () => {
                               selected={dob}
                               onSelect={setDob}
                               initialFocus
+                              captionLayout="dropdown-buttons"
+                              fromYear={1900} 
+                              toYear={new Date().getFullYear()} 
+                              disabled={(date) => date > new Date()} 
                             />
                           </PopoverContent>
                         </Popover>
@@ -623,7 +678,8 @@ const UserProfile = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={contactNo || "Contact No"}
+                        value={contactNo || ""}
+                        placeholder="Contact Number"
                         onChange={(e) => setContactNo(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -638,7 +694,7 @@ const UserProfile = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={linkedinUrl || "Linkedin URL"}
+                        value={linkedinUrl || ""}
                         onChange={(e) => setLinkedinUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -650,7 +706,7 @@ const UserProfile = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={githubUrl || "Github URL"}
+                        value={githubUrl || ""}
                         onChange={(e) => setGithubUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -662,7 +718,7 @@ const UserProfile = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={facebookUrl || "Facebook URL"}
+                        value={facebookUrl || ""}
                         onChange={(e) => setFacebookUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -674,7 +730,7 @@ const UserProfile = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={twitterUrl || "Twitter URL"}
+                        value={twitterUrl || ""}
                         onChange={(e) => setTwitterUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
@@ -686,7 +742,7 @@ const UserProfile = () => {
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={discordUrl || "Discord URL"}
+                        value={discordUrl || ""}
                         onChange={(e) => setDiscordUrl(e.target.value)}
                         className={` focus:outline-none rounded-lg ${
                           isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
