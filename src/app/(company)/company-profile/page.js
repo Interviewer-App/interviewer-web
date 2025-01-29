@@ -403,7 +403,7 @@ const InterviewCategoryPage = () => {
                     <div
                       className={` ${
                         isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-1 py-2`}
+                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-1 py-2 description`}
                       dangerouslySetInnerHTML={{
                         __html: description || "Not Available",
                       }}
