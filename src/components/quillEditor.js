@@ -61,7 +61,7 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
 
   return (
     <div className=' bg-[#32353b] rounded-lg'>  
-      <div id={editorId} style={{ minHeight: '100px'}} className='quill-editor '>
+      <div id={editorId} style={{ minHeight: '100px'}} className='quill-editor max-h-[150px] overflow-y-auto'>
       </div>
     </div>
   );
