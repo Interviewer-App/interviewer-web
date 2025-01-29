@@ -4,16 +4,16 @@ import {
   TimelineTitle,
   TimelineDescription,
   TimelineTime,
-  TimelineHeader
-} from "@/components/ui/timeline"
+  TimelineHeader,
+} from "@/components/ui/timeline";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
-import { ClipboardList } from 'lucide-react';
+import { ClipboardList } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getSession, useSession } from "next-auth/react";
@@ -23,15 +23,15 @@ import { getInterviewById } from "@/lib/api/interview";
 import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import Lottie from "lottie-react";
-import interviewAnimation from '../../components/ui/animation/interviewAnimation'
+import interviewAnimation from "../../components/ui/animation/interviewAnimation";
 export const TimelineLayout = ({ interviews, overview }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   //   const [interviews, setInterviews] = useState([]);
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
-  const [sordBy, setSortBy] = useState('');
-  const [datePosted, setDatePosted] = useState('');
-  const [interviewCategory, setInterviewCategory] = useState('');
+  const [sordBy, setSortBy] = useState("");
+  const [datePosted, setDatePosted] = useState("");
+  const [interviewCategory, setInterviewCategory] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [keyWords, setKeyWords] = useState("");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -47,34 +47,35 @@ export const TimelineLayout = ({ interviews, overview }) => {
   const totalInterviews = interviews.length;
 
   const formatDate = (date) => {
-    const options = { month: 'short', day: 'numeric' };
-    return new Date(date).toLocaleDateString('en-US', options);
+    const options = { month: "short", day: "numeric" };
+    return new Date(date).toLocaleDateString("en-US", options);
   };
   const formatDateMoreDetailsSection = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(date).toLocaleDateString('en-US', options);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(date).toLocaleDateString("en-US", options);
   };
 
   // Function to format the time
   const formatTime = (date) => {
-    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-    return new Date(date).toLocaleTimeString('en-US', options); // e.g., '4:45 PM'
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return new Date(date).toLocaleTimeString("en-US", options); // e.g., '4:45 PM'
   };
 
   const handleCopy = (interviewId) => {
-    navigator.clipboard.writeText(interviewId)
+    navigator.clipboard
+      .writeText(interviewId)
       .then(() => {
         // Set the copied state for the specific interview
-        setCopiedInterviewIds(prevState => ({
+        setCopiedInterviewIds((prevState) => ({
           ...prevState,
-          [interviewId]: true
+          [interviewId]: true,
         }));
 
         // Reset the copied state after 2 seconds
         setTimeout(() => {
-          setCopiedInterviewIds(prevState => ({
+          setCopiedInterviewIds((prevState) => ({
             ...prevState,
-            [interviewId]: false
+            [interviewId]: false,
           }));
         }, 2000); // Reset after 2 seconds
       })
@@ -103,10 +104,12 @@ export const TimelineLayout = ({ interviews, overview }) => {
         const data = {
           sessionId: sessionId,
           userId: userId,
-          role: role
-        }
+          role: role,
+        };
         // socket.emit('joinInterviewSession', data);
-        router.push(`/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`);
+        router.push(
+          `/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
+        );
       }
     } catch (err) {
       if (err.response) {
@@ -139,9 +142,9 @@ export const TimelineLayout = ({ interviews, overview }) => {
     }
   };
   function getPlainTextFromHtml(html) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.innerHTML = html;
-    return div.textContent || div.innerText || '';
+    return div.textContent || div.innerText || "";
   }
 
   const getTimeDifferenceInMinutes = (startTime) => {
@@ -152,7 +155,9 @@ export const TimelineLayout = ({ interviews, overview }) => {
   };
 
   const toggleDescription = (interviewId) => {
-    setExpandedInterviewId((prevId) => (prevId === interviewId ? null : interviewId)); // Toggle expanded state
+    setExpandedInterviewId((prevId) =>
+      prevId === interviewId ? null : interviewId
+    ); // Toggle expanded state
   };
 
   return (
@@ -174,52 +179,62 @@ export const TimelineLayout = ({ interviews, overview }) => {
         </div>
 
       </div> */}
-              <div className="max-w-2xl rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-6 mx-auto flex gap-6 shadow-xl hover:shadow-2xl transition-shadow">
-      {/* Left Content */}
-      <div className="flex-1 space-y-6">
-        <div className="flex justify-between items-start">
-          <div className="bg-[#18181E] py-4 px-6 rounded-xl">
-            <h2 className="text-3xl font-bold text-white mb-1">Total Interviews</h2>
-            <div className="text-4xl font-bold text-white text-center">{overview.total}</div>
+      <div className="max-w-2xl rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-6 mx-auto flex gap-6 shadow-xl hover:shadow-2xl transition-shadow">
+        {/* Left Content */}
+        <div className="flex-1 space-y-6">
+          <div className="flex justify-between items-start">
+            <div className="bg-[#18181E] py-4 px-6 rounded-xl">
+              <h2 className="text-3xl font-bold text-white mb-1">
+                Total Interviews
+              </h2>
+              <div className="text-4xl font-bold text-white text-center">
+                {overview.total}
+              </div>
+            </div>
+            <span className="text-xs font-medium bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
+              Active
+            </span>
           </div>
-          <span className="text-xs font-medium bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
-            Active
-          </span>
+
+          {/* Stats Container */}
+          <div className="space-y-4 p-4 bg-zinc-800/50 rounded-lg">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                <span className="text-sm text-zinc-400">Completed</span>
+              </div>
+              <span className="text-sm font-medium text-white">
+                {overview.completed}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-zinc-400">Pending</span>
+              </div>
+              <span className="text-sm font-medium text-white">
+                {overview.pending}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Stats Container */}
-        <div className="space-y-4 p-4 bg-zinc-800/50 rounded-lg">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              <span className="text-sm text-zinc-400">Completed</span>
-            </div>
-            <span className="text-sm font-medium text-white">{overview.completed}</span>
-          </div>
-          
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-zinc-400">Pending</span>
-            </div>
-            <span className="text-sm font-medium text-white">{overview.pending}</span>
-          </div>
+        {/* Lottie Animation */}
+        <div className="hidden md:flex w-48 aspect-square -mr-4 -my-4">
+          <Lottie
+            animationData={interviewAnimation}
+            className="hover:scale-105 transition-transform"
+          />
         </div>
       </div>
-
-      {/* Lottie Animation */}
-      <div className="hidden md:flex w-48 aspect-square -mr-4 -my-4">
-        <Lottie 
-          animationData={interviewAnimation}
-          className="hover:scale-105 transition-transform"
-        />
-      </div>
-    </div>
 
       {/* <h2 className="text-2xl font-medium">Upcoming Interviews</h2> */}
       <Timeline className="mt-8">
         {interviews.map((interview) => {
-          const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
+          const timeDifference = getTimeDifferenceInMinutes(
+            interview.startTime
+          );
           const isExpanded = expandedInterviewId === interview.scheduleID;
           const isCopied = copiedInterviewIds[interview.interviewId];
           // Time differnce dynamic class definations
@@ -230,15 +245,14 @@ export const TimelineLayout = ({ interviews, overview }) => {
           const timeBgColor = isClose
             ? "bg-[#F4BB50]"
             : isFar
-              ? "bg-[#7DDA6A]"
-              : ismedium
-                ? "bg-[#F4BB50]"
-                : "bg-gray-900";
+            ? "bg-[#7DDA6A]"
+            : ismedium
+            ? "bg-[#F4BB50]"
+            : "bg-gray-900";
 
           return (
-            <TimelineItem key={interview.scheduleID} className=''>
-              <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-xl" >
-
+            <TimelineItem key={interview.scheduleID} className="">
+              <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-xl">
                 <TimelineTime
                   date={formatDate(interview.startTime)}
                   time={formatTime(interview.startTime)}
@@ -249,7 +263,9 @@ export const TimelineLayout = ({ interviews, overview }) => {
                 <div className="flex justify-between items-center w-full ">
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
                   <button
-                    onClick={() => { joinInterviewSession(interview) }}
+                    onClick={() => {
+                      joinInterviewSession(interview);
+                    }}
                     className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
                   >
                     Join Now
@@ -257,12 +273,21 @@ export const TimelineLayout = ({ interviews, overview }) => {
                 </div>
               </TimelineHeader>
               <div className="bg-[#18181E]">
-                <TimelineDescription className='-mt-1  px-8 text-[#6F6F7B] '>
-                  <div className="w-[90%] pb-3">
+                <TimelineDescription className="-mt-1  px-8 text-[#6F6F7B] ">
+                  <div
+                    className={` w-[90%] pb-3 text-justify bg-transparent rounded-lg description`}
+                    dangerouslySetInnerHTML={{
+                      __html: isExpanded
+                        ? interview.interview.jobDescription
+                        : `${interview.interview.jobDescription.slice(0, 200)}...`,
+                    }}
+                  />
+
+                  {/* <div className="">
                     {isExpanded
                       ? getPlainTextFromHtml(interview.interview.jobDescription)
                       : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
-                  </div>
+                  </div> */}
                   {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
                   <Accordion type="single" collapsible>
                     <AccordionItem value="item-1">
@@ -278,7 +303,9 @@ export const TimelineLayout = ({ interviews, overview }) => {
                         <div className="space-y-2 text-white mt-4 ">
                           <div className="flex items-center">
                             <span className="font-medium">ID:</span>
-                            <span className="ml-2">{interview.interviewId}</span>
+                            <span className="ml-2">
+                              {interview.interviewId}
+                            </span>
                             <button
                               onClick={() => handleCopy(interview.interviewId)}
                               className="ml-4 text-blue-500 hover:text-blue-700"
@@ -291,23 +318,35 @@ export const TimelineLayout = ({ interviews, overview }) => {
                             </button>
                           </div>
                           <div>
-                            <span className="font-medium">Interview Category:</span>
-                            <span className="ml-2">{interview.interview.interviewCategory}</span>
+                            <span className="font-medium">
+                              Interview Category:
+                            </span>
+                            <span className="ml-2">
+                              {interview.interview.interviewCategory}
+                            </span>
                           </div>
                           <div>
                             <span className="font-medium">End Date:</span>
-                            <span className="ml-2">{formatDateMoreDetailsSection(interview?.interview?.endDate)}</span>
+                            <span className="ml-2">
+                              {formatDateMoreDetailsSection(
+                                interview?.interview?.endDate
+                              )}
+                            </span>
                           </div>
                           <div>
                             <span className="font-medium">Company Name:</span>
-                            <span className="ml-2">{interview.interview.company.companyName}</span>
+                            <span className="ml-2">
+                              {interview.interview.company.companyName}
+                            </span>
                           </div>
                         </div>
                       </AccordionContent>
                       {/* Move the button to the bottom of the AccordionContent */}
                       <div className="flex justify-end -mt-4">
                         <AccordionTrigger
-                          onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
+                          onClick={() =>
+                            toggleDescription(interview.scheduleID)
+                          } // Toggle description on button click
                           className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
                         >
                           {isExpanded ? "Show Less" : "More Details"}
@@ -315,8 +354,6 @@ export const TimelineLayout = ({ interviews, overview }) => {
                       </div>
                     </AccordionItem>
                   </Accordion>
-
-
                 </TimelineDescription>
               </div>
             </TimelineItem>
