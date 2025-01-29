@@ -62,88 +62,88 @@ const InterviewComparision = () => {
   
   
   // Hardcoded comparison result
-  const hardcodedComparisonResult = {
-    "overall": {
-      "score": {
-        "c1": 36,
-        "c2": 33,
-        "diff": 3
-      },
-      "time": {
-        "c1": 50,
-        "c2": 40,
-        "diff": "10 mins"
-      }
-    },
-    "categories": [
-      {
-        "name": "Technical",
-        "metrics": [
-          {
-            "metric": "Coding Skills",
-            "c1": "Scored 36 out of 36 in a coding question on Spring Boot REST API development, demonstrating a strong grasp of the technology.",
-            "c2": "Scored 33 out of 33 in a coding question on finding the sum of even numbers in an array.",
-            "importance": "High"
-          },
-          {
-            "metric": "Problem-Solving Approach",
-            "c1": "Provided clear and detailed answers, showing a logical and structured approach to problem-solving.",
-            "c2": "Showed a good understanding of core programming concepts but lacked clear structure in explaining the approach.",
-            "importance": "High"
-          }
-        ]
-      }
-    ],
-    "strengths": {
-      "c1": {
-        "strengths": [
-          "Strong Spring Boot technical skills",
-          "Excelled in open-ended technical discussions",
-          "Demonstrates a strong understanding of core Java concepts"
-        ],
-        "weaknesses": [
-          "Could benefit from improving time management during interviews"
-        ]
-      },
-      "c2": {
-        "strengths": [
-          "Showed good problem-solving skills",
-          "Understands fundamental programming principles including OOP"
-        ],
-        "weaknesses": [
-          "Technical skills could benefit from further enhancement",
-          "Some difficulty in communicating technical concepts clearly"
-        ]
-      }
-    },
-    "experience": {
-      "projects": {
-        "c1": "No information provided in the given data.",
-        "c2": "No information provided in the given data.",
-        "comparison": "No comparison can be made as project information is missing."
-      },
-      "education": {
-        "c1": "No information provided in the given data.",
-        "c2": "No information provided in the given data.",
-        "relevance": "No comparison can be made as education information is missing."
-      }
-    },
-    "recommendation": {
-      "best": "c1",
-      "reason": "Candidate c1 demonstrated stronger technical skills, including a comprehensive understanding of Spring Boot and Java fundamentals, as well as a more structured problem-solving approach.",
-      "factors": [
-        "Technical performance",
-        "Problem-solving skills",
-        "Communication abilities"
-      ],
-      "confidence": "high"
-    },
-    "summary": {
-      "technical": "Both candidates showed a good understanding of core programming concepts. Candidate c1 demonstrated stronger technical skills in the context of Java and Spring Boot, while candidate c2 could benefit from further strengthening their technical foundation.",
-      "culture": "No information provided in the given data.",
-      "growth": "With continued development and experience, both candidates have the potential to grow into successful software engineers."
-    }
-  };
+  // const hardcodedComparisonResult = {
+  //   "overall": {
+  //     "score": {
+  //       "c1": 36,
+  //       "c2": 33,
+  //       "diff": 3
+  //     },
+  //     "time": {
+  //       "c1": 50,
+  //       "c2": 40,
+  //       "diff": "10 mins"
+  //     }
+  //   },
+  //   "categories": [
+  //     {
+  //       "name": "Technical",
+  //       "metrics": [
+  //         {
+  //           "metric": "Coding Skills",
+  //           "c1": "Scored 36 out of 36 in a coding question on Spring Boot REST API development, demonstrating a strong grasp of the technology.",
+  //           "c2": "Scored 33 out of 33 in a coding question on finding the sum of even numbers in an array.",
+  //           "importance": "High"
+  //         },
+  //         {
+  //           "metric": "Problem-Solving Approach",
+  //           "c1": "Provided clear and detailed answers, showing a logical and structured approach to problem-solving.",
+  //           "c2": "Showed a good understanding of core programming concepts but lacked clear structure in explaining the approach.",
+  //           "importance": "High"
+  //         }
+  //       ]
+  //     }
+  //   ],
+  //   "strengths": {
+  //     "c1": {
+  //       "strengths": [
+  //         "Strong Spring Boot technical skills",
+  //         "Excelled in open-ended technical discussions",
+  //         "Demonstrates a strong understanding of core Java concepts"
+  //       ],
+  //       "weaknesses": [
+  //         "Could benefit from improving time management during interviews"
+  //       ]
+  //     },
+  //     "c2": {
+  //       "strengths": [
+  //         "Showed good problem-solving skills",
+  //         "Understands fundamental programming principles including OOP"
+  //       ],
+  //       "weaknesses": [
+  //         "Technical skills could benefit from further enhancement",
+  //         "Some difficulty in communicating technical concepts clearly"
+  //       ]
+  //     }
+  //   },
+  //   "experience": {
+  //     "projects": {
+  //       "c1": "No information provided in the given data.",
+  //       "c2": "No information provided in the given data.",
+  //       "comparison": "No comparison can be made as project information is missing."
+  //     },
+  //     "education": {
+  //       "c1": "No information provided in the given data.",
+  //       "c2": "No information provided in the given data.",
+  //       "relevance": "No comparison can be made as education information is missing."
+  //     }
+  //   },
+  //   "recommendation": {
+  //     "best": "c1",
+  //     "reason": "Candidate c1 demonstrated stronger technical skills, including a comprehensive understanding of Spring Boot and Java fundamentals, as well as a more structured problem-solving approach.",
+  //     "factors": [
+  //       "Technical performance",
+  //       "Problem-solving skills",
+  //       "Communication abilities"
+  //     ],
+  //     "confidence": "high"
+  //   },
+  //   "summary": {
+  //     "technical": "Both candidates showed a good understanding of core programming concepts. Candidate c1 demonstrated stronger technical skills in the context of Java and Spring Boot, while candidate c2 could benefit from further strengthening their technical foundation.",
+  //     "culture": "No information provided in the given data.",
+  //     "growth": "With continued development and experience, both candidates have the potential to grow into successful software engineers."
+  //   }
+  // };
 
 
 
@@ -207,63 +207,68 @@ const InterviewComparision = () => {
     fetchInterviews();
   }, []);
 
+  
 
+ 
+
+  const handleCompareInterviews = async () => {
+    if (firstSessionId && secondSessionId) {
+      try {
+        const data = {
+          sessionId1: firstSessionId,
+          sessionId2: secondSessionId,
+        };
+        const response = await getCompletedSessionComparision(data);
+        setIsComparePressed(true);
+        setComparisonResult(response.data); // Store the comparison result
+        console.log("Comparison Result:", response.data);
+
+        // Display success toast
+        toast({
+          title: "Comparison Successful",
+          description: "The comparison was completed successfully.",
+        });
+      } catch (error) {
+        console.error("Error comparing sessions:", error);
+
+        // Display error toast
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `Error comparing sessions: ${error.message}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } else {
+      alert("Please select both candidates to compare.");
+    }
+  };
+
+  //for the testing purpose you can use this handleCompareInterviews function.those values are fetching from the harcoded string not from the API.(Due to GEMINI API )
   // const handleCompareInterviews = async () => {
-  //   if (firstSessionId && secondSessionId) {
-  //     try {
-  //       const data = {
-  //         sessionId1: firstSessionId,
-  //         sessionId2: secondSessionId,
-  //       };
-  //       const response = await getCompletedSessionComparision(data);
-  //       setIsComparePressed(true);
-  //       setComparisonResult(response.data); // Store the comparison result
-  //       console.log("Comparison Result:", response.data);
-
-  //       // Display success toast
-  //       toast({
-  //         title: "Comparison Successful",
-  //         description: "The comparison was completed successfully.",
-  //       });
-  //     } catch (error) {
-  //       console.error("Error comparing sessions:", error);
-
-  //       // Display error toast
-  //       toast({
-  //         variant: "destructive",
-  //         title: "Uh oh! Something went wrong.",
-  //         description: `Error comparing sessions: ${error.message}`,
-  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //       });
-  //     }
-  //   } else {
-  //     alert("Please select both candidates to compare.");
+  //   // Check if both session IDs are selected
+  //   if (!firstSessionId || !secondSessionId) {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Selection Incomplete",
+  //       description: "Please select both candidates to compare.",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     });
+  //     return; // Exit the function if validation fails
   //   }
+
+  //   // Set the hardcoded comparison result
+  //   setIsComparePressed(true);
+  //   setComparisonResult(hardcodedComparisonResult);
+
+  //   // Display success toast
+  //   toast({
+  //     title: "Comparison Successful",
+  //     description: "The comparison was completed successfully.",
+  //   });
   // };
 
 
-  const handleCompareInterviews = async () => {
-    // Check if both session IDs are selected
-    if (!firstSessionId || !secondSessionId) {
-      toast({
-        variant: "destructive",
-        title: "Selection Incomplete",
-        description: "Please select both candidates to compare.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-      return; // Exit the function if validation fails
-    }
-
-    // Set the hardcoded comparison result
-    setIsComparePressed(true);
-    setComparisonResult(hardcodedComparisonResult);
-
-    // Display success toast
-    toast({
-      title: "Comparison Successful",
-      description: "The comparison was completed successfully.",
-    });
-  };
 
   return (
     <>
