@@ -11,7 +11,7 @@ const VideoCall = ({ sessionId, isCandidate }) => {
   const socket = useRef(null);
 
   useEffect(() => {
-    socket.current = io('http://localhost:3333');
+    socket.current = io(process.env.NEXT_PUBLIC_API_URL_SOCKET);
 
     const startCall = async () => {
       debugger
