@@ -158,3 +158,83 @@ body {
   background: var(--str-video__secondary-background-color) !important;
   color: var(--str-video__text-color) !important;
 }
+
+.description ol {
+  counter-reset: ordered-list; 
+  padding-left: 1.5rem; 
+}
+
+.description li[data-list="ordered"] {
+  counter-increment: ordered-list;
+  position: relative;
+  list-style: none; 
+}
+
+.description li[data-list="ordered"]::before {
+  content: counter(ordered-list) ". ";
+  position: absolute;
+  left: -1.5rem;
+  width: 0.5rem;
+  text-align: right;
+}
+
+.description li[data-list="bullet"] {
+  position: relative;
+  list-style: none;
+}
+
+.description li[data-list="bullet"]::before {
+  content: "•"; 
+  position: absolute;
+  left: -1.5rem;
+}
+
+.description .ql-ui {
+  display: inline-block;
+  margin-right: 2px;
+}
+
+.description h1 {
+  font-size: 2rem;
+  font-weight: 700;
+
+}
+
+.description h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+
+}
+
+.description h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+
+}
+
+.description h4 {
+  font-size: 1rem;
+  font-weight: 700;
+
+}
+
+.description h5 {
+  font-size: 0.875rem;
+  font-weight: 700;
+
+}
+
+.description h6 {
+  font-size: 0.75rem;
+  font-weight: 700;
+
+}
+
+.description p {
+  font-size: 1rem;
+
+}
+
+.description span {
+  font-size: 1rem;
+}
