@@ -44,6 +44,7 @@ import { CodeBlock } from "@/components/ui/code-block";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
+import VideoCall from "@/components/video/video";
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -409,7 +410,8 @@ const InterviewRoomPage = ({ params }) => {
         <ResizablePanel
           defaultSize={50}
         >
-          <StreamVideoCall callId={sessionID} />
+           <VideoCall sessionId={sessionId} isCandidate={true} />
+          {/* <StreamVideoCall callId={sessionID} /> */}
         </ResizablePanel>
       </ResizablePanelGroup>
     </>

@@ -118,7 +118,8 @@ function InterviewRoomAnalizerDashboard({
             <ResizablePanel defaultSize={40}>
               <ResizablePanelGroup direction="horizontal">
                 <ResizablePanel defaultSize={40}>
-                  <StreamVideoCall callId={sessionId} />
+                <VideoCall sessionId={sessionId} isCandidate={false} />
+                  {/* <StreamVideoCall callId={sessionId} /> */}
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={60}>
