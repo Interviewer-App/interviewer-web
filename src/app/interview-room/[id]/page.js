@@ -70,6 +70,7 @@ const InterviewRoomPage = ({ params }) => {
   const [totalScore, setTotalScore] = useState(0);
   const [numberOfAnswers, setNumberOfAnswers] = useState(0);
   const [questionType, setQuestionType] = useState();
+
   const {
     isListening,
     transcript,
