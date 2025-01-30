@@ -667,10 +667,9 @@ export default function InterviewPreviewPage({ params }) {
     redirect(loginURL);
   }
   const handleOnChange = (content) => {
-    // console.log('Updated Desc:', content);
-    // console.log(content);
     setDescription(content);
   };
+  
   return (
     <div className=" w-full">
       <SidebarInset>
