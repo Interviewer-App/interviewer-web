@@ -10,10 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { getInterviews } from "@/lib/api/interview";
@@ -43,7 +40,7 @@ const InterviewsPage = () => {
         const session = await getSession();
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
-  
+
         if (response) {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
@@ -66,7 +63,7 @@ const InterviewsPage = () => {
         }
       }
     };
-  
+
     fetchInterviews();
   }, [modalOpen]);
 
@@ -159,10 +156,10 @@ const InterviewsPage = () => {
         </div>
         {modalOpen && <CreateInterviewModal setModalOpen={setModalOpen} />}
         {isLoading && (
-                <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
-                  <Loading />
-                </div>
-              )}
+          <div className=" fixed  top-0 left-0 h-full w-full flex items-center justify-center bg-black/50">
+            <Loading />
+          </div>
+        )}
       </SidebarInset>
     </>
   );
