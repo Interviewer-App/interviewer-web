@@ -196,12 +196,19 @@ const InterviewComparision = () => {
         setInterviews(response.data);
         console.log(response)
       } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: `Error fetching interviews: ${error}`,
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
+        // Check if the error is a 404 (no interviews found)
+        if (error.response && error.response.status === 404) {
+          // No interviews found, set state accordingly
+          setInterviews([]);
+        } else {
+          // Handle other errors
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Error fetching interviews: ${error}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
       }
     };
     fetchInterviews();
@@ -313,7 +320,7 @@ const InterviewComparision = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Interviews</SelectLabel>
+                      <SelectLabel>Select Interviews</SelectLabel>
                       {interviews.map((interview) => (
                         <SelectItem
                           key={interview.interviewID}
