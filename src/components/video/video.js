@@ -273,14 +273,14 @@ const VideoCall = ({ sessionId, isCandidate }) => {
   };
 
   return (
-<div className=" bg-gray-900 relative">
+<div className=" bg-gray-900 relative h-full w-auto">
       {/* Timer */}
       <div className="absolute top-4 left-4 text-white z-10">
         <span className="font-medium">{formatTime(callDuration)}</span>
       </div>
 
       {/* Video containers */}
-      <div className="flex items-center justify-center">
+      <div className=" flex items-center justify-center">
         <video
           ref={remoteVideoRef}
           autoPlay
