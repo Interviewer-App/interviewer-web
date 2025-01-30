@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const VideoCall = ({ sessionId, isCandidate }) => {
+const VideoCall = ({ sessionId, isCandidate  }) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [peer, setPeer] = useState(null);
@@ -341,7 +341,7 @@ const VideoCall = ({ sessionId, isCandidate }) => {
             )}
           </Button>
 
-          <Button
+          {/* <Button
             variant="destructive"
             size="icon"
             className="bg-red-600 hover:bg-red-700"
@@ -349,7 +349,7 @@ const VideoCall = ({ sessionId, isCandidate }) => {
 
           >
             <PhoneOff className="h-5 w-5" />
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

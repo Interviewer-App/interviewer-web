@@ -53,7 +53,7 @@ const InterviewRoomPage = ({ params }) => {
   const searchParams = useSearchParams();
   const userId = searchParams.get("candidateId");
   const sessionID = searchParams.get("sessionID");
-
+  const router = useRouter();
   // const { socket } = useSocket();
   const { toast } = useToast();
   const [sessionId, setSessionId] = useState(null);
@@ -170,10 +170,17 @@ const InterviewRoomPage = ({ params }) => {
       setNumberOfAnswers(data.totalScore.numberOfAnswers);
     });
 
+
+    socket.on("participantLeft", (data) => {
+      router.push(`/joined-interviews/${sessionID}`);
+    });
+
     return () => {
       socket.off("joinInterviewSession");
       socket.off("questions");
       socket.off("navigateNextQuestion");
+      socket.off("answerSubmitted");
+      socket.off("participantLeft");
     };
   }, []);
 

@@ -22,6 +22,7 @@ import InterviewRoomAnalizerCandidateProfile from "./interview-room-analizer-can
 
 const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()
   const userID = searchParams.get('companyID')
@@ -76,7 +77,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
 
     socket.on("questions", (data) => {
-    
+
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
     });
@@ -131,6 +132,15 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       setCategoryScores(data.categoryScores.categoryScores);
     });
 
+    socket.on("participantLeft", (data) => {
+      toast({
+        variant: "info",
+        title: "Participant Left",
+        description: `Participant has left the meeting`,
+        action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+      })
+    });
+
     return () => {
       socket.off("answerSubmitted");
       socket.off("joinInterviewSession");
@@ -138,6 +148,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       socket.off("totalScore");
       socket.off("question");
       socket.off("questions");
+      socket.off("participantLeft");
     };
   }, []);
 
@@ -215,7 +226,9 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       sessionId,
       userId,
     };
-    socket.emit("leaveInterviewSession", data);
+    socket.emit("endInterviewSession", data);
+    handleEndCall()
+    router.push(`/session-history/${sessionId}`)
   };
 
   if (status === "loading") {
@@ -272,7 +285,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             className=" text-sm bg-red-700 py-1 h-11 px-4 rounded-md"
             onClick={leaveRoom}
           >
-            Leave Session
+            End Interview
           </button>
         </div>
 
