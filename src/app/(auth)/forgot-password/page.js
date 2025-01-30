@@ -7,8 +7,61 @@ import Image from "next/image";
 import bgGrid from "@/assets/grid-bg.svg";
 import bgGrain from "@/assets/grain-bg.svg";
 
+//API
+import { forgotPassword } from "@/lib/api/users";
+
+//components
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await forgotPassword({email});
+      if (response) {
+        toast({
+          variant: "success",
+          title: "Email Sent!",
+          description: "We have sent you an email with a temporary password.",
+        });
+        router.push("/login");
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Email Send Fail: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
 
   return (
     <div className=" relative bg-cover overflow-hidden flex flex-col items-center justify-center h-lvh w-full text-white">
@@ -28,9 +81,11 @@ const ForgotPasswordPage = () => {
           {"Forgot your password? "}
         </h1>
         <p className=" text-sm md:text-base text-neutral-500 pt-3 pb-8 ">
-        {"Don't fret! Just type in your email and we will send you a code to reset your password! "}
+          {
+            "Enter your email address below, and we will send you a temporary password to log in to your account."
+          }
         </p>
-        <form className=" w-full">
+        <form onSubmit={handleSubmit} className=" w-full">
           <label
             htmlFor="email"
             className=" text-left text-sm w-full mb-2 mt-5"
@@ -64,14 +119,12 @@ const ForgotPasswordPage = () => {
             </label>
           </div>
           <div className=" w-full flex justify-center items-center mt-7">
-            <Link href="/reset-password">
-              <button
-                type="submit"
-                className=" h-12 min-w-[170px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
-              >
-                Reset Password
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className=" h-12 min-w-[170px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+            >
+              Reset Password
+            </button>
           </div>
         </form>
       </div>

@@ -1,6 +1,6 @@
 import axiosInstance from "./axioinstance";
 
-const fetchUsers = async (page, limit, setLoading, setUsers, setTotalUsers) => {
+export const fetchUsers = async (page, limit, setLoading, setUsers, setTotalUsers) => {
   setLoading(true);
   try {
     const response = await axiosInstance.get(`/users/${page}/${limit}`);
@@ -97,4 +97,15 @@ export const deleteUserByEmail = async (email) => {
   }
 };
 
-export { fetchUsers };
+export const forgotPassword = async (email) => {
+  try {
+    const response = await axiosInstance.post(
+      `/auth/forgot-password/`, email 
+    );
+    return response;
+  } catch (error) {
+    console.log("Error sending email:", error);
+    throw error;
+  }
+};
+
