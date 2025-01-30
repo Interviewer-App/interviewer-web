@@ -18,34 +18,10 @@ import {
 import { NavUser } from "@/components/nav-user";
 import Link from "next/link";
 import { TeamSwitcher } from "./team-switcher"; 
-import { getSession } from "next-auth/react";
+import { SiEclipsejetty } from "react-icons/si";
 
 const commonItems = [
-  // {
-  //   title: "Dashboard",
-  //   url: "/dashboard",
-  //   icon: Inbox,
-  // },
-  // {
-  //   title: "Interviews",
-  //   url: "/interviews",
-  //   icon: Home,
-  // },
-  // {
-  //   title: "Interview session",
-  //   url: "/interview-session",
-  //   icon: Home,
-  // },
-  // {
-  //   title: "Users",
-  //   url: "/users",
-  //   icon: Inbox,
-  // },
-  // {
-  //   title: "AI",
-  //   url: "/AI",
-  //   icon: Search,
-  // },
+
 
 ];
 
@@ -106,9 +82,9 @@ const adminItems = [
 
 const teams = [
   {
-    name: "Coullax",
-    logo: Inbox, 
-    plan: "Pro",
+    name: "JUDGEJET",
+    logo: SiEclipsejetty, 
+    plan: "Decisions at Jet Speed",
   },
 ];
 
