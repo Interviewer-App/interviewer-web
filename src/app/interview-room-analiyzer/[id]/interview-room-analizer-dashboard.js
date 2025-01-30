@@ -116,76 +116,7 @@ function InterviewRoomAnalizerDashboard({
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={40}>
-              <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel defaultSize={40}>
-                <VideoCall sessionId={sessionId} isCandidate={false} />
-                  {/* <StreamVideoCall callId={sessionId} /> */}
-                </ResizablePanel>
-                <ResizableHandle />
-                <ResizablePanel defaultSize={60}>
-                  <div className="h-full w-full overflow-y-auto p-6">
-                    <div>
-                      <h1 className=" text-3xl font-semibold">
-                        Follow Up Questions
-                      </h1>
-                      <div className=" mt-3 rounded-lg">
-                        {analiyzeResponse.followUpQuestions?.map(
-                          (question, index) => (
-                            <div
-                              key={index}
-                              className=" py-3 text-sm bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 px-4 rounded-lg flex items-center justify-between"
-                            >
-                              <div className=" pr-2">{question}</div>
-                              <div>
-                                <AlertDialog>
-                                  <AlertDialogTrigger>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <IoMdAddCircleOutline className="text-blue-500 text-[22px] cursor-pointer" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Add as Next Question</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </AlertDialogTrigger>
-
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>
-                                        Are you sure you want to add as next
-                                        question?
-                                      </AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        This action cannot be undone.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>
-                                        Cancel
-                                      </AlertDialogCancel>
-                                      <AlertDialogAction
-                                        onClick={() => {
-                                          handleFollowUpQuestion(question);
-                                        }}
-                                        className="h-[40px] font-medium"
-                                      >
-                                        Add
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </div>
-                            </div>
-                          )
-                        ) || "No follow up questions found"}
-                      </div>
-                    </div>
-                  </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
+              <VideoCall sessionId={sessionId} isCandidate={false} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
@@ -247,8 +178,64 @@ function InterviewRoomAnalizerDashboard({
             <div className=" w-full bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg py-4 px-7">
               <h1 className=" font-semibold text-lg">Available Question</h1>
               <p className=" text-sm text-gray-400">
-              {availableQuestion?.questionText || ""}
+                {availableQuestion?.questionText || ""}
               </p>
+            </div>
+            <div className="w-full bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg py-4 px-7">
+              <div>
+                <h1 className=" text-lg font-semibold">Follow Up Questions</h1>
+                <div className=" mt-3 rounded-lg">
+                  {analiyzeResponse.followUpQuestions?.map(
+                    (question, index) => (
+                      <div
+                        key={index}
+                        className=" py-3 text-sm bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 px-4 rounded-lg flex items-center justify-between"
+                      >
+                        <div className=" pr-2">{question}</div>
+                        <div>
+                          <AlertDialog>
+                            <AlertDialogTrigger>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <IoMdAddCircleOutline className="text-blue-500 text-[22px] cursor-pointer" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Add as Next Question</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </AlertDialogTrigger>
+
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you sure you want to add as next question?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => {
+                                    handleFollowUpQuestion(question);
+                                  }}
+                                  className="h-[40px] font-medium"
+                                >
+                                  Add
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    )
+                  ) || "No follow up questions found"}
+                </div>
+              </div>
             </div>
           </div>
         </ResizablePanel>
