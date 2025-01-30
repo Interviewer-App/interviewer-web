@@ -10,6 +10,8 @@ import * as Icon from "react-feather"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useContext } from "react"
+import { signOut } from "next-auth/react"
+import { removeToken } from "@/lib/api/auth"
 
 const UserAction = () => {
   const router = useRouter()
@@ -22,9 +24,11 @@ const UserAction = () => {
   }
 
   const logout = () => {
+    signOut();
+    removeToken();
     localStorage.removeItem("user")
 
-    router.replace("/")
+    router.push("/login")
     router.refresh()
   }
 
