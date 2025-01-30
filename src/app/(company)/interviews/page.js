@@ -43,20 +43,30 @@ const InterviewsPage = () => {
         const session = await getSession();
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
+  
         if (response) {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
         setIsLoading(false);
       } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: `Error fetching interviews: ${error}`,
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
+        // Check if the error is a 404 (no interviews found)
+        if (error.response && error.response.status === 404) {
+          // No interviews found, set state accordingly
+          setInterviews([]);
+          setIsAnyInterviews(false);
+        } else {
+          // Handle other errors
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Error fetching interviews: ${error}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
       }
     };
+  
     fetchInterviews();
   }, [modalOpen]);
 
