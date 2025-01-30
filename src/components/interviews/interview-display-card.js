@@ -31,7 +31,7 @@ export default function InterviewDisplayCard({ index, interview }) {
       </TooltipProvider>
 
       <h3 className=" text-base md:text-xl">
-        Satrt:{" "}
+        start:{" "}
         {new Date(interview.startDate).toLocaleDateString("en-GB", {
           day: "numeric",
           month: "long",
