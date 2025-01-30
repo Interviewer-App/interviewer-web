@@ -315,7 +315,7 @@ const InterviewSchedulePage = () => {
         </div>
       </SidebarInset>
       {loading && (
-              <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
+              <div className=" fixed  top-0 left-0 h-full w-full flex items-center justify-center bg-black/50">
                 <Loading />
               </div>
             )}
