@@ -38,6 +38,7 @@ const CreateTeamModal = ({ setModalOpen, isUpdate, companyTeam }) => {
   }, [isUpdate, companyTeam]);
 
   const handlCreateTeam = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const session = await getSession();
@@ -60,6 +61,7 @@ const CreateTeamModal = ({ setModalOpen, isUpdate, companyTeam }) => {
         });
         setModalOpen(false);
       }
+      setLoading(false);
     } catch (error) {
       if (error.response) {
         const { data } = error.response;
