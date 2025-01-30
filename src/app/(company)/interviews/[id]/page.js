@@ -82,7 +82,7 @@ import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import InvitedCandidates from "@/components/interviews/invite-candidates";
 import InterviewCharts from "@/components/interviews/interviewCharts";
 import dynamic from "next/dynamic";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -148,6 +148,18 @@ export default function InterviewPreviewPage({ params }) {
     datasets: [
       {
         label: "Schedules",
+        data: [0, 0],
+        backgroundColor: ["rgba(111, 88, 223, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  });
+  const [pieChartData, setPieChartData] = useState({
+    labels: ["Pending", "Completed"],
+    datasets: [
+      {
+        label: "Sessions",
         data: [0, 0],
         backgroundColor: ["rgba(111, 88, 223, 0.2)", "rgba(54, 162, 235, 0.2)"],
         borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
@@ -476,6 +488,25 @@ export default function InterviewPreviewPage({ params }) {
           },
         ],
       });
+      setPieChartData({
+        labels: ["Pending", "Completed"],
+        datasets: [
+          {
+            label: "Sessions",
+            data: [
+              interviewStatusDetails.totalSchedules -
+                interviewStatusDetails.completedSchedules,
+              interviewStatusDetails.completedSchedules,
+            ],
+            backgroundColor: [
+              "rgba(111, 88, 223, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+            ],
+            borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
+            borderWidth: 1,
+          },
+        ],
+      });
     }
   }, [interviewStatusDetails]);
 
@@ -675,7 +706,7 @@ export default function InterviewPreviewPage({ params }) {
   const handleOnChange = (content) => {
     setDescription(content);
   };
-  
+
   return (
     <div className=" w-full">
       <SidebarInset>
@@ -824,7 +855,7 @@ export default function InterviewPreviewPage({ params }) {
 
           {tab === "overview" && (
             <div className=" w-full h-full md:p-9 md:pb-0 rounded-lg mt-5">
-              <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5">
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
                   <h1 className=" text-lg md:text-2xl font-semibold">
                     Highest Mark
@@ -858,10 +889,28 @@ export default function InterviewPreviewPage({ params }) {
                   </h1>
                 </div>
               </div>
-              <div className=" mt-5 bg-slate-600/10 rounded-lg px-6 mb-10 py-5 w-full">
-                <h1 className=" w-full text-left text-2xl font-semibold">Bookings Overview</h1>
-                <div className=" max-h-[400px] w-full mt-5 flex items-center justify-center ">
-                  <Doughnut data={chartData} options={{ responsive: true }} />
+              <div className=" mt-5 mb-10 w-full">
+                <div className=" mx-auto w-full flex flex-col md:flex-row items-center space-x-5 justify-around">
+                  <div className=" w-full bg-slate-600/10 px-6 py-5 rounded-lg md:w-[50%]">
+                    <h1 className=" w-full text-left text-2xl font-semibold">
+                      Bookings Overview
+                    </h1>
+                    <Doughnut
+                      className=" mx-auto mt-5 w-full max-h-[400px]"
+                      data={chartData}
+                      options={{ responsive: true }}
+                    />
+                  </div>
+                  <div className="  w-full bg-slate-600/10 px-6 py-5 rounded-lg md:w-[50%]">
+                    <h1 className=" w-full text-left text-2xl font-semibold">
+                      Sessions Overview
+                    </h1>
+                    <Pie
+                      className=" mx-auto mt-5 w-full max-h-[400px]"
+                      data={pieChartData}
+                      options={{ responsive: true }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
