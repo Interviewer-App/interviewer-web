@@ -68,7 +68,11 @@ import {
 // import Editor from "@/components/rich-text/editor";
 
 //API
-import { getInterviewById, updateInterview } from "@/lib/api/interview";
+import {
+  getInterviewById,
+  interviewStatus,
+  updateInterview,
+} from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter, redirect } from "next/navigation";
@@ -77,11 +81,31 @@ import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import InvitedCandidates from "@/components/interviews/invite-candidates";
 import InterviewCharts from "@/components/interviews/interviewCharts";
-import dynamic from 'next/dynamic'
-const QuillEditor = dynamic(
-  () => import('@/components/quillEditor'),
-  { ssr: false }
-)
+import dynamic from "next/dynamic";
+import { Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
+const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
+  ssr: false,
+});
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -118,6 +142,19 @@ export default function InterviewPreviewPage({ params }) {
   const [inputScheduleEndTime, setInputScheduleEndTime] = useState("");
   const [scheduleList, setScheduleList] = useState([]);
   const [dateRange, setDateRange] = useState({});
+  const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
+  const [chartData, setChartData] = useState({
+    labels: ["Bookings", "Invitations"],
+    datasets: [
+      {
+        label: "Schedules",
+        data: [0, 0],
+        backgroundColor: ["rgba(111, 88, 223, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  });
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -396,8 +433,51 @@ export default function InterviewPreviewPage({ params }) {
         console.log("Error fetching interview overview:", error);
       }
     };
-    if (interviewId) fetchOverviewData();
+
+    if (interviewId) {
+      fetchOverviewData();
+    }
   }, [interviewId]);
+
+  useEffect(() => {
+    const fetchInterviewStatus = async () => {
+      try {
+        const response = await interviewStatus(interviewId);
+        if (response.data) {
+          setInterviewStatusDetails(response.data);
+        }
+      } catch (error) {
+        console.log("Error fetching interview status:", error);
+      }
+    };
+
+    if (interviewId) {
+      fetchInterviewStatus();
+    }
+  }, [interviewId]);
+
+  useEffect(() => {
+    if (interviewStatusDetails) {
+      setChartData({
+        labels: ["Bookings", "Invitations"],
+        datasets: [
+          {
+            label: "Schedules",
+            data: [
+              interviewStatusDetails.bookedSchedules,
+              interviewStatusDetails.schedulesWithInvitations,
+            ],
+            backgroundColor: [
+              "rgba(111, 88, 223, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+            ],
+            borderColor: ["rgba(111, 88, 223, 1)", "rgba(54, 162, 235, 1)"],
+            borderWidth: 1,
+          },
+        ],
+      });
+    }
+  }, [interviewStatusDetails]);
 
   const handlePublishInterview = async (status) => {
     try {
@@ -586,13 +666,13 @@ export default function InterviewPreviewPage({ params }) {
     const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
     redirect(loginURL);
   }
-  const handleOnChange  =  (content) => {
+  const handleOnChange = (content) => {
     // console.log('Updated Desc:', content);
     // console.log(content);
-    setDescription(content)
-  }
+    setDescription(content);
+  };
   return (
-    <>
+    <div className=" w-full">
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-3">
@@ -601,7 +681,12 @@ export default function InterviewPreviewPage({ params }) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/interviews" className=" cursor-pointer">Interviews</BreadcrumbLink>
+                  <BreadcrumbLink
+                    href="/interviews"
+                    className=" cursor-pointer"
+                  >
+                    Interviews
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem className="hidden md:block cursor-pointer">
@@ -612,7 +697,7 @@ export default function InterviewPreviewPage({ params }) {
           </div>
         </header>
 
-        <div className=" px-9 py-4  max-w-[1500px] bg-black w-full mx-auto">
+        <div className=" px-9 py-4  max-w-[1500px] bg-black w-full h-full mx-auto">
           <div className=" w-full flex flex-col md:flex-row justify-between md:items-center">
             <h1 className=" text-4xl font-semibold">
               {interviewDetail.jobTitle} - Interview
@@ -733,7 +818,7 @@ export default function InterviewPreviewPage({ params }) {
           </div>
 
           {tab === "overview" && (
-            <div className=" w-full h-full md:p-9 rounded-lg mt-5">
+            <div className=" w-full h-full md:p-9 md:pb-0 rounded-lg mt-5">
               <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
                   <h1 className=" text-lg md:text-2xl font-semibold">
@@ -768,7 +853,12 @@ export default function InterviewPreviewPage({ params }) {
                   </h1>
                 </div>
               </div>
-              <InterviewCharts />
+              <div className=" mt-5 bg-slate-600/10 rounded-lg px-6 mb-10 py-5 w-full">
+                <h1 className=" w-full text-left text-2xl font-semibold">Bookings Overview</h1>
+                <div className=" max-h-[400px] w-full mt-5 flex items-center justify-center ">
+                  <Doughnut data={chartData} options={{ responsive: true }} />
+                </div>
+              </div>
             </div>
           )}
 
@@ -917,16 +1007,20 @@ export default function InterviewPreviewPage({ params }) {
                       Description
                     </h1>
                     <div
-                      className={` ${editDetails ? 'hidden' : 'block'} text-justify w-full bg-transparent rounded-lg description`}
+                      className={` ${
+                        editDetails ? "hidden" : "block"
+                      } text-justify w-full bg-transparent rounded-lg description`}
                       dangerouslySetInnerHTML={{ __html: description }}
                     />
 
-                    {editDetails && (<QuillEditor
-                    editorId={"description"}
-                      value={description}
-                      placeholder="Enter job description..." 
-                      onChange={handleOnChange}
-                    />)}
+                    {editDetails && (
+                      <QuillEditor
+                        editorId={"description"}
+                        value={description}
+                        placeholder="Enter job description..."
+                        onChange={handleOnChange}
+                      />
+                    )}
 
                     <div>
                       <h1 className=" text-2xl font-semibold py-5">
@@ -1425,6 +1519,6 @@ export default function InterviewPreviewPage({ params }) {
           interviewId={interviewId}
         />
       )}
-    </>
+    </div>
   );
 }

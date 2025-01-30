@@ -90,3 +90,13 @@ export const deleteInterview = async (interviewID) => {
         throw error;
     }
 }
+
+export const interviewStatus = async (interviewID) => {
+    try {
+        const response=await axiosInstance.get(`/interview/schedule-stats/${interviewID}`)
+        return response;
+    } catch (error) {
+        console.log(`Error fetching Interview status`,error)
+        throw error;
+    }
+}
