@@ -35,6 +35,7 @@ import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Filter } from "lucide-react";
+import { useToast } from "@/hooks/use-toast"
 const InterviewSchedulePage = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -50,6 +51,7 @@ const InterviewSchedulePage = () => {
 
   const handleOpen = () => setIsSheetOpen(true);
   const handleClose = () => setIsSheetOpen(false);
+  const { toast } = useToast()
 
   useEffect(() => {
     socket.on("published", (data) => {
@@ -86,7 +88,39 @@ const InterviewSchedulePage = () => {
     e.preventDefault();
     fetchPublishedInterviews();
     setIsSheetOpen(false);
+
+    // Success toast for applying filters
+    toast({
+      title: "Success",
+      description: "Filters applied successfully!",
+    })
   };
+
+  const handleReset = () => {
+    // Reset all filter states to their initial values
+    setSortBy("");
+    setDatePosted("");
+    setInterviewCategory("");
+    setJobTitle("");
+    setKeyWords("");
+  
+    // Fetch interviews without any filters
+    fetchPublishedInterviews();
+  
+    // Close the sheet (if it's open)
+    setIsSheetOpen(false);
+  
+    // Show a toast notification for resetting the filters
+    toast({
+      title: "Filters Reset",
+      description: "All filters have been cleared!",
+    });
+  };
+
+  useEffect(() => {
+    fetchPublishedInterviews();
+  }, [sordBy, datePosted, interviewCategory, jobTitle, keyWords]);
+
 
   if (status === "loading") {
     return (
@@ -239,7 +273,7 @@ const InterviewSchedulePage = () => {
                     />
                   </div>
                   <div className=" w-full flex justify-between mt-5">
-                    <button className=" mt-6 bg-transparent border-2 hover:text-white hover:border-white border-gray-600 rounded-lg text-center text-sm text-gray-600 font-semibold h-11 w-[130px]">
+                    <button  type="button" onClick={handleReset} className=" mt-6 bg-transparent border-2 hover:text-white hover:border-white border-gray-600 rounded-lg text-center text-sm text-gray-600 font-semibold h-11 w-[130px]">
                       Reset fitler
                     </button>
                     <button
