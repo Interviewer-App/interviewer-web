@@ -280,7 +280,7 @@ export default function GenerateQuestionModal({
               <button
                 type="submit"
                 
-                className=" h-12 min-w-[150px] w-full md:w-[40%] mt-2 cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+                className=" h-11 min-w-[150px] w-full md:w-[40%] mt-2 cursor-pointer bg-white text-black text-sm rounded-lg text-center font-semibold"
               >
                 Genarate
               </button>
