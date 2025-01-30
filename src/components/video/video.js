@@ -146,6 +146,23 @@ const VideoCall = ({ sessionId, isCandidate }) => {
       if (originalAudioTrack.current) originalAudioTrack.current.stop();
       if (peer) peer.destroy();
       if (socket.current) socket.current.disconnect();
+
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+      }
+      
+      // Destroy peer instance
+      if (peer) {
+        peer.destroy();
+      }
+      
+      // Disconnect socket
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+      
+      // Close all active calls
+      activeCalls.current.forEach(call => call.close());
     };
   }, [sessionId]);
 
@@ -238,6 +255,23 @@ const VideoCall = ({ sessionId, isCandidate }) => {
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  const handleEndCall = () => {
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+    }
+    
+    if (peer) {
+      peer.destroy();
+    }
+    
+    if (socket.current) {
+      socket.current.disconnect();
+    }
+    
+    activeCalls.current.forEach(call => call.close());
+    
+  };
+
   return (
 <div className=" bg-gray-900 relative">
       {/* Timer */}
@@ -311,6 +345,8 @@ const VideoCall = ({ sessionId, isCandidate }) => {
             variant="destructive"
             size="icon"
             className="bg-red-600 hover:bg-red-700"
+            onClick={handleEndCall}
+
           >
             <PhoneOff className="h-5 w-5" />
           </Button>
