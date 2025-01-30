@@ -710,7 +710,7 @@ export default function InterviewPreviewPage({ params }) {
   return (
     <div className=" w-full">
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
+        <header className="flex bg-black h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-3">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -733,7 +733,7 @@ export default function InterviewPreviewPage({ params }) {
           </div>
         </header>
 
-        <div className=" px-9 py-4  max-w-[1500px] bg-black w-full h-full mx-auto">
+        <div className=" px-9 py-4  max-w-[1500px] bg-black w-full mx-auto">
           <div className=" w-full flex flex-col md:flex-row justify-between md:items-center">
             <h1 className=" text-4xl font-semibold">
               {interviewDetail.jobTitle} - Interview
@@ -917,7 +917,7 @@ export default function InterviewPreviewPage({ params }) {
           )}
 
           {tab === "edit" && (
-            <div className="w-full h-fit">
+            <div className="w-full">
               {interviewDetail.status === "ACTIVE" &&
                 interviewSessions.length > 0 && (
                   <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-600">
@@ -1496,7 +1496,7 @@ export default function InterviewPreviewPage({ params }) {
           )}
 
           {tab === "settings" && (
-            <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
+            <div className="w-full bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
               <div className=" w-full flex items-center justify-between">
                 <div>
                   <h1 className=" text-2xl font-semibold">Delete Interview</h1>
@@ -1538,7 +1538,7 @@ export default function InterviewPreviewPage({ params }) {
           )}
           {tab === "invitation" && (
             <>
-              <div className="w-full h-fit bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
+              <div className="w-full bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
                 <div className=" w-full flex items-center justify-between">
                   <div>
                     <h1 className=" text-2xl font-semibold">
