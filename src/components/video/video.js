@@ -1,6 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
 import io from 'socket.io-client';
+import { 
+  Mic,
+  MicOff,
+  Video,
+  VideoOff,
+  ScreenShare,
+  ScreenShareOff,
+  Settings,
+  Link2,
+  PhoneOff
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const VideoCall = ({ sessionId, isCandidate }) => {
   const [localStream, setLocalStream] = useState(null);
@@ -15,7 +28,14 @@ const VideoCall = ({ sessionId, isCandidate }) => {
   const originalVideoTrack = useRef(null);
   const originalAudioTrack = useRef(null);
   const activeCalls = useRef([]);
+  const [callDuration, setCallDuration] = useState(0);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCallDuration((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     socket.current = io(process.env.NEXT_PUBLIC_API_URL_SOCKET);
 
@@ -211,28 +231,92 @@ const VideoCall = ({ sessionId, isCandidate }) => {
     }
   };
 
-  return (
-    <div>
-    <h1>{isCandidate ? 'Candidate' : 'Company'} Video Call</h1>
-    
-    <video ref={localVideoRef} autoPlay muted />
-    <video ref={remoteVideoRef} autoPlay />
+  const formatTime = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
 
-    <div className="controls">
-      <button onClick={toggleMic}>
-        {isMicOn ? 'Mute Mic' : 'Unmute Mic'}
-      </button>
-      <button 
-        onClick={toggleCamera} 
-        disabled={isScreenSharing}
-      >
-        {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
-      </button>
-      <button onClick={toggleScreenShare}>
-        {isScreenSharing ? 'Stop Screen Share' : 'Share Screen'}
-      </button>
+  return (
+<div className=" bg-gray-900 relative">
+      {/* Timer */}
+      <div className="absolute top-4 left-4 text-white z-10">
+        <span className="font-medium">{formatTime(callDuration)}</span>
+      </div>
+
+      {/* Video containers */}
+      <div className="flex items-center justify-center">
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          className="h-full w-full object-contain"
+        />
+        <video
+          ref={localVideoRef}
+          autoPlay
+          muted
+          className="absolute top-4 right-4 w-48 h-32 rounded-lg border-2 border-gray-200 bg-black"
+        />
+      </div>
+
+      {/* Controls bar */}
+      <div className="absolute bottom-0 left-0 right-0 bg-gray-800/80 py-4">
+        <div className="flex items-center justify-center gap-4">
+          <Button variant="ghost" size="icon">
+            <Settings className="h-5 w-5 text-white" />
+          </Button>
+
+          <Button variant="ghost" size="icon">
+            <Link2 className="h-5 w-5 text-white" />
+          </Button>
+
+          <Button
+            variant={isMicOn ? 'default' : 'destructive'}
+            size="icon"
+            onClick={toggleMic}
+          >
+            {isMicOn ? (
+              <Mic className="h-5 w-5" />
+            ) : (
+              <MicOff className="h-5 w-5" />
+            )}
+          </Button>
+
+          <Button
+            variant={isCameraOn ? 'default' : 'destructive'}
+            size="icon"
+            onClick={toggleCamera}
+          >
+            {isCameraOn ? (
+              <Video className="h-5 w-5" />
+            ) : (
+              <VideoOff className="h-5 w-5" />
+            )}
+          </Button>
+
+          <Button
+            variant={isScreenSharing ? 'destructive' : 'default'}
+            size="icon"
+            onClick={toggleScreenShare}
+          >
+            {isScreenSharing ? (
+              <ScreenShareOff className="h-5 w-5" />
+            ) : (
+              <ScreenShare className="h-5 w-5" />
+            )}
+          </Button>
+
+          <Button
+            variant="destructive"
+            size="icon"
+            className="bg-red-600 hover:bg-red-700"
+          >
+            <PhoneOff className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
     </div>
-  </div>
   );
 };
 
