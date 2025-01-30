@@ -188,7 +188,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
                 Total Interviews
               </h2>
               <div className="text-4xl font-bold text-white text-center">
-                {overview.total}
+                {overview.total || 0}
               </div>
             </div>
             <span className="text-xs font-medium bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full">
@@ -204,7 +204,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
                 <span className="text-sm text-zinc-400">Completed</span>
               </div>
               <span className="text-sm font-medium text-white">
-                {overview.completed}
+                {overview.completed || 0}
               </span>
             </div>
 
@@ -214,7 +214,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
                 <span className="text-sm text-zinc-400">Pending</span>
               </div>
               <span className="text-sm font-medium text-white">
-                {overview.pending}
+                {overview.pending || 0}
               </span>
             </div>
           </div>
@@ -304,7 +304,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
                           <div className="flex items-center">
                             <span className="font-medium">ID:</span>
                             <span className="ml-2">
-                              {interview.interviewId}
+                              {interview.interviewId } 
                             </span>
                             <button
                               onClick={() => handleCopy(interview.interviewId)}
