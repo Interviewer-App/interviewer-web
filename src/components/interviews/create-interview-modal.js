@@ -119,13 +119,13 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        "linear-gradient( 95deg,rgb(120,93,251) 0%, rgb(120,93,251) 50%, rgb(101,170,166) 100%)",
+        "linear-gradient( 95deg,rgb(255,255,255) 0%, rgb(255,255,255) 50%, rgb(255,255,255) 100%)",
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        "linear-gradient( 95deg,rgb(120,93,251) 0%, rgb(120,93,251) 50%, rgb(101,170,166) 100%)",
+        "linear-gradient( 95deg,rgb(255,255,255) 0%, rgb(255,255,255) 50%, rgb(255,255,255) 100%)",
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
