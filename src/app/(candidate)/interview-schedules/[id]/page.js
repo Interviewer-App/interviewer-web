@@ -240,12 +240,12 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                       {interviewDetail.interviewCategory}
                     </span>
                   </p>
-                  <p className="text-lg text-gray-300">
+                  {/* <p className="text-lg text-gray-300">
                     Scheduled At:{" "}
                     <span className="font-medium text-white">
                       {new Date(interviewDetail.scheduledAt).toLocaleString()}
                     </span>
-                  </p>
+                  </p> */}
                 </div>
 
                 {/* Job Description Section */}
