@@ -121,7 +121,7 @@ const ForgotPasswordPage = () => {
           <div className=" w-full flex justify-center items-center mt-7">
             <button
               type="submit"
-              className=" h-12 min-w-[170px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              className=" h-12 min-w-[170px] w-full md:w-[40%] cursor-pointer rounded-lg text-center text-sm text-black bg-white font-semibold"
             >
               Reset Password
             </button>
