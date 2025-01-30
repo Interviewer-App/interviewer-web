@@ -179,7 +179,7 @@ const ResetPasswordPage = () => {
 
             <button
               type="submit"
-              className=" h-12 mt-5 min-w-[150px] w-full md:w-[40%] cursor-pointer bg-gradient-to-b from-lightred to-darkred rounded-lg text-center text-base text-white font-semibold"
+              className=" h-12 mt-5 min-w-[150px] w-full md:w-[40%] cursor-pointer rounded-lg text-center text-sm text-black bg-white font-semibold"
             >
               Reset Password
             </button>

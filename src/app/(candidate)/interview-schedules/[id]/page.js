@@ -213,7 +213,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
             </h1>
             <button
               type="button"
-              className="h-11 min-w-[150px] mt-5 md:mt-0 w-[200px] md:w-[10%] cursor-pointer bg-white from-lightred to-darkred rounded-lg text-center text-sm text-black font-semibold"
+              className="h-11 min-w-[150px] mt-5 md:mt-0 w-[200px] md:w-[10%] cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
               onClick={() => setSlotModalOpen(true)}
             >
               Book Your Slot

@@ -100,7 +100,7 @@ export default function InterviewScheduleCard({ index, interview,showButton=true
       {showButton && (
       <button
         type="button"
-        className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white from-lightred to-darkred rounded-lg text-center text-base text-black font-semibold"
+        className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
         onClick={joinInterviewSession}
       >
         Join Now
