@@ -593,6 +593,12 @@ export default function InterviewPreviewPage({ params }) {
           interviewId: interviewId,
           companyId: interviewDetail.companyID,
         });
+        toast({
+          variant: "default",
+          title: "Success!",
+          description: "Interview details have been updated successfully.",
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
       }
     } catch (error) {
       if (error.response) {
