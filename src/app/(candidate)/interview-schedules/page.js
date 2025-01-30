@@ -46,6 +46,7 @@ const InterviewSchedulePage = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [keyWords, setKeyWords] = useState("");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleOpen = () => setIsSheetOpen(true);
   const handleClose = () => setIsSheetOpen(false);
@@ -63,6 +64,7 @@ const InterviewSchedulePage = () => {
   }, []);
 
   const fetchPublishedInterviews = async () => {
+    setLoading(true);
     try {
       console.log("interviewCategory", interviewCategory);
       const response = await getPublishedInterview(
@@ -74,6 +76,7 @@ const InterviewSchedulePage = () => {
       );
       setInterviews(response.data);
       setIsAnyInterviews(response.data.length > 0);
+      setLoading(false);
     } catch (error) {
       console.log("Error fetching interviews:", error);
     }
@@ -277,6 +280,11 @@ const InterviewSchedulePage = () => {
           )}
         </div>
       </SidebarInset>
+      {loading && (
+              <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
+                <Loading />
+              </div>
+            )}
     </>
   );
 };
