@@ -35,9 +35,11 @@ const InterviewsPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchInterviews = async () => {
+      setIsLoading(true);
       try {
         const session = await getSession();
         const companyId = session?.user?.companyID;
@@ -46,6 +48,7 @@ const InterviewsPage = () => {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
+        setIsLoading(false);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -146,6 +149,11 @@ const InterviewsPage = () => {
           )}
         </div>
         {modalOpen && <CreateInterviewModal setModalOpen={setModalOpen} />}
+        {isLoading && (
+                <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
+                  <Loading />
+                </div>
+              )}
       </SidebarInset>
     </>
   );
