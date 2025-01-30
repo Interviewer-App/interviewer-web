@@ -44,7 +44,7 @@ export function DataTable({ columns, data }) {
     });
 
     return (
-        <div className="px-6">
+        <div className="px-6 mb-8">
             <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Filter categories..."
