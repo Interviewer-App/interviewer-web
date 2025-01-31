@@ -194,7 +194,7 @@ const InterviewComparision = () => {
         const companyId = session?.user?.companyID;
         const response = await getInterviews(companyId);
         setInterviews(response.data);
-        console.log(response)
+        // console.log(response)
       } catch (error) {
         // Check if the error is a 404 (no interviews found)
         if (error.response && error.response.status === 404) {
@@ -228,7 +228,7 @@ const InterviewComparision = () => {
         const response = await getCompletedSessionComparision(data);
         setIsComparePressed(true);
         setComparisonResult(response.data); // Store the comparison result
-        console.log("Comparison Result:", response.data);
+        // console.log("Comparison Result:", response.data);
 
         // Display success toast
         toast({
