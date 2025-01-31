@@ -34,7 +34,7 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Filter } from "lucide-react";
+import { Filter,SlidersHorizontal  } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
 const InterviewSchedulePage = () => {
   const { data: session, status } = useSession();
@@ -68,7 +68,7 @@ const InterviewSchedulePage = () => {
   const fetchPublishedInterviews = async () => {
     setLoading(true);
     try {
-      console.log("interviewCategory", interviewCategory);
+      // console.log("interviewCategory", interviewCategory);
       const response = await getPublishedInterview(
         sordBy,
         datePosted,
@@ -158,7 +158,7 @@ const InterviewSchedulePage = () => {
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger>
                 <div className=" bg-transparent border-2 border-gray-300 text-gray-300 hover:text-gray-500 hover:border-gray-500 px-2 py-2 rounded-sm cursor-pointer">
-                  <Filter />
+                  <SlidersHorizontal  />
                 </div>
               </SheetTrigger>
               <SheetContent>

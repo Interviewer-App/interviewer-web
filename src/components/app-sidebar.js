@@ -101,7 +101,7 @@ export function AppSidebar() {
       user: {
         name: role,
         email: userEmail,
-        avatar: "/avatars/shadcn.jpg",
+        avatar: "https://github.com/shadcn.png",
       },
     });
 
