@@ -109,3 +109,16 @@ export const forgotPassword = async (email) => {
   }
 };
 
+
+
+export const uploadDocumet = async (formdata, candidateId) => {
+  try {
+    const response = await axiosInstance.post(
+      `/upload/cv/${candidateId}`, formdata 
+    );
+    return response;
+  } catch (error) {
+    console.log("Error sending email:", error);
+    throw error;
+  }
+};

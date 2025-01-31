@@ -24,12 +24,11 @@ const UserAction = () => {
   }
 
   const logout = () => {
+    router.push("/login")
     signOut();
     removeToken();
-    localStorage.removeItem("user")
-
-    router.push("/login")
-    router.refresh()
+    localStorage.removeItem("token")
+    // router.refresh()
   }
 
   return (

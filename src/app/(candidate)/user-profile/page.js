@@ -73,6 +73,7 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
 import { set } from "zod";
+import UploadDocumentModal from "@/components/candidate/upload-document-modal";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -491,10 +492,9 @@ const UserProfile = () => {
                 </div>
 
                 {modalOpen && (
-                  <InterviewCategoryModal
-                    setModalOpen={setModalOpen}
-                    isUpdated={false}
-                  />
+                  <UploadDocumentModal setModalOpen={setModalOpen}
+                  isUpdated={false} />
+                
                 )}
 
                 {/* Pagination */}
