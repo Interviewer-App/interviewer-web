@@ -61,7 +61,12 @@ import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import ContactFormPreview from "@/components/ui/userDetailsForm";
-import { deleteUserByEmail, getCandidateById, updateCandidateById } from "@/lib/api/users";
+import {
+  deleteUserByEmail,
+  fetchDocumet,
+  getCandidateById,
+  updateCandidateById,
+} from "@/lib/api/users";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -72,12 +77,7 @@ import { FaGithub } from "react-icons/fa";
 import { FaFacebookSquare } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
-import { set } from "zod";
 import UploadDocumentModal from "@/components/candidate/upload-document-modal";
-const PdfViewer = dynamic(
-  () => import('@/components/candidate/PdfViewer'),
-  { ssr: false }
-)
 
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
@@ -112,6 +112,7 @@ const UserProfile = () => {
   const [discordUrl, setDiscordUrl] = useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
+  const [documentUrl, setDocumentUrl] = useState("");
 
   useEffect(() => {
     const fetchCandidateId = async () => {
@@ -211,6 +212,47 @@ const UserProfile = () => {
 
     if (candidateId) fetchCandidateDetails();
   }, [candidateId, isEdit]);
+
+  useEffect(() => {
+    const fetchdocument = async () => {
+      try {
+        const response = await fetchDocumet(candidateId);
+        if (response.data) {
+          setDocumentUrl(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `documents Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (candidateId) fetchdocument();
+  }, [candidateId]);
 
   useEffect(() => {
     if (candidateDetails?.user?.dob) {
@@ -386,22 +428,25 @@ const UserProfile = () => {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("details")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "details" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  Tab === "details" ? "bg-gray-800" : ""
+                } `}
               >
                 Details
               </button>
               <button
                 onClick={() => setTab("document")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "document" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  Tab === "document" ? "bg-gray-800" : ""
+                } `}
               >
                 Documents
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "settings" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  Tab === "settings" ? "bg-gray-800" : ""
+                } `}
               >
                 Settings
               </button>
@@ -409,16 +454,18 @@ const UserProfile = () => {
             <div className={` ${Tab !== "details" ? "hidden" : "block"} `}>
               <button
                 onClick={() => setIsEdit(true)}
-                className={` ${isEdit ? "hidden" : "block"
-                  } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
+                className={` ${
+                  isEdit ? "hidden" : "block"
+                } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
               >
                 <MdEdit className=" text-base mr-2" />{" "}
                 <span className=" inline-block">Edit Profile</span>
               </button>
               <button
                 onClick={handleSaveChanges}
-                className={` ${isEdit ? "block" : "hidden"
-                  } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
+                className={` ${
+                  isEdit ? "block" : "hidden"
+                } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
               >
                 Save Changes
               </button>
@@ -474,25 +521,57 @@ const UserProfile = () => {
                   <h1 className="text-2xl font-semibold">Documents</h1>
 
                   {/* Add Category Button */}
-                  <button
-                    onClick={() => setModalOpen(true)}
-                    className="rounded-full text-3xl font-semibold bg-white text-black h-12 aspect-square"
-                  >
-                    +
-                  </button>
+                  {documentUrl.length > 0 && (
+                    <button
+                      onClick={() => setModalOpen(true)}
+                      className="rounded-full text-3xl font-semibold bg-white text-black h-12 aspect-square"
+                    >
+                      +
+                    </button>
+                  )}
                 </div>
 
-               
+                <div className=" flex items-start justify-between mb-5 w-full">
+                  <div className=" w-[68%] rounded-lg bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
+                    {documentUrl.length > 0 ? (
+                      <iframe
+                        src={`${documentUrl}#toolbar=0`}
+                        className=" overflow-x-hidden rounded-lg "
+                        width="100%"
+                        height="500px"
+                        style={{ border: "none" }}
+                        title="PDF Viewer"
+                      />
+                    ) : (
+                      <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg flex flex-col items-center justify-center min-h-[500px]">
+                        <h1 className=" text-xl font-semibold">
+                          No Document Found
+                        </h1>
+                        <p className=" text-xs italic text-center w-[80%] py-2 mx-auto text-gray-600">
+                          {
+                            "Please upload your CV in PDF format. Ensure the file is properly named (e.g., YourName_CV.pdf) and does not exceed the size limit. Supported format: .pdf."
+                          }
+                        </p>
+                        <button
+                          onClick={() => setModalOpen(true)}
+                          className="rounded-lg px-4 text-xs font-semibold bg-white text-black h-9 mt-2"
+                        >
+                          Upload document
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className=" w-[30%] min-h-[500px] bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
+                    <h1 className=" text-2xl font-semibold h-full ">Summary</h1>
+                  </div>
+                </div>
 
                 {modalOpen && (
-                  <UploadDocumentModal setModalOpen={setModalOpen}
-                    isUpdated={false} />
-
+                  <UploadDocumentModal
+                    setModalOpen={setModalOpen}
+                    isUpdated={false}
+                  />
                 )}
-
-                <PdfViewer url={"https://pdfobject.com/pdf/sample.pdf"} />
-
-                
               </div>
             )}
             {Tab === "details" && (
@@ -501,15 +580,17 @@ const UserProfile = () => {
                   <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
                     <h1 className=" text-xl font-semibold">Experiences</h1>
                     <div
-                      className={` ${isEdit ? "hidden" : "block"
-                        } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
+                      className={` ${
+                        isEdit ? "hidden" : "block"
+                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: experience || "No Experiences",
                       }}
                     />
                     <div
-                      className={`${isEdit ? "block" : "hidden"
-                        } mt-5 text-gray-500`}
+                      className={`${
+                        isEdit ? "block" : "hidden"
+                      } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"experience"}
@@ -522,15 +603,17 @@ const UserProfile = () => {
                   <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
                     <h1 className=" text-xl font-semibold">Skill Highlights</h1>
                     <div
-                      className={`${isEdit ? "hidden" : "block"
-                        } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
+                      className={`${
+                        isEdit ? "hidden" : "block"
+                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: skillHighlights || "No Skill Highlight",
                       }}
                     />
                     <div
-                      className={`${isEdit ? "block" : "hidden"
-                        } mt-5 text-gray-500`}
+                      className={`${
+                        isEdit ? "block" : "hidden"
+                      } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"skillHighlights"}
@@ -646,8 +729,9 @@ const UserProfile = () => {
                         value={contactNo || ""}
                         placeholder="Contact Number"
                         onChange={(e) => setContactNo(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                   </div>
@@ -660,8 +744,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={linkedinUrl || ""}
                         onChange={(e) => setLinkedinUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -671,8 +756,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={githubUrl || ""}
                         onChange={(e) => setGithubUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -682,8 +768,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={facebookUrl || ""}
                         onChange={(e) => setFacebookUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -693,8 +780,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={twitterUrl || ""}
                         onChange={(e) => setTwitterUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -704,8 +792,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={discordUrl || ""}
                         onChange={(e) => setDiscordUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                   </div>
