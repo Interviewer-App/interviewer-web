@@ -13,11 +13,53 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import CreateTeamModal from "@/components/company/create-team-modal";
+import { deleteTeamByUserId } from "@/lib/api/user-team";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const ActionCell = ({ companyTeam }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const { toast } = useToast();
 
-  const handleDelete = async () => {
+  const handleDelete = async (userId) => {
+    try {
+      const response = await deleteTeamByUserId(userId);
+      if (response) {
+        toast({
+          variant: "success",
+          title: "Team Account Deleted",
+          description: "Your account has been successfully deleted.",
+        });
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `error while deleting Team account: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
   };
 
   const handleUpdate = async () => {
@@ -36,7 +78,7 @@ const ActionCell = ({ companyTeam }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => handleDelete()}>
+          <DropdownMenuItem onClick={() => handleDelete(companyTeam.userId)}>
             Delete
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleUpdate()}>
