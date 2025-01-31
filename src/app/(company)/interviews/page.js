@@ -47,6 +47,7 @@ const InterviewsPage = () => {
         }
         
       } catch (error) {
+        setIsLoading(false);
         // Check if the error is a 404 (no interviews found)
         if (error.response && error.response.status === 404) {
           // No interviews found, set state accordingly
