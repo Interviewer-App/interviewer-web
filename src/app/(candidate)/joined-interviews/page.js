@@ -41,7 +41,7 @@ const JoinedInterviews = () => {
         setLoading(true); // Start loading
         const session = await getSession();
         const candidateId = session?.user?.candidateID;
-        console.log("candidate ID:", candidateId);
+        // console.log("candidate ID:", candidateId);
 
         // Fetch interviews data
         await fetchJoinedInterviews(
