@@ -61,9 +61,9 @@ const JoinedInterviews = () => {
   }, [page, limit]); // Fetch new interviews when page or limit change
 
   // Log the fetched interviews when payments state changes
-  useEffect(() => {
-    console.log("Fetched interviews:", interviewData);
-  }, [interviewData]); // This effect runs whenever payments state changes
+  // useEffect(() => {
+  //   console.log("Fetched interviews:", interviewData);
+  // }, [interviewData]); // This effect runs whenever payments state changes
 
   // Pagination handlijgs
   const handleNextPage = () => {
