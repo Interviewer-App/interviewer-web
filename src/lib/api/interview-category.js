@@ -5,7 +5,7 @@ const fetchInterCategories =async(companyId,page,limit) =>{
 
     try {
         const response=await axiosInstance.get(`/categories/${companyId}/${page}/${limit}`);
-        console.log(response);
+        // console.log(response);
         return response;
     } catch (error) {
         console.log(error);
