@@ -45,7 +45,7 @@ const InterviewsPage = () => {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
-        setIsLoading(false);
+        
       } catch (error) {
         // Check if the error is a 404 (no interviews found)
         if (error.response && error.response.status === 404) {
@@ -61,6 +61,8 @@ const InterviewsPage = () => {
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         }
+      }finally{
+        setIsLoading(false);
       }
     };
 

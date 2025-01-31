@@ -78,9 +78,11 @@ const InterviewSchedulePage = () => {
       );
       setInterviews(response.data);
       setIsAnyInterviews(response.data.length > 0);
-      setLoading(false);
+      
     } catch (error) {
       console.log("Error fetching interviews:", error);
+    }finally{
+      setLoading(false);
     }
   };
 
