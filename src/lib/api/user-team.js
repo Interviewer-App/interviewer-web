@@ -24,3 +24,15 @@ export const createTeam = async (data) => {
     throw error;
   }
 };
+
+export const deleteTeamByUserId = async (userId) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/users/delete/team/${userId}`, 
+    );
+    return response;
+  } catch (error) {
+    console.log("Error Deleting Team account:", error);
+    throw error;
+  }
+};
