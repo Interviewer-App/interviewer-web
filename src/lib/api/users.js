@@ -109,8 +109,6 @@ export const forgotPassword = async (email) => {
   }
 };
 
-
-
 export const uploadDocumet = async (formdata, candidateId) => {
   try {
     const response = await axiosInstance.post(
@@ -118,7 +116,19 @@ export const uploadDocumet = async (formdata, candidateId) => {
     );
     return response;
   } catch (error) {
-    console.log("Error sending email:", error);
+    console.log("Error uploading document:", error);
+    throw error;
+  }
+};
+
+export const fetchDocumet = async (candidateId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/upload/resume-url/${candidateId}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error fetching document:", error);
     throw error;
   }
 };
