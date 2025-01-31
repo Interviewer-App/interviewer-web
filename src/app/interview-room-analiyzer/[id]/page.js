@@ -137,7 +137,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       userId,
     };
     socket.emit("endInterviewSession", data);
-    handleEndCall()
     router.push(`/session-history/${sessionId}`)
   };
 
