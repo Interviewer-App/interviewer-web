@@ -2,12 +2,13 @@ import React, { use, useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { getCandidateById } from "@/lib/api/users";
+import { fetchDocumet, getCandidateById } from "@/lib/api/users";
 import { FaDiscord, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { FaFacebookSquare } from "react-icons/fa";
 
 function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
   const [candidateDetails, setCandidateDetails] = useState({});
+  const [documentUrl, setDocumentUrl] = useState("");
   const [age, setAge] = useState(0);
   const { toast } = useToast();
 
@@ -50,6 +51,47 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
     };
 
     if (candidateId) fetchCandidateDetails();
+  }, [candidateId]);
+
+  useEffect(() => {
+    const fetchdocument = async () => {
+      try {
+        const response = await fetchDocumet(candidateId);
+        if (response.data) {
+          setDocumentUrl(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `documents Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (candidateId) fetchdocument();
   }, [candidateId]);
 
   useEffect(() => {
@@ -115,6 +157,34 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
               }}
             />
           </div>
+          <div className=" w-full rounded-lg mt-5 px-8 py-5 bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
+          <h2 className=" text-xl font-semibold">Resume</h2>
+            {documentUrl.length > 0 ? (
+              <iframe
+                src={`${documentUrl}`}
+                className=" overflow-x-hidden rounded-lg mt-5"
+                width="100%"
+                height="500px"
+                style={{ border: "none" }}
+                title="PDF Viewer"
+              />
+            ) : (
+              <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg flex flex-col items-center justify-center min-h-[500px]">
+                <h1 className=" text-xl font-semibold">No Document Found</h1>
+                <p className=" text-xs italic text-center w-[80%] py-2 mx-auto text-gray-600">
+                  {
+                    "Please upload your CV in PDF format. Ensure the file is properly named (e.g., YourName_CV.pdf) and does not exceed the size limit. Supported format: .pdf."
+                  }
+                </p>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="rounded-lg px-4 text-xs font-semibold bg-white text-black h-9 mt-2"
+                >
+                  Upload document
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <div className=" w-full md:w-[40%] md:px-8 md:mt-0 mt-5">
           <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
@@ -157,45 +227,52 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
             </div>
           </div>
           <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
-                    <h2 className=" text-xl font-semibold">Social Media</h2>
-                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaLinkedin className=" text-3xl" />
-                      <p
-                        type="text"
-                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                      >Linkedin url</p>
-                    </div>
-                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaGithub className=" text-3xl" />
-                      <p
-                        type="text"
-                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                      >Github Url</p>
-                    </div>
-                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaFacebookSquare className=" text-3xl" />
-                      <p
-                        type="text"
-                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                      >Facebook Url</p>
-                    </div>
-                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaXTwitter className=" text-3xl" />
-                      <p
-                        type="text"
-                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                      >X Url</p>
-                    </div>
-                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaDiscord className=" text-3xl" />
-                      <p
-                        type="text"
-                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                      >Discord Url</p>
-                    </div>
-                  </div>
-          <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
-            <h2 className=" text-xl font-semibold">Resume</h2>
+            <h2 className=" text-xl font-semibold">Social Media</h2>
+            <div className=" w-full mt-5 flex justify-start items-center gap-2">
+              <FaLinkedin className=" text-3xl" />
+              <p
+                type="text"
+                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              >
+                Linkedin url
+              </p>
+            </div>
+            <div className=" w-full mt-5 flex justify-start items-center gap-2">
+              <FaGithub className=" text-3xl" />
+              <p
+                type="text"
+                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              >
+                Github Url
+              </p>
+            </div>
+            <div className=" w-full mt-5 flex justify-start items-center gap-2">
+              <FaFacebookSquare className=" text-3xl" />
+              <p
+                type="text"
+                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              >
+                Facebook Url
+              </p>
+            </div>
+            <div className=" w-full mt-5 flex justify-start items-center gap-2">
+              <FaXTwitter className=" text-3xl" />
+              <p
+                type="text"
+                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              >
+                X Url
+              </p>
+            </div>
+            <div className=" w-full mt-5 flex justify-start items-center gap-2">
+              <FaDiscord className=" text-3xl" />
+              <p
+                type="text"
+                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              >
+                Discord Url
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -284,7 +284,7 @@ const InterviewCategoryPage = () => {
             <Avatar className=" h-28 w-28 md:h-40 md:w-40 ">
               <AvatarFallback className="text-4xl md:text-6xl">
                 {companyDetails?.companyName
-                  ? companyDetails?.companyName.charAt(0)
+                  ? companyDetails?.companyName.charAt(0).toUpperCase()
                   : ""}
                 {companyDetails?.companyName
                   ? companyDetails?.companyName.charAt(1).toUpperCase()
