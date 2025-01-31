@@ -252,7 +252,7 @@ const UserProfile = () => {
     };
 
     if (candidateId) fetchdocument();
-  }, [candidateId]);
+  }, [candidateId, modalOpen]);
 
   useEffect(() => {
     if (candidateDetails?.user?.dob) {
