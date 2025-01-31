@@ -74,6 +74,11 @@ import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
 import { set } from "zod";
 import UploadDocumentModal from "@/components/candidate/upload-document-modal";
+const PdfViewer = dynamic(
+  () => import('@/components/candidate/PdfViewer'),
+  { ssr: false }
+)
+
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -243,7 +248,7 @@ const UserProfile = () => {
       const response = await updateCandidateById(candidateId, {
         experience,
         skillHighlights,
-        linkedInUrl : linkedinUrl,
+        linkedInUrl: linkedinUrl,
         githubUrl,
         facebookUrl,
         twitterUrl,
@@ -381,25 +386,22 @@ const UserProfile = () => {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("details")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "details" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "details" ? "bg-gray-800" : ""
+                  } `}
               >
                 Details
               </button>
               <button
                 onClick={() => setTab("document")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "document" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "document" ? "bg-gray-800" : ""
+                  } `}
               >
                 Documents
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "settings" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "settings" ? "bg-gray-800" : ""
+                  } `}
               >
                 Settings
               </button>
@@ -407,18 +409,16 @@ const UserProfile = () => {
             <div className={` ${Tab !== "details" ? "hidden" : "block"} `}>
               <button
                 onClick={() => setIsEdit(true)}
-                className={` ${
-                  isEdit ? "hidden" : "block"
-                } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
+                className={` ${isEdit ? "hidden" : "block"
+                  } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
               >
                 <MdEdit className=" text-base mr-2" />{" "}
                 <span className=" inline-block">Edit Profile</span>
               </button>
               <button
                 onClick={handleSaveChanges}
-                className={` ${
-                  isEdit ? "block" : "hidden"
-                } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
+                className={` ${isEdit ? "block" : "hidden"
+                  } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
               >
                 Save Changes
               </button>
@@ -482,47 +482,17 @@ const UserProfile = () => {
                   </button>
                 </div>
 
-                {/* Data Table for Team */}
-                <div>
-                  {loading ? (
-                    <div>Loading interview sessions...</div>
-                  ) : (
-                    <DataTable columns={columns} data={categories} />
-                  )}
-                </div>
+               
 
                 {modalOpen && (
                   <UploadDocumentModal setModalOpen={setModalOpen}
-                  isUpdated={false} />
-                
+                    isUpdated={false} />
+
                 )}
 
-                {/* Pagination */}
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePreviousPage()}
-                      />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink onClick={() => handlePage(page + 1)}>
-                        {page + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink onClick={() => handlePage(page + 2)}>
-                        {page + 2}
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext onClick={() => handleNextPage()} />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+                <PdfViewer url={"https://pdfobject.com/pdf/sample.pdf"} />
+
+                
               </div>
             )}
             {Tab === "details" && (
@@ -531,17 +501,15 @@ const UserProfile = () => {
                   <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
                     <h1 className=" text-xl font-semibold">Experiences</h1>
                     <div
-                      className={` ${
-                        isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
+                      className={` ${isEdit ? "hidden" : "block"
+                        } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: experience || "No Experiences",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"experience"}
@@ -554,17 +522,15 @@ const UserProfile = () => {
                   <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
                     <h1 className=" text-xl font-semibold">Skill Highlights</h1>
                     <div
-                      className={`${
-                        isEdit ? "hidden" : "block"
-                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
+                      className={`${isEdit ? "hidden" : "block"
+                        } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: skillHighlights || "No Skill Highlight",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"skillHighlights"}
@@ -660,9 +626,9 @@ const UserProfile = () => {
                               selected={dob}
                               onSelect={setDob}
                               initialFocus
-                              fromYear={1900} 
-                              toYear={new Date().getFullYear()} 
-                              disabled={(date) => date > new Date()} 
+                              fromYear={1900}
+                              toYear={new Date().getFullYear()}
+                              disabled={(date) => date > new Date()}
                             />
                           </PopoverContent>
                         </Popover>
@@ -680,9 +646,8 @@ const UserProfile = () => {
                         value={contactNo || ""}
                         placeholder="Contact Number"
                         onChange={(e) => setContactNo(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                   </div>
@@ -695,9 +660,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={linkedinUrl || ""}
                         onChange={(e) => setLinkedinUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -707,9 +671,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={githubUrl || ""}
                         onChange={(e) => setGithubUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -719,9 +682,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={facebookUrl || ""}
                         onChange={(e) => setFacebookUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -731,9 +693,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={twitterUrl || ""}
                         onChange={(e) => setTwitterUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -743,9 +704,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={discordUrl || ""}
                         onChange={(e) => setDiscordUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                   </div>
