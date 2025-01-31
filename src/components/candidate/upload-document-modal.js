@@ -123,7 +123,7 @@ const UploadDocumentModal = ({ setModalOpen }) => {
               {uploading ? "Uploading..." : "Upload"}
             </button>
           </form>
-          {uploadUrl && (
+          {/* {uploadUrl && (
             <div>
               <p>
                 Uploaded PDF:{" "}
@@ -132,7 +132,7 @@ const UploadDocumentModal = ({ setModalOpen }) => {
                 </a>
               </p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
       {loading && (
