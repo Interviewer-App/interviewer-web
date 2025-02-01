@@ -20,3 +20,15 @@ export const analiyzeQuestion = async (data) => {
     throw error;
   }
 };
+
+
+
+export const generateInterviewJobDescription = async (data) => {
+  try {
+    const response = await axiosInstance.post(`/ai/generate-description`, data);
+    return response;
+  } catch (error) {
+    console.log("Error analiyzing questions:", error);
+    throw error;
+  }
+};

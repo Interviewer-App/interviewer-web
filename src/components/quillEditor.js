@@ -1,33 +1,33 @@
 'use client'
 import { useEffect, useRef } from 'react';
-import 'quill/dist/quill.snow.css'; 
-import Quill from 'quill'; 
+import 'quill/dist/quill.snow.css';
+import Quill from 'quill';
 
-const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
+const QuillEditor = ({ value, placeholder, onChange, editorId, jobDescription }) => {
   const quillRef = useRef(null);
 
   useEffect(() => {
     if (typeof document !== "undefined") {
-    const quill = new Quill(`#${editorId}`, {
-      theme: 'snow',
-      placeholder: placeholder || 'Write something...',
-    });
+      const quill = new Quill(`#${editorId}`, {
+        theme: 'snow',
+        placeholder: placeholder || 'Write something...',
+      });
 
-    quillRef.current = quill;
+      quillRef.current = quill;
 
-    if (value) {
-      quill.setContents(quill.clipboard.convert(value));
-    }
+      if (value) {
+        quill.setContents(quill.clipboard.convert(value));
+      }
 
-    quill.on('text-change', () => {
-      const content = quill.root.innerHTML;
-      onChange(content);
-    });
+      quill.on('text-change', () => {
+        const content = quill.root.innerHTML;
+        onChange(content);
+      });
 
-    quill.on('text-change', () => {
-      const content = quill.root.innerHTML; 
-      onChange(content); 
-    });
+      quill.on('text-change', () => {
+        const content = quill.root.innerHTML;
+        onChange(content);
+      });
       const style = document.createElement('style');
       style.innerHTML = `
       .ql-editor.ql-blank::before {
@@ -45,10 +45,10 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
       }
       `;
       document.head.appendChild(style);
-  }
-    }, [editorId]);
+    }
+  }, [editorId]);
 
-      useEffect(() => {
+  useEffect(() => {
     if (quillRef.current && value !== undefined) {
       const quill = quillRef.current;
 
@@ -59,9 +59,24 @@ const QuillEditor = ({value ,placeholder,onChange, editorId }) => {
     }
   }, [value]);
 
+  useEffect(() => {
+    if (quillRef.current && jobDescription) {
+      const quill = quillRef.current;
+      
+      // Clear existing content first
+      quill.setContents([]);
+      
+      // Insert new job description at the beginning
+      quill.clipboard.dangerouslyPasteHTML(0, jobDescription);
+      
+      // Trigger the onChange handler
+      onChange(jobDescription);
+    }
+  }, [jobDescription]);
+
   return (
-    <div className=' bg-[#32353b] rounded-lg'>  
-      <div id={editorId} style={{ minHeight: '100px'}} className='quill-editor max-h-[150px] overflow-y-auto'>
+    <div className=' bg-[#32353b] rounded-lg'>
+      <div id={editorId} style={{ minHeight: '100px' }} className='quill-editor max-h-[150px] overflow-y-auto'>
       </div>
     </div>
   );

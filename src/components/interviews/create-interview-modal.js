@@ -12,7 +12,7 @@ import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
 
-import { CalendarIcon, Percent } from "lucide-react";
+import { CalendarIcon, Percent, WandSparkles,LoaderCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,7 @@ import StepConnector, {
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 // import Editor from "../rich-text/editor";
 import dynamic from 'next/dynamic'
+import { generateInterviewJobDescription } from "@/lib/api/ai";
 const QuillEditor = dynamic(
   () => import('@/components/quillEditor'),
   { ssr: false }
@@ -235,6 +236,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [scheduleList, setScheduleList] = React.useState([]);
   const [totalPercentage, setTotalPercentage] = React.useState(0);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
+  const [genJobDescription, setGenJobDescription] = React.useState();
+  const [descriptionPrompt, setDescriptionPrompt] = React.useState();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { toast } = useToast();
 
@@ -485,10 +489,55 @@ export default function CreateInterviewModal({ setModalOpen }) {
       }
     }
   };
-  const handleOnChange  =  (content) => {
+  const handleOnChange = (content) => {
     // console.log('Updated Desc:', content);
     // console.log(content);
-  setJobDescription(content)
+    setJobDescription(content)
+  }
+
+  const generateDescription = async (e) => {
+    setIsLoading(true);
+    e.preventDefault();
+    try {
+      const data = {
+        description: descriptionPrompt
+      }
+      const response = await generateInterviewJobDescription(data);
+
+      if (response) {
+        setGenJobDescription(response.data.description);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
   }
 
   return (
@@ -530,15 +579,37 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 required
                 className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
               />
-              <div className="mb-5 rich-text text-white">
-                <QuillEditor
-                editorId={"jobDescription"}
-                 placeholder="Job Description here..."
-                onChange={handleOnChange}
-                 />
+              <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-3 py-3 rounded-lg flex flex-col mb-5 ">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Write a prompt for the job description"
+                    name="title"
+                    value={descriptionPrompt}
+                    disabled={isLoading}
+                    onChange={(e) => setDescriptionPrompt(e.target.value)}
 
+                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5 "
+                  />
+                  <button onClick={generateDescription} type="button" className="bg-white text-black h-[45px] rounded-lg text-sm w-14 flex align-middle items-center justify-center text-center">
+                    {isLoading ? (
+                      <LoaderCircle className="animate-spin" />
+                    ) : (
+                      <WandSparkles />
+                    )}
+                  </button>
+                </div>
+
+                <div className="rich-text text-white">
+                  <QuillEditor
+                    editorId={"jobDescription"}
+                    placeholder="Job Description here..."
+                    onChange={handleOnChange}
+                    jobDescription={genJobDescription}
+                  />
+
+                </div>
               </div>
-
               <Paper
                 sx={{
                   display: "flex",
@@ -747,9 +818,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
           {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px]">
               <p
-                className={` text-red-500 text-xs py-2 ${
-                  totalPercentage !== 100 ? "block" : "hidden"
-                }`}
+                className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
+                  }`}
               >
                 *Please ensure the total percentage equals 100%. The sum of all
                 category percentages should not exceed or fall below 100%.
@@ -860,9 +930,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
           ) : (
             <button
               onClick={handleSubmit}
-              className={` ${
-                totalPercentage === 100 ? "block" : "hidden"
-              } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
+              className={` ${totalPercentage === 100 ? "block" : "hidden"
+                } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
             >
               Create Interview
             </button>
