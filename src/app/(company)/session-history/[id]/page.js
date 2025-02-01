@@ -166,7 +166,7 @@ function SessionHistoryPage({ params }) {
                   </li>
                   <li className=" text-base pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
-                    Total score: {sessionScoreDetails?.totalScore || 0}
+                    Total score: {sessionScoreDetails?.score || 0}
                   </li>
                   <li className=" text-base pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
@@ -189,11 +189,11 @@ function SessionHistoryPage({ params }) {
                 {sessionDetails?.questions?.length || 0} Questions
               </h2>
               <CirculerProgress
-                marks={sessionScoreDetails?.totalScore || 0}
+                marks={sessionScoreDetails?.score || 0}
                 catorgory="Total score"
               />
               <p className=" text-gray-300 text-center">
-                {sessionScoreDetails?.totalScore || 0}% Accurate with expected
+                {sessionScoreDetails?.score || 0}% Accurate with expected
                 answers
               </p>
               <p className=" text-sm text-gray-500 text-center">

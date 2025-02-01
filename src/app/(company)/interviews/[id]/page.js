@@ -827,6 +827,14 @@ export default function InterviewPreviewPage({ params }) {
                 Interview Sessions
               </button>
               <button
+                onClick={() => setTab("candidates")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "candidates" ? "bg-gray-800" : ""
+                } `}
+              >
+                Candidates
+              </button>
+              <button
                 onClick={() => setTab("invitation")}
                 className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
                   tab === "invitation" ? "bg-gray-800" : ""
