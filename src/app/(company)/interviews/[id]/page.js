@@ -36,7 +36,9 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DataTable } from "@/components/ui/InterviewDataTable/Datatable";
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
+import {candidatesTableColumns} from "@/components/ui/candidateDataTable/column";
 import {
+  fetchCandidatesForInterview,
   fetchInterviewSessionsForInterview,
   getInterviewOverviewById,
 } from "@/lib/api/interview-session";
@@ -124,6 +126,9 @@ export default function InterviewPreviewPage({ params }) {
   const [loading, setLoading] = useState(false);
   const [interviewSessions, setInterviewSessions] = useState([]);
   const [interviewSessionsSort, setInterviewSessionsSort] = useState([]);
+  const [interviewCandidates, setInterviewCandidates] = useState([]);
+  const [interviewCandidateSort, setInterviewCandidateSort] = useState([]);
+  const [totalCandidates, setTotalCandidates] = useState(0);
   const [totalsessions, setTotalSessions] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -341,6 +346,31 @@ export default function InterviewPreviewPage({ params }) {
     return () => {
       socket.off("joinedParticipants");
     };
+  }, [interviewId, page, limit]);
+
+
+  useEffect(() => {
+    const fetchCandidatesData = async () => {
+      setLoading(true);
+      try {
+        await fetchCandidatesForInterview(
+          interviewId,
+          page,
+          limit,
+          setLoading,
+          setInterviewCandidates,
+          setTotalCandidates
+        );
+      } catch (error) {
+        console.log("Error fetching interviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (interviewId) fetchCandidatesData();
+
+   
   }, [interviewId, page, limit]);
 
   const handleNextPage = () => {
@@ -1462,6 +1492,47 @@ export default function InterviewPreviewPage({ params }) {
               </div>
             </div>
           )}
+          {tab === "candidates" && (
+            <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+              <div>
+                <h1 className=" text-2xl font-semibold">Candidates</h1>
+                <div>
+                  {loading ? (
+                    <div>Loading interview sessions...</div>
+                  ) : (
+                    <DataTable
+                      columns={candidatesTableColumns}
+                      data={interviewCandidates}
+                    />
+                  )}
+                </div>
+              </div>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious onClick={() => handlePreviousPage()} />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink onClick={() => handlePage(page + 1)}>
+                      {page + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink onClick={() => handlePage(page + 2)}>
+                      {page + 2}
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext onClick={() => handleNextPage()} />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
           {tab === "sessions" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
               <div>

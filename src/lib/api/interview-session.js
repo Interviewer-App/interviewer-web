@@ -68,6 +68,41 @@ const fetchInterviewSessionsForInterview = async (
   }
 };
 
+
+const fetchCandidatesForInterview = async (
+  interviewId,
+  page,
+  limit,
+  setLoading,
+  setInterviewCandidates,
+  setTotalCandidates
+) => {
+  setLoading(true);
+  try {
+    debugger
+    const response = await axiosInstance.get(
+      `/interview/booked-candidates/${interviewId}`
+    );
+
+    if (!response || !response.data) {
+      throw new Error(`Error fetching users: No data found`);
+    }
+
+    const data = response.data.data;
+    const totalsessions = response.data.total;
+    if (data.length > 0) {
+      setInterviewCandidates(data);
+      setTotalCandidates(totalsessions);
+    } else {
+      console.log("No sessions found.");
+    }
+  } catch (error) {
+    console.log("Error fetching sessions:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 const getInterviewSessionById = async (sessionId) => {
   try {
     const response = await axiosInstance.get(
@@ -145,5 +180,5 @@ export {
   fetchInterviewSessionsForInterview,
   getInterviewSessionById,
   getInterviewSessionHistoryById,
-  
+  fetchCandidatesForInterview
 };
