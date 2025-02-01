@@ -11,7 +11,6 @@ export const initializeStreamClient = async (userId) => {
   const response = await axiosInstance.get(
    `/interview-session/stream-token?userId=${userId}`
   );
-  debugger
   const  token  = await response.data.token;
 
   return new StreamVideoClient({

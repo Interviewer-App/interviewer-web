@@ -143,6 +143,24 @@ function SurveyPage() {
       givenAnswer: "",
       isAnswered: false,
     },
+    {
+      Id: 10,
+      question:
+        "What features would you like to see in a hiring and interview management app?",
+      type: "OPEN_ENDED",
+      options: "",
+      givenAnswer: "",
+      isAnswered: false,
+    },
+    {
+      Id: 11,
+      question:
+        "What features would you like to see in a hiring and interview management app?",
+      type: "OPEN_ENDED",
+      options: "",
+      givenAnswer: "",
+      isAnswered: false,
+    },
   ]);
 
   const [candidateQuestions, setCandidateQuestions] = useState([

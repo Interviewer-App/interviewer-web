@@ -158,10 +158,10 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
             />
           </div>
           <div className=" w-full rounded-lg mt-5 px-8 py-5 bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
-          <h2 className=" text-xl font-semibold">Resume</h2>
-            {documentUrl.length > 0 ? (
+            <h2 className=" text-xl font-semibold">Resume</h2>
+            {documentUrl.url ? (
               <iframe
-                src={`${documentUrl}`}
+                src={`${documentUrl.url}`}
                 className=" overflow-x-hidden rounded-lg mt-5"
                 width="100%"
                 height="500px"
@@ -184,6 +184,10 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 </button>
               </div>
             )}
+          </div>
+          <div className=" w-[30%] min-h-[500px] bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
+            <h1 className=" text-2xl font-semibold h-full ">Summary</h1>
+            <p>{documentUrl.summary}</p>
           </div>
         </div>
         <div className=" w-full md:w-[40%] md:px-8 md:mt-0 mt-5">

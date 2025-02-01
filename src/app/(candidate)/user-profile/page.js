@@ -521,7 +521,7 @@ const UserProfile = () => {
                   <h1 className="text-2xl font-semibold">Documents</h1>
 
                   {/* Add Category Button */}
-                  {documentUrl.length > 0 && (
+                  {documentUrl.url  && (
                     <button
                       onClick={() => setModalOpen(true)}
                       className="rounded-full text-3xl font-semibold bg-white text-black h-12 aspect-square"
@@ -533,9 +533,9 @@ const UserProfile = () => {
 
                 <div className=" flex items-start justify-between mb-5 w-full">
                   <div className=" w-[68%] rounded-lg bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
-                    {documentUrl.length > 0 ? (
+                    {documentUrl.url ? (
                       <iframe
-                        src={`${documentUrl}#toolbar=0`}
+                        src={`${documentUrl.url}#toolbar=0`}
                         className=" overflow-x-hidden rounded-lg "
                         width="100%"
                         height="500px"
@@ -563,6 +563,7 @@ const UserProfile = () => {
                   </div>
                   <div className=" w-[30%] min-h-[500px] bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
                     <h1 className=" text-2xl font-semibold h-full ">Summary</h1>
+                    <p>{documentUrl.summary}</p>
                   </div>
                 </div>
 

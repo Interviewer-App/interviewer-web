@@ -32,7 +32,6 @@ export const StreamVideoCall = ({ callId }) => {
 
   useEffect(() => {
     const setupCall = async () => {
-      debugger
       const session = await getSession();
       const userId = session.user?.id; // Get from your auth system
       const client = await initializeStreamClient(userId);

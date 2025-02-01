@@ -79,9 +79,8 @@ const fetchCandidatesForInterview = async (
 ) => {
   setLoading(true);
   try {
-    debugger
     const response = await axiosInstance.get(
-      `/interview/booked-candidates/${interviewId}`
+      `/interview/booked-candidates/${interviewId}/${page}/${limit}`
     );
 
     if (!response || !response.data) {
