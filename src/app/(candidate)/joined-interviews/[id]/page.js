@@ -151,7 +151,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
-                  Total score: {sessionDetails?.score || 0}
+                  Total score: {sessionDetails?.totalSocre || 0}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
@@ -172,11 +172,11 @@ const JoinedInterviewsDetails = ({ params }) => {
               {sessionDetails?.questions?.length || 0} Questions
             </h2>
             <CirculerProgress
-              marks={sessionDetails?.score || 0}
+              marks={sessionDetails?.totalSocre || 0}
               catorgory="Total score"
             />
             <p className=" text-gray-300 text-center">
-              {sessionDetails?.score || 0}% Accurate with expected
+              {sessionDetails?.totalSocre || 0}% Accurate with expected
               answers
             </p>
             <p className=" text-sm text-gray-500 text-center">
