@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api/api';
-import { SessionProvider } from 'next-auth/react'
+import { SessionProvider, signOut } from 'next-auth/react'
+import { removeToken } from '@/lib/api/auth';
 
 const AuthContext = createContext();
 
@@ -51,9 +52,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    router.push("/login")
+    signOut();
+    removeToken();
     localStorage.removeItem('token');
     setUser(null);
-    router.push('/login');
+    // router.push('/login');
   };
 
   return (
