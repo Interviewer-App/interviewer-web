@@ -32,14 +32,22 @@ export const analiyzeQuestion = async (data) => {
   }
 };
 
-
-
 export const generateInterviewJobDescription = async (data) => {
   try {
     const response = await axiosInstance.post(`/ai/generate-description`, data);
     return response;
   } catch (error) {
     console.log("Error analiyzing questions:", error);
+    throw error;
+  }
+};
+
+export const generateInterviewSchedules = async (data) => {
+  try {
+    const response = await axiosInstance.post(`/ai/generate-schedules`, data);
+    return response;
+  } catch (error) {
+    console.log("Error generate schedules:", error);
     throw error;
   }
 };

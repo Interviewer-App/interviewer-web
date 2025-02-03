@@ -254,6 +254,35 @@ export default function InterviewPreviewPage({ params }) {
       usageFrequency: 0,
     },
   ]);
+
+  const [candidates, setCandidates] = useState([
+    { name: "John Doe", score: 85 },
+    { name: "Jane Smith", score: 92 },
+    { name: "Alice Johnson", score: 78 },
+    { name: "Bob Brown", score: 88 },
+    { name: "Olivia Harris", score: 89 },
+    { name: "Liam Clark", score: 77 },
+    { name: "Mia Lewis", score: 93 },
+    { name: "Ethan Walker", score: 79 },
+    { name: "Charlotte Allen", score: 84 }
+  ]);
+
+  const [sortDirection, setSortDirection] = useState("desc"); // Can be "asc" or "desc"
+
+  // Function to sort candidates
+  const sortCandidates = () => {
+    const newSortDirection = sortDirection === "desc" ? "asc" : "desc";
+    const sorted = [...candidates].sort((a, b) => {
+      if (newSortDirection === "asc") {
+        return a.score - b.score;
+      } else {
+        return b.score - a.score;
+      }
+    });
+    setCandidates(sorted); // Update the candidates state
+    setSortDirection(newSortDirection); // Toggle the sorting direction
+  };
+
   const [dateRange, setDateRange] = useState({});
   const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
   const [chartData, setChartData] = useState({
@@ -638,7 +667,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-                interviewStatusDetails.completedSchedules,
+              interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -667,12 +696,10 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } Successfully!`,
-          description: `The interview has been ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
+            } Successfully!`,
+          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
+            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -885,9 +912,8 @@ export default function InterviewPreviewPage({ params }) {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <span
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
                   >
                     Publish Now
                   </span>
@@ -919,9 +945,8 @@ export default function InterviewPreviewPage({ params }) {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <span
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
                   >
                     Unpublish
                   </span>
@@ -955,59 +980,59 @@ export default function InterviewPreviewPage({ params }) {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("overview")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "overview" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "overview" ? "bg-gray-800" : ""
+                  } `}
               >
                 Overview
               </button>
               <button
                 onClick={() => setTab("sessions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "sessions" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "sessions" ? "bg-gray-800" : ""
+                  } `}
               >
                 Interview Sessions
               </button>
               <button
                 onClick={() => setTab("candidates")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "candidates" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidates" ? "bg-gray-800" : ""
+                  } `}
               >
                 Candidates
               </button>
               <button
                 onClick={() => setTab("invitation")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "invitation" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "invitation" ? "bg-gray-800" : ""
+                  } `}
               >
                 Invitation
               </button>
               <button
                 onClick={() => setTab("questions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "questions" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "questions" ? "bg-gray-800" : ""
+                  } `}
               >
                 Questions
               </button>
               <button
                 onClick={() => setTab("edit")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "edit" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "edit" ? "bg-gray-800" : ""
+                  } `}
               >
                 Edit
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "settings" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "settings" ? "bg-gray-800" : ""
+                  } `}
               >
                 Settings
+              </button>
+              <button
+                onClick={() => setTab("candidateAnalyze")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidateAnalyze" ? "bg-gray-800" : ""
+                  } `}
+              >
+                candidate Analyze
               </button>
             </div>
           </div>
@@ -1174,9 +1199,8 @@ export default function InterviewPreviewPage({ params }) {
                       readOnly={!editDetails}
                       value={title || ""}
                       onChange={(e) => setTitle(e.target.value)}
-                      className={` ${
-                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                      } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
+                      className={` ${!editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
+                        } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
                     />
                   </h1>
                   {interviewDetail.status !== "ACTIVE" &&
@@ -1184,9 +1208,8 @@ export default function InterviewPreviewPage({ params }) {
                       <div>
                         <button
                           onClick={() => setEditDetails(!editDetails)}
-                          className={` ${
-                            editDetails ? "hidden" : "block"
-                          } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
+                          className={` ${editDetails ? "hidden" : "block"
+                            } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
                         >
                           <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
                           Edit details
@@ -1194,20 +1217,18 @@ export default function InterviewPreviewPage({ params }) {
 
                         <button
                           onClick={handleSaveChanges}
-                          className={` ${
-                            editDetails && totalPercentage == 100
-                              ? "block"
-                              : "hidden"
-                          } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                          className={` ${editDetails && totalPercentage == 100
+                            ? "block"
+                            : "hidden"
+                            } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
                         <button
-                          className={` ${
-                            editDetails && totalPercentage != 100
-                              ? "block"
-                              : "hidden"
-                          } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                          className={` ${editDetails && totalPercentage != 100
+                            ? "block"
+                            : "hidden"
+                            } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
@@ -1220,9 +1241,8 @@ export default function InterviewPreviewPage({ params }) {
                       Description
                     </h1>
                     <div
-                      className={` ${
-                        editDetails ? "hidden" : "block"
-                      } text-justify w-full bg-transparent rounded-lg description`}
+                      className={` ${editDetails ? "hidden" : "block"
+                        } text-justify w-full bg-transparent rounded-lg description`}
                       dangerouslySetInnerHTML={{ __html: description }}
                     />
 
@@ -1298,7 +1318,7 @@ export default function InterviewPreviewPage({ params }) {
                                       className={cn(
                                         "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
                                         !inputScheduleDate &&
-                                          "text-muted-foreground"
+                                        "text-muted-foreground"
                                       )}
                                     >
                                       <CalendarIcon />
@@ -1386,14 +1406,12 @@ export default function InterviewPreviewPage({ params }) {
                                   <>
                                     <IoCloseCircle
                                       onClick={handleDeleteSchedule(schedule)}
-                                      className={` ${
-                                        schedule.isBooked ? "hidden" : "block"
-                                      } text-gray-500 text-2xl cursor-pointer`}
+                                      className={` ${schedule.isBooked ? "hidden" : "block"
+                                        } text-gray-500 text-2xl cursor-pointer`}
                                     />
                                     <div
-                                      className={` ${
-                                        schedule.isBooked ? "block" : "hidden"
-                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                      className={` ${schedule.isBooked ? "block" : "hidden"
+                                        } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                     >
                                       <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                       <div className=" ml-2">Booked</div>
@@ -1401,9 +1419,8 @@ export default function InterviewPreviewPage({ params }) {
                                   </>
                                 ) : (
                                   <div
-                                    className={` ${
-                                      schedule.isBooked ? "block" : "hidden"
-                                    } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                    className={` ${schedule.isBooked ? "block" : "hidden"
+                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                   >
                                     <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                     <div className=" ml-2">Booked</div>
@@ -1423,9 +1440,8 @@ export default function InterviewPreviewPage({ params }) {
                       </h1>
                       {editDetails && (
                         <p
-                          className={` text-red-500 text-xs py-2 ${
-                            totalPercentage !== 100 ? "block" : "hidden"
-                          }`}
+                          className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
+                            }`}
                         >
                           *Please ensure the total percentage equals 100%. The
                           sum of all category percentages should not exceed or
@@ -1434,9 +1450,8 @@ export default function InterviewPreviewPage({ params }) {
                       )}
 
                       <div
-                        className={`flex w-full justify-between space-x-2 ${
-                          editDetails ? "block" : "hidden"
-                        }`}
+                        className={`flex w-full justify-between space-x-2 ${editDetails ? "block" : "hidden"
+                          }`}
                       >
                         <div className="w-[40%]">
                           <DropdownMenu>
@@ -1513,9 +1528,8 @@ export default function InterviewPreviewPage({ params }) {
                                   {catagory.percentage}
                                 </td>
                                 <td
-                                  className={` p-3 w-[20%] text-center ${
-                                    editDetails ? "block" : "hidden"
-                                  }`}
+                                  className={` p-3 w-[20%] text-center ${editDetails ? "block" : "hidden"
+                                    }`}
                                 >
                                   <IoCloseCircle
                                     onClick={handleDeleteCategory(catagory)}
@@ -1805,6 +1819,44 @@ export default function InterviewPreviewPage({ params }) {
                 inviteModalOpen={inviteModalOpen}
               />
             </>
+          )}
+          {tab === "candidateAnalyze" && (
+            <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+              <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                <h1 className=" text-2xl font-semibold text-left w-full">
+                  Candidate Analyze
+                </h1>
+                <div className=" w-full flex items-center justify-end">
+                  <button
+                  onClick={sortCandidates}
+                    className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
+
+                  >
+                    Sort Candidates
+                  </button>
+                </div>
+              </div>
+              {candidates.length > 0 ? (
+                <table className="w-full mt-5 border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="p-3 text-left">Name</th>
+                      <th className="p-3 text-left">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {candidates.map((candidate, index) => (
+                      <tr key={index} className="border-t">
+                        <td className="p-3">{candidate.name}</td>
+                        <td className="p-3">{candidate.score}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No candidates available.</p>
+              )}
+            </div>
           )}
         </div>
       </SidebarInset>
