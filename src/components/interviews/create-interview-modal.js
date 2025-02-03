@@ -584,10 +584,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   <input
                     type="text"
                     placeholder="Write a prompt for the job description"
-                    name="title"
+                    name="prompt"
                     value={descriptionPrompt}
-                    disabled={isLoading}
-                    onChange={(e) => setDescriptionPrompt(e.target.value)}
+                    onChange={(e) =>{setDescriptionPrompt(e.target.value)}}
 
                     className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5 "
                   />
