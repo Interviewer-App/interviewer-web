@@ -12,8 +12,13 @@ import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
 
-import { CalendarIcon, Percent, WandSparkles, LoaderCircle } from "lucide-react";
+import { CalendarIcon, Percent, WandSparkles, LoaderCircle, AlertCircle } from "lucide-react";
 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -930,8 +935,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
           {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px] ">
 
-              <div className="flex flex-col bg-[#262930] rounded-xl my-5 px-2 border-2 border-teal-600">
-                <h1 className="text-center font-semibold text-lg mt-2">Add New Category to List</h1>
+              <div className="flex flex-col bg-[#262930] rounded-xl my-5 px-5 border-2 border-teal-600">
+                <h1 className="text-start font-semibold text-lg mt-2">Add New Category to List</h1>
                 <div className="flex w-full justify-between  items-center py-5 flex-col md:flex-row md:space-y-0 space-y-5 md:space-x-3">
 
                   <input
@@ -949,7 +954,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
                     value={interviewCatDesc} // Binding input to state
                     required
-                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm h-[44px]"
                     placeholder="Category Description..."
                   />
                   <button
@@ -961,9 +966,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </button>
                 </div>
               </div>
-              <div className="border-2 border-orange-500 rounded-xl p-2 flex md:flex-col flex-col">
-                <h1 className="text-center font-semibold text-lg my-2">Category List</h1>
-                <p
+              <div className="border-2 border-orange-500 rounded-xl px-5 py-3 flex md:flex-col flex-col">
+                <h1 className="text-start font-semibold text-lg my-2">Category List</h1>
+                {/* <p
                   className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
                     }`}
                 >
@@ -971,9 +976,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   category percentages should not exceed or fall below 100%.
                   Adjust your inputs accordingly.
                 </p>
+                 */}
 
                 <div className="flex w-full justify-center md:flex-row flex-col md:space-x-2 md:space-y-0 space-y-4 my-6 items-center">
-                  <div className="w-[40%]">
+                  <div className="w-[45%]">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -1004,7 +1010,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  <div className="w-[40%]">
+                  <div className="w-[45%]">
                     <input
                       value={inputPercentage}
                       onChange={(e) => setInputPercentage(e.target.value)}
@@ -1013,7 +1019,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                       className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883]  text-center"
                     />
                   </div>
-                  <div className="">
+                  <div className="w-[10%]">
                     <button
                       onClick={handleAddCatagoty}
                       className="h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center"
@@ -1063,6 +1069,15 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </div>
                 </div>
               </div>
+              {totalPercentage !== 100 ? (<div className="mt-3"><Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Warning</AlertTitle>
+                  <AlertDescription>
+                  Please ensure the total percentage equals 100%. The sum of all
+                  category percentages should not exceed or fall below 100%.
+                  Adjust your inputs accordingly.
+                  </AlertDescription>
+                </Alert></div>) : null}
 
 
             </div>
