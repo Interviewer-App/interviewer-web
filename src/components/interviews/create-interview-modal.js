@@ -655,7 +655,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
   return (
     <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
-      <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
+      <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg overflow-y-auto max-h-[90vh]">
         <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-5">
           Create interview
         </h1>
@@ -928,11 +928,11 @@ export default function CreateInterviewModal({ setModalOpen }) {
             </div>
           )}
           {stepperCount === 2 && (
-            <div className=" w-full mt-5 min-h-[350px]">
+            <div className=" w-full mt-5 min-h-[350px] ">
 
-              <div className="flex  flex-col bg-[#262930] rounded-xl my-5 px-2">
+              <div className="flex flex-col bg-[#262930] rounded-xl my-5 px-2 border-2 border-teal-600">
                 <h1 className="text-center font-semibold text-lg mt-2">Add New Category to List</h1>
-                <div className="flex w-full justify-between space-x-3 items-center py-5 ">
+                <div className="flex w-full justify-between  items-center py-5 flex-col md:flex-row md:space-y-0 space-y-5 md:space-x-3">
 
                   <input
                     type="text"
@@ -949,7 +949,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
                     value={interviewCatDesc} // Binding input to state
                     required
-                    rows={3}
                     className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
                     placeholder="Category Description..."
                   />
@@ -962,107 +961,108 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </button>
                 </div>
               </div>
+              <div className="border-2 border-orange-500 rounded-xl p-2 flex md:flex-col flex-col">
+                <h1 className="text-center font-semibold text-lg my-2">Category List</h1>
+                <p
+                  className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
+                    }`}
+                >
+                  *Please ensure the total percentage equals 100%. The sum of all
+                  category percentages should not exceed or fall below 100%.
+                  Adjust your inputs accordingly.
+                </p>
 
-              <p
-                className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
-                  }`}
-              >
-                *Please ensure the total percentage equals 100%. The sum of all
-                category percentages should not exceed or fall below 100%.
-                Adjust your inputs accordingly.
-              </p>
+                <div className="flex w-full justify-center md:flex-row flex-col md:space-x-2 md:space-y-0 space-y-4 my-6 items-center">
+                  <div className="w-[40%]">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className={`!bg-[#32353b] h-[45px] m-0 px-2 focus:outline-none outline-none w-full`}
+                          variant="outline"
+                        >
+                          {interviewCategories.find(
+                            (cat) => cat.categoryId === inputCatagory
+                          )?.categoryName || "Select Category"}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Interview Catagory</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup
+                          value={inputCatagory}
+                          onValueChange={setInputCatagory}
+                        >
+                          {filteredCategories.map((category) => (
+                            <DropdownMenuRadioItem
+                              key={category.categoryId}
+                              value={category.categoryId}
+                            >
+                              {category.categoryName}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <div className="w-[40%]">
+                    <input
+                      value={inputPercentage}
+                      onChange={(e) => setInputPercentage(e.target.value)}
+                      placeholder="Percentage"
+                      type="number"
+                      className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883]  text-center"
+                    />
+                  </div>
+                  <div className="">
+                    <button
+                      onClick={handleAddCatagoty}
+                      className="h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center"
+                    >
+                      +
+                    </button>
+                  </div>
 
-              <div className=" flex w-full justify-between space-x-2 ">
-
-                <div className="w-[40%]">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
-                        variant="outline"
-                      >
-                        {interviewCategories.find(
-                          (cat) => cat.categoryId === inputCatagory
-                        )?.categoryName || "Select Category"}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel>Interview Catagory</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuRadioGroup
-                        value={inputCatagory}
-                        onValueChange={setInputCatagory}
-                      >
-                        {filteredCategories.map((category) => (
-                          <DropdownMenuRadioItem
-                            key={category.categoryId}
-                            value={category.categoryId}
-                          >
-                            {category.categoryName}
-                          </DropdownMenuRadioItem>
+                </div>
+                <div className="flex flex-col md:flex-row">
+                  <div className="overflow-y-auto h-fit">
+                    <table className=" w-full">
+                      <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
+                        <tr>
+                          <td className=" p-3 w-[40%]">Catagory</td>
+                          <td className=" p-3 w-[40%]">Percentage</td>
+                          <td className=" p-3 w-[20%]"></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {categoryList.map((catagory) => (
+                          <tr key={catagory.key} className=" bg-gray-800/10">
+                            <td className=" py-3 px-4 w-[40%]">
+                              {catagory.catagory}
+                            </td>
+                            <td className=" p-3 w-[40%] text-center">
+                              {catagory.percentage}
+                            </td>
+                            <td className=" p-3 w-[20%] text-center">
+                              <IoCloseCircle
+                                onClick={handleDeleteCategory(catagory)}
+                                className=" text-gray-500 text-2xl cursor-pointer"
+                              />
+                            </td>
+                          </tr>
                         ))}
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className="w-[40%]">
-                  <input
-                    value={inputPercentage}
-                    onChange={(e) => setInputPercentage(e.target.value)}
-                    placeholder="Percentage"
-                    type="number"
-                    className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
-                  />
-                </div>
-                <div className="">
-                  <button
-                    onClick={handleAddCatagoty}
-                    className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center"
-                  >
-                    +
-                  </button>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="w-52 aspect-square mx-auto mt-8 md:mt-0">
+
+                    {categoryList.length > 0 ? (
+                      <Doughnut data={data} />
+                    ) : (
+                      <p className="text-gray-500">Add categories to view the Chart</p>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row">
-              <div className="  overflow-y-auto h-fit">
-                <table className=" w-full">
-                  <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
-                    <tr>
-                      <td className=" p-3 w-[40%]">Catagory</td>
-                      <td className=" p-3 w-[40%]">Percentage</td>
-                      <td className=" p-3 w-[20%]"></td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categoryList.map((catagory) => (
-                      <tr key={catagory.key} className=" bg-gray-800/10">
-                        <td className=" py-3 px-4 w-[40%]">
-                          {catagory.catagory}
-                        </td>
-                        <td className=" p-3 w-[40%] text-center">
-                          {catagory.percentage}
-                        </td>
-                        <td className=" p-3 w-[20%] text-center">
-                          <IoCloseCircle
-                            onClick={handleDeleteCategory(catagory)}
-                            className=" text-gray-500 text-2xl cursor-pointer"
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                </div>
-                <div className="w-52 aspect-square mx-auto">
-
-                  {categoryList.length > 0 ? (
-                    <Doughnut data={data} />
-                  ) : (
-                    <p className="text-gray-500">Add categories to view the Chart</p>
-                  )}
-                </div>
-              </div>
-
 
 
             </div>
