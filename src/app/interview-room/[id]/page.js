@@ -87,7 +87,7 @@ const InterviewRoomPage = ({ params }) => {
     setTranscript(e.target.value);
     socket.emit("typingUpdate", {
       sessionId: question.sessionID,
-      text:e.target.value,
+      text: e.target.value,
     });
   };
 
@@ -246,6 +246,14 @@ const InterviewRoomPage = ({ params }) => {
                         <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
                           <div>
                             <textarea
+                              onPaste={(e) => {
+                                e.preventDefault();
+                                return false;
+                              }}
+                              onCopy={(e) => {
+                                e.preventDefault();
+                                return false;
+                              }}
                               value={transcript}
                               onChange={handleAnswerChange}
                               placeholder="your answer here..."
@@ -424,7 +432,7 @@ const InterviewRoomPage = ({ params }) => {
         <ResizablePanel
           defaultSize={50}
         >
-           <VideoCall sessionId={sessionId} isCandidate={true} />
+          <VideoCall sessionId={sessionId} isCandidate={true} />
           {/* <StreamVideoCall callId={sessionID} /> */}
         </ResizablePanel>
       </ResizablePanelGroup>
