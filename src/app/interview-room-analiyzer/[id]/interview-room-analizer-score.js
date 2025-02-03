@@ -73,7 +73,7 @@ function InterviewRoomAnalizerScore({
                   )}
                   {question.isAnswered && (
                     <p className=" text-sm py-1">
-                      Marks: {question.interviewResponses.score.score}
+                      Marks: {question.interviewResponses.score}
                     </p>
                   )}
                 </div>

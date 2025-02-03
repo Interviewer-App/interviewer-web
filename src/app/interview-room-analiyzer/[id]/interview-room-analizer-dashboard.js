@@ -41,6 +41,7 @@ function InterviewRoomAnalizerDashboard({
   questionList,
   availableQuestion,
   setAnaliyzeResponse,
+  typingAnswer
 }) {
   const nextQuestion = () => {
     const data = {
@@ -72,6 +73,15 @@ function InterviewRoomAnalizerDashboard({
                   Next Question
                 </button>
                 <h1 className=" text-3xl font-semibold">Question List</h1>
+                <div
+                  className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] py-2 px-4 rounded-lg flex items-center justify-between"
+                >
+
+                  <div className=" mr-9 text-justify text-sm pt-3">
+                    {typingAnswer}
+                  </div>
+                </div>
+
                 <div className=" mt-5 w-full">
                   {questionList.map((question, index) => (
                     <div

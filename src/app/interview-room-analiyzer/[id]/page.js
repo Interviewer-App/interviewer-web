@@ -46,7 +46,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [categoryScores, setCategoryScores] = useState([]);
   const [sessionData, setSessionData] = useState({});
   const [availableQuestion, setAvailableQuestion] = useState({});
-
+  const [typingAnswer, setTypingAnswer] = useState('typing...');
 
   const { toast } = useToast();
   useEffect(() => {
@@ -113,6 +113,10 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       })
     });
 
+    socket.on("typingUpdate", (data) => {
+      setTypingAnswer(data.text);
+    });
+
     return () => {
       socket.off("answerSubmitted");
       socket.off("joinInterviewSession");
@@ -121,6 +125,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       socket.off("question");
       socket.off("questions");
       socket.off("participantLeft");
+      socket.off("typingUpdate");
     };
   }, []);
 
@@ -206,6 +211,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             questionList={questionList}
             availableQuestion={availableQuestion}
             setAnaliyzeResponse={setAnaliyzeResponse}
+            typingAnswer={typingAnswer}
           />
         )}
         {tab === "SCORE" && (

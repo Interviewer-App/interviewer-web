@@ -24,7 +24,7 @@ import {
 import { AlertCircleIcon, BookIcon, LightbulbIcon } from "lucide-react";
 import Editor from "@monaco-editor/react";
 
-function CodeEditor({ question, handleSubmit, setTranscript,isSubmitBtnAvailable}) {
+function CodeEditor({ question, handleSubmit, setTranscript,isSubmitBtnAvailable,sessionID,socket}) {
     const [selectedQuestion, setSelectedQuestion] = useState(CODING_QUESTIONS[0])
     const [language, setLanguage] = useState(LANGUAGES[0].id)
     const [code, setCode] = useState(selectedQuestion.starterCode[language])
@@ -51,6 +51,14 @@ function CodeEditor({ question, handleSubmit, setTranscript,isSubmitBtnAvailable
         setCode(selectedQuestion.starterCode[language]);
         setIsSubmit(true);
     };
+
+    const handleCodeValue = (value) => {
+      setCode(value || "")
+      socket.emit("typingUpdate", {
+        sessionId: sessionID,
+        text:value,
+      });
+    }
 
   return (
     <div className="h-lvh w-full px-12 bg-black">
@@ -123,7 +131,7 @@ function CodeEditor({ question, handleSubmit, setTranscript,isSubmitBtnAvailable
                         language={language}
                         theme="vs-dark"
                         value={code}
-                        onChange={value => setCode(value || "")}
+                        onChange={handleCodeValue}
                         options={{
                             minimap: { enabled: false },
                             fontSize: 18,

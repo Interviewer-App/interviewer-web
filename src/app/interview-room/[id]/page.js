@@ -85,6 +85,10 @@ const InterviewRoomPage = ({ params }) => {
   };
   const handleAnswerChange = (e) => {
     setTranscript(e.target.value);
+    socket.emit("typingUpdate", {
+      sessionId: question.sessionID,
+      text:e.target.value,
+    });
   };
 
   const handleSubmit = async () => {
@@ -314,6 +318,8 @@ const InterviewRoomPage = ({ params }) => {
                   handleSubmit={handleSubmit}
                   setTranscript={setTranscript}
                   isSubmitBtnAvailable={isSubmitBtnAvailable}
+                  sessionID={sessionId}
+                  socket={socket}
                 />
               )}
             </>
