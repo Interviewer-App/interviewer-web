@@ -24,12 +24,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
-export function DataTable({ columns, data }) {
+export function CandidateDataTable({ columns, data , interviewId}) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -49,6 +51,10 @@ export function DataTable({ columns, data }) {
       rowSelection,
     },
   });
+
+  const handleCandidateDetail = (row) => {
+      router.push(`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(row.original.candidate.candidateId)}`);
+  }
 
   return (
     <div className="px-6">
@@ -106,9 +112,9 @@ export function DataTable({ columns, data }) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -117,7 +123,7 @@ export function DataTable({ columns, data }) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id}  className="hover:bg-gray-100 cursor-pointer"  onClick={() => handleCandidateDetail(row)}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
