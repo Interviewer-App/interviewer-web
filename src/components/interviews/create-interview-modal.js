@@ -12,7 +12,7 @@ import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
 
-import { CalendarIcon, Percent, WandSparkles,LoaderCircle } from "lucide-react";
+import { CalendarIcon, Percent, WandSparkles, LoaderCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ import AvTimerSharpIcon from "@mui/icons-material/AvTimerSharp";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
-import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import { createCategory, getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 // import Editor from "../rich-text/editor";
 import dynamic from 'next/dynamic'
 import { generateInterviewJobDescription } from "@/lib/api/ai";
@@ -54,6 +54,9 @@ const QuillEditor = dynamic(
   () => import('@/components/quillEditor'),
   { ssr: false }
 )
+
+import { Plus } from "lucide-react";
+
 
 
 const QontoStepIconRoot = styled("div")(({ theme }) => ({
@@ -239,6 +242,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [genJobDescription, setGenJobDescription] = React.useState();
   const [descriptionPrompt, setDescriptionPrompt] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const [interviewCatDesc, setInterviewCateDesc] = React.useState([]);
+  const [interviewCatName, setInterviewCatName] = React.useState([]);
 
   const { toast } = useToast();
 
@@ -540,6 +546,69 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   }
 
+
+  const handleCategorySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const session = await getSession();
+
+      const companyId = session?.user?.companyID
+      const response = await createCategory({
+        companyId: companyId,
+        categoryName: interviewCatName,
+        description: interviewCatDesc,
+      });
+
+      if (response) {
+        // Assuming `response.data` contains the newly created category
+        const newCategory = response.data.category;
+  
+        // Update the state without re-fetching data
+        setInterviewCategories((prevCategories) => [
+          ...prevCategories,
+          newCategory,
+        ]);
+        setFilteredCategories((prevCategories) => [
+          ...prevCategories,
+          newCategory,
+        ]);
+  
+        // setModalOpen(false);
+        toast({
+          title: "Interview Category Created Successfully!",
+          description: "The interview category has been successfully created.",
+        });
+  
+        // Optionally, reset input fields
+        setInterviewCatName('');
+        setInterviewCateDesc('');
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview category create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+
+      }
+    }
+  };
+
+
   return (
     <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
       <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
@@ -586,7 +655,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     placeholder="Write a prompt for the job description"
                     name="prompt"
                     value={descriptionPrompt}
-                    onChange={(e) =>{setDescriptionPrompt(e.target.value)}}
+                    onChange={(e) => { setDescriptionPrompt(e.target.value) }}
 
                     className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5 "
                   />
@@ -824,8 +893,46 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 category percentages should not exceed or fall below 100%.
                 Adjust your inputs accordingly.
               </p>
+              
+
+              <div className="flex  flex-col bg-[#262930] rounded-xl my-5 px-2">
+              <h1 className="text-center font-semibold text-lg mt-2">Add New Category</h1>
+              <div className="flex w-full justify-between space-x-3 items-center py-5 ">
+                
+                <input
+                  type="text"
+                  name="Name"
+                  onChange={(e) => setInterviewCatName(e.target.value)} 
+                  value={interviewCatName} 
+                  required
+                  className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                  placeholder="Category Name..."
+                />
+                <textarea
+                  type="text"
+                  name="Description"
+                  onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
+                  value={interviewCatDesc} // Binding input to state
+                  required
+                  rows={3}
+                  className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                  placeholder="Category Description..."
+                />
+                <button
+                  type="button" // Change the button type to 'button' since it's not in a form anymore
+                  onClick={handleCategorySubmit}  // Manually handle submission
+                  className="rounded-md bg-white text-black font-bold px-2 py-2"
+                >
+                  <Plus />
+                </button>
+              </div>
+
+              </div>
+
+
 
               <div className=" flex w-full justify-between space-x-2 ">
+
                 <div className="w-[40%]">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -866,7 +973,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
                   />
                 </div>
-                <div className="w-[20%]">
+                <div className="">
                   <button
                     onClick={handleAddCatagoty}
                     className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center"
