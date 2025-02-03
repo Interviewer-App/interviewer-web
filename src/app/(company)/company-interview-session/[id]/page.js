@@ -31,7 +31,7 @@ function InterviewSessionPreviewPage({ params }) {
   const [sessionDetails, setSessionDetails] = useState({});
   const [interviewId, setInterviewId] = useState(null);
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
 
   const { toast } = useToast();
@@ -70,7 +70,7 @@ function InterviewSessionPreviewPage({ params }) {
     };
 
     fetchSessionDetails();
-  }, [sessionId, generateModalOpen, isQuestionEdit, modalOpen]);
+  }, [sessionId, generateModalOpen, isQuestionEdit, createModalOpen]);
 
   useEffect(() => {
     console.log("interviewId", interviewId);
@@ -188,14 +188,14 @@ function InterviewSessionPreviewPage({ params }) {
                 </h1>
                 <div className=" w-full flex items-center justify-end">
                   <button
-                    className=" h-12 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm md:text-base text-black font-semibold"
+                    className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-black font-semibold"
                     onClick={() => setGenerateModalOpen(true)}
                   >
                     Genarate questions
                   </button>
                   <button
-                    onClick={() => setModalOpen(true)}
-                    className=" h-12 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center text-sm md:text-base font-semibold"
+                    onClick={() => setCreateModalOpen(true)}
+                    className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center font-semibold"
                   >
                     {" "}
                     + Add Question
@@ -217,15 +217,17 @@ function InterviewSessionPreviewPage({ params }) {
               )}
             </div>
           </div>
-          {modalOpen && (
+          {createModalOpen && (
             <CreateQuestionModal
-              sessionId={sessionId}
-              setModalOpen={setModalOpen}
+            forSession={true}
+              id={sessionId}
+              setCreateModalOpen={setCreateModalOpen}
             />
           )}
           {generateModalOpen && (
             <GenerateQuestionModal
-              session={sessionDetails}
+            forSession={true}
+            details={sessionDetails}
               setGenerateModalOpen={setGenerateModalOpen}
             />
           )}
