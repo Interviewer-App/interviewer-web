@@ -15,16 +15,20 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import InterviewCategoryModal from "@/components/interviews/interviewCategoryModal";
 
+import { useToast } from "@/hooks/use-toast";
 const ActionCell = ({ interviewCategoryDetails }) => {
   // const router = useRouter();
-
+  const { toast } = useToast()
         const [modalOpen,setModalOpen]= useState(false);
 
       const handleDelete = async () => {
         try {
           
           await deleteCategory(interviewCategoryDetails.categoryId);
-          alert("Category Deleted: The interview category has been deleted successfully.");
+          toast({
+            title: "Sucess",
+            description: "Interview Category Deleted sucessfully",
+          })
         } catch (error) {
           console.error("Error deleting category:", error);
           toast({
