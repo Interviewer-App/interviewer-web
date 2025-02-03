@@ -58,6 +58,20 @@ const QuillEditor = dynamic(
 import { Plus } from "lucide-react";
 
 
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+// Register Chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+// Mock interview categories
+const interviewCategories = [
+  { categoryId: '1', categoryName: 'Technical' },
+  { categoryId: '2', categoryName: 'Behavioral' },
+  { categoryId: '3', categoryName: 'Coding' },
+];
+
+
 
 const QontoStepIconRoot = styled("div")(({ theme }) => ({
   color: "#eaeaf0",
@@ -245,6 +259,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
   const [interviewCatDesc, setInterviewCateDesc] = React.useState([]);
   const [interviewCatName, setInterviewCatName] = React.useState([]);
+
 
   const { toast } = useToast();
 
@@ -562,7 +577,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
       if (response) {
         // Assuming `response.data` contains the newly created category
         const newCategory = response.data.category;
-  
+
         // Update the state without re-fetching data
         setInterviewCategories((prevCategories) => [
           ...prevCategories,
@@ -572,13 +587,13 @@ export default function CreateInterviewModal({ setModalOpen }) {
           ...prevCategories,
           newCategory,
         ]);
-  
+
         // setModalOpen(false);
         toast({
           title: "Interview Category Created Successfully!",
           description: "The interview category has been successfully created.",
         });
-  
+
         // Optionally, reset input fields
         setInterviewCatName('');
         setInterviewCateDesc('');
@@ -607,6 +622,35 @@ export default function CreateInterviewModal({ setModalOpen }) {
       }
     }
   };
+
+  // Prepare data for the Doughnut chart
+  const data = {
+    labels: categoryList.map((cat) => cat.catagory),
+    datasets: [
+      {
+        label: 'Percentage',
+        data: categoryList.map((cat) => parseFloat(cat.percentage)),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
 
 
   return (
@@ -885,6 +929,40 @@ export default function CreateInterviewModal({ setModalOpen }) {
           )}
           {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px]">
+
+              <div className="flex  flex-col bg-[#262930] rounded-xl my-5 px-2">
+                <h1 className="text-center font-semibold text-lg mt-2">Add New Category to List</h1>
+                <div className="flex w-full justify-between space-x-3 items-center py-5 ">
+
+                  <input
+                    type="text"
+                    name="Name"
+                    onChange={(e) => setInterviewCatName(e.target.value)}
+                    value={interviewCatName}
+                    required
+                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                    placeholder="Category Name..."
+                  />
+                  <textarea
+                    type="text"
+                    name="Description"
+                    onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
+                    value={interviewCatDesc} // Binding input to state
+                    required
+                    rows={3}
+                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                    placeholder="Category Description..."
+                  />
+                  <button
+                    type="button" // Change the button type to 'button' since it's not in a form anymore
+                    onClick={handleCategorySubmit}  // Manually handle submission
+                    className="rounded-md bg-white text-black font-bold px-2 py-2"
+                  >
+                    <Plus />
+                  </button>
+                </div>
+              </div>
+
               <p
                 className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
                   }`}
@@ -893,43 +971,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 category percentages should not exceed or fall below 100%.
                 Adjust your inputs accordingly.
               </p>
-              
-
-              <div className="flex  flex-col bg-[#262930] rounded-xl my-5 px-2">
-              <h1 className="text-center font-semibold text-lg mt-2">Add New Category</h1>
-              <div className="flex w-full justify-between space-x-3 items-center py-5 ">
-                
-                <input
-                  type="text"
-                  name="Name"
-                  onChange={(e) => setInterviewCatName(e.target.value)} 
-                  value={interviewCatName} 
-                  required
-                  className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
-                  placeholder="Category Name..."
-                />
-                <textarea
-                  type="text"
-                  name="Description"
-                  onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
-                  value={interviewCatDesc} // Binding input to state
-                  required
-                  rows={3}
-                  className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
-                  placeholder="Category Description..."
-                />
-                <button
-                  type="button" // Change the button type to 'button' since it's not in a form anymore
-                  onClick={handleCategorySubmit}  // Manually handle submission
-                  className="rounded-md bg-white text-black font-bold px-2 py-2"
-                >
-                  <Plus />
-                </button>
-              </div>
-
-              </div>
-
-
 
               <div className=" flex w-full justify-between space-x-2 ">
 
@@ -982,7 +1023,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </button>
                 </div>
               </div>
-              <div className="  overflow-y-auto h-[300px]">
+              <div className="flex flex-col md:flex-row">
+              <div className="  overflow-y-auto h-fit">
                 <table className=" w-full">
                   <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
                     <tr>
@@ -1010,10 +1052,23 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     ))}
                   </tbody>
                 </table>
+                </div>
+                <div className="w-52 aspect-square mx-auto">
+
+                  {categoryList.length > 0 ? (
+                    <Doughnut data={data} />
+                  ) : (
+                    <p className="text-gray-500">Add categories to view the Chart</p>
+                  )}
+                </div>
               </div>
+
+
+
             </div>
           )}
         </form>
+
         <div className=" w-full flex md:flex-row justify-between items-center mt-1">
           {stepperCount > 0 ? (
             <button
