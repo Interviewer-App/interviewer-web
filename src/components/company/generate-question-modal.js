@@ -24,15 +24,16 @@ const ListItem = styled("li")(({ theme }) => ({
 }));
 
 export default function GenerateQuestionModal({
-  session,
+  forSession,
+  details,
   setGenerateModalOpen,
 }) {
-  const [sessionID, setSessionID] = React.useState(session.sessionId);
-  const [jobRole, setJobRole] = React.useState(session.interview.jobTitle);
+  const [sessionID, setSessionID] = React.useState("");
+  const [jobRole, setJobRole] = React.useState("");
   const [skillLevel, setSkillLevel] = React.useState("Junior");
   const [companyCulture, setCompanyCulture] = React.useState("");
   const [companyAim, setCompanyAim] = React.useState("");
-  const [noOfQuestion,setNoOfQuestion]=React.useState("");
+  const [noOfQuestion, setNoOfQuestion] = React.useState("");
   const [questionType, setQuestionType] = React.useState("Technical");
   const [keywords, setKeywords] = React.useState([]);
   const [inputValue, setInputValue] = React.useState("");
@@ -40,7 +41,12 @@ export default function GenerateQuestionModal({
 
   const { toast } = useToast();
 
-  console.log("session", session);
+  React.useEffect(() => {
+    if (forSession) {
+      setSessionID(details.sessionId);
+      setJobRole(details.interview.jobTitle);
+    }
+  }, [details]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
@@ -64,7 +70,6 @@ export default function GenerateQuestionModal({
     setLoading(true);
     const validNoOfQuestions = parseInt(noOfQuestion, 10);
 
-    //not Empy and Valid Integer handling
     if (isNaN(validNoOfQuestions) || validNoOfQuestions <= 0) {
       toast({
         variant: "destructive",
@@ -76,16 +81,19 @@ export default function GenerateQuestionModal({
       return;
     }
 
+    let response;
     try {
-      const response = await generateQuestions(sessionID, {
-        jobRole,
-        skillLevel,
-        companyCulture,
-        companyAim,
-        QuestionType: questionType.toUpperCase(),
-        Keywords: keywords.map((keyword) => keyword.label),
-        noOfQuestions: validNoOfQuestions,
-      });
+      if (forSession) {
+        response = await generateQuestions(sessionID, {
+          jobRole,
+          skillLevel,
+          companyCulture,
+          companyAim,
+          QuestionType: questionType.toUpperCase(),
+          Keywords: keywords.map((keyword) => keyword.label),
+          noOfQuestions: validNoOfQuestions,
+        });
+      }
 
       if (response) {
         setGenerateModalOpen(false);
@@ -198,7 +206,7 @@ export default function GenerateQuestionModal({
                 </DropdownMenu>
               </div>
             </div>
-            <textarea
+            {/* <textarea
               placeholder="Company Culture"
               name="companyCulture"
               value={companyCulture}
@@ -213,8 +221,7 @@ export default function GenerateQuestionModal({
               onChange={(e) => setCompanyAim(e.target.value)}
               required
               className=" h-[100px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 py-3 mb-4"
-            />
-           
+            /> */}
 
             {/* <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-1"></div> */}
             <Paper
@@ -259,8 +266,6 @@ export default function GenerateQuestionModal({
                 onKeyDown={handleKeyDown}
                 className=" h-[45px] rounded-lg text-sm border-0 bg-transparent placeholder-[#737883] px-5 py-3 mb-5 focus:outline-none"
               />
-
-
             </Paper>
             <div className="flex justify-center items-center w-full">
               <input
@@ -275,11 +280,9 @@ export default function GenerateQuestionModal({
               />
             </div>
 
-
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                
                 className=" h-11 min-w-[150px] w-full md:w-[40%] mt-2 cursor-pointer bg-white text-black text-sm rounded-lg text-center font-semibold"
               >
                 Genarate
