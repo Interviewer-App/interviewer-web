@@ -229,8 +229,8 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 </span>))}
 
               <h5 className=" text-2xl font-semibold h-full mt-5">Contact Info</h5>
-              <p>Email - {documentUrl?.contactInfo.email}</p>
-              <p>Phone - {documentUrl?.contactInfo.phone}</p>
+              <p>Email - {documentUrl?.contactInfo?.email}</p>
+              <p>Phone - {documentUrl?.contactInfo?.phone}</p>
             </div>
           )}
 
