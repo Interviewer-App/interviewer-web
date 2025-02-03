@@ -237,7 +237,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [totalPercentage, setTotalPercentage] = React.useState(0);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
   const [genJobDescription, setGenJobDescription] = React.useState();
-  const [descriptionPrompt, setDescriptionPrompt] = React.useState();
+  const [descriptionPrompt, setDescriptionPrompt] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
   const { toast } = useToast();
