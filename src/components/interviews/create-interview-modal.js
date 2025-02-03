@@ -932,7 +932,11 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 onClick={handleScheduleGenerate}
                 className=" h-10 text-black px-3 bg-white hover:border-gray-500 rounded-lg text-sm flex items-center justify-center mt-3"
               >
-                Generate Schedules
+                {isLoading ? (
+                  <LoaderCircle className="animate-spin" />
+                ) : (
+                  <span> Generate Schedules</span>
+                )}
               </button>
               <div className=" mt-5">
                 <table className=" w-full">
@@ -1225,10 +1229,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
           )}
         </div>
       </div>
-      {isLoading && (
-        <div className="fixed top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
-          <Loading/>
-        </div>)}
     </div>
   );
 }
