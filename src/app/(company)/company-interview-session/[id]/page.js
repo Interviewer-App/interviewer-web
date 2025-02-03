@@ -23,6 +23,7 @@ import GenerateQuestionModal from "@/components/company/generate-question-modal"
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { importQuestions } from "@/lib/api/question";
 
 function InterviewSessionPreviewPage({ params }) {
   const { data: session, status } = useSession();
@@ -108,6 +109,27 @@ function InterviewSessionPreviewPage({ params }) {
     }
   }
 
+  const handleImportQuestions = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await importQuestions(sessionId);
+      if (response) {
+        toast({
+          title: "Success!",
+          description: `Questions Imported Successfully`,
+        });
+        setIsQuestionEdit(!isQuestionEdit);
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `Error importing questions: ${error}`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
+  };
+
   return (
     <>
       <SidebarInset>
@@ -180,24 +202,24 @@ function InterviewSessionPreviewPage({ params }) {
               </div>
             </div>
 
-              <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 my-5 rounded-lg">
-                <button
-                  onClick={() => setQuestionTab("technical")}
-                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                    questionTab === "technical" ? "bg-gray-800" : ""
-                  } `}
-                >
-                  Technical
-                </button>
-                <button
-                  onClick={() => setQuestionTab("other")}
-                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                    questionTab === "other" ? "bg-gray-800" : ""
-                  } `}
-                >
-                  Other
-                </button>
-              </div>
+            <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 my-5 rounded-lg">
+              <button
+                onClick={() => setQuestionTab("technical")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  questionTab === "technical" ? "bg-gray-800" : ""
+                } `}
+              >
+                Technical
+              </button>
+              <button
+                onClick={() => setQuestionTab("other")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  questionTab === "other" ? "bg-gray-800" : ""
+                } `}
+              >
+                Other
+              </button>
+            </div>
             <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
               {questionTab === "technical" && (
                 <div className=" w-full">
@@ -224,6 +246,7 @@ function InterviewSessionPreviewPage({ params }) {
                   {sessionDetails.questions?.length > 0 ? (
                     sessionDetails.questions.map((question, index) => (
                       <QuestionDisplayCard
+                        forSession={true}
                         key={index}
                         index={index}
                         question={question}
@@ -234,9 +257,8 @@ function InterviewSessionPreviewPage({ params }) {
                   ) : (
                     <div className=" w-full flex flex-col items-center justify-center min-h-[300px] gap-2">
                       <p>No questions available.</p>
-                      <button
-                        className=" h-11 min-w-[160px] md:mt-0 px-5 mt-5 cursor-pointer border-2 hover:bg-white/30 border-white rounded-lg text-center text-white font-semibold"
-                      >
+                      <button className=" h-11 min-w-[160px] md:mt-0 px-5 mt-5 cursor-pointer border-2 hover:bg-white/30 border-white rounded-lg text-center text-white font-semibold"
+                        onClick={handleImportQuestions}>
                         Import questions
                       </button>
                     </div>
