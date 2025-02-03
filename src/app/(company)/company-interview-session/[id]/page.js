@@ -33,6 +33,7 @@ function InterviewSessionPreviewPage({ params }) {
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
+  const [questionTab, setQuestionTab] = useState("technical");
 
   const { toast } = useToast();
   // const { socket } = useSocket();
@@ -107,8 +108,6 @@ function InterviewSessionPreviewPage({ params }) {
     }
   }
 
-
-
   return (
     <>
       <SidebarInset>
@@ -181,53 +180,91 @@ function InterviewSessionPreviewPage({ params }) {
               </div>
             </div>
 
-            <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
-              <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
-                <h1 className=" text-2xl font-semibold text-left w-full">
-                  Questions
-                </h1>
-                <div className=" w-full flex items-center justify-end">
-                  <button
-                    className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-black font-semibold"
-                    onClick={() => setGenerateModalOpen(true)}
-                  >
-                    Genarate questions
-                  </button>
-                  <button
-                    onClick={() => setCreateModalOpen(true)}
-                    className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center font-semibold"
-                  >
-                    {" "}
-                    + Add Question
-                  </button>
-                </div>
+              <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 my-5 rounded-lg">
+                <button
+                  onClick={() => setQuestionTab("technical")}
+                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                    questionTab === "technical" ? "bg-gray-800" : ""
+                  } `}
+                >
+                  Technical
+                </button>
+                <button
+                  onClick={() => setQuestionTab("other")}
+                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                    questionTab === "other" ? "bg-gray-800" : ""
+                  } `}
+                >
+                  Other
+                </button>
               </div>
-              {sessionDetails.questions?.length > 0 ? (
-                sessionDetails.questions.map((question, index) => (
-                  <QuestionDisplayCard
-                    key={index}
-                    index={index}
-                    question={question}
-                    isQuestionEdit={isQuestionEdit}
-                    setIsQuestionEdit={setIsQuestionEdit}
-                  />
-                ))
-              ) : (
-                <p>No questions available.</p>
+            <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
+              {questionTab === "technical" && (
+                <div className=" w-full">
+                  <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                    <h1 className=" text-2xl font-semibold text-left w-full">
+                      Technical Questions
+                    </h1>
+                    <div className=" w-full flex items-center justify-end">
+                      <button
+                        className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-black font-semibold"
+                        onClick={() => setGenerateModalOpen(true)}
+                      >
+                        Genarate questions
+                      </button>
+                      <button
+                        onClick={() => setCreateModalOpen(true)}
+                        className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center font-semibold"
+                      >
+                        {" "}
+                        + Add Question
+                      </button>
+                    </div>
+                  </div>
+                  {sessionDetails.questions?.length > 0 ? (
+                    sessionDetails.questions.map((question, index) => (
+                      <QuestionDisplayCard
+                        key={index}
+                        index={index}
+                        question={question}
+                        isQuestionEdit={isQuestionEdit}
+                        setIsQuestionEdit={setIsQuestionEdit}
+                      />
+                    ))
+                  ) : (
+                    <div className=" w-full flex flex-col items-center justify-center min-h-[300px] gap-2">
+                      <p>No questions available.</p>
+                      <button
+                        className=" h-11 min-w-[160px] md:mt-0 px-5 mt-5 cursor-pointer border-2 hover:bg-white/30 border-white rounded-lg text-center text-white font-semibold"
+                      >
+                        Import questions
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {questionTab === "other" && (
+                <div className=" w-full">
+                  <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                    <h1 className=" text-2xl font-semibold text-left w-full">
+                      Other
+                    </h1>
+                  </div>
+                </div>
               )}
             </div>
           </div>
           {createModalOpen && (
             <CreateQuestionModal
-            forSession={true}
+              forSession={true}
               id={sessionId}
               setCreateModalOpen={setCreateModalOpen}
             />
           )}
           {generateModalOpen && (
             <GenerateQuestionModal
-            forSession={true}
-            details={sessionDetails}
+              forSession={true}
+              details={sessionDetails}
               setGenerateModalOpen={setGenerateModalOpen}
             />
           )}
