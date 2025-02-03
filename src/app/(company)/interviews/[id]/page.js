@@ -81,7 +81,6 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { CandidateDataTable } from "@/components/ui/candidateDataTable/DataTable";
 
 ChartJS.register(
   CategoryScale,
@@ -1614,10 +1613,9 @@ export default function InterviewPreviewPage({ params }) {
                   {loading ? (
                     <div>Loading interview sessions...</div>
                   ) : (
-                    <CandidateDataTable
+                    <DataTable
                       columns={candidatesTableColumns}
                       data={interviewCandidates}
-                      interviewId={interviewId}
                     />
                   )}
                 </div>
