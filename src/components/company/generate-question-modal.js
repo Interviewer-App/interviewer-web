@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { generateQuestions } from "@/lib/api/ai";
+import { generateInterviewQuestions, generateQuestions } from "@/lib/api/ai";
 import Loading from "@/app/loading";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 
@@ -29,6 +29,7 @@ export default function GenerateQuestionModal({
   setGenerateModalOpen,
 }) {
   const [sessionID, setSessionID] = React.useState("");
+  const [interviewId, setInterviewId] = React.useState("");
   const [jobRole, setJobRole] = React.useState("");
   const [skillLevel, setSkillLevel] = React.useState("Junior");
   const [companyCulture, setCompanyCulture] = React.useState("");
@@ -45,6 +46,9 @@ export default function GenerateQuestionModal({
     if (forSession) {
       setSessionID(details.sessionId);
       setJobRole(details.interview.jobTitle);
+    }else{
+      setInterviewId(details.interviewID);
+      setJobRole(details.jobTitle);
     }
   }, [details]);
 
@@ -87,8 +91,14 @@ export default function GenerateQuestionModal({
         response = await generateQuestions(sessionID, {
           jobRole,
           skillLevel,
-          companyCulture,
-          companyAim,
+          QuestionType: questionType.toUpperCase(),
+          Keywords: keywords.map((keyword) => keyword.label),
+          noOfQuestions: validNoOfQuestions,
+        });
+      }else{
+        response = await generateInterviewQuestions(interviewId, {
+          jobRole,
+          skillLevel,
           QuestionType: questionType.toUpperCase(),
           Keywords: keywords.map((keyword) => keyword.label),
           noOfQuestions: validNoOfQuestions,
