@@ -23,6 +23,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 
@@ -30,8 +36,9 @@ import { ToastAction } from "@/components/ui/toast";
 import { LuCheck } from "react-icons/lu";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import { FaInfoCircle } from "react-icons/fa";
 import { deleteQuestion, updateQuestion } from "@/lib/api/question";
+import { RiInformation2Line } from "react-icons/ri";
+
 
 function QuestionDisplayCard({
   index,
@@ -42,7 +49,6 @@ function QuestionDisplayCard({
   const [questionText, setQuestionText] = useState(question.questionText);
   const [questionType, setQuestionType] = useState(question.type);
   const [isEditing, setIsEditing] = useState(false);
-  const [explanation, setExplanation] = useState(question.explanation);
   const { toast } = useToast();
 
   const handleUpdateQuestion = async (e) => {
@@ -126,13 +132,32 @@ function QuestionDisplayCard({
       }
     }
   };
-  
-  
 
   return (
-    <div key={index} className="mt-5">
-      <div className=" w-full bg-slate-500/40 py-2 px-4 rounded-t-lg relative">
-        <h1 className=" text-xl font-semibold text-gray-400">Q{index + 1}</h1>
+    <div
+      key={index}
+      className="bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg"
+    >
+      <div className=" w-full py-2 px-4 rounded-t-lg relative">
+        <div className=" flex items-center justify-start gap-x-2">
+          <h1 className=" text-xl font-semibold text-gray-400">
+            Q{index + 1} : {question.estimatedTimeMinutes} min
+          </h1>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className=" text-xs text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[120px] px-2 border-2 flex items-center justify-center ">
+                  <RiInformation2Line className=" text-sm mr-1" /> Explanation
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
+                <p className=" w-[500px] text-gray-300">
+                  {question.explanation}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <div className="flex gap-2 absolute right-4 top-0 h-full items-center justify-between">
           <span className=" text-sm text-gray-400">Type:</span>
           {!isEditing && (
@@ -144,7 +169,7 @@ function QuestionDisplayCard({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  className={`bg-black border-2 border-gray-500 h-9 mb-0 mr-5 px-2 focus:outline-none outline-none`}
+                  className={`!bg-gray-700 border-2 border-gray-500 h-9 mb-0 mr-5 px-2 focus:outline-none outline-none`}
                   variant="outline"
                 >
                   {questionType === "CODING" ? "Coding" : "Open Ended"}
@@ -170,7 +195,7 @@ function QuestionDisplayCard({
           {isEditing && (
             <button
               onClick={handleUpdateQuestion}
-              className="text-green-500 bg-green-300/20 hover:text-green-100 hover:border-green-100 border-green-500 text-lg aspect-square h-9 border-2 rounded-sm flex items-center justify-center"
+              className="text-green-500 hover:text-green-400 border-green-500 hover:bg-green-300/20 border-2 text-lg aspect-square h-7 rounded-sm flex items-center justify-center"
             >
               <LuCheck />
             </button>
@@ -178,7 +203,7 @@ function QuestionDisplayCard({
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="text-gray-300 bg-gray-300/20 hover:text-gray-100 hover:border-gray-100 border-gray-500 text-lg aspect-square h-9 border-2 rounded-sm flex items-center justify-center"
+              className="text-gray-300 hover:text-gray-200 border-gray-300 hover:bg-gray-300/20 border-2  text-lg aspect-square h-7 rounded-sm flex items-center justify-center"
             >
               <MdEdit />
             </button>
@@ -186,7 +211,7 @@ function QuestionDisplayCard({
 
           <AlertDialog>
             <AlertDialogTrigger>
-              <div className="text-red-500 bg-red-300/20 hover:text-red-100 hover:border-red-100 border-red-500 text-lg aspect-square h-9 border-2 rounded-sm flex items-center justify-center">
+              <div className="text-red-500 hover:text-red-400 border-red-500 border-2 hover:bg-red-500/20 text-lg aspect-square h-7 rounded-sm flex items-center justify-center">
                 <MdDelete />
               </div>
             </AlertDialogTrigger>
@@ -202,42 +227,22 @@ function QuestionDisplayCard({
 
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className='h-[45px]' onClick={handleDeleteQuestion}>
+                <AlertDialogAction
+                  className="h-[45px]"
+                  onClick={handleDeleteQuestion}
+                >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          
-
-          <AlertDialog>
-            <AlertDialogTrigger>
-            <div
-            className="text-gray-300 bg-gray-300/20 hover:text-gray-100 hover:border-gray-100 border-gray-500 text-lg aspect-square h-9 border-2 rounded-sm flex items-center justify-center">
-            <FaInfoCircle />
-          </div>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Explanation</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {explanation}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Close</AlertDialogCancel>
-                {/* <AlertDialogAction>Close</AlertDialogAction> */}
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-
         </div>
       </div>
-      <div className="w-full bg-slate-500/20 py-3 text-gray-300 px-6 rounded-b-lg">
+      <div className="w-full py-3 text-gray-400 px-6 rounded-b-lg">
         <textarea
           readOnly={!isEditing}
           className={`text-base w-full rounded-md ${
-            isEditing ? "bg-gray-700 py-2 px-4" : "bg-transparent text-gray-400"
+            isEditing ? "bg-gray-700 py-2 px-4" : "bg-transparent text-gray-500"
           } focus:outline-none`}
           value={questionText}
           onChange={(e) => setQuestionText(e.target.value)}
