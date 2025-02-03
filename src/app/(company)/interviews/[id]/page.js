@@ -556,12 +556,20 @@ export default function InterviewPreviewPage({ params }) {
       }
     };
     if (interviewId) fetchInterview();
-  }, [interviewId, status, interviewCategories]);
+  }, [
+    interviewId,
+    isQuestionEdit,
+    status,
+    interviewCategories,
+    generateModalOpen,
+    createModalOpen,
+  ]);
 
   useEffect(() => {
     setDescription(interviewDetail.jobDescription);
     setTitle(interviewDetail.jobTitle);
     setInterviewCategory(interviewDetail.interviewCategory);
+    setQuestionList(interviewDetail?.questions);
     if (interviewDetail?.requiredSkills) {
       setSkills(interviewDetail.requiredSkills.split(", "));
     } else {
@@ -1671,6 +1679,7 @@ export default function InterviewPreviewPage({ params }) {
               {questionList?.length > 0 ? (
                 questionList.map((question, index) => (
                   <QuestionDisplayCard
+                    forSession={false}
                     key={index}
                     index={index}
                     question={question}
@@ -1679,7 +1688,9 @@ export default function InterviewPreviewPage({ params }) {
                   />
                 ))
               ) : (
-                <p>No questions available.</p>
+                <div className=" w-full min-h-[300px] flex items-center justify-center">
+                  <p>No questions available.</p>
+                </div>
               )}
             </div>
           )}
