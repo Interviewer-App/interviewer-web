@@ -36,7 +36,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DataTable } from "@/components/ui/InterviewDataTable/Datatable";
 import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
-import {candidatesTableColumns} from "@/components/ui/candidateDataTable/column";
+import { candidatesTableColumns } from "@/components/ui/candidateDataTable/column";
 import {
   fetchCandidatesForInterview,
   fetchInterviewSessionsForInterview,
@@ -67,22 +67,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-// import Editor from "@/components/rich-text/editor";
-
-//API
-import {
-  getInterviewById,
-  interviewStatus,
-  updateInterview,
-} from "@/lib/api/interview";
-import { deleteInterview } from "@/lib/api/interview";
-import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, redirect } from "next/navigation";
-import { useSession, getSession } from "next-auth/react";
-import InviteCandidateModal from "@/components/company/invite-candidate-modal";
-import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
-import InvitedCandidates from "@/components/interviews/invite-candidates";
-import InterviewCharts from "@/components/interviews/interviewCharts";
+import GenerateQuestionModal from "@/components/company/generate-question-modal";
+import CreateQuestionModal from "@/components/company/create-question-modal";
 import dynamic from "next/dynamic";
 import { Doughnut, Pie } from "react-chartjs-2";
 import {
@@ -108,6 +94,21 @@ ChartJS.register(
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
+
+//API
+import {
+  getInterviewById,
+  interviewStatus,
+  updateInterview,
+} from "@/lib/api/interview";
+import { deleteInterview } from "@/lib/api/interview";
+import { Button } from "@/components/ui/button";
+import { usePathname, useRouter, redirect } from "next/navigation";
+import { useSession, getSession } from "next-auth/react";
+import InviteCandidateModal from "@/components/company/invite-candidate-modal";
+import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import InvitedCandidates from "@/components/interviews/invite-candidates";
+import QuestionDisplayCard from "@/components/company/question-display-card";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -136,6 +137,8 @@ export default function InterviewPreviewPage({ params }) {
   const [status, setStatus] = useState("");
   const [interviewOverview, setInterviewOverview] = useState({});
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [generateModalOpen, setGenerateModalOpen] = useState(false);
   const [interviewCategories, setInterviewCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [inputPercentage, setInputPercentage] = useState("");
@@ -145,7 +148,112 @@ export default function InterviewPreviewPage({ params }) {
   const [inputScheduleDate, setInputScheduleDate] = useState(new Date());
   const [inputScheduleStartTime, setInputScheduleStartTime] = useState("");
   const [inputScheduleEndTime, setInputScheduleEndTime] = useState("");
+  const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [scheduleList, setScheduleList] = useState([]);
+  const [questionList, setQuestionList] = useState([
+    {
+      questionID: "cm6fzyd6o002au7h06l44gjrn",
+      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
+      questionCategory: null,
+      questionText:
+        "Describe the difference between using `ArrayList` and `LinkedList` in Java. When would you choose one over the other?",
+      explanation:
+        "This question assesses the candidate's understanding of fundamental Java data structures and their performance characteristics. It's relevant because choosing the right data structure is crucial for writing efficient code. The role might require using and choosing between collections.",
+      isAnswered: true,
+      estimatedTimeMinutes: 7,
+      aiContext: "Generated for Software Engineer (Junior)",
+      diffcultyLevel: null,
+      type: "OPEN_ENDED",
+      createdAt: "2025-01-28T04:48:06.720Z",
+      updatedAt: "2025-01-28T05:06:56.163Z",
+      usageFrequency: 0,
+    },
+    {
+      questionID: "cm6fzyd6p002bu7h088kzja6u",
+      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
+      questionCategory: null,
+      questionText:
+        "Given a Java array of integers, write a method that returns the sum of all even numbers in the array.",
+      explanation:
+        "This is a basic coding question to test the candidate's ability to write simple algorithms using Java. It checks their understanding of loops, conditional statements, and working with arrays.",
+      isAnswered: true,
+      estimatedTimeMinutes: 15,
+      aiContext: "Generated for Software Engineer (Junior)",
+      diffcultyLevel: null,
+      type: "CODING",
+      createdAt: "2025-01-28T04:48:06.721Z",
+      updatedAt: "2025-01-28T05:07:40.269Z",
+      usageFrequency: 0,
+    },
+    {
+      questionID: "cm6okgls30000u7j4qlyktcgf",
+      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
+      questionCategory: null,
+      questionText:
+        "Describe the differences between using functional components and class components in React, and explain when you would choose one over the other.",
+      explanation:
+        "This question assesses the candidate's understanding of React's component model and their ability to choose the right approach for specific situations. It tests their knowledge of React best practices and shows if they keep up with the latest React trends.",
+      isAnswered: false,
+      estimatedTimeMinutes: 5,
+      aiContext: "Generated for Software Engineer (Senior)",
+      diffcultyLevel: null,
+      type: "OPEN_ENDED",
+      createdAt: "2025-02-03T04:44:19.391Z",
+      updatedAt: "2025-02-03T04:44:19.391Z",
+      usageFrequency: 0,
+    },
+    {
+      questionID: "cm6okgltb0001u7j4fw08sy8s",
+      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
+      questionCategory: null,
+      questionText:
+        "Given a list of unsorted integers, write a Java function that sorts the list using the merge sort algorithm.",
+      explanation:
+        "This question tests the candidate's proficiency in Java and their ability to implement a classic sorting algorithm. It assesses their understanding of divide-and-conquer techniques, code quality, and efficiency.",
+      isAnswered: false,
+      estimatedTimeMinutes: 20,
+      aiContext: "Generated for Software Engineer (Senior)",
+      diffcultyLevel: null,
+      type: "CODING",
+      createdAt: "2025-02-03T04:44:19.391Z",
+      updatedAt: "2025-02-03T04:44:19.391Z",
+      usageFrequency: 0,
+    },
+    {
+      questionID: "cm6okglto0002u7j4sc8386lu",
+      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
+      questionCategory: null,
+      questionText:
+        "Implement a Java class that demonstrates the use of Java Streams to filter a list of objects based on multiple criteria and then transform the results into a different object type.",
+      explanation:
+        "This question assesses the candidate's ability to use modern Java features and their proficiency in data manipulation using streams. It demonstrates their familiarity with functional programming and their ability to apply these to practical use cases.",
+      isAnswered: false,
+      estimatedTimeMinutes: 15,
+      aiContext: "Generated for Software Engineer (Senior)",
+      diffcultyLevel: null,
+      type: "CODING",
+      createdAt: "2025-02-03T04:44:19.391Z",
+      updatedAt: "2025-02-03T04:44:19.391Z",
+      usageFrequency: 0,
+    },
+    {
+      questionID: "cm6okglu00003u7j4b5k3oc0c",
+      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
+      questionCategory: null,
+      questionText:
+        "Explain the concept of the Virtual DOM in React. How does React use it to update the actual DOM, and why is this approach beneficial?",
+      explanation:
+        "This question evaluates the candidate's understanding of React's core mechanisms and performance optimization strategies. It tests their ability to explain complex concepts clearly and shows if they know how React works behind the scenes.",
+      isAnswered: false,
+      estimatedTimeMinutes: 7,
+      aiContext: "Generated for Software Engineer (Senior)",
+      diffcultyLevel: null,
+      type: "OPEN_ENDED",
+      createdAt: "2025-02-03T04:44:19.391Z",
+      updatedAt: "2025-02-03T04:44:19.391Z",
+      usageFrequency: 0,
+    },
+  ]);
   const [dateRange, setDateRange] = useState({});
   const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
   const [chartData, setChartData] = useState({
@@ -348,7 +456,6 @@ export default function InterviewPreviewPage({ params }) {
     };
   }, [interviewId, page, limit]);
 
-
   useEffect(() => {
     const fetchCandidatesData = async () => {
       setLoading(true);
@@ -369,8 +476,6 @@ export default function InterviewPreviewPage({ params }) {
     };
 
     if (interviewId) fetchCandidatesData();
-
-   
   }, [interviewId, page, limit]);
 
   const handleNextPage = () => {
@@ -873,6 +978,14 @@ export default function InterviewPreviewPage({ params }) {
                 Invitation
               </button>
               <button
+                onClick={() => setTab("questions")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "questions" ? "bg-gray-800" : ""
+                } `}
+              >
+                Questions
+              </button>
+              <button
                 onClick={() => setTab("edit")}
                 className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
                   tab === "edit" ? "bg-gray-800" : ""
@@ -899,7 +1012,7 @@ export default function InterviewPreviewPage({ params }) {
                     Highest Mark
                   </h1>
                   <h1 className=" text-2xl md:text-5xl lg:text-7xl font-semibold pt-6 px-5">
-                    {interviewOverview?.maxScore || 0}
+                    {parseFloat(interviewOverview?.maxScore).toFixed(2) || 0}
                     <span className=" text-base px-2">%</span>
                   </h1>
                   <p className=" text-md font-semibold px-5">
@@ -1533,6 +1646,44 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           )}
 
+          {tab === "questions" && (
+            <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+              <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                <h1 className=" text-2xl font-semibold text-left w-full">
+                  Questions
+                </h1>
+                <div className=" w-full flex items-center justify-end">
+                  <button
+                    className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
+                    onClick={() => setGenerateModalOpen(true)}
+                  >
+                    Genarate questions
+                  </button>
+                  <button
+                    onClick={() => setCreateModalOpen(true)}
+                    className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center text-sm font-semibold"
+                  >
+                    {" "}
+                    + Add Question
+                  </button>
+                </div>
+              </div>
+              {questionList?.length > 0 ? (
+                questionList.map((question, index) => (
+                  <QuestionDisplayCard
+                    key={index}
+                    index={index}
+                    question={question}
+                    isQuestionEdit={isQuestionEdit}
+                    setIsQuestionEdit={setIsQuestionEdit}
+                  />
+                ))
+              ) : (
+                <p>No questions available.</p>
+              )}
+            </div>
+          )}
+
           {tab === "sessions" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
               <div>
@@ -1650,6 +1801,20 @@ export default function InterviewPreviewPage({ params }) {
         <InviteCandidateModal
           setInviteModalOpen={setInviteModalOpen}
           interviewId={interviewId}
+        />
+      )}
+      {createModalOpen && (
+        <CreateQuestionModal
+          forSession={false}
+          id={interviewId}
+          setCreateModalOpen={setCreateModalOpen}
+        />
+      )}
+      {generateModalOpen && (
+        <GenerateQuestionModal
+          forSession={false}
+          details={interviewDetail}
+          setGenerateModalOpen={setGenerateModalOpen}
         />
       )}
     </div>
