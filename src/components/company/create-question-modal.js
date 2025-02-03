@@ -14,27 +14,47 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { createQuestion } from "@/lib/api/question";
 
-export default function CreateQuestionModal({ sessionId, setModalOpen }) {
-  const [sessionID, setSessionID] = React.useState(sessionId);
+export default function CreateQuestionModal({ forSession, id, setCreateModalOpen }) {
+  const [sessionID, setSessionID] = React.useState("");
+  const [interviewID, setInterviewID] = React.useState("");
   const [question, setQuestion] = React.useState("");
-  const [time, setTime] = React.useState('');
+  const [time, setTime] = React.useState("");
   const [type, setType] = React.useState("OPEN_ENDED");
 
   const { toast } = useToast();
 
+  React.useEffect(() => {
+    if (forSession) {
+      setSessionID(id);
+    } else {
+      setInterviewID(id);
+    }
+  }, [forSession, id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let response;
     try {
-      const questionData = {
-        question,
-        type,
-        estimatedTimeInMinutes: parseInt(time, 10),
-        sessionId: sessionID,
-      };
-      const response = await createQuestion(questionData);
+      if (forSession) {
+        const questionDataforSession = {
+          question,
+          type,
+          estimatedTimeInMinutes: parseInt(time, 10),
+          sessionId: sessionID,
+        };
+        response = await createQuestion(questionDataforSession);
+      } else {
+        const questionDataforInterview = {
+          question,
+          type,
+          estimatedTimeInMinutes: parseInt(time, 10),
+          interviewId: interviewID,
+        };
+        response = await createQuestion(questionDataforInterview);
+      }
 
       if (response) {
-        setModalOpen(false);
+        setCreateModalOpen(false);
       }
     } catch (err) {
       if (err.response) {
@@ -74,7 +94,7 @@ export default function CreateQuestionModal({ sessionId, setModalOpen }) {
           Create Question
         </h1>
         <button
-          onClick={() => setModalOpen(false)}
+          onClick={() => setCreateModalOpen(false)}
           className=" absolute top-5 right-5 text-[#f3f3f3]"
         >
           <MdClose className=" text-2xl" />
@@ -104,7 +124,7 @@ export default function CreateQuestionModal({ sessionId, setModalOpen }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  className={`bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                  className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
                   variant="outline"
                 >
                   {type === "CODING" ? "Coding" : "Open Ended"}
