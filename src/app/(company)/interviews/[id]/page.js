@@ -109,6 +109,7 @@ import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import InvitedCandidates from "@/components/interviews/invite-candidates";
 import QuestionDisplayCard from "@/components/company/question-display-card";
+import { CandidateDataTable } from "@/components/ui/candidateDataTable/DataTable";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -1635,7 +1636,7 @@ export default function InterviewPreviewPage({ params }) {
                   {loading ? (
                     <div>Loading interview sessions...</div>
                   ) : (
-                    <DataTable
+                    <CandidateDataTable
                       columns={candidatesTableColumns}
                       data={interviewCandidates}
                     />
