@@ -36,11 +36,16 @@ import { ToastAction } from "@/components/ui/toast";
 import { LuCheck } from "react-icons/lu";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import { deleteQuestion, updateQuestion } from "@/lib/api/question";
+import {
+  deleteInterviewQuestion,
+  deleteQuestion,
+  updateInterviewQuestion,
+  updateQuestion,
+} from "@/lib/api/question";
 import { RiInformation2Line } from "react-icons/ri";
 
-
 function QuestionDisplayCard({
+  forSession,
   index,
   question,
   isQuestionEdit,
@@ -53,11 +58,19 @@ function QuestionDisplayCard({
 
   const handleUpdateQuestion = async (e) => {
     e.preventDefault();
+    let response;
     try {
-      const response = await updateQuestion(question.questionID, {
-        question: questionText,
-        type: questionType,
-      });
+      if (forSession) {
+        response = await updateQuestion(question.questionID, {
+          question: questionText,
+          type: questionType,
+        });
+      } else {
+        response = await updateInterviewQuestion(question.interviewQuestionID, {
+          question: questionText,
+          type: questionType,
+        });
+      }
 
       if (response) {
         setIsEditing(false);
@@ -96,8 +109,13 @@ function QuestionDisplayCard({
 
   const handleDeleteQuestion = async (e) => {
     e.preventDefault();
+    let response;
     try {
-      const response = await deleteQuestion(question.questionID);
+      if (forSession) {
+        response = await deleteQuestion(question.questionID);
+      } else {
+        response = await deleteInterviewQuestion(question.interviewQuestionID);
+      }
 
       if (response) {
         setIsQuestionEdit(!isQuestionEdit);
@@ -228,7 +246,7 @@ function QuestionDisplayCard({
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  className="h-[45px]"
+                  className="h-10"
                   onClick={handleDeleteQuestion}
                 >
                   Delete
