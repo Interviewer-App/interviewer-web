@@ -24,7 +24,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { DataTable } from "@/components/ui/InterviewCategory-DataTable/Datatable";
-import { interviewSessionTableColumns } from "@/components/ui/InterviewDataTable/column";
 import InterviewCategoryModal from "../../../components/interviews/interviewCategoryModal";
 import { fetchInterCategories } from "@/lib/api/interview-category";
 import { columns } from "@/components/ui/InterviewCategory-DataTable/column";
@@ -43,6 +42,7 @@ const InterviewCategoryPage = () => {
   const [limit, setLimit] = useState(10);
   const [modalOpen, setModalOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [isDelete,SetIsDelete]=useState(false);
 
   const handleNextPage = () => {
     if (page * limit < totalsessions) {
