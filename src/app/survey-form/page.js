@@ -155,6 +155,24 @@ function SurveyPage() {
     {
       Id: 11,
       question:
+        "What inspired the company's mission, and how do you plan to achieve it?",
+      type: "OPEN_ENDED",
+      options: "",
+      givenAnswer: "",
+      isAnswered: false,
+    },
+    {
+      Id: 12,
+      question:
+        "What kind of work environment can employees expect here?",
+      type: "OPEN_ENDED",
+      options: "",
+      givenAnswer: "",
+      isAnswered: false,
+    },
+    {
+      Id: 13,
+      question:
         "What features would you like to see in a hiring and interview management app?",
       type: "OPEN_ENDED",
       options: "",
