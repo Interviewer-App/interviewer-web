@@ -231,7 +231,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
           />
         </div>
       </div>
-      <div className="flex justify-end items-center space-x-2 md:mt-0 mt-4">
+      <div className="flex justify-end items-center space-x-2 md:mt-4">
         <Switch
           id="show-past-interviews"
           checked={showPastInterviews}
