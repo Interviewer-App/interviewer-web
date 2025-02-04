@@ -41,7 +41,8 @@ function InterviewRoomAnalizerDashboard({
   questionList,
   availableQuestion,
   setAnaliyzeResponse,
-  typingAnswer
+  typingAnswer,
+  setTypingAnswer
 }) {
   const nextQuestion = () => {
     const data = {
@@ -49,6 +50,7 @@ function InterviewRoomAnalizerDashboard({
     };
     socket.emit("nextQuestion", data);
     setAnaliyzeResponse({});
+    setTypingAnswer("typing...");
   };
 
   const handleFollowUpQuestion = (question) => {
@@ -56,6 +58,7 @@ function InterviewRoomAnalizerDashboard({
       sessionId: sessionId,
       followUpQuestion: question,
     });
+    setTypingAnswer("typing...");
   };
 
   return (

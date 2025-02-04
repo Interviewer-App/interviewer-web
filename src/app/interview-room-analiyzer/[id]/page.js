@@ -212,6 +212,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             availableQuestion={availableQuestion}
             setAnaliyzeResponse={setAnaliyzeResponse}
             typingAnswer={typingAnswer}
+            setTypingAnswer={setTypingAnswer}
           />
         )}
         {tab === "SCORE" && (
