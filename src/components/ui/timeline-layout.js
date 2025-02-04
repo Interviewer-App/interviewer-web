@@ -37,6 +37,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Atom, BadgeCheck } from "lucide-react";
 
 export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews }) => {
   const { data: session, status } = useSession();
@@ -299,21 +300,19 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                         <AlertDialogHeader>
                           <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
                           <AlertDialogDescription className="text-gray-600">
-                            By continuing, you'll enter the live interview session immediately.
-                            Please ensure:
-                            <ul className="list-outside list-disc space-y-2 pl-5 marker:text-[#6E6ADA]">
-                              <li  className="pl-2">You're in a quiet environment</li>
-                              <li  className="pl-2">Your camera and microphone are ready</li>
-                              <li  className="pl-2">You have stable internet connection</li>
-                            </ul>
-                            <span className="mt-2 block">Session cannot be paused once started.</span>
+                            By continuing, you'll enter the live interview session immediately. Please ensure:
+
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  You're in a quiet environment</span>
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  Your camera and microphone are ready</span>
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  You have stable internet connection</span>
+      
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
                           <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
                             joinInterviewSession(interview);
-                          }}>JOIN</AlertDialogAction>
+                          }}>Confirm Join</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
