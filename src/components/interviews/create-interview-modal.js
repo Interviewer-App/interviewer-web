@@ -12,13 +12,15 @@ import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
 
-import { CalendarIcon, Percent, WandSparkles, LoaderCircle, AlertCircle } from "lucide-react";
-
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
+  CalendarIcon,
+  Percent,
+  WandSparkles,
+  LoaderCircle,
+  AlertCircle,
+} from "lucide-react";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -630,7 +632,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
 
-  // Prepare data for the Doughnut chart
   const data = {
     labels: categoryList.map((cat) => cat.catagory),
     datasets: [
@@ -657,6 +658,16 @@ export default function CreateInterviewModal({ setModalOpen }) {
       },
     ],
   };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+      },
+    },
+  };
+  
 
   const handleScheduleGenerate = async (e) => {
     setIsLoading(true);
@@ -1047,9 +1058,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
           )}
           {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px] ">
-
               <div className="flex flex-col bg-[#262930] rounded-xl my-5 px-5 border-2 border-teal-600">
-                <h1 className="text-start font-semibold text-lg mt-2">Add New Category to List</h1>
+                <h1 className="text-start font-semibold text-lg mt-2">
+                  Add New Category to List
+                </h1>
                 <div className="flex w-full justify-between  items-center py-5 flex-col md:flex-row md:space-y-0 space-y-5 md:space-x-3">
                   <input
                     type="text"
@@ -1079,7 +1091,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 </div>
               </div>
               <div className="border-2 border-orange-500 rounded-xl px-5 py-3 flex md:flex-col flex-col">
-                <h1 className="text-start font-semibold text-lg my-2">Category List</h1>
+                <h1 className="text-start font-semibold text-lg my-2">
+                  Category List
+                </h1>
                 {/* <p
                   className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
                     }`}
@@ -1143,7 +1157,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row">
-                  <div className="overflow-y-auto h-fit">
+                  <div className="w-[60%] h-fit">
                     <table className=" w-full">
                       <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
                         <tr>
@@ -1172,28 +1186,32 @@ export default function CreateInterviewModal({ setModalOpen }) {
                       </tbody>
                     </table>
                   </div>
-                  <div className="w-52 aspect-square mx-auto mt-8 md:mt-0">
+                  <div className=" w-[40%] min-h-[300px] flex justify-center items-center mx-auto mt-8 md:mt-0">
                     {categoryList.length > 0 ? (
-                      <Doughnut data={data} />
+                   
+                        <Doughnut data={data} options={options}/>
+                 
                     ) : (
-                      <p className="text-gray-500">
+                      <p className="text-gray-600 text-xs">
                         Add categories to view the Chart
                       </p>
                     )}
                   </div>
                 </div>
               </div>
-              {totalPercentage !== 100 ? (<div className="mt-3"><Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Warning</AlertTitle>
-                  <AlertDescription>
-                  Please ensure the total percentage equals 100%. The sum of all
-                  category percentages should not exceed or fall below 100%.
-                  Adjust your inputs accordingly.
-                  </AlertDescription>
-                </Alert></div>) : null}
-
-
+              {totalPercentage !== 100 ? (
+                <div className="mt-3">
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Warning</AlertTitle>
+                    <AlertDescription>
+                      Please ensure the total percentage equals 100%. The sum of
+                      all category percentages should not exceed or fall below
+                      100%. Adjust your inputs accordingly.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              ) : null}
             </div>
           )}
         </form>
