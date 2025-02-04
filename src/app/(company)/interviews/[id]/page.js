@@ -110,6 +110,7 @@ import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import InvitedCandidates from "@/components/interviews/invite-candidates";
 import QuestionDisplayCard from "@/components/company/question-display-card";
 import { CandidateDataTable } from "@/components/ui/candidateDataTable/DataTable";
+import SubCategoryDisplayCard from "@/components/interviews/subCategory-display-card";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -135,6 +136,7 @@ export default function InterviewPreviewPage({ params }) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [tab, setTab] = useState("overview");
+  const [questionTab, setQuestionTab] = useState("technical");
   const [status, setStatus] = useState("");
   const [interviewOverview, setInterviewOverview] = useState({});
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
@@ -152,6 +154,7 @@ export default function InterviewPreviewPage({ params }) {
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [scheduleList, setScheduleList] = useState([]);
   const [questionList, setQuestionList] = useState([]);
+  const [selectedSubAssignment, setSelectedSubAssignment] = useState(null);
   const [candidates, setCandidates] = useState([
     { name: "John Doe", score: 85 },
     { name: "Jane Smith", score: 92 },
@@ -356,6 +359,7 @@ export default function InterviewPreviewPage({ params }) {
                   key: category.categoryId,
                   catagory: matchingCategory?.categoryName || "",
                   percentage: category.percentage,
+                  assignmentId: category.assignmentId,
                 };
               }
             );
@@ -505,6 +509,8 @@ export default function InterviewPreviewPage({ params }) {
       inputPercentage.trim() !== "" &&
       totalPercentage < 100
     ) {
+      const lastAssignmentId =
+        prev.length > 0 ? prev[prev.length - 1].assignmentId : null;
       setCatagoryList((prev) => [
         ...prev,
         {
@@ -513,6 +519,7 @@ export default function InterviewPreviewPage({ params }) {
             (cat) => cat.categoryId === inputCatagory.trim()
           )?.categoryName,
           percentage: inputPercentage.trim(),
+          assignmentId: lastAssignmentId,
         },
       ]);
       setInputPercentage("");
@@ -797,6 +804,11 @@ export default function InterviewPreviewPage({ params }) {
   }
   const handleOnChange = (content) => {
     setDescription(content);
+  };
+
+  const handleQuestionTabChange = (category) => {
+    setSelectedSubAssignment(category);
+    setQuestionTab(category.catagory);
   };
 
   const options = {
@@ -1630,40 +1642,77 @@ export default function InterviewPreviewPage({ params }) {
 
           {tab === "questions" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
-              <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
-                <h1 className=" text-2xl font-semibold text-left w-full">
-                  Questions
-                </h1>
-                <div className=" w-full flex items-center justify-end">
-                  <button
-                    className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
-                    onClick={() => setGenerateModalOpen(true)}
-                  >
-                    Genarate questions
-                  </button>
-                  <button
-                    onClick={() => setCreateModalOpen(true)}
-                    className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center text-sm font-semibold"
-                  >
-                    {" "}
-                    + Add Question
-                  </button>
-                </div>
+              <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 mb-5 rounded-lg">
+                <button
+                  onClick={() => setQuestionTab("technical")}
+                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                    questionTab === "technical" ? "bg-gray-800" : ""
+                  } `}
+                >
+                  Technical
+                </button>
+                {categoryList.length > 0 &&
+                  categoryList
+                    .filter(
+                      (category) =>
+                        category.catagory.toLowerCase() !== "technical"
+                    )
+                    .map((category, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleQuestionTabChange(category)}
+                        className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                          questionTab === category.catagory ? "bg-gray-800" : ""
+                        }`}
+                      >
+                        {category.catagory}
+                      </button>
+                    ))}
               </div>
-              {questionList?.length > 0 ? (
-                questionList.map((question, index) => (
-                  <QuestionDisplayCard
-                    forSession={false}
-                    key={index}
-                    index={index}
-                    question={question}
-                    isQuestionEdit={isQuestionEdit}
-                    setIsQuestionEdit={setIsQuestionEdit}
-                  />
-                ))
+              {questionTab === "technical" ? (
+                <div>
+                  <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                    <h1 className=" text-2xl font-semibold text-left w-full">
+                      Technical Questions
+                    </h1>
+                    <div className=" w-full flex items-center justify-end">
+                      <button
+                        className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
+                        onClick={() => setGenerateModalOpen(true)}
+                      >
+                        Genarate questions
+                      </button>
+                      <button
+                        onClick={() => setCreateModalOpen(true)}
+                        className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center text-sm font-semibold"
+                      >
+                        {" "}
+                        + Add Question
+                      </button>
+                    </div>
+                  </div>
+                  {questionList?.length > 0 ? (
+                    questionList.map((question, index) => (
+                      <QuestionDisplayCard
+                        forSession={false}
+                        key={index}
+                        index={index}
+                        question={question}
+                        isQuestionEdit={isQuestionEdit}
+                        setIsQuestionEdit={setIsQuestionEdit}
+                      />
+                    ))
+                  ) : (
+                    <div className=" w-full min-h-[300px] flex items-center justify-center">
+                      <p>No questions available.</p>
+                    </div>
+                  )}
+                </div>
               ) : (
-                <div className=" w-full min-h-[300px] flex items-center justify-center">
-                  <p>No questions available.</p>
+                <div>
+                  <SubCategoryDisplayCard
+                    selectedSubAssignment={selectedSubAssignment}
+                  />
                 </div>
               )}
             </div>
