@@ -522,8 +522,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
   const handleOnChange = (content) => {
-    // console.log('Updated Desc:', content);
-    // console.log(content);
     setJobDescription(content);
   };
 
@@ -667,7 +665,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
       },
     },
   };
-  
 
   const handleScheduleGenerate = async (e) => {
     setIsLoading(true);
