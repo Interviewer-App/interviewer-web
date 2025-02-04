@@ -151,111 +151,7 @@ export default function InterviewPreviewPage({ params }) {
   const [inputScheduleEndTime, setInputScheduleEndTime] = useState("");
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [scheduleList, setScheduleList] = useState([]);
-  const [questionList, setQuestionList] = useState([
-    {
-      questionID: "cm6fzyd6o002au7h06l44gjrn",
-      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
-      questionCategory: null,
-      questionText:
-        "Describe the difference between using `ArrayList` and `LinkedList` in Java. When would you choose one over the other?",
-      explanation:
-        "This question assesses the candidate's understanding of fundamental Java data structures and their performance characteristics. It's relevant because choosing the right data structure is crucial for writing efficient code. The role might require using and choosing between collections.",
-      isAnswered: true,
-      estimatedTimeMinutes: 7,
-      aiContext: "Generated for Software Engineer (Junior)",
-      diffcultyLevel: null,
-      type: "OPEN_ENDED",
-      createdAt: "2025-01-28T04:48:06.720Z",
-      updatedAt: "2025-01-28T05:06:56.163Z",
-      usageFrequency: 0,
-    },
-    {
-      questionID: "cm6fzyd6p002bu7h088kzja6u",
-      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
-      questionCategory: null,
-      questionText:
-        "Given a Java array of integers, write a method that returns the sum of all even numbers in the array.",
-      explanation:
-        "This is a basic coding question to test the candidate's ability to write simple algorithms using Java. It checks their understanding of loops, conditional statements, and working with arrays.",
-      isAnswered: true,
-      estimatedTimeMinutes: 15,
-      aiContext: "Generated for Software Engineer (Junior)",
-      diffcultyLevel: null,
-      type: "CODING",
-      createdAt: "2025-01-28T04:48:06.721Z",
-      updatedAt: "2025-01-28T05:07:40.269Z",
-      usageFrequency: 0,
-    },
-    {
-      questionID: "cm6okgls30000u7j4qlyktcgf",
-      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
-      questionCategory: null,
-      questionText:
-        "Describe the differences between using functional components and class components in React, and explain when you would choose one over the other.",
-      explanation:
-        "This question assesses the candidate's understanding of React's component model and their ability to choose the right approach for specific situations. It tests their knowledge of React best practices and shows if they keep up with the latest React trends.",
-      isAnswered: false,
-      estimatedTimeMinutes: 5,
-      aiContext: "Generated for Software Engineer (Senior)",
-      diffcultyLevel: null,
-      type: "OPEN_ENDED",
-      createdAt: "2025-02-03T04:44:19.391Z",
-      updatedAt: "2025-02-03T04:44:19.391Z",
-      usageFrequency: 0,
-    },
-    {
-      questionID: "cm6okgltb0001u7j4fw08sy8s",
-      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
-      questionCategory: null,
-      questionText:
-        "Given a list of unsorted integers, write a Java function that sorts the list using the merge sort algorithm.",
-      explanation:
-        "This question tests the candidate's proficiency in Java and their ability to implement a classic sorting algorithm. It assesses their understanding of divide-and-conquer techniques, code quality, and efficiency.",
-      isAnswered: false,
-      estimatedTimeMinutes: 20,
-      aiContext: "Generated for Software Engineer (Senior)",
-      diffcultyLevel: null,
-      type: "CODING",
-      createdAt: "2025-02-03T04:44:19.391Z",
-      updatedAt: "2025-02-03T04:44:19.391Z",
-      usageFrequency: 0,
-    },
-    {
-      questionID: "cm6okglto0002u7j4sc8386lu",
-      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
-      questionCategory: null,
-      questionText:
-        "Implement a Java class that demonstrates the use of Java Streams to filter a list of objects based on multiple criteria and then transform the results into a different object type.",
-      explanation:
-        "This question assesses the candidate's ability to use modern Java features and their proficiency in data manipulation using streams. It demonstrates their familiarity with functional programming and their ability to apply these to practical use cases.",
-      isAnswered: false,
-      estimatedTimeMinutes: 15,
-      aiContext: "Generated for Software Engineer (Senior)",
-      diffcultyLevel: null,
-      type: "CODING",
-      createdAt: "2025-02-03T04:44:19.391Z",
-      updatedAt: "2025-02-03T04:44:19.391Z",
-      usageFrequency: 0,
-    },
-    {
-      questionID: "cm6okglu00003u7j4b5k3oc0c",
-      sessionID: "cm6fzxfpd001yu7h0ohd00azm",
-      questionCategory: null,
-      questionText:
-        "Explain the concept of the Virtual DOM in React. How does React use it to update the actual DOM, and why is this approach beneficial?",
-      explanation:
-        "This question evaluates the candidate's understanding of React's core mechanisms and performance optimization strategies. It tests their ability to explain complex concepts clearly and shows if they know how React works behind the scenes.",
-      isAnswered: false,
-      estimatedTimeMinutes: 7,
-      aiContext: "Generated for Software Engineer (Senior)",
-      diffcultyLevel: null,
-      type: "OPEN_ENDED",
-      createdAt: "2025-02-03T04:44:19.391Z",
-      updatedAt: "2025-02-03T04:44:19.391Z",
-      usageFrequency: 0,
-    },
-  ]);
-
+  const [questionList, setQuestionList] = useState([]);
   const [candidates, setCandidates] = useState([
     { name: "John Doe", score: 85 },
     { name: "Jane Smith", score: 92 },
@@ -265,7 +161,7 @@ export default function InterviewPreviewPage({ params }) {
     { name: "Liam Clark", score: 77 },
     { name: "Mia Lewis", score: 93 },
     { name: "Ethan Walker", score: 79 },
-    { name: "Charlotte Allen", score: 84 }
+    { name: "Charlotte Allen", score: 84 },
   ]);
 
   const [sortDirection, setSortDirection] = useState("desc"); // Can be "asc" or "desc"
@@ -302,6 +198,7 @@ export default function InterviewPreviewPage({ params }) {
       },
     ],
   });
+  const [categoryChartData, setCategoryChartData] = useState({});
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -331,109 +228,6 @@ export default function InterviewPreviewPage({ params }) {
     );
     setFilteredCategories(filter);
   }, [categoryList, inputCatagory, inputPercentage]);
-
-  const handleAddCatagoty = (e) => {
-    e.preventDefault();
-
-    if (
-      inputCatagory.trim() !== "" &&
-      inputPercentage.trim() !== "" &&
-      totalPercentage < 100
-    ) {
-      setCatagoryList((prev) => [
-        ...prev,
-        {
-          key: inputCatagory.trim(),
-          catagory: interviewCategories.find(
-            (cat) => cat.categoryId === inputCatagory.trim()
-          )?.categoryName,
-          percentage: inputPercentage.trim(),
-        },
-      ]);
-      setInputPercentage("");
-      setInputCatagory("");
-    }
-  };
-
-  const handleDeleteCategory = (catagoryToDelete) => () => {
-    setCatagoryList((catagory) =>
-      catagory.filter((catagory) => catagory.key !== catagoryToDelete.key)
-    );
-  };
-
-  const handleAddSchedule = (e) => {
-    e.preventDefault();
-
-    if (
-      !inputScheduleDate ||
-      !inputScheduleStartTime ||
-      !inputScheduleEndTime
-    ) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: `All fields are required.`,
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-      return;
-    }
-
-    const newStart = convertToMinutes(inputScheduleStartTime);
-    const newEnd = convertToMinutes(inputScheduleEndTime);
-    if (newStart >= newEnd) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: `Start time must be earlier than end time.`,
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-      return;
-    }
-
-    const hasConflict = scheduleList.some((schedule) => {
-      const existingStart = convertToMinutes(schedule.startTime);
-      const existingEnd = convertToMinutes(schedule.endTime);
-
-      return (
-        schedule.date === inputScheduleDate &&
-        newStart < existingEnd &&
-        newEnd > existingStart
-      );
-    });
-
-    if (hasConflict) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: `The schedule conflicts with an existing time slot.`,
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-      return;
-    }
-    setScheduleList((prev) => [
-      ...prev,
-      {
-        key: scheduleList.length,
-        date: inputScheduleDate,
-        startTime: inputScheduleStartTime,
-        endTime: inputScheduleEndTime,
-      },
-    ]);
-    setInputScheduleDate("");
-    setInputScheduleStartTime("");
-    setInputScheduleEndTime("");
-  };
-
-  const convertToMinutes = (time) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    return hours * 60 + minutes;
-  };
-
-  const handleDeleteSchedule = (scheduleToDelete) => () => {
-    setScheduleList((schedule) =>
-      schedule.filter((schedule) => schedule.key !== scheduleToDelete.key)
-    );
-  };
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -500,23 +294,36 @@ export default function InterviewPreviewPage({ params }) {
     if (interviewId) fetchCandidatesData();
   }, [interviewId, page, limit]);
 
-  const handleNextPage = () => {
-    if (page * limit < totalsessions) {
-      setPage(page + 1);
-    }
-  };
+  useEffect(() => {
+    const generateRandomColor = () => {
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      return `rgba(${r}, ${g}, ${b}, 0.2)`;
+    };
 
-  const handlePage = (page) => {
-    if (page * limit < totalsessions) {
-      setPage(page);
-    }
-  };
+    const generateRandomBorderColor = (color) => color.replace("0.2", "1");
 
-  const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
+    const backgroundColors = categoryList.map(() => generateRandomColor());
+    const borderColors = backgroundColors.map((color) =>
+      generateRandomBorderColor(color)
+    );
+
+    const dataset = {
+      labels: [],
+      // labels: categoryList.map((cat) => cat.catagory),
+      datasets: [
+        {
+          label: "Percentage",
+          data: categoryList.map((cat) => parseFloat(cat.percentage)),
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
+          borderWidth: 1,
+        },
+      ],
+    };
+    setCategoryChartData(dataset);
+  }, [categoryList]);
 
   useEffect(() => {
     const sortedSessions = interviewSessions.map((session) => ({
@@ -675,6 +482,135 @@ export default function InterviewPreviewPage({ params }) {
     }
   }, [interviewStatusDetails]);
 
+  useEffect(() => {
+    let total = 0;
+    categoryList.map((catagory) => {
+      total += parseFloat(catagory.percentage);
+    });
+    setTotalPercentage(total);
+  }, [categoryList]);
+
+  const handleAddCatagoty = (e) => {
+    e.preventDefault();
+
+    if (
+      inputCatagory.trim() !== "" &&
+      inputPercentage.trim() !== "" &&
+      totalPercentage < 100
+    ) {
+      setCatagoryList((prev) => [
+        ...prev,
+        {
+          key: inputCatagory.trim(),
+          catagory: interviewCategories.find(
+            (cat) => cat.categoryId === inputCatagory.trim()
+          )?.categoryName,
+          percentage: inputPercentage.trim(),
+        },
+      ]);
+      setInputPercentage("");
+      setInputCatagory("");
+    }
+  };
+
+  const handleDeleteCategory = (catagoryToDelete) => () => {
+    setCatagoryList((catagory) =>
+      catagory.filter((catagory) => catagory.key !== catagoryToDelete.key)
+    );
+  };
+
+  const handleAddSchedule = (e) => {
+    e.preventDefault();
+
+    if (
+      !inputScheduleDate ||
+      !inputScheduleStartTime ||
+      !inputScheduleEndTime
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `All fields are required.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+
+    const newStart = convertToMinutes(inputScheduleStartTime);
+    const newEnd = convertToMinutes(inputScheduleEndTime);
+    if (newStart >= newEnd) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `Start time must be earlier than end time.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+
+    const hasConflict = scheduleList.some((schedule) => {
+      const existingStart = convertToMinutes(schedule.startTime);
+      const existingEnd = convertToMinutes(schedule.endTime);
+
+      return (
+        schedule.date === inputScheduleDate &&
+        newStart < existingEnd &&
+        newEnd > existingStart
+      );
+    });
+
+    if (hasConflict) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `The schedule conflicts with an existing time slot.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+    setScheduleList((prev) => [
+      ...prev,
+      {
+        key: scheduleList.length,
+        date: inputScheduleDate,
+        startTime: inputScheduleStartTime,
+        endTime: inputScheduleEndTime,
+      },
+    ]);
+    setInputScheduleDate("");
+    setInputScheduleStartTime("");
+    setInputScheduleEndTime("");
+  };
+
+  const convertToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const handleDeleteSchedule = (scheduleToDelete) => () => {
+    setScheduleList((schedule) =>
+      schedule.filter((schedule) => schedule.key !== scheduleToDelete.key)
+    );
+  };
+
+  const handleNextPage = () => {
+    if (page * limit < totalsessions) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePage = (page) => {
+    if (page * limit < totalsessions) {
+      setPage(page);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
   const handlePublishInterview = async (status) => {
     try {
       const response = await updateInterview(interviewId, {
@@ -689,10 +625,12 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
-            } Successfully!`,
-          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
-            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } Successfully!`,
+          description: `The interview has been ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -726,14 +664,6 @@ export default function InterviewPreviewPage({ params }) {
       }
     }
   };
-
-  useEffect(() => {
-    let total = 0;
-    categoryList.map((catagory) => {
-      total += parseFloat(catagory.percentage);
-    });
-    setTotalPercentage(total);
-  }, [categoryList]);
 
   const handleSaveChanges = async (e) => {
     e.preventDefault();
@@ -905,8 +835,9 @@ export default function InterviewPreviewPage({ params }) {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <span
-                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
-                      } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
                   >
                     Publish Now
                   </span>
@@ -938,8 +869,9 @@ export default function InterviewPreviewPage({ params }) {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <span
-                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
-                      } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
                   >
                     Unpublish
                   </span>
@@ -973,57 +905,65 @@ export default function InterviewPreviewPage({ params }) {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("overview")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "overview" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "overview" ? "bg-gray-800" : ""
+                } `}
               >
                 Overview
               </button>
               <button
                 onClick={() => setTab("sessions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "sessions" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "sessions" ? "bg-gray-800" : ""
+                } `}
               >
                 Interview Sessions
               </button>
               <button
                 onClick={() => setTab("candidates")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidates" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "candidates" ? "bg-gray-800" : ""
+                } `}
               >
                 Candidates
               </button>
               <button
                 onClick={() => setTab("invitation")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "invitation" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "invitation" ? "bg-gray-800" : ""
+                } `}
               >
                 Invitation
               </button>
               <button
                 onClick={() => setTab("questions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "questions" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "questions" ? "bg-gray-800" : ""
+                } `}
               >
                 Questions
               </button>
               <button
                 onClick={() => setTab("edit")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "edit" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "edit" ? "bg-gray-800" : ""
+                } `}
               >
                 Edit
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "settings" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "settings" ? "bg-gray-800" : ""
+                } `}
               >
                 Settings
               </button>
               <button
                 onClick={() => setTab("candidateAnalyze")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidateAnalyze" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "candidateAnalyze" ? "bg-gray-800" : ""
+                } `}
               >
                 candidate Analyze
               </button>
@@ -1192,8 +1132,9 @@ export default function InterviewPreviewPage({ params }) {
                       readOnly={!editDetails}
                       value={title || ""}
                       onChange={(e) => setTitle(e.target.value)}
-                      className={` ${!editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                        } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
+                      className={` ${
+                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
+                      } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
                     />
                   </h1>
                   {interviewDetail.status !== "ACTIVE" &&
@@ -1201,8 +1142,9 @@ export default function InterviewPreviewPage({ params }) {
                       <div>
                         <button
                           onClick={() => setEditDetails(!editDetails)}
-                          className={` ${editDetails ? "hidden" : "block"
-                            } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
+                          className={` ${
+                            editDetails ? "hidden" : "block"
+                          } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
                         >
                           <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
                           Edit details
@@ -1210,18 +1152,20 @@ export default function InterviewPreviewPage({ params }) {
 
                         <button
                           onClick={handleSaveChanges}
-                          className={` ${editDetails && totalPercentage == 100
-                            ? "block"
-                            : "hidden"
-                            } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                          className={` ${
+                            editDetails && totalPercentage == 100
+                              ? "block"
+                              : "hidden"
+                          } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
                         <button
-                          className={` ${editDetails && totalPercentage != 100
-                            ? "block"
-                            : "hidden"
-                            } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                          className={` ${
+                            editDetails && totalPercentage != 100
+                              ? "block"
+                              : "hidden"
+                          } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
@@ -1234,8 +1178,9 @@ export default function InterviewPreviewPage({ params }) {
                       Description
                     </h1>
                     <div
-                      className={` ${editDetails ? "hidden" : "block"
-                        } text-justify w-full bg-transparent rounded-lg description`}
+                      className={` ${
+                        editDetails ? "hidden" : "block"
+                      } text-justify w-full bg-transparent rounded-lg description`}
                       dangerouslySetInnerHTML={{ __html: description }}
                     />
 
@@ -1311,7 +1256,7 @@ export default function InterviewPreviewPage({ params }) {
                                       className={cn(
                                         "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
                                         !inputScheduleDate &&
-                                        "text-muted-foreground"
+                                          "text-muted-foreground"
                                       )}
                                     >
                                       <CalendarIcon />
@@ -1399,12 +1344,14 @@ export default function InterviewPreviewPage({ params }) {
                                   <>
                                     <IoCloseCircle
                                       onClick={handleDeleteSchedule(schedule)}
-                                      className={` ${schedule.isBooked ? "hidden" : "block"
-                                        } text-gray-500 text-2xl cursor-pointer`}
+                                      className={` ${
+                                        schedule.isBooked ? "hidden" : "block"
+                                      } text-gray-500 text-2xl cursor-pointer`}
                                     />
                                     <div
-                                      className={` ${schedule.isBooked ? "block" : "hidden"
-                                        } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                      className={` ${
+                                        schedule.isBooked ? "block" : "hidden"
+                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                     >
                                       <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                       <div className=" ml-2">Booked</div>
@@ -1412,8 +1359,9 @@ export default function InterviewPreviewPage({ params }) {
                                   </>
                                 ) : (
                                   <div
-                                    className={` ${schedule.isBooked ? "block" : "hidden"
-                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                    className={` ${
+                                      schedule.isBooked ? "block" : "hidden"
+                                    } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                   >
                                     <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                     <div className=" ml-2">Booked</div>
@@ -1433,8 +1381,9 @@ export default function InterviewPreviewPage({ params }) {
                       </h1>
                       {editDetails && (
                         <p
-                          className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
-                            }`}
+                          className={` text-red-500 text-xs py-2 ${
+                            totalPercentage !== 100 ? "block" : "hidden"
+                          }`}
                         >
                           *Please ensure the total percentage equals 100%. The
                           sum of all category percentages should not exceed or
@@ -1443,8 +1392,9 @@ export default function InterviewPreviewPage({ params }) {
                       )}
 
                       <div
-                        className={`flex w-full justify-between space-x-2 ${editDetails ? "block" : "hidden"
-                          }`}
+                        className={`flex w-full justify-between space-x-2 ${
+                          editDetails ? "block" : "hidden"
+                        }`}
                       >
                         <div className="w-[40%]">
                           <DropdownMenu>
@@ -1521,8 +1471,9 @@ export default function InterviewPreviewPage({ params }) {
                                   {catagory.percentage}
                                 </td>
                                 <td
-                                  className={` p-3 w-[20%] text-center ${editDetails ? "block" : "hidden"
-                                    }`}
+                                  className={` p-3 w-[20%] text-center ${
+                                    editDetails ? "block" : "hidden"
+                                  }`}
                                 >
                                   <IoCloseCircle
                                     onClick={handleDeleteCategory(catagory)}
@@ -1533,6 +1484,15 @@ export default function InterviewPreviewPage({ params }) {
                             ))}
                           </tbody>
                         </table>
+                      </div>
+                      <div className="w-52 aspect-square mx-auto mt-8 md:mt-0">
+                        {categoryList.length > 0 ? (
+                          <Pie data={categoryChartData} />
+                        ) : (
+                          <p className="text-gray-500">
+                            loading data...
+                          </p>
+                        )}
                       </div>
                       <h1 className=" text-2xl font-semibold py-5">
                         Scheduled Date Range
@@ -1823,7 +1783,6 @@ export default function InterviewPreviewPage({ params }) {
                   <button
                     onClick={sortCandidates}
                     className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
-
                   >
                     Sort Candidates
                   </button>
