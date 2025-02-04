@@ -36,29 +36,31 @@ const MyInterviews = () => {
   const [loading, setLoading] = useState(false); // Loading state
   const [page, setPage] = useState(1); // Page number
   const [limit, setLimit] = useState(10); // Limit of items per page
+  const [showPastInterviews, setShowPastInterviews] = useState(false);
 
   useEffect(() => {
     const fetchCandidateId = async () => {
-    try{
-      const session = await getSession();
-      const candidateId = session?.user?.candidateID;
-      
+      try {
+        const session = await getSession();
+        const candidateId = session?.user?.candidateID;
+
         setCandidateId(candidateId);
-      
-    } catch(error){
-      console.error('Error fetching candidate ID:', error);
-    } 
-  }
-  fetchCandidateId();
-    }, []);
+
+      } catch (error) {
+        console.error('Error fetching candidate ID:', error);
+      }
+    }
+    fetchCandidateId();
+  }, []);
 
   useEffect(() => {
     const fetchUserJoinedInterviews = async () => {
+      // debugger
       try {
         setLoading(true);
         const response = await getScheduledInterview(candidateId);
         setScheduleInterviews(response.data.schedules);
-        // console.log("Fetched scheduled interviews:", response.data.schedules);
+        console.log("Fetched scheduled interviews:", response.data.schedules);
       } catch (error) {
         console.error("Error fetching interviews:", error);
       } finally {
@@ -71,7 +73,7 @@ const MyInterviews = () => {
 
   useEffect(() => {
     const fetchCandidateOverview = async () => {
-      try {        
+      try {
         const response = await getOverviewOfCandidateInterviews(candidateId);
         if (response) {
           setOverview(response.data);
@@ -89,15 +91,17 @@ const MyInterviews = () => {
   useEffect(() => {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
+
     const filteredAndSortedArray = [...scheduleInterviews]
       .filter((interview) => {
         const interviewDate = new Date(interview.startTime);
         interviewDate.setHours(0, 0, 0, 0);
-        return interviewDate >= currentDate;
+        return showPastInterviews ? true : interviewDate >= currentDate;
       })
       .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
     setSortedScheduleInterviews(filteredAndSortedArray);
-  }, [scheduleInterviews]);
+  }, [scheduleInterviews, showPastInterviews]);
 
   if (status === "loading") {
     return <Loading />;
@@ -125,7 +129,12 @@ const MyInterviews = () => {
       </header>
       <div className="px-9 py-4 w-full max-w-[1500px] mx-auto  h-full text-white">
         <h1 className="text-3xl font-semibold">My Interviews</h1>
-        <TimelineLayout interviews={sortedScheduleInterviews} overview={overview} />
+        <TimelineLayout
+          interviews={sortedScheduleInterviews}
+          overview={overview}
+          showPastInterviews={showPastInterviews}
+          setShowPastInterviews={setShowPastInterviews}
+        />
       </div>
     </SidebarInset>
   );
