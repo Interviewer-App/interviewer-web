@@ -935,7 +935,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 {isLoading ? (
                   <LoaderCircle className="animate-spin" />
                 ) : (
-                  <span> Generate Schedules</span>
+                  <span>Generate Schedules</span>
                 )}
               </button>
               <div className=" mt-5">
