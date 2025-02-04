@@ -34,7 +34,6 @@ function InterviewSessionPreviewPage({ params }) {
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
-  const [questionTab, setQuestionTab] = useState("technical");
 
   const { toast } = useToast();
   // const { socket } = useSocket();
@@ -202,30 +201,10 @@ function InterviewSessionPreviewPage({ params }) {
               </div>
             </div>
 
-            <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 my-5 rounded-lg">
-              <button
-                onClick={() => setQuestionTab("technical")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  questionTab === "technical" ? "bg-gray-800" : ""
-                } `}
-              >
-                Technical
-              </button>
-              <button
-                onClick={() => setQuestionTab("other")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  questionTab === "other" ? "bg-gray-800" : ""
-                } `}
-              >
-                Other
-              </button>
-            </div>
-            <div className="mt-5 bg-slate-500/10 p-5 rounded-lg">
-              {questionTab === "technical" && (
-                <div className=" w-full">
+            <div className="mt-5 bg-slate-500/10 p-9 rounded-lg">
                   <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
                     <h1 className=" text-2xl font-semibold text-left w-full">
-                      Technical Questions
+                      Questions
                     </h1>
                     <div className=" w-full flex items-center justify-end">
                       <button
@@ -263,17 +242,6 @@ function InterviewSessionPreviewPage({ params }) {
                       </button>
                     </div>
                   )}
-                </div>
-              )}
-              {questionTab === "other" && (
-                <div className=" w-full">
-                  <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
-                    <h1 className=" text-2xl font-semibold text-left w-full">
-                      Other
-                    </h1>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
           {createModalOpen && (
