@@ -23,6 +23,7 @@ import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import { set } from "zod";
+import FeedbackModal from "@/components/company/feedback-modal";
 
 function SessionHistoryPage({ params }) {
   const { data: session, status } = useSession();
@@ -32,6 +33,7 @@ function SessionHistoryPage({ params }) {
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionScoreDetails, setSessionScoreDetails] = useState({});
   const { toast } = useToast();
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -61,6 +63,12 @@ function SessionHistoryPage({ params }) {
 
     if (sessionId) fetchSessionDetails();
   }, [sessionId, toast]);
+
+  useEffect(() => {
+    if(!sessionDetails.feedbackId){
+      setIsFeedbackModalOpen(true);
+    }
+  }, [sessionDetails]);
 
   useEffect(() => {
     const fetchSessionScoreDetails = async () => {
@@ -221,6 +229,7 @@ function SessionHistoryPage({ params }) {
             )}
           </div>
         </div>
+        {isFeedbackModalOpen && (<FeedbackModal setIsFeedbackModalOpen={setIsFeedbackModalOpen}/>)}
       </SidebarInset>
     </>
   );
