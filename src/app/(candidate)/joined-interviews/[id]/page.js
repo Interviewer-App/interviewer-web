@@ -44,6 +44,7 @@ const JoinedInterviewsDetails = ({ params }) => {
       try {
         const response = await getInterviewSessionHistoryById(sessionId);
         if (response.data) {
+          debugger
           setSessionDetails(response.data);
         }
       } catch (error) {
@@ -151,7 +152,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
-                  Total score: {sessionDetails?.totalSocre || 0}
+                  Total score: {sessionDetails?.score || 0}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
@@ -172,7 +173,7 @@ const JoinedInterviewsDetails = ({ params }) => {
               {sessionDetails?.questions?.length || 0} Questions
             </h2>
             <CirculerProgress
-              marks={sessionDetails?.totalSocre || 0}
+              marks={sessionDetails?.score || 0}
               catorgory="Total score"
             />
             <p className=" text-gray-300 text-center">
