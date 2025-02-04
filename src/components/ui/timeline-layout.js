@@ -24,7 +24,9 @@ import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import Lottie from "lottie-react";
 import interviewAnimation from "../../components/ui/animation/interviewAnimation";
-export const TimelineLayout = ({ interviews, overview }) => {
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   //   const [interviews, setInterviews] = useState([]);
@@ -77,7 +79,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
             ...prevState,
             [interviewId]: false,
           }));
-        }, 2000); // Reset after 2 seconds
+        }, 2000); // Reset after 2 seconds  
       })
       .catch((err) => console.log("Failed to copy text: ", err));
   };
@@ -162,6 +164,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
 
   return (
     <div>
+
       {/* <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
 
         <div className="flex justify-between px-3">
@@ -228,7 +231,14 @@ export const TimelineLayout = ({ interviews, overview }) => {
           />
         </div>
       </div>
-
+      <div className="flex justify-end items-center space-x-2">
+        <Switch
+          id="show-past-interviews"
+          checked={showPastInterviews}
+          onCheckedChange={setShowPastInterviews}
+        />
+        <Label className="text-lg font-light">Show past Interviews</Label>
+      </div>
       {/* <h2 className="text-2xl font-medium">Upcoming Interviews</h2> */}
       <Timeline className="mt-8">
         {interviews.map((interview) => {
@@ -245,10 +255,10 @@ export const TimelineLayout = ({ interviews, overview }) => {
           const timeBgColor = isClose
             ? "bg-[#F4BB50]"
             : isFar
-            ? "bg-[#7DDA6A]"
-            : ismedium
-            ? "bg-[#F4BB50]"
-            : "bg-gray-900";
+              ? "bg-[#7DDA6A]"
+              : ismedium
+                ? "bg-[#F4BB50]"
+                : "bg-gray-900";
 
           return (
             <TimelineItem key={interview.scheduleID} className="">
@@ -262,14 +272,17 @@ export const TimelineLayout = ({ interviews, overview }) => {
 
                 <div className="flex justify-between items-center w-full ">
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
-                  <button
-                    onClick={() => {
-                      joinInterviewSession(interview);
-                    }}
-                    className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
-                  >
-                    Join Now
-                  </button>
+                  {/* Conditionally render the "Join Now" button */}
+                  {interview.interviewSession?.interviewStatus !== "completed" && (
+                    <button
+                      onClick={() => {
+                        joinInterviewSession(interview);
+                      }}
+                      className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
+                    >
+                      Join Now
+                    </button>
+                  )}
                 </div>
               </TimelineHeader>
               <div className="bg-[#18181E]">
@@ -304,7 +317,7 @@ export const TimelineLayout = ({ interviews, overview }) => {
                           <div className="flex items-center">
                             <span className="font-medium">ID:</span>
                             <span className="ml-2">
-                              {interview.interviewId } 
+                              {interview.interviewId}
                             </span>
                             <button
                               onClick={() => handleCopy(interview.interviewId)}
