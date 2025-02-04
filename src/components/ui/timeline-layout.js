@@ -26,6 +26,18 @@ import Lottie from "lottie-react";
 import interviewAnimation from "../../components/ui/animation/interviewAnimation";
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -274,14 +286,38 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
                   {/* Conditionally render the "Join Now" button */}
                   {interview.interviewSession?.interviewStatus !== "completed" && (
-                    <button
-                      onClick={() => {
-                        joinInterviewSession(interview);
-                      }}
-                      className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
-                    >
-                      Join Now
-                    </button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button
+
+                          className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
+                        >
+                          Join Now
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-gray-600">
+                            By continuing, you'll enter the live interview session immediately.
+                            Please ensure:
+                            <ul className="list-outside list-disc space-y-2 pl-5 marker:text-[#6E6ADA]">
+                              <li  className="pl-2">You're in a quiet environment</li>
+                              <li  className="pl-2">Your camera and microphone are ready</li>
+                              <li  className="pl-2">You have stable internet connection</li>
+                            </ul>
+                            <span className="mt-2 block">Session cannot be paused once started.</span>
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
+                            joinInterviewSession(interview);
+                          }}>JOIN</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+
                   )}
                 </div>
               </TimelineHeader>

@@ -292,7 +292,7 @@ export default function InterviewPreviewPage({ params }) {
     };
 
     if (interviewId) fetchCandidatesData();
-  }, [interviewId, page, limit]);
+  }, [interviewId, page, limit,inviteModalOpen]);
 
   useEffect(() => {
     const generateRandomColor = () => {
