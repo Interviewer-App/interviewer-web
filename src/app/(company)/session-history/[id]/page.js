@@ -142,7 +142,11 @@ function SessionHistoryPage({ params }) {
           <div className=" flex flex-col md:flex-row justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-8">
             <div className=" w-full md:w-[50%]">
               <h1 className=" text-3xl font-semibold">
-                {sessionDetails?.interview?.jobTitle || ""} Position
+                {/* {sessionDetails?.interview?.jobTitle || ""} Position */}
+                {sessionDetails?.candidate?.user?.firstName || ""} {sessionDetails?.candidate?.user?.lastName || ""}
+              </h1>
+              <h1 className=" text-xl font-semibold text-gray-500">
+                {sessionDetails?.candidate?.user?.email || ""}
               </h1>
               <h1 className=" text-xl font-semibold text-gray-500">
                 {sessionDetails?.interview?.interviewCategory || ""} Interview
