@@ -310,8 +310,7 @@ export default function InterviewPreviewPage({ params }) {
     );
 
     const dataset = {
-      labels: [],
-      // labels: categoryList.map((cat) => cat.catagory),
+      labels: categoryList.map((cat) => cat.catagory),
       datasets: [
         {
           label: "Percentage",
@@ -334,7 +333,7 @@ export default function InterviewPreviewPage({ params }) {
       startAt: new Date(session.scheduledDate).toLocaleDateString(),
       endAt: new Date(session.scheduledAt).toLocaleTimeString(),
       status: session.interviewStatus,
-      score: session.score ? session.score : "N/A",
+      score: session.score ? parseFloat(session.score).toFixed(2) : "N/A",
     }));
 
     setInterviewSessionsSort(sortedSessions);
@@ -441,6 +440,14 @@ export default function InterviewPreviewPage({ params }) {
   }, [interviewId]);
 
   useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [description, tab, editDetails]);
+
+  useEffect(() => {
     if (interviewStatusDetails) {
       setChartData({
         labels: ["Bookings", "Invitations"],
@@ -467,7 +474,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-              interviewStatusDetails.completedSchedules,
+                interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -769,14 +776,6 @@ export default function InterviewPreviewPage({ params }) {
     );
   };
 
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${textarea.scrollHeight}px`;
-    }
-  }, [description, tab, editDetails]);
-
   const handleDeleteInterview = async () => {
     try {
       const response = await deleteInterview(interviewId);
@@ -798,6 +797,15 @@ export default function InterviewPreviewPage({ params }) {
   }
   const handleOnChange = (content) => {
     setDescription(content);
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+      },
+    },
   };
 
   return (
@@ -912,12 +920,29 @@ export default function InterviewPreviewPage({ params }) {
                 Overview
               </button>
               <button
+                onClick={() => setTab("questions")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "questions" ? "bg-gray-800" : ""
+                } `}
+              >
+                Insights
+              </button>
+              <button
                 onClick={() => setTab("sessions")}
                 className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
                   tab === "sessions" ? "bg-gray-800" : ""
                 } `}
               >
                 Interview Sessions
+              </button>
+
+              <button
+                onClick={() => setTab("invitation")}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "invitation" ? "bg-gray-800" : ""
+                } `}
+              >
+                Invitation
               </button>
               <button
                 onClick={() => setTab("candidates")}
@@ -928,20 +953,12 @@ export default function InterviewPreviewPage({ params }) {
                 Candidates
               </button>
               <button
-                onClick={() => setTab("invitation")}
+                onClick={() => setTab("candidateAnalyze")}
                 className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "invitation" ? "bg-gray-800" : ""
+                  tab === "candidateAnalyze" ? "bg-gray-800" : ""
                 } `}
               >
-                Invitation
-              </button>
-              <button
-                onClick={() => setTab("questions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "questions" ? "bg-gray-800" : ""
-                } `}
-              >
-                Questions
+                Analyze
               </button>
               <button
                 onClick={() => setTab("edit")}
@@ -958,14 +975,6 @@ export default function InterviewPreviewPage({ params }) {
                 } `}
               >
                 Settings
-              </button>
-              <button
-                onClick={() => setTab("candidateAnalyze")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "candidateAnalyze" ? "bg-gray-800" : ""
-                } `}
-              >
-                candidate Analyze
               </button>
             </div>
           </div>
@@ -1487,11 +1496,9 @@ export default function InterviewPreviewPage({ params }) {
                       </div>
                       <div className="w-52 aspect-square mx-auto mt-8 md:mt-0">
                         {categoryList.length > 0 ? (
-                          <Pie data={categoryChartData} />
+                          <Pie data={categoryChartData} options={options} />
                         ) : (
-                          <p className="text-gray-500">
-                            loading data...
-                          </p>
+                          <p className="text-gray-500">loading data...</p>
                         )}
                       </div>
                       <h1 className=" text-2xl font-semibold py-5">
@@ -1791,8 +1798,13 @@ export default function InterviewPreviewPage({ params }) {
               {candidates.length > 0 ? (
                 <div className="mt-5 flex flex-col  gap-4">
                   {candidates.map((candidate, index) => (
-                    <div key={index} className="border p-4 rounded-lg shadow-md">
-                      <h3 className="text-lg font-semibold">{candidate.name}</h3>
+                    <div
+                      key={index}
+                      className="border p-4 rounded-lg shadow-md"
+                    >
+                      <h3 className="text-lg font-semibold">
+                        {candidate.name}
+                      </h3>
                       <p className="text-white">Score: {candidate.score}</p>
                     </div>
                   ))}
