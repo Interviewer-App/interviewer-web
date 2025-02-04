@@ -272,16 +272,8 @@ export default function InterviewPreviewPage({ params }) {
 
   // Function to sort candidates
   const sortCandidates = () => {
-    const newSortDirection = sortDirection === "desc" ? "asc" : "desc";
-    const sorted = [...candidates].sort((a, b) => {
-      if (newSortDirection === "asc") {
-        return a.score - b.score;
-      } else {
-        return b.score - a.score;
-      }
-    });
+    const sorted = [...candidates].sort((a, b) => b.score - a.score); // Sort in descending order
     setCandidates(sorted); // Update the candidates state
-    setSortDirection(newSortDirection); // Toggle the sorting direction
   };
 
   const [dateRange, setDateRange] = useState({});
@@ -1829,7 +1821,7 @@ export default function InterviewPreviewPage({ params }) {
                 </h1>
                 <div className=" w-full flex items-center justify-end">
                   <button
-                  onClick={sortCandidates}
+                    onClick={sortCandidates}
                     className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
 
                   >
@@ -1838,22 +1830,14 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
               {candidates.length > 0 ? (
-                <table className="w-full mt-5 border-collapse">
-                  <thead>
-                    <tr>
-                      <th className="p-3 text-left">Name</th>
-                      <th className="p-3 text-left">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {candidates.map((candidate, index) => (
-                      <tr key={index} className="border-t">
-                        <td className="p-3">{candidate.name}</td>
-                        <td className="p-3">{candidate.score}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="mt-5 flex flex-col  gap-4">
+                  {candidates.map((candidate, index) => (
+                    <div key={index} className="border p-4 rounded-lg shadow-md">
+                      <h3 className="text-lg font-semibold">{candidate.name}</h3>
+                      <p className="text-white">Score: {candidate.score}</p>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <p>No candidates available.</p>
               )}
