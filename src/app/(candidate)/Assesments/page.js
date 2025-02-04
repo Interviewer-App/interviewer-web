@@ -125,7 +125,7 @@ const Assesments = () => {
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block cursor-pointer">
-                                    <BreadcrumbPage>Assesments Tests</BreadcrumbPage>
+                                    <BreadcrumbPage>User Assesments</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
@@ -135,7 +135,7 @@ const Assesments = () => {
                     <h1 className="text-3xl font-semibold">Assesments</h1>
                     <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
                         <div>
-                            <h1 className=" text-2xl font-semibold mb-6">Candidate Assesments Tests</h1>
+                            <h1 className=" text-2xl font-semibold mb-6">Candidate Assesments</h1>
 
                             <div className=" grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                                 {assessments.map((assessment) => (
