@@ -311,7 +311,7 @@ const InterviewComparision = () => {
             </div>
 
 
-            <div className="flex items-center justify-between p-9 flex-col md:flex-row space-y-4">
+            <div className="flex items-center justify-between p-9 flex-col md:flex-row ">
 
               <div>
                 <Select onValueChange={setSelectedInterview}>
