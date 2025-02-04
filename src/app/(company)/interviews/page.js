@@ -23,6 +23,14 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
+import { AlertCircle } from "lucide-react"
+import { getCompanyById } from "@/lib/api/users";
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 
 const InterviewsPage = () => {
   const { data: session, status } = useSession();
@@ -32,9 +40,12 @@ const InterviewsPage = () => {
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [companyDetails, setCompanyDetails] = useState({});
+  const [companyId, setCompanyId] = useState("");
 
   useEffect(() => {
     const fetchInterviews = async () => {
+      debugger
       setIsLoading(true);
       try {
         const session = await getSession();
@@ -45,7 +56,7 @@ const InterviewsPage = () => {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
-        
+
       } catch (error) {
         setIsLoading(false);
         // Check if the error is a 404 (no interviews found)
@@ -62,13 +73,103 @@ const InterviewsPage = () => {
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         }
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchInterviews();
   }, [modalOpen]);
+
+  useEffect(() => {
+    const fetchCompanyId = async () => {
+      try {
+        const session = await getSession();
+        const companyId = session?.user?.companyID;
+        if (companyId) {
+          setCompanyId(companyId);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Company Details Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    fetchCompanyId();
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchCompanyDetails = async () => {
+      debugger
+      try {
+        const response = await getCompanyById(companyId);
+        if (response.data) {
+          setCompanyDetails(response.data);
+          
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Company Details Fetching Failed: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (companyId) {
+      fetchCompanyDetails();
+    }
+  }, [companyId]);
+
+
+
 
   if (status === "loading") {
     return (
@@ -106,8 +207,20 @@ const InterviewsPage = () => {
         </header>
 
         <div className=" px-9 py-4 w-full bg-black max-w-[1500px] mx-auto h-full">
-          <div className=" flex items-center justify-between">
-            <h1 className=" text-4xl font-semibold">Interviews</h1>
+          <div className=" flex items-start flex-col">
+            <h1 className=" text-4xl font-semibold mb-4">Interviews</h1>
+            {(companyDetails?.companyDescription === null || companyDetails?.companyDescription === "<p><br></p>") && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Warning</AlertTitle>
+                <AlertDescription>
+                  Please complete your company details section before scheduling an interview.
+                </AlertDescription>
+              </Alert>
+            )}
+
+
+
             {!isAnyInterviews && (
               <button
                 onClick={() => setModalOpen(true)}
