@@ -100,3 +100,43 @@ export const interviewStatus = async (interviewID) => {
         throw error;
     }
 }
+
+export const fetchInterviewSubCategory = async (categoryAssignmentId) => {
+    try {
+        const response=await axiosInstance.get(`/interview/category-assignment/${categoryAssignmentId}/subcategory`)
+        return response;
+    } catch (error) {
+        console.log(`Error fetching Interview subcategory`,error)
+        throw error;
+    }
+}
+
+export const createInterviewSubCategory = async (categoryAssignmentId, data) => {
+    try {
+        const response=await axiosInstance.post(`/interview/category-assignment/${categoryAssignmentId}/subcategory`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error creating Interview subcategory`,error)
+        throw error;
+    }
+}
+
+export const deleteInterviewSubCategory = async (subCategoryAssignmentId) => {
+    try {
+        const response=await axiosInstance.delete(`/interview/subcategory-assignment/${subCategoryAssignmentId}`)
+        return response;
+    } catch (error) {
+        console.log(`Error deleting Interview subcategory`,error)
+        throw error;
+    }
+}
+
+export const updateInterviewSubCategory = async (subCategoryAssignmentId, data) => {
+    try {
+        const response=await axiosInstance.patch(`/interview/subcategory-assignment/${subCategoryAssignmentId}`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error updating Interview subcategory`,error)
+        throw error;
+    }
+}
