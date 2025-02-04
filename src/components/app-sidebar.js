@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen,Warehouse,UserRound, CalendarFold ,Swords    } from "lucide-react";
+import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, SquarePen, Warehouse, UserRound, CalendarFold, Swords, BookOpenText } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
 import Link from "next/link";
-import { TeamSwitcher } from "./team-switcher"; 
+import { TeamSwitcher } from "./team-switcher";
 import { SiEclipsejetty } from "react-icons/si";
 
 const commonItems = [
@@ -29,22 +29,22 @@ const companyItems = [
   {
     title: "Interviews",
     url: "/interviews",
-    icon: MonitorCheck ,
+    icon: MonitorCheck,
   },
   {
     title: "Interviews category",
     url: "/interview-category",
-    icon: SquarePen   ,
+    icon: SquarePen,
   },
   {
     title: "Comapny Profile",
     url: "/company-profile",
-    icon: Warehouse    ,
+    icon: Warehouse,
   },
   {
     title: "Interview-comparision",
     url: "/Interview-comparision",
-    icon: Swords      ,
+    icon: Swords,
   },
 ];
 
@@ -67,7 +67,12 @@ const candidateItems = [
   {
     title: "user profile",
     url: "/user-profile",
-    icon: UserRound ,
+    icon: UserRound,
+  },
+  {
+    title: "user Assesments",
+    url: "/Assesments",
+    icon: BookOpenText,
   },
 ];
 const adminItems = [
@@ -83,7 +88,7 @@ const adminItems = [
 const teams = [
   {
     name: "JUDGEJET",
-    logo: SiEclipsejetty, 
+    logo: SiEclipsejetty,
     plan: "Decisions at Jet Speed",
   },
 ];
@@ -91,19 +96,19 @@ const teams = [
 export function AppSidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const role = session?.user?.role; 
+  const role = session?.user?.role;
 
-    // const session=await getSession();
-  const userEmail=session?.user?.email;
-    // const userRole=session?.user?.role;
+  // const session=await getSession();
+  const userEmail = session?.user?.email;
+  // const userRole=session?.user?.role;
 
-    const [userData, setUserData] = React.useState({
-      user: {
-        name: role,
-        email: userEmail,
-        avatar: "https://github.com/shadcn.png",
-      },
-    });
+  const [userData, setUserData] = React.useState({
+    user: {
+      name: role,
+      email: userEmail,
+      avatar: "https://github.com/shadcn.png",
+    },
+  });
 
 
   let items = commonItems;
@@ -120,7 +125,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>       
+      <SidebarHeader>
         <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
@@ -133,11 +138,10 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
-                      className={`${
-                        isActive(item.url)
+                      className={`${isActive(item.url)
                           ? "bg-primary text-white bg-black" // active styles
                           : "text-slate-300 hover:bg-primary hover:text-white"
-                      } flex items-center p-7 rounded-md text-base font-semibold`}
+                        } flex items-center p-7 rounded-md text-base font-semibold`}
                     >
                       <item.icon className="mr-2 w-20 h-20" />
                       <span>{item.title}</span>
