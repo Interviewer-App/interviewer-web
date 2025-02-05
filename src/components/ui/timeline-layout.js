@@ -38,7 +38,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Atom, BadgeCheck } from "lucide-react";
-
+import { getCandidateById } from "@/lib/api/users";
 export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -60,6 +60,8 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
   const [expandedInterviewId, setExpandedInterviewId] = useState(null);
   const [copiedInterviewIds, setCopiedInterviewIds] = useState({});
   const totalInterviews = interviews.length;
+  const [candidateId, setCandidateId] = useState();
+  const [candidateDetails, setCandidateDetails] = useState();
 
   const formatDate = (date) => {
     const options = { month: "short", day: "numeric" };
@@ -176,8 +178,95 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
   };
 
   const profileNavigate = () => {
-    router.push('/user-profile'); 
+    router.push('/user-profile');
   };
+
+  useEffect(() => {
+    const fetchCandidateId = async () => {
+      try {
+        const session = await getSession();
+        const candidateId = session?.user?.candidateID;
+        console.log('candidateId:', candidateId)
+        if (candidateId) {
+          setCandidateId(candidateId);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Candidate Details Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    fetchCandidateId();
+  }, []);
+
+  useEffect(() => {
+    const fetchCandidateDetails = async () => {
+      try {
+        const response = await getCandidateById(candidateId);
+        console.log('candidate Details:', response.data)
+        if (response.data) {
+          setCandidateDetails(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Candidate Details Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (candidateId) fetchCandidateDetails();
+  }, [candidateId]);
+
+
 
   return (
     <div>
@@ -256,24 +345,32 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
         />
         <Label className="text-lg font-light">Show past Interviews</Label>
       </div>
-      <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
-        <div className=" w-full flex items-center justify-between">
-          <div>
-            <h1 className=" text-2xl font-semibold">
-              Account details not filled
-            </h1>
-            <p className=" text-sm text-gray-500 py-3">
-              Please fill your profile page successfully
-            </p>
-          </div>
 
-          <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
-            <button onClick={profileNavigate}>
-            View Profile
-            </button>
+      {(
+        !candidateDetails?.experience || candidateDetails?.experience.trim() === "<p><br></p>" ||
+        !candidateDetails?.skillHighlights || candidateDetails?.skillHighlights.trim() === "<p><br></p>" ||
+        !candidateDetails?.discordUrl ||
+        !candidateDetails?.facebookUrl ||
+        !candidateDetails?.githubUrl ||
+        !candidateDetails?.linkedInUrl ||
+        !candidateDetails?.twitterUrl
+      ) ? (
+        <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
+          <div className="w-full flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold">Profile Incomplete</h1>
+              <p className="text-sm text-gray-500 py-3">
+              It looks like your profile is missing some important details. Please update your experience, skills, and social profiles.
+              </p>
+            </div>
+            <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+              <button onClick={profileNavigate}>View Profile</button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
+
+
       {/* <h2 className="text-2xl font-medium">Upcoming Interviews</h2> */}
       <Timeline className="mt-8">
         {interviews.map((interview) => {
