@@ -186,7 +186,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
       try {
         const session = await getSession();
         const candidateId = session?.user?.candidateID;
-        console.log('candidateId:', candidateId)
+        // console.log('candidateId:', candidateId)
         if (candidateId) {
           setCandidateId(candidateId);
         }
@@ -228,7 +228,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
     const fetchCandidateDetails = async () => {
       try {
         const response = await getCandidateById(candidateId);
-        console.log('candidate Details:', response.data)
+        // console.log('candidate Details:', response.data)
         if (response.data) {
           setCandidateDetails(response.data);
         }
