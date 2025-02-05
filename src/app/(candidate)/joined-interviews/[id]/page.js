@@ -176,7 +176,7 @@ const JoinedInterviewsDetails = ({ params }) => {
               catorgory="Total score"
             />
             <p className=" text-gray-300 text-center">
-              {sessionDetails?.totalSocre || 0}% Accurate with expected
+              {parseFloat(sessionDetails?.score).toFixed(2) || 0}% Accurate with expected
               answers
             </p>
             <p className=" text-sm text-gray-500 text-center">
