@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import AddCategoryNote from "@/components/interview-room-analiyzer/add-category-note";
 import {
@@ -12,7 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 
 // React Icons
-// import Editor from "@/components/rich-text/editor";
+import { FaDotCircle } from "react-icons/fa";
+
 import { LuNotebookPen } from "react-icons/lu";
 import { getInterviewCategoryByInterviewId } from "@/lib/api/interview-category";
 import socket from "@/lib/utils/socket";
@@ -26,6 +27,10 @@ function InterviewRoomAnalizerOther({
   const [selectedCategoryName, setSelectedCategoryName] = useState(null);
   const [categoryPercentageList, setCategoryPercentageList] = useState([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    console.log("categoryScores", categoryScores);
+  }, [categoryScores]);
 
   useEffect(() => {
     const fetchCategoryPercentage = async () => {
@@ -55,13 +60,17 @@ function InterviewRoomAnalizerOther({
   const handleCategoryMarksChange = (category, value) => {
     setCategoryScores((prev) =>
       prev.map((item) =>
-        item.categoryAssignment.category.categoryId === category.categoryAssignment.category.categoryId
+        item.categoryAssignment.category.categoryId ===
+        category.categoryAssignment.category.categoryId
           ? { ...item, score: value }
           : item
       )
     );
-    socket.emit("submitCategoryScore",  { sessionId: sessionId, categoryScoreId: category.categoryScoreId, score: value[0] })
-
+    socket.emit("submitCategoryScore", {
+      sessionId: sessionId,
+      categoryScoreId: category.categoryScoreId,
+      score: value[0],
+    });
   };
 
   return (
@@ -70,7 +79,11 @@ function InterviewRoomAnalizerOther({
       <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-5">
         <div className=" w-full md:w-[60%] md:pr-8 md:border-r-2 border-gray-700/20 min-h-[500px]">
           {categoryScores
-            .filter((category) => category.categoryAssignment.category.categoryName !== "Technical")
+            .filter(
+              (category) =>
+                category.categoryAssignment.category.categoryName !==
+                "Technical"
+            )
             .map((category, index) => (
               <div
                 key={index}
@@ -88,7 +101,8 @@ function InterviewRoomAnalizerOther({
                             onClick={() =>
                               handleOpenNoteModal(
                                 category.categoryScoreId,
-                                category.categoryAssignment.category.categoryName
+                                category.categoryAssignment.category
+                                  .categoryName
                               )
                             }
                             className=" text-blue-600 mr-3 text-xl cursor-pointer"
@@ -105,11 +119,26 @@ function InterviewRoomAnalizerOther({
                     </h1>
                   </div>
                 </div>
-                <div className=" w-full flex justify-between">
-                  <p>0</p>
-                  <p>100</p>
-                </div>
-                <Slider
+                {category.categoryAssignment.SubCategoryAssignment.length > 0 &&
+                  category.categoryAssignment.SubCategoryAssignment.map(
+                    (subCategory) => (
+                      <div key={subCategory.id} className=" w-full mb-5 px-10">
+                        <h1 className="text-base text-gray-500 py-2"><FaDotCircle className=" text-blue-700 text-xs inline-block -ml-6 mr-2"/>{subCategory.name}</h1>
+                        <div className=" w-full flex text-sm justify-between">
+                          <p>0</p>
+                          <p>100</p>
+                        </div>
+                        <Slider
+                          defaultValue={[10]}
+                          max={100}
+                          step={1}
+                          id={subCategory.id}
+                        />
+                      </div>
+                    )
+                  )}
+
+                {/* <Slider
                   defaultValue={[category.score]}
                   max={100}
                   step={1}
@@ -117,7 +146,7 @@ function InterviewRoomAnalizerOther({
                   onValueChange={(value) =>
                     handleCategoryMarksChange(category, value)
                   }
-                />
+                /> */}
               </div>
             ))}
         </div>
