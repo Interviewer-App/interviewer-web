@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import socket from "../../../lib/utils/socket";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback ,useRef} from "react";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
@@ -47,6 +47,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [sessionData, setSessionData] = useState({});
   const [availableQuestion, setAvailableQuestion] = useState({});
   const [typingAnswer, setTypingAnswer] = useState('typing...');
+  const dashboardRef = useRef();
 
   const { toast } = useToast();
   useEffect(() => {
@@ -141,6 +142,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       sessionId,
       userId,
     };
+    dashboardRef.current?.endCall();
     socket.emit("endInterviewSession", data);
     router.push(`/session-history/${sessionId}`)
   };
@@ -210,6 +212,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             setAnaliyzeResponse={setAnaliyzeResponse}
             typingAnswer={typingAnswer}
             setTypingAnswer={setTypingAnswer}
+            ref={dashboardRef}
           />
         )}
         {tab === "SCORE" && (

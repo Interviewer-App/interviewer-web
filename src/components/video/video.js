@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Peer from 'peerjs';
 import io from 'socket.io-client';
-import { 
+import {
   Mic,
   MicOff,
   Video,
@@ -14,8 +14,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
-const VideoCall = ({ sessionId, isCandidate  }) => {
+const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [peer, setPeer] = useState(null);
@@ -29,6 +30,7 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
   const originalAudioTrack = useRef(null);
   const activeCalls = useRef([]);
   const [callDuration, setCallDuration] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,63 +41,13 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
   useEffect(() => {
     socket.current = io(process.env.NEXT_PUBLIC_API_URL_SOCKET);
 
-    // const startCall = async () => {
-    //   debugger
-    //   try {
-    //     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    //     setLocalStream(stream);
-    //     localVideoRef.current.srcObject = stream;
-
-    //     const peerInstance = new Peer({ secure: true });
-    //     setPeer(peerInstance);
-
-    //     peerInstance.on('open', (id) => {
-    //       socket.current.emit('join-video-session', { sessionId, peerId: id });
-    //     });
-
-    //     peerInstance.on('call', (call) => {
-    //       call.answer(stream);
-    //       call.on('stream', (remoteStream) => {
-    //         setRemoteStream(remoteStream);
-    //         remoteVideoRef.current.srcObject = remoteStream;
-    //       });
-    //     });
-
-    //     socket.current.on('peer-joined', ({ joinedSessionId, peerId }) => {
-    //       debugger
-    //       if (sessionId === joinedSessionId && peerInstance) {
-    //         const call = peerInstance.call(peerId, stream);
-    //         call.on('stream', (remoteStream) => {
-    //           setRemoteStream(remoteStream);
-    //           remoteVideoRef.current.srcObject = remoteStream;
-    //         });
-    //       }
-    //     });
-    //   } catch (error) {
-    //     console.error('Error accessing media devices:', error);
-    //   }
-    // };
-
-    // startCall();
-
-    // return () => {
-    //   if (localStream) {
-    //     localStream.getTracks().forEach((track) => track.stop());
-    //   }
-    //   if (peer) {
-    //     peer.destroy();
-    //   }
-    //   if (socket.current) {
-    //     socket.current.disconnect();
-    //   }
-    // };
     const startCall = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: true, 
-          audio: true 
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true
         });
-        
+
         originalVideoTrack.current = stream.getVideoTracks()[0];
         originalAudioTrack.current = stream.getAudioTracks()[0];
         setLocalStream(stream);
@@ -117,7 +69,7 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
           call.on('close', () => {
             activeCalls.current = activeCalls.current.filter(c => c !== call);
           });
-          
+
           activeCalls.current.push(call);
         });
 
@@ -150,17 +102,17 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
       if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
       }
-      
+
       // Destroy peer instance
       if (peer) {
         peer.destroy();
       }
-      
+
       // Disconnect socket
       if (socket.current) {
         socket.current.disconnect();
       }
-      
+
       // Close all active calls
       activeCalls.current.forEach(call => call.close());
     };
@@ -188,10 +140,10 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
         const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
         const screenVideoTrack = screenStream.getVideoTracks()[0];
         const newStream = new MediaStream([originalAudioTrack.current, screenVideoTrack]);
-        
+
         setLocalStream(newStream);
         localVideoRef.current.srcObject = newStream;
-  
+
         // Update active calls with proper null checks
         activeCalls.current.forEach(call => {
           if (call.peerConnection) { // Add null check here
@@ -202,12 +154,12 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
             }
           }
         });
-  
+
         screenVideoTrack.onended = () => {
           const revertStream = new MediaStream([originalAudioTrack.current, originalVideoTrack.current]);
           setLocalStream(revertStream);
           localVideoRef.current.srcObject = revertStream;
-          
+
           // Update active calls with proper null checks
           activeCalls.current.forEach(call => {
             if (call.peerConnection) { // Add null check here
@@ -220,7 +172,7 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
           });
           setIsScreenSharing(false);
         };
-  
+
         setIsScreenSharing(true);
       } catch (error) {
         console.error('Error sharing screen:', error);
@@ -228,11 +180,11 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
     } else {
       const screenVideoTrack = localStream?.getVideoTracks()[0];
       if (screenVideoTrack) screenVideoTrack.stop();
-      
+
       const revertStream = new MediaStream([originalAudioTrack.current, originalVideoTrack.current]);
       setLocalStream(revertStream);
       localVideoRef.current.srcObject = revertStream;
-      
+
       // Update active calls with proper null checks
       activeCalls.current.forEach(call => {
         if (call.peerConnection) { // Add null check here
@@ -243,7 +195,7 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
           }
         }
       });
-      
+
       setIsScreenSharing(false);
     }
   };
@@ -259,21 +211,30 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
     if (localStream) {
       localStream.getTracks().forEach(track => track.stop());
     }
-    
+
     if (peer) {
       peer.destroy();
     }
-    
+
     if (socket.current) {
       socket.current.disconnect();
     }
-    
+
     activeCalls.current.forEach(call => call.close());
-    
+
+    if(isCandidate){
+      router.push('/my-interviews');
+      // window.location.href = '/my-interviews';
+    }
+
   };
 
+  useImperativeHandle(ref, () => ({
+    endCall: handleEndCall
+  }));
+
   return (
-<div className=" bg-gray-900 relative h-full w-auto">
+    <div className=" bg-gray-900 relative h-full w-auto">
       {/* Timer */}
       <div className="absolute top-4 left-4 text-white z-10">
         <span className="font-medium">{formatTime(callDuration)}</span>
@@ -341,7 +302,7 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
             )}
           </Button>
 
-          {/* <Button
+          {isCandidate && (<Button
             variant="destructive"
             size="icon"
             className="bg-red-600 hover:bg-red-700"
@@ -349,11 +310,11 @@ const VideoCall = ({ sessionId, isCandidate  }) => {
 
           >
             <PhoneOff className="h-5 w-5" />
-          </Button> */}
+          </Button>)}
         </div>
       </div>
     </div>
   );
-};
+});
 
 export default VideoCall;

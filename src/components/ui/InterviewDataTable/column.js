@@ -12,8 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation"; 
-
+import { useRouter } from "next/navigation";
+import socket from "@/lib/utils/socket";
 const ActionCell = ({ session }) => {
   const router = useRouter();
 
@@ -25,6 +25,18 @@ const ActionCell = ({ session }) => {
 
   const handleViewSessionHostory = () => {
     if (router && session?.sessionId) {
+      router.push(`/session-history/${encodeURIComponent(session.sessionId)}`);
+    }
+  };
+
+  const handleCompleteInterviewSession = () => {
+    if (router && session?.sessionId) {
+      const userId = session?.userId;
+      const data = {
+        sessionId:session?.sessionId,
+        userId,
+      };
+      socket.emit("endInterviewSession", data);
       router.push(`/session-history/${encodeURIComponent(session.sessionId)}`);
     }
   };
@@ -41,7 +53,7 @@ const ActionCell = ({ session }) => {
       <DropdownMenuContent align="end">
         <div className="bg-black bg-opacity-100 shadow-lg">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem className="cursor-pointer" 
+          <DropdownMenuItem className="cursor-pointer"
             onClick={() => navigator.clipboard.writeText(session.sessionId)}
           >
             Copy session ID
@@ -49,6 +61,7 @@ const ActionCell = ({ session }) => {
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" onClick={handleStartSession}>Start Session</DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer" onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleCompleteInterviewSession}>Complete Session</DropdownMenuItem>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -114,7 +127,7 @@ export const interviewSessionTableColumns = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const session = row.original; 
+      const session = row.original;
       return <ActionCell session={session} />;
     },
   },

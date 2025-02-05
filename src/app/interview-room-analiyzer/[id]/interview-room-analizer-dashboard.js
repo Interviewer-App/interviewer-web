@@ -25,6 +25,7 @@ import {
 
 import socket from "../../../lib/utils/socket";
 import VideoCall from "@/components/video/video";
+import { forwardRef, useRef, useImperativeHandle } from 'react';
 
 // React Icons
 import { ImCross } from "react-icons/im";
@@ -34,7 +35,7 @@ import { RiInformation2Line } from "react-icons/ri";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 
-function InterviewRoomAnalizerDashboard({
+const InterviewRoomAnalizerDashboard = forwardRef(({
   analiyzeResponse,
   candidateAnswers,
   sessionId,
@@ -42,8 +43,17 @@ function InterviewRoomAnalizerDashboard({
   availableQuestion,
   setAnaliyzeResponse,
   typingAnswer,
-  setTypingAnswer
-}) {
+  setTypingAnswer,
+}, ref) =>{
+  const videoCallRef = useRef();
+
+  const handleExternalEndCall = () => {
+    videoCallRef.current?.endCall();
+  };
+  // Expose the handleExternalEndCall function through the ref
+  useImperativeHandle(ref, () => ({
+    endCall: handleExternalEndCall
+  }));
   const nextQuestion = () => {
     const data = {
       sessionId: sessionId,
@@ -60,6 +70,7 @@ function InterviewRoomAnalizerDashboard({
     });
     setTypingAnswer("typing...");
   };
+
 
   return (
     <div className=" h-[90vh] w-full bg-black">
@@ -129,7 +140,7 @@ function InterviewRoomAnalizerDashboard({
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={40}>
-              <VideoCall sessionId={sessionId} isCandidate={false} />
+              <VideoCall sessionId={sessionId} isCandidate={false} ref={videoCallRef}/>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
@@ -255,6 +266,6 @@ function InterviewRoomAnalizerDashboard({
       </ResizablePanelGroup>
     </div>
   );
-}
+});
 
 export default InterviewRoomAnalizerDashboard;

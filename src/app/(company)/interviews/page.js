@@ -45,7 +45,6 @@ const InterviewsPage = () => {
 
   useEffect(() => {
     const fetchInterviews = async () => {
-      debugger
       setIsLoading(true);
       try {
         const session = await getSession();
@@ -127,7 +126,6 @@ const InterviewsPage = () => {
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
-      debugger
       try {
         const response = await getCompanyById(companyId);
         if (response.data) {

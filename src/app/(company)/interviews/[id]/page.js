@@ -337,6 +337,7 @@ export default function InterviewPreviewPage({ params }) {
       endAt: new Date(session.scheduledAt).toLocaleTimeString(),
       status: session.interviewStatus,
       score: session.score ? parseFloat(session.score).toFixed(2) : "N/A",
+      userId: session.candidate.user.userID,
     }));
 
     setInterviewSessionsSort(sortedSessions);

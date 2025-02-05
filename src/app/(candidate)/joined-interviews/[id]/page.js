@@ -44,7 +44,6 @@ const JoinedInterviewsDetails = ({ params }) => {
       try {
         const response = await getInterviewSessionHistoryById(sessionId);
         if (response.data) {
-          debugger
           setSessionDetails(response.data);
         }
       } catch (error) {

@@ -31,7 +31,6 @@ export function ComboboxDemo({selectedInterview,onSelect,disabledEmail  }) {
       try {
         const response = await getCompletedSessions(selectedInterview)
        
-        // debugger
         // const candidateEmails = response.map((session) => session.candidate.user.email)
         // const candidateEmails =response.map((session) => {
         //   const email = session.candidate.user.email

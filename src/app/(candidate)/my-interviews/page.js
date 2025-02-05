@@ -55,7 +55,6 @@ const MyInterviews = () => {
 
   useEffect(() => {
     const fetchUserJoinedInterviews = async () => {
-      // debugger
       try {
         setLoading(true);
         const response = await getScheduledInterview(candidateId);
