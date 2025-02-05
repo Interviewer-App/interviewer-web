@@ -5,9 +5,10 @@ import * as SliderPrimitive from "@radix-ui/react-slider"
 
 import { cn } from "@/lib/utils"
 
-const Slider = React.forwardRef(({ className, marks, ...props }, ref) => (
+const Slider = React.forwardRef(({ className, marks, id, ...props }, ref) => (
   <SliderPrimitive.Root
     ref={ref}
+    id={id}
     className={cn("relative flex w-full touch-none select-none items-center", className)}
     {...props}>
     <SliderPrimitive.Track
