@@ -355,7 +355,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
         !candidateDetails?.linkedInUrl ||
         !candidateDetails?.twitterUrl
       ) ? (
-        <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
+        <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-orange-400">
           <div className="w-full flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold">Profile Incomplete</h1>
@@ -363,7 +363,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
               It looks like your profile is missing some important details. Please update your experience, skills, and social profiles.
               </p>
             </div>
-            <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+            <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-yellow-500 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
               <button onClick={profileNavigate}>View Profile</button>
             </div>
           </div>
