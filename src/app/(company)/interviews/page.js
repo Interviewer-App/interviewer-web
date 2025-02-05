@@ -209,7 +209,7 @@ const InterviewsPage = () => {
         <div className=" px-9 py-4 w-full bg-black max-w-[1500px] mx-auto h-full">
           <div className=" flex items-start flex-col">
             <h1 className=" text-4xl font-semibold mb-4">Interviews</h1>
-            {(companyDetails?.companyDescription === null || companyDetails?.companyDescription === "<p><br></p>") && (
+            {/* {(companyDetails?.companyDescription === null || companyDetails?.companyDescription === "<p><br></p>") && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Warning</AlertTitle>
@@ -217,10 +217,7 @@ const InterviewsPage = () => {
                   Please complete your company details section before scheduling an interview.
                 </AlertDescription>
               </Alert>
-            )}
-
-
-
+            )} */}
             {!isAnyInterviews && (
               <button
                 onClick={() => setModalOpen(true)}
