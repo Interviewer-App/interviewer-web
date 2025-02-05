@@ -247,7 +247,11 @@ const InterviewComparision = () => {
         });
       }
     } else {
-      alert("Please select both candidates to compare.");
+      toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Please select both candidates to compare",
+        })
     }
   };
 
