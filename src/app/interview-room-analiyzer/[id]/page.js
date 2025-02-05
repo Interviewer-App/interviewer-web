@@ -161,9 +161,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   return (
     <>
       <div className="  bg-black">
-        {/* <div className=" w-full fixed bottom-0 z-50 opacity-0 hover:opacity-100 transition-opacity duration-1000">
-          <ResponsiveAppBar pages={pages} />
-        </div> */}
         <div className=" w-full h-[10%] bg-gray-900 py-3 flex justify-between items-center px-6">
           <div className=" flex items-center justify-start space-x-1">
             <button
@@ -174,18 +171,18 @@ const InterviewRoomAnalizerPage = ({ params }) => {
               Dashboard
             </button>
             <button
-              onClick={() => handleTabChange("SCORE")}
-              className={` ${tab === "SCORE" ? "bg-gray-700/50" : ""
-                } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
-            >
-              Score
-            </button>
-            <button
               onClick={() => handleTabChange("OTHER")}
               className={` ${tab === "OTHER" ? "bg-gray-700/50" : ""
                 } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
             >
               Other
+            </button>
+            <button
+              onClick={() => handleTabChange("SCORE")}
+              className={` ${tab === "SCORE" ? "bg-gray-700/50" : ""
+                } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
+            >
+              Score
             </button>
             <button
               onClick={() => handleTabChange("CANDIDATE_PROFILE")}
