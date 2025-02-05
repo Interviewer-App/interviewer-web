@@ -41,14 +41,14 @@ const ActionCell = ({ session }) => {
       <DropdownMenuContent align="end">
         <div className="bg-black bg-opacity-100 shadow-lg">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
+          <DropdownMenuItem className="cursor-pointer" 
             onClick={() => navigator.clipboard.writeText(session.sessionId)}
           >
             Copy session ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleStartSession}>Start Session</DropdownMenuItem>
-          <DropdownMenuItem onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleStartSession}>Start Session</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
