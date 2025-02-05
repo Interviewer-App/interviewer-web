@@ -14,7 +14,7 @@ const fetchJoinedInterviews = async (
     const response = await axiosInstance.get(
       `/interview-session/candidate/${candidateId}/${page}/${limit}`
     );
-    console.log(response); // Ensure you're logging the correct structure
+    // console.log(response); // Ensure you're logging the correct structure
 
     if (!response || !response.data || !response.data.interviewSessions) {
       throw new Error(`Error fetching interviews: No data found`);
