@@ -175,6 +175,10 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
     ); // Toggle expanded state
   };
 
+  const profileNavigate = () => {
+    router.push('/user-profile'); 
+  };
+
   return (
     <div>
 
@@ -252,6 +256,24 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
         />
         <Label className="text-lg font-light">Show past Interviews</Label>
       </div>
+      <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
+        <div className=" w-full flex items-center justify-between">
+          <div>
+            <h1 className=" text-2xl font-semibold">
+              Account details not filled
+            </h1>
+            <p className=" text-sm text-gray-500 py-3">
+              Please fill your profile page successfully
+            </p>
+          </div>
+
+          <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+            <button onClick={profileNavigate}>
+            View Profile
+            </button>
+          </div>
+        </div>
+      </div>
       {/* <h2 className="text-2xl font-medium">Upcoming Interviews</h2> */}
       <Timeline className="mt-8">
         {interviews.map((interview) => {
@@ -300,12 +322,12 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                         <AlertDialogHeader>
                           <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
                           <AlertDialogDescription className="text-gray-600">
-                            By continuing, you'll enter the live interview session immediately. Please ensure:
+                            By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
 
-                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  You're in a quiet environment</span>
-                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  Your camera and microphone are ready</span>
-                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  You have stable internet connection</span>
-      
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You&apos;re in a quiet environment</span>
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
+
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
