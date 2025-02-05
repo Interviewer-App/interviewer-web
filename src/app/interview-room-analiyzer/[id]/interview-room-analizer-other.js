@@ -73,6 +73,22 @@ function InterviewRoomAnalizerOther({
     });
   };
 
+  const handleSubCategoryMarksChange = (subcategory, value) => {
+    // setCategoryScores((prev) =>
+    //   prev.map((item) =>
+    //     item.categoryAssignment.category.categoryId ===
+    // subcategory.categoryAssignment.category.categoryId
+    //       ? { ...item, score: value }
+    //       : item
+    //   )
+    // );
+    socket.emit("submitSubCategoryScore", {
+      sessionId: sessionId,
+      subCategoryScoreId: subcategory.id,
+      score: value[0],
+    });
+  };
+
   return (
     <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
       <h1 className=" text-3xl font-semibold">Other categories</h1>
@@ -119,20 +135,24 @@ function InterviewRoomAnalizerOther({
                     </h1>
                   </div>
                 </div>
-                {category.categoryAssignment.SubCategoryAssignment.length > 0 &&
-                  category.categoryAssignment.SubCategoryAssignment.map(
+                {category.subCategoryScores.length > 0 &&
+                  category.subCategoryScores.map(
                     (subCategory) => (
                       <div key={subCategory.id} className=" w-full mb-5 px-10">
-                        <h1 className="text-base text-gray-500 py-2"><FaDotCircle className=" text-blue-700 text-xs inline-block -ml-6 mr-2"/>{subCategory.name}</h1>
+                        <h1 className="text-base text-gray-500 py-2"><FaDotCircle className=" text-blue-700 text-xs inline-block -ml-6 mr-2"/>{subCategory.subCategoryAssignment.name}</h1>
                         <div className=" w-full flex text-sm justify-between">
                           <p>0</p>
                           <p>100</p>
                         </div>
                         <Slider
-                          defaultValue={[10]}
+                          defaultValue={[subCategory.score || 10]}
                           max={100}
                           step={1}
                           id={subCategory.id}
+                          marks={subCategory.score}
+                          onValueChange={(value) =>
+                            handleSubCategoryMarksChange(subCategory, value)
+                          }
                         />
                       </div>
                     )
