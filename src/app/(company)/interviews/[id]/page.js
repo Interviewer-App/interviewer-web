@@ -16,6 +16,8 @@ import {
 import { MdEdit } from "react-icons/md";
 import { IoCloseCircle } from "react-icons/io5";
 import { CalendarIcon, Percent } from "lucide-react";
+import { GiDiamondTrophy } from "react-icons/gi";
+import Trophy from "@/assets/analyze/trophy.png";
 
 //UI Components
 import { Chip } from "@mui/material";
@@ -111,6 +113,7 @@ import InvitedCandidates from "@/components/interviews/invite-candidates";
 import QuestionDisplayCard from "@/components/company/question-display-card";
 import { CandidateDataTable } from "@/components/ui/candidateDataTable/DataTable";
 import SubCategoryDisplayCard from "@/components/interviews/subCategory-display-card";
+import Image from "next/image";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -178,7 +181,7 @@ export default function InterviewPreviewPage({ params }) {
   const [dateRange, setDateRange] = useState({});
   const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
   const [chartData, setChartData] = useState({
-    labels: ["Bookings", "Invitations"],
+    labels: ["Requests", "Invitations"],
     datasets: [
       {
         label: "Schedules",
@@ -295,7 +298,7 @@ export default function InterviewPreviewPage({ params }) {
     };
 
     if (interviewId) fetchCandidatesData();
-  }, [interviewId, page, limit,inviteModalOpen]);
+  }, [interviewId, page, limit, inviteModalOpen]);
 
   useEffect(() => {
     const generateRandomColor = () => {
@@ -455,7 +458,7 @@ export default function InterviewPreviewPage({ params }) {
   useEffect(() => {
     if (interviewStatusDetails) {
       setChartData({
-        labels: ["Bookings", "Invitations"],
+        labels: ["Requests", "Invitations"],
         datasets: [
           {
             label: "Schedules",
@@ -1850,12 +1853,16 @@ export default function InterviewPreviewPage({ params }) {
                   {candidates.map((candidate, index) => (
                     <div
                       key={index}
-                      className="border p-4 rounded-lg shadow-md"
+                      className="border flex justify-between items-center p-4 rounded-lg shadow-md"
                     >
-                      <h3 className="text-lg font-semibold">
-                        {candidate.name}
-                      </h3>
-                      <p className="text-white">Score: {candidate.score}</p>
+                      <div>
+                        <h3 className="text-lg font-semibold">
+                          {candidate.name}
+                        </h3>
+                        <p className="text-white">Score: {candidate.score}</p>
+                      </div>
+                      {index < 3 && (<Image src={Trophy} alt="trophy" width={40} height={40} className=" mr-5" />)}
+
                     </div>
                   ))}
                 </div>
