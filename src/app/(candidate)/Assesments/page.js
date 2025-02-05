@@ -137,9 +137,9 @@ const Assesments = () => {
                         <div>
                             <h1 className=" text-2xl font-semibold mb-6">Candidate Assesments</h1>
 
-                            <div className=" grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                            <div className=" grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
                                 {assessments.map((assessment) => (
-                                    <div key={assessment.id} className="h-auto border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
+                                    <div key={assessment.id} className="h-auto border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden cursor-pointer">
                                         <img className="h-48 w-full object-cover object-center" src={assessment.image} alt="blog" />
                                         <div className="p-6">
                                             <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">{assessment.category}</h2>
