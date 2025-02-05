@@ -14,7 +14,6 @@ import { getSession } from "next-auth/react";
 
 import {
   CalendarIcon,
-  Percent,
   WandSparkles,
   LoaderCircle,
   AlertCircle,
@@ -57,7 +56,6 @@ import {
   createCategory,
   getInterviewCategoryCompanyById,
 } from "@/lib/api/interview-category";
-// import Editor from "../rich-text/editor";
 import dynamic from "next/dynamic";
 import {
   generateInterviewJobDescription,
@@ -71,7 +69,6 @@ import { Plus } from "lucide-react";
 
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import Loading from "@/app/loading";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
