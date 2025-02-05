@@ -107,7 +107,6 @@ const getInterviewSessionById = async (sessionId) => {
     const response = await axiosInstance.get(
       `/interview-session/session/${sessionId}`
     );
-    // console.log('responsseeee',response);
     return response;
   } catch (error) {
     console.log("Error fetching session:", error);
