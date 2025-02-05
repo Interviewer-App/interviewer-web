@@ -68,12 +68,7 @@ function InterviewSessionPreviewPage({ params }) {
     })
   );
 
-  const [items, setItems] = useState([
-    { name: "NextJS", id: 1693653637084 },
-    { name: "ReactJS", id: 1693653637086 },
-    { name: "Astro", id: 1693653637088 },
-    { name: "Vue", id: 1693653637090 },
-  ]);
+  const [items, setItems] = useState([]);
 
   const { toast } = useToast();
   const router = useRouter();
