@@ -15,8 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LoaderCircle } from "lucide-react";
 import { generateInterviewQuestions, generateQuestions } from "@/lib/api/ai";
-import Loading from "@/app/loading";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 
 const ListItem = styled("li")(({ theme }) => ({
@@ -32,8 +32,6 @@ export default function GenerateQuestionModal({
   const [interviewId, setInterviewId] = React.useState("");
   const [jobRole, setJobRole] = React.useState("");
   const [skillLevel, setSkillLevel] = React.useState("Junior");
-  const [companyCulture, setCompanyCulture] = React.useState("");
-  const [companyAim, setCompanyAim] = React.useState("");
   const [noOfQuestion, setNoOfQuestion] = React.useState("");
   const [questionType, setQuestionType] = React.useState("Technical");
   const [keywords, setKeywords] = React.useState([]);
@@ -46,7 +44,7 @@ export default function GenerateQuestionModal({
     if (forSession) {
       setSessionID(details.sessionId);
       setJobRole(details.interview.jobTitle);
-    }else{
+    } else {
       setInterviewId(details.interviewID);
       setJobRole(details.jobTitle);
     }
@@ -95,7 +93,7 @@ export default function GenerateQuestionModal({
           Keywords: keywords.map((keyword) => keyword.label),
           noOfQuestions: validNoOfQuestions,
         });
-      }else{
+      } else {
         response = await generateInterviewQuestions(interviewId, {
           jobRole,
           skillLevel,
@@ -216,24 +214,6 @@ export default function GenerateQuestionModal({
                 </DropdownMenu>
               </div>
             </div>
-            {/* <textarea
-              placeholder="Company Culture"
-              name="companyCulture"
-              value={companyCulture}
-              onChange={(e) => setCompanyCulture(e.target.value)}
-              required
-              className=" h-[100px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 py-3 mb-4"
-            />
-            <textarea
-              placeholder="Company Aim"
-              name="companyAim"
-              value={companyAim}
-              onChange={(e) => setCompanyAim(e.target.value)}
-              required
-              className=" h-[100px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 py-3 mb-4"
-            /> */}
-
-            {/* <div className=" w-full flex flex-col md:flex-row justify-between items-center mt-1"></div> */}
             <Paper
               sx={{
                 display: "flex",
@@ -293,19 +273,18 @@ export default function GenerateQuestionModal({
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                className=" h-11 min-w-[150px] w-full md:w-[40%] mt-2 cursor-pointer bg-white text-black text-sm rounded-lg text-center font-semibold"
+                className=" h-11 min-w-[150px] w-full md:w-[40%] mt-2 flex justify-center items-center cursor-pointer bg-white text-black text-sm rounded-lg text-center font-semibold"
               >
-                Genarate
+                {loading ? (
+                  <LoaderCircle className="animate-spin" />
+                ) : (
+                  "Genarate"
+                )}
               </button>
             </div>
           </form>
         </div>
       </div>
-      {loading && (
-        <div className=" fixed  top-0 left-0 z-50 h-full w-full flex items-center justify-center bg-black/50">
-          <Loading />
-        </div>
-      )}
     </div>
   );
 }
