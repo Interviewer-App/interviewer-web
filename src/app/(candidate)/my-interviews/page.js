@@ -60,7 +60,7 @@ const MyInterviews = () => {
         setLoading(true);
         const response = await getScheduledInterview(candidateId);
         setScheduleInterviews(response.data.schedules);
-        console.log("Fetched scheduled interviews:", response.data.schedules);
+        // console.log("Fetched scheduled interviews:", response.data.schedules);
       } catch (error) {
         console.error("Error fetching interviews:", error);
       } finally {
