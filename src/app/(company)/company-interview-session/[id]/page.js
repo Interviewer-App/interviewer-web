@@ -34,10 +34,7 @@ import {
   restrictToParentElement,
 } from "@dnd-kit/modifiers";
 import SortableLinks from "@/components/SortableLinks";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FaDotCircle } from "react-icons/fa";
 
 //API
@@ -50,6 +47,7 @@ import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { importQuestions } from "@/lib/api/question";
 import Link from "next/link";
+import { reorderInterviewFlow } from "@/lib/api/interview";
 
 function InterviewSessionPreviewPage({ params }) {
   const { data: session, status } = useSession();
@@ -111,7 +109,8 @@ function InterviewSessionPreviewPage({ params }) {
 
   useEffect(() => {
     if (!sessionDetails || !sessionDetails.CategoryScore) return;
-    const tabData = sessionDetails.CategoryScore.map((category) => ({
+    const tabData = sessionDetails.CategoryScore.sort((a, b) => a.order - b.order)
+    .map((category) => ({
       name: category.categoryAssignment.category.categoryName,
       id: category.categoryAssignment.category.categoryId,
     }));
@@ -178,10 +177,59 @@ function InterviewSessionPreviewPage({ params }) {
         const oldIndex = prevItems.findIndex((item) => item.id === active.id);
         const newIndex = prevItems.findIndex((item) => item.id === over.id);
 
-        return arrayMove(prevItems, oldIndex, newIndex);
+        const updatedArray = arrayMove(prevItems, oldIndex, newIndex);
+
+        hanleChangeFlow(updatedArray);
+        
+        return updatedArray;
       });
     }
   }
+
+  const hanleChangeFlow = async (array) => {
+    try {
+      const updatedArray = {
+        sessionId,
+        categories: array.map((item, index) => {
+          return {
+            categoryId: item.id,
+            order: index,
+          };
+        }),
+      };
+      const response = await reorderInterviewFlow(updatedArray);
+      if (response) {
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `ordering Faild: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
 
   return (
     <>
