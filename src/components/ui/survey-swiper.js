@@ -1,10 +1,9 @@
-import React, { forwardRef, use, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 const ServeySwiperComponent = forwardRef(
   ({ questions, setQuestionsState, questionsState, setActiveStep }, ref) => {
-    const [textAnswer, setTextAnswer] = useState("");
 
     const handleSelect = (question, answer) => {
       setQuestionsState((prevQuestions) =>
@@ -20,7 +19,7 @@ const ServeySwiperComponent = forwardRef(
               return { ...q, givenAnswer: answer, isAnswered: answer !== null };
             }
             if (q.type === "OPEN_ENDED") {
-              return { ...q, givenAnswer: textAnswer, isAnswered: textAnswer.trim() !== "" };
+              return { ...q, givenAnswer: answer, isAnswered: answer.trim() !== "" };
             }
           }
           return q;
@@ -97,9 +96,8 @@ const ServeySwiperComponent = forwardRef(
                 <div className=" w-full mx-auto mt-8">
                   <textarea
                     placeholder="Enter your answer here"
-                    value={question.givenAnswer || textAnswer}
-                    onChange={(e) => setTextAnswer(e.target.value)}
-                    onKeyUp={(e) => handleSelect(question, textAnswer)}
+                    value={questionsState.find((q) => q.Id === question.Id)?.givenAnswer || ""}
+                    onChange={(e) => handleSelect(question, e.target.value)}
                     className="w-full h-[400px] md:h-[200px] border-2 overflow-y-auto border-gray-700 bg-gray-700/20 py-3 text-sm rounded-md px-4"
                   />
                 </div>
