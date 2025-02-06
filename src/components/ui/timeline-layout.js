@@ -405,7 +405,8 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                 <div className="flex justify-between items-center w-full ">
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
                   {/* Conditionally render the "Join Now" button */}
-                  {interview.interviewSession?.interviewStatus !== "completed" && (
+                  {interview.interviewSession?.interviewStatus !== "completed" && 
+                  new Date(interview.startTime) > new Date() && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <button
