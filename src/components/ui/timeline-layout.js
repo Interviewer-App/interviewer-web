@@ -39,6 +39,14 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Atom, BadgeCheck } from "lucide-react";
 import { getCandidateById } from "@/lib/api/users";
+import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -360,7 +368,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
             <div>
               <h1 className="text-2xl font-semibold">Profile Incomplete</h1>
               <p className="text-sm text-gray-500 py-3">
-              It looks like your profile is missing some important details. Please update your experience, skills, and social profiles.
+                It looks like your profile is missing some important details. Please update your experience, skills, and social profiles.
               </p>
             </div>
             <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-yellow-500 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
@@ -405,58 +413,64 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                 <div className="flex justify-between items-center w-full ">
                   <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
                   {/* Conditionally render the "Join Now" button */}
-                  {interview.interviewSession?.interviewStatus !== "completed" && 
-                  new Date(interview.startTime) > new Date() && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button
+                  {interview.interviewSession?.interviewStatus !== "completed" &&
+                    new Date(interview.startTime) > new Date() && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <button
 
-                          className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
-                        >
-                          Join Now
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
-                          <AlertDialogDescription className="text-gray-600">
-                            By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
+                            className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
+                          >
+                            Join Now
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-gray-600">
+                              By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
 
-                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You&apos;re in a quiet environment</span>
-                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
-                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
+                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You&apos;re in a quiet environment</span>
+                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
+                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
 
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
-                          <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
-                            joinInterviewSession(interview);
-                          }}>Confirm Join</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
+                            <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
+                              joinInterviewSession(interview);
+                            }}>Confirm Join</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
 
-                  )}
+                    )}
                 </div>
               </TimelineHeader>
               <div className="bg-[#18181E]">
                 <TimelineDescription className="-mt-1  px-8 text-[#6F6F7B] ">
-                  <div
-                    className={` w-[90%] pb-3 text-justify bg-transparent rounded-lg description`}
-                    dangerouslySetInnerHTML={{
-                      __html: isExpanded
-                        ? interview.interview.jobDescription
-                        : `${interview.interview.jobDescription.slice(0, 200)}...`,
-                    }}
-                  />
-
-                  {/* <div className="">
-                    {isExpanded
-                      ? getPlainTextFromHtml(interview.interview.jobDescription)
-                      : `${getPlainTextFromHtml(interview.interview.jobDescription).slice(0, 200)}...`}
-                  </div> */}
-                  {/* <button onClick={() => { joinInterviewSession(interview) }} className="pl-64">Join</button> */}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          className={`w-[90%] pb-3 text-justify bg-transparent rounded-lg description cursor-pointer`}
+                          dangerouslySetInnerHTML={{
+                            __html: isExpanded
+                              ? interview.interview.jobDescription
+                              : `${interview.interview.jobDescription.slice(0, 200)}...`,
+                          }}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-[400px] bg-[#18181E] text-white border border-[#2D2D35]">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: interview.interview.jobDescription,
+                          }}
+                        />
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Accordion type="single" collapsible>
                     <AccordionItem value="item-1">
                       {/* <div className="flex justify-end">
