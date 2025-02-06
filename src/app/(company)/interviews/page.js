@@ -42,7 +42,7 @@ const InterviewsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [companyDetails, setCompanyDetails] = useState({});
   const [companyId, setCompanyId] = useState("");
-
+  const [hoveredId,setHoveredId]=useState();
   useEffect(() => {
     const fetchInterviews = async () => {
       setIsLoading(true);
@@ -236,11 +236,19 @@ const InterviewsPage = () => {
                 </div>
               </div>
               {interviews.map((interview, index) => (
+
+                <div  className="w-full" key={interview.interviewID}  // Use a unique identifier as the key 
+                onMouseEnter={() => setHoveredId(interview.interviewID)} >
                 <InterviewDisplayCard
                   key={index}
                   index={index + 1}
                   interview={interview}
+                  hoveredId={hoveredId}
+                  
                 />
+                
+                </div>
+                
               ))}
             </div>
           )}
