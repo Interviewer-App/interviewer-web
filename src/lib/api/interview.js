@@ -140,3 +140,14 @@ export const updateInterviewSubCategory = async (subCategoryAssignmentId, data) 
         throw error;
     }
 }
+
+export const sortCandidates = async (data) => {
+    try {
+        const response=await axiosInstance.post(`/interview/top-candidates`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error sorting candidate`,error)
+        throw error;
+    }
+}
+
