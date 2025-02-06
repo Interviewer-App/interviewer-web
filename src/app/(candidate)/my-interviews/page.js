@@ -89,16 +89,24 @@ const MyInterviews = () => {
 
   useEffect(() => {
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
+    currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+  
     const filteredAndSortedArray = [...scheduleInterviews]
       .filter((interview) => {
         const interviewDate = new Date(interview.startTime);
-        interviewDate.setHours(0, 0, 0, 0);
-        return showPastInterviews ? true : interviewDate >= currentDate;
+        interviewDate.setHours(0, 0, 0, 0); // Set to the start of the day
+  
+        // If showPastInterviews is true, include all interviews
+        if (showPastInterviews) return true;
+  
+        // Otherwise, filter out interviews that are in the past (both today and previous days)
+        const isToday = interviewDate.getTime() === currentDate.getTime();
+        const isPast = interviewDate < currentDate || (isToday && new Date(interview.startTime) < new Date());
+  
+        return !isPast;
       })
       .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-
+  
     setSortedScheduleInterviews(filteredAndSortedArray);
   }, [scheduleInterviews, showPastInterviews]);
 
