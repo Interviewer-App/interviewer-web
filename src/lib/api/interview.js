@@ -151,3 +151,13 @@ export const sortCandidates = async (data) => {
     }
 }
 
+export const reorderInterviewFlow = async (data) => {
+    try {
+        const response=await axiosInstance.post(`/interview-session/reorder-interview-flow`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error ordering interview flow`,error)
+        throw error;
+    }
+}
+
