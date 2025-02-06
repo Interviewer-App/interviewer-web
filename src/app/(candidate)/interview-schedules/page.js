@@ -34,7 +34,7 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Filter,SlidersHorizontal  } from "lucide-react";
+import { Filter, SlidersHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
 const InterviewSchedulePage = () => {
   const { data: session, status } = useSession();
@@ -78,10 +78,10 @@ const InterviewSchedulePage = () => {
       );
       setInterviews(response.data);
       setIsAnyInterviews(response.data.length > 0);
-      
+
     } catch (error) {
       console.log("Error fetching interviews:", error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -105,13 +105,13 @@ const InterviewSchedulePage = () => {
     setInterviewCategory("");
     setJobTitle("");
     setKeyWords("");
-  
+
     // Fetch interviews without any filters
     fetchPublishedInterviews();
-  
+
     // Close the sheet (if it's open)
     setIsSheetOpen(false);
-  
+
     // Show a toast notification for resetting the filters
     toast({
       title: "Filters Reset",
@@ -160,7 +160,7 @@ const InterviewSchedulePage = () => {
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger>
                 <div className=" bg-transparent border-2 border-gray-300 text-gray-300 hover:text-gray-500 hover:border-gray-500 px-2 py-2 rounded-sm cursor-pointer">
-                  <SlidersHorizontal  />
+                  <SlidersHorizontal />
                 </div>
               </SheetTrigger>
               <SheetContent>
@@ -275,7 +275,7 @@ const InterviewSchedulePage = () => {
                     />
                   </div>
                   <div className=" w-full flex justify-between mt-5">
-                    <button  type="button" onClick={handleReset} className=" mt-6 bg-transparent border-2 hover:text-white hover:border-white border-gray-600 rounded-lg text-center text-sm text-gray-600 font-semibold h-11 w-[130px]">
+                    <button type="button" onClick={handleReset} className=" mt-6 bg-transparent border-2 hover:text-white hover:border-white border-gray-600 rounded-lg text-center text-sm text-gray-600 font-semibold h-11 w-[130px]">
                       Reset fitler
                     </button>
                     <button
@@ -315,11 +315,11 @@ const InterviewSchedulePage = () => {
             </div>
           )}
         </div>
-      {loading && (
-              <div className=" fixed  top-0 left-0 h-full w-full flex items-center justify-center bg-black/50">
-                <Loading />
-              </div>
-            )}
+        {loading && (
+          <div className=" fixed  top-0 left-0 h-full w-full flex items-center justify-center bg-black/50">
+            <Loading />
+          </div>
+        )}
       </SidebarInset>
     </>
   );
