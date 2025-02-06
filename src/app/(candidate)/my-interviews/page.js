@@ -37,7 +37,8 @@ const MyInterviews = () => {
   const [page, setPage] = useState(1); // Page number
   const [limit, setLimit] = useState(10); // Limit of items per page
   const [showPastInterviews, setShowPastInterviews] = useState(false);
-
+  const [isProfileComplete,setIsProfileComplete]=useState(true);
+  const [scheduleData,setScheduleData]=useState({});
   useEffect(() => {
     const fetchCandidateId = async () => {
       try {
@@ -53,13 +54,16 @@ const MyInterviews = () => {
     fetchCandidateId();
   }, []);
 
+
   useEffect(() => {
     const fetchUserJoinedInterviews = async () => {
       try {
         setLoading(true);
         const response = await getScheduledInterview(candidateId);
+        setScheduleData(response.data);
         setScheduleInterviews(response.data.schedules);
-        // console.log("Fetched scheduled interviews:", response.data.schedules);
+        setIsProfileComplete(response.data.isProfileCompleted);
+
       } catch (error) {
         console.error("Error fetching interviews:", error);
       } finally {
@@ -141,6 +145,7 @@ const MyInterviews = () => {
           overview={overview}
           showPastInterviews={showPastInterviews}
           setShowPastInterviews={setShowPastInterviews}
+          isProfileCompleted={isProfileComplete} 
         />
       </div>
     </SidebarInset>
