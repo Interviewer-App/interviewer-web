@@ -131,42 +131,50 @@ function InterviewRoomAnalizerOther({
                     </TooltipProvider>
 
                     <h1 className="text-lg font-semibold text-gray-300 py-2">
-                      Marks: {category.score}
+                      Marks: {parseInt(category.score).toFixed(2)}
                     </h1>
                   </div>
                 </div>
-                {category.subCategoryScores.length > 0 &&
-                  category.subCategoryScores.map(
-                    (subCategory) => (
-                      <div key={subCategory.id} className=" w-full mb-5 px-10">
-                        <h1 className="text-base text-gray-500 py-2"><FaDotCircle className=" text-blue-700 text-xs inline-block -ml-6 mr-2"/>{subCategory.subCategoryAssignment.name}</h1>
-                        <div className=" w-full flex text-sm justify-between">
-                          <p>0</p>
-                          <p>100</p>
-                        </div>
-                        <Slider
-                          defaultValue={[subCategory.score || 10]}
-                          max={100}
-                          step={1}
-                          id={subCategory.id}
-                          marks={subCategory.score}
-                          onValueChange={(value) =>
-                            handleSubCategoryMarksChange(subCategory, value)
-                          }
-                        />
+                {category.subCategoryScores.length > 0 ? (
+                  category.subCategoryScores.map((subCategory) => (
+                    <div key={subCategory.id} className=" w-full mb-5 px-10">
+                      <h1 className="text-base text-gray-500 py-2">
+                        <FaDotCircle className=" text-blue-700 text-xs inline-block -ml-6 mr-2" />
+                        {subCategory.subCategoryAssignment.name}
+                      </h1>
+                      <div className=" w-full flex text-sm justify-between">
+                        <p>0</p>
+                        <p>{subCategory.score}/100</p>
                       </div>
-                    )
-                  )}
-
-                {/* <Slider
-                  defaultValue={[category.score]}
-                  max={100}
-                  step={1}
-                  marks={category.score}
-                  onValueChange={(value) =>
-                    handleCategoryMarksChange(category, value)
-                  }
-                /> */}
+                      <Slider
+                        defaultValue={[subCategory.score || 10]}
+                        max={100}
+                        step={1}
+                        id={subCategory.id}
+                        marks={subCategory.score}
+                        onValueChange={(value) =>
+                          handleSubCategoryMarksChange(subCategory, value)
+                        }
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div key={category.id} className=" w-full my-5 px-10">
+                    <div className=" w-full flex text-sm justify-between">
+                      <p>0</p>
+                      <p>{category.score}/100</p>
+                    </div>
+                    <Slider
+                      defaultValue={[category.score]}
+                      max={100}
+                      step={1}
+                      marks={category.score}
+                      onValueChange={(value) =>
+                        handleCategoryMarksChange(category, value)
+                      }
+                    />
+                  </div>
+                )}
               </div>
             ))}
         </div>
