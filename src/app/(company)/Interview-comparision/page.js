@@ -30,6 +30,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { getInterviews } from "@/lib/api/interview";
 import { useSession, getSession } from "next-auth/react";
 import { getCompletedSessionComparision } from "@/lib/api/interview-session";
+import { Plus, LoaderCircle } from "lucide-react";
 
 
 import { Doughnut } from "react-chartjs-2";
@@ -59,6 +60,7 @@ const InterviewComparision = () => {
   const [isComparePressed, setIsComparePressed] = useState(false);
   const [firstCandidateName, setFirstCandidateName] = useState("");
   const [secondCandidateName, setSecondCandidateName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   
   
   // Hardcoded comparison result
@@ -220,6 +222,7 @@ const InterviewComparision = () => {
 
   const handleCompareInterviews = async () => {
     if (firstSessionId && secondSessionId) {
+      setIsLoading(true);
       try {
         const data = {
           sessionId1: firstSessionId,
@@ -235,9 +238,10 @@ const InterviewComparision = () => {
           title: "Comparison Successful",
           description: "The comparison was completed successfully.",
         });
+        setIsLoading(false);
       } catch (error) {
         console.error("Error comparing sessions:", error);
-
+        setIsLoading(false);
         // Display error toast
         toast({
           variant: "destructive",
@@ -366,6 +370,10 @@ const InterviewComparision = () => {
                 </button>
               </div>
             </div>
+
+            {isLoading && (
+              <LoaderCircle className="mx-auto mt-10 animate-spin" size={48} />
+            )}
 
             {isComparePressed && (
               <>

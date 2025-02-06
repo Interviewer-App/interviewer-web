@@ -283,7 +283,7 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 type="text"
                 className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                Linkedin url
+                {candidateDetails?.linkedInUrl}
               </p>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -292,7 +292,7 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 type="text"
                 className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                Github Url
+                {candidateDetails?.githubUrl}
               </p>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -301,7 +301,7 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 type="text"
                 className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                Facebook Url
+                {candidateDetails?.facebookUrl}
               </p>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -310,7 +310,7 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 type="text"
                 className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                X Url
+                {candidateDetails?.twitterUrl}
               </p>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -319,7 +319,7 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
                 type="text"
                 className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                Discord Url
+                {candidateDetails?.discordUrl}
               </p>
             </div>
           </div>

@@ -120,14 +120,14 @@ function InterviewRoomAnalizerScore({
             </p>
           </div>
           <div className="  bg-gray-700/20 text-gray-400 border-2 py-8 border-gray-700 flex flex-col items-center justify-center w-full mt-7 md:mt-5 rounded-lg">
-            <h1 className=" text-2xl font-semibold text-center">Total Score</h1>
+            <h1 className=" text-2xl font-semibold text-center">Test Score</h1>
             <h2 className=" text-base text-gray-500 text-center">
               {" "}
               {numberOfAnswers}/{numOfQuestions} Questions
             </h2>
             <CirculerProgress
               marks={totalScore}
-              catorgory="Total score"
+              catorgory="Test score"
               titleSize="text-3xl"
               subTitleSize="text-sm"
             />
@@ -135,7 +135,7 @@ function InterviewRoomAnalizerScore({
               {parseInt(totalScore || 0).toFixed(2)}% Accurate with expected answers
             </p>
             <p className=" text-sm text-gray-500 text-center">
-              Showing Total Score for {numberOfAnswers} out of {numOfQuestions}{" "}
+              Showing Test Score for {numberOfAnswers} out of {numOfQuestions}{" "}
               question
             </p>
           </div>

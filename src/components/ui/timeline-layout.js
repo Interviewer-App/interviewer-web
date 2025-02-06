@@ -420,7 +420,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                           <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
                           <AlertDialogDescription className="text-gray-600">
                             By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
-
+                            <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Make sure your profile is completed</span>
                             <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You&apos;re in a quiet environment</span>
                             <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
                             <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>

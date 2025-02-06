@@ -69,11 +69,11 @@ const candidateItems = [
     url: "/user-profile",
     icon: UserRound,
   },
-  {
-    title: "user Assesments",
-    url: "/Assesments",
-    icon: BookOpenText,
-  },
+  // {
+  //   title: "user Assesments",
+  //   url: "/Assesments",
+  //   icon: BookOpenText,
+  // },
 ];
 const adminItems = [
   {

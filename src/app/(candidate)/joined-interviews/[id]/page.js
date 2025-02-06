@@ -30,6 +30,7 @@ const JoinedInterviewsDetails = ({ params }) => {
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionScoreDetails, setSessionScoreDetails] = useState({});
   const { toast } = useToast();
+  const [feedbackDescription, setFeedbackDescription] = useState([]);
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -45,6 +46,7 @@ const JoinedInterviewsDetails = ({ params }) => {
         const response = await getInterviewSessionHistoryById(sessionId);
         if (response.data) {
           setSessionDetails(response.data);
+          setFeedbackDescription(response.data.interviewFeedback)
         }
       } catch (error) {
         toast({
@@ -132,11 +134,11 @@ const JoinedInterviewsDetails = ({ params }) => {
                   {new Date(
                     sessionDetails?.scheduledDate
                   ).toLocaleDateString("en-GB",
-                  {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  }) || ""}
+                    {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    }) || ""}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
@@ -151,36 +153,37 @@ const JoinedInterviewsDetails = ({ params }) => {
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
-                  Total score: {sessionDetails?.score || 0}
+                  Test score: {parseFloat(sessionScoreDetails?.score).toFixed(2)  || 0}
                 </li>
                 <li className=" text-base pt-1 text-gray-400">
                   <FaDotCircle className="inline-block text-gray-400 mr-2" />
                   Feedback: <br />
                   <span className=" italic text-gray-500 text-sm px-5 py-2">
-                    {" "}
-                    {sessionDetails?.feedback || "No feedback found"}
+                  {feedbackDescription ? (<>{feedbackDescription.map((detail) => (
+                        <span key={detail.feedbackId}>{detail.feedbackText}</span>
+                                ))}</>) : (<span>No feedback available</span>)}
                   </span>
                 </li>
               </ul>
             </div>
           </div>
           <div className=" w-full md:w-[50%] flex flex-col items-center justify-center mt-5 md:mt-0">
-            <h1 className=" text-2xl font-semibold text-center">Total Score</h1>
+            <h1 className=" text-2xl font-semibold text-center">Test Score</h1>
             <h2 className=" text-base text-gray-500 text-center">
               {" "}
               {sessionScoreDetails?.numberOfAnswers || 0}/
               {sessionDetails?.questions?.length || 0} Questions
             </h2>
             <CirculerProgress
-              marks={sessionDetails?.score || 0}
-              catorgory="Total score"
+              marks={sessionScoreDetails?.score || 0}
+              catorgory="Test score"
             />
             <p className=" text-gray-300 text-center">
-              {sessionDetails?.totalSocre || 0}% Accurate with expected
+              {parseFloat(sessionScoreDetails?.score).toFixed(2)  || 0}% Accurate with expected
               answers
             </p>
             <p className=" text-sm text-gray-500 text-center">
-              Showing Total Score for{" "}
+              Showing Test Score for{" "}
               {sessionScoreDetails?.numberOfAnswers || 0} out of{" "}
               {sessionDetails?.questions?.length || 0} question
             </p>

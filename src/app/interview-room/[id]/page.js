@@ -341,7 +341,7 @@ const InterviewRoomPage = ({ params }) => {
                     </h1>
                     <div className="  text-gray-400 py-8 flex flex-col items-center justify-center w-full mt-5 rounded-lg">
                       <h1 className=" text-2xl font-semibold text-center">
-                        Total Score
+                      Test Score
                       </h1>
                       <h2 className=" text-base text-gray-500 text-center">
                         {" "}
@@ -349,7 +349,7 @@ const InterviewRoomPage = ({ params }) => {
                       </h2>
                       <CirculerProgress
                         marks={totalScore}
-                        catorgory="Total score"
+                        catorgory="Test score"
                         titleSize="text-3xl"
                         subTitleSize="text-sm"
                       />
@@ -358,7 +358,7 @@ const InterviewRoomPage = ({ params }) => {
                         expected answers
                       </p>
                       <p className=" text-sm text-gray-500 text-center">
-                        Showing Total Score for {numberOfAnswers} out of{" "}
+                        Showing Test Score for {numberOfAnswers} out of{" "}
                         {numberOfAnswers} question
                       </p>
                     </div>

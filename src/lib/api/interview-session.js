@@ -169,7 +169,15 @@ export const getCompletedSessionComparision = async (data) => {
 }
 
 
-
+export const addFeedback = async (sessionId, data) => {
+  try{
+      const response = await axiosInstance.post(`/interview-session/feedback/${sessionId}`,data);
+      return response;
+  } catch(error){
+      console.log('Error fetching completed comparision:', error);
+      throw error;
+  }
+}
 
 
 

@@ -13,32 +13,38 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createQuestion } from "@/lib/api/question";
+import { addFeedback } from "@/lib/api/interview-session";
+import { LoaderCircle } from "lucide-react";
 
-export default function FeedbackModal({ setIsFeedbackModalOpen}) {
-  const [sessionID, setSessionID] = React.useState("");
-  const [interviewID, setInterviewID] = React.useState("");
-  const [question, setQuestion] = React.useState("");
-  const [time, setTime] = React.useState("");
-  const [type, setType] = React.useState("OPEN_ENDED");
+export default function FeedbackModal({ setIsFeedbackModalOpen, sessionId }) {
+
+  const [feedback, setFeedback] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { toast } = useToast();
 
-//   React.useEffect(() => {
-//     if (forSession) {
-//       setSessionID(id);
-//     } else {
-//       setInterviewID(id);
-//     }
-//   }, [forSession, id]);
+  //   React.useEffect(() => {
+  //     if (forSession) {
+  //       setSessionID(id);
+  //     } else {
+  //       setInterviewID(id);
+  //     }
+  //   }, [forSession, id]);
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     let response;
     try {
-      
+      const data = {
+        feedbackText: feedback
+      }
+      response = await addFeedback(sessionId, data)
+
 
       if (response) {
         setIsFeedbackModalOpen(false);
+        setIsLoading(false);
       }
     } catch (err) {
       if (err.response) {
@@ -48,7 +54,7 @@ export default function FeedbackModal({ setIsFeedbackModalOpen}) {
           toast({
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
-            description: `Question create failed: ${data.message}`,
+            description: `Feedback create failed: ${data.message}`,
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         } else {
@@ -59,6 +65,7 @@ export default function FeedbackModal({ setIsFeedbackModalOpen}) {
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         }
+        setIsLoading(true);
       } else {
         toast({
           variant: "destructive",
@@ -67,6 +74,7 @@ export default function FeedbackModal({ setIsFeedbackModalOpen}) {
             "An unexpected error occurred. Please check your network and try again.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
+        setIsLoading(true);
       }
     }
   };
@@ -87,8 +95,8 @@ export default function FeedbackModal({ setIsFeedbackModalOpen}) {
           <textarea
             placeholder="Feedback"
             name="Feedback"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
             required
             className=" h-[150px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
           />
@@ -97,9 +105,13 @@ export default function FeedbackModal({ setIsFeedbackModalOpen}) {
           <div className=" w-full flex justify-center items-center">
             <button
               type="submit"
-              className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer rounded-lg text-center text-sm text-black bg-white font-semibold"
+              className=" h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer rounded-lg text-center text-sm text-black bg-white font-semibold flex justify-center items-center"
             >
-              Feedback
+              {isLoading ? (
+                <LoaderCircle className="animate-spin" />
+              ) : (
+                "Submit Feedback"
+              )}
             </button>
           </div>
         </form>
