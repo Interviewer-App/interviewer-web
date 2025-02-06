@@ -198,7 +198,7 @@ function SessionHistoryPage({ params }) {
                     Overall Score
                   </h2>
                   <CirculerProgress
-                    marks={sessionScoreDetails?.totalScore || 0}
+                    marks={sessionDetails?.score || 0}
                     catorgory="Overall score"
                   />
 
