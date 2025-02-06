@@ -369,7 +369,6 @@ function SurveyPage() {
         <SurveySwiperComponent
           ref={swiperRef}
           questions={questions}
-          activeStep={activeStep}
           setActiveStep={setActiveStep}
           setQuestionsState={setQuestionsState}
           questionsState={questionsState}
