@@ -113,7 +113,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <span className=" text-xs text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[120px] px-2 border-2 flex items-center justify-center ">
+                                  <span className=" text-[10px] text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[100px] px-1 border-2 flex items-center justify-center ">
                                     <RiInformation2Line className=" text-sm mr-1" />{" "}
                                     Explanation
                                   </span>
