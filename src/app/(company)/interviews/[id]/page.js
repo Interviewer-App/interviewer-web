@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import socket from "../../../../lib/utils/socket";
 
 //Breadcrumbs
@@ -101,6 +101,7 @@ const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
 import {
   getInterviewById,
   interviewStatus,
+  sortCandidates,
   updateInterview,
 } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
@@ -137,7 +138,7 @@ export default function InterviewPreviewPage({ params }) {
   const [totalCandidates, setTotalCandidates] = useState(0);
   const [totalsessions, setTotalSessions] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
   const [tab, setTab] = useState("overview");
   const [questionTab, setQuestionTab] = useState("technical");
   const [status, setStatus] = useState("");
@@ -158,26 +159,10 @@ export default function InterviewPreviewPage({ params }) {
   const [scheduleList, setScheduleList] = useState([]);
   const [questionList, setQuestionList] = useState([]);
   const [selectedSubAssignment, setSelectedSubAssignment] = useState(null);
-  const [candidates, setCandidates] = useState([
-    { name: "John Doe", score: 85 },
-    { name: "Jane Smith", score: 92 },
-    { name: "Alice Johnson", score: 78 },
-    { name: "Bob Brown", score: 88 },
-    { name: "Olivia Harris", score: 89 },
-    { name: "Liam Clark", score: 77 },
-    { name: "Mia Lewis", score: 93 },
-    { name: "Ethan Walker", score: 79 },
-    { name: "Charlotte Allen", score: 84 },
-  ]);
-
-  const [sortDirection, setSortDirection] = useState("desc"); // Can be "asc" or "desc"
-
-  // Function to sort candidates
-  const sortCandidates = () => {
-    const sorted = [...candidates].sort((a, b) => b.score - a.score); // Sort in descending order
-    setCandidates(sorted); // Update the candidates state
-  };
-
+  const [selectedSortCategory, setSelectedSortCategory] = useState("overall");
+  const [sortLimit, setSortLimit] = useState('');
+  const [candidates, setCandidates] = useState([]);
+  const [sortDirection, setSortDirection] = useState("desc");
   const [dateRange, setDateRange] = useState({});
   const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
   const [chartData, setChartData] = useState({
@@ -504,6 +489,60 @@ export default function InterviewPreviewPage({ params }) {
     });
     setTotalPercentage(total);
   }, [categoryList]);
+
+  useEffect(() => {
+    if (interviewId) sortTopCandidates();
+  }, [interviewId]);
+
+  const sortTopCandidates = async (e) => {
+    let data;
+    try {
+      if (selectedSortCategory === "overall") {
+        data = {
+          interviewId: interviewId,
+        };
+      } else {
+        data = {
+          interviewId: interviewId,
+          categoryId: selectedSortCategory,
+          limit: parseInt(sortLimit),
+          type: "category",
+        };
+      }
+      const response = await sortCandidates(data);
+      if (response) {
+        setCandidates(response.data);
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `sorting Faild: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
 
   const handleAddCatagoty = (e) => {
     e.preventDefault();
@@ -1839,9 +1878,50 @@ export default function InterviewPreviewPage({ params }) {
                 <h1 className=" text-2xl font-semibold text-left w-full">
                   Candidate Analyze
                 </h1>
-                <div className=" w-full flex items-center justify-end">
+                <div className=" w-full flex items-center justify-end gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                        variant="outline"
+                      >
+                        {selectedSortCategory === "overall"
+                          ? "Overall"
+                          : categoryList.find(
+                              (cat) => cat.key === selectedSortCategory
+                            )?.catagory || "Select Category"}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Category</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuRadioGroup
+                        value={selectedSortCategory}
+                        onValueChange={setSelectedSortCategory}
+                      >
+                        <DropdownMenuRadioItem value="overall">
+                          Overall
+                        </DropdownMenuRadioItem>
+                        {categoryList.map((category) => (
+                          <DropdownMenuRadioItem
+                            key={category.key}
+                            value={category.key}
+                          >
+                            {category.catagory}
+                          </DropdownMenuRadioItem>
+                        ))}
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <input
+                    type="number"
+                    placeholder="Limit (default 5)"
+                    value={sortLimit}
+                    onChange={(e) => setSortLimit(e.target.value)}
+                    className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
+                  />
                   <button
-                    onClick={sortCandidates}
+                    onClick={sortTopCandidates}
                     className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
                   >
                     Sort Candidates
@@ -1849,20 +1929,36 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
               {candidates.length > 0 ? (
-                <div className="mt-5 flex flex-col  gap-4">
+                <div className="mt-5 flex flex-col gap-4 ">
                   {candidates.map((candidate, index) => (
                     <div
                       key={index}
-                      className="border flex justify-between items-center p-4 rounded-lg shadow-md"
+                      className=" flex justify-between items-center p-4 rounded-lg border-2 border-gray-500/30 bg-gray-700/10 shadow-md"
                     >
-                      <div>
-                        <h3 className="text-lg font-semibold">
-                          {candidate.name}
-                        </h3>
-                        <p className="text-white">Score: {candidate.score}</p>
+                      <div className=" w-[90%] flex items-center justify-between">
+                        <div>
+                          <h3 className="text-2xl font-semibold">
+                            {candidate.name}
+                          </h3>
+                          <p className="text-gray-600 text-sm">
+                            {candidate.email}
+                          </p>
+                        </div>
+                        <p className=" px-10 font-semibold text-3xl">
+                          {parseInt(candidate.score).toFixed(2)}%
+                        </p>
                       </div>
-                      {index < 3 && (<Image src={Trophy} alt="trophy" width={40} height={40} className=" mr-5" />)}
-
+                      <div className="w-[5%] ">
+                        {index < 3 && (
+                          <Image
+                            src={Trophy}
+                            alt="trophy"
+                            width={30}
+                            height={30}
+                            className=" mr-3"
+                          />
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
