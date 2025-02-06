@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -64,6 +64,7 @@ import ContactFormPreview from "@/components/ui/userDetailsForm";
 import {
   deleteUserByEmail,
   fetchDocumet,
+  generatePdfPage,
   getCandidateById,
   updateCandidateById,
 } from "@/lib/api/users";
@@ -78,10 +79,18 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import dynamic from "next/dynamic";
 import UploadDocumentModal from "@/components/candidate/upload-document-modal";
-
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
+import { Download, Loader2 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const UserProfile = () => {
   const [Tab, setTab] = useState("details");
@@ -113,7 +122,8 @@ const UserProfile = () => {
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
-
+  const pdfRef = useRef();
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchCandidateId = async () => {
       try {
@@ -381,6 +391,125 @@ const UserProfile = () => {
     }
   };
 
+  const downloadPdf = () => {
+    const input = pdfRef.current;
+
+    // Add loading state
+    setIsLoading(true);
+
+    // Configure options for better rendering
+    const options = {
+      scale: 2, // Increase for better resolution
+      useCORS: true, // Enable cross-origin images
+      logging: true, // Helpful for debugging
+      backgroundColor: null, // Keep original background
+      windowWidth: input.scrollWidth,
+      windowHeight: input.scrollHeight
+    };
+
+    // Wait for fonts to load
+    document.fonts.ready.then(() => {
+      html2canvas(input, options).then((canvas) => {
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+          putOnlyUsedFonts: true,
+        });
+
+        // Calculate dimensions
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgRatio = canvas.width / canvas.height;
+
+        let imgWidth = pageWidth;
+        let imgHeight = pageWidth / imgRatio;
+
+        // Adjust height if content is longer than page
+        if (imgHeight > pageHeight) {
+          imgWidth = pageHeight * imgRatio;
+          imgHeight = pageHeight;
+        }
+
+        // Add image to PDF
+        pdf.addImage({
+          imageData: imgData,
+          format: 'JPEG',
+          x: (pageWidth - imgWidth) / 2,
+          y: 20,
+          width: imgWidth,
+          height: imgHeight,
+          compression: 'FAST' // or 'NONE' for better quality
+        });
+
+        // Save PDF
+        pdf.save(`${candidateId}_profile.pdf`);
+        setIsLoading(false);
+      });
+    }).catch((error) => {
+      console.error('Error generating PDF:', error);
+      setIsLoading(false);
+    });
+  };
+
+
+
+  // const handleDownload = async () => {
+  //   try {
+  //     setIsLoading(true);
+
+  //     // Get the current URL
+  //     const currentURL = window.location.href;
+
+  //     const data = {
+  //       url: currentURL,
+  //     }
+
+  //     // Make the API request
+  //     // const res = await generatePdfPage(data)
+  //     // debugger
+  //     // const response = res.data
+  //     const response = await fetch('http://localhost:3333/api/v1/ai/generate', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
+
+  //     debugger
+
+  //     if (!response) {
+  //       throw new Error('PDF generation failed');
+  //     }
+  //     // const arrayBuffer = await response.arrayBuffer();
+  //     const blob = await response.body.blob();
+
+  //     // Convert ArrayBuffer to Blob
+  //     // const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+
+  //     // Create download link
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = 'download.pdf';
+  //     document.body.appendChild(a);
+  //     a.click();
+
+  //     // Cleanup
+  //     window.URL.revokeObjectURL(url);
+  //     document.body.removeChild(a);
+
+  //   } catch (error) {
+  //     debugger
+  //     console.error('Download error:', error);
+  //     alert('Error downloading PDF');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   return (
     <>
       <SidebarInset>
@@ -398,7 +527,7 @@ const UserProfile = () => {
           </div>
         </header>
 
-        <div className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
+        <div className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative" ref={pdfRef}>
           <h1 className=" text-3xl font-semibold">Candidate Profile</h1>
           <div className=" w-full flex flex-col md:flex-row justify-center md:justify-start items-center mt-9">
             <Avatar className=" h-28 w-28 md:h-40 md:w-40 ">
@@ -419,34 +548,51 @@ const UserProfile = () => {
               <p className=" text-lg md:text-xl md:text-left text-center text-gray-500">
                 {candidateDetails?.user?.email}
               </p>
+              <div className="flex items-center justify-center gap-6 md:justify-start mt-3">
               <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
                 {candidateDetails?.user?.role || "Candidate"}
               </p>
+              <Button
+                onClick={downloadPdf}
+                disabled={isLoading}
+                variant="default"
+                className="gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating PDF...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    Download PDF
+                  </>
+                )}
+              </Button>
+              </div>
             </div>
           </div>
           <div className=" flex justify-between items-center w-full mt-8 ml-md mb-12">
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("details")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "details" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "details" ? "bg-gray-800" : ""
+                  } `}
               >
                 Details
               </button>
               <button
                 onClick={() => setTab("document")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "document" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "document" ? "bg-gray-800" : ""
+                  } `}
               >
                 Documents
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "settings" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "settings" ? "bg-gray-800" : ""
+                  } `}
               >
                 Settings
               </button>
@@ -454,18 +600,16 @@ const UserProfile = () => {
             <div className={` ${Tab !== "details" ? "hidden" : "block"} `}>
               <button
                 onClick={() => setIsEdit(true)}
-                className={` ${
-                  isEdit ? "hidden" : "block"
-                } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
+                className={` ${isEdit ? "hidden" : "block"
+                  } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
               >
                 <MdEdit className=" text-base mr-2" />{" "}
                 <span className=" inline-block">Edit Profile</span>
               </button>
               <button
                 onClick={handleSaveChanges}
-                className={` ${
-                  isEdit ? "block" : "hidden"
-                } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
+                className={` ${isEdit ? "block" : "hidden"
+                  } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
               >
                 Save Changes
               </button>
@@ -521,7 +665,7 @@ const UserProfile = () => {
                   <h1 className="text-2xl font-semibold">Documents</h1>
 
                   {/* Add Category Button */}
-                  {documentUrl.url  && (
+                  {documentUrl.url && (
                     <button
                       onClick={() => setModalOpen(true)}
                       className="rounded-full text-3xl font-semibold bg-white text-black h-12 aspect-square"
@@ -581,17 +725,15 @@ const UserProfile = () => {
                   <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
                     <h1 className=" text-xl font-semibold">Experiences</h1>
                     <div
-                      className={` ${
-                        isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
+                      className={` ${isEdit ? "hidden" : "block"
+                        } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: experience || "No Experiences",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"experience"}
@@ -604,17 +746,15 @@ const UserProfile = () => {
                   <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
                     <h1 className=" text-xl font-semibold">Skill Highlights</h1>
                     <div
-                      className={`${
-                        isEdit ? "hidden" : "block"
-                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
+                      className={`${isEdit ? "hidden" : "block"
+                        } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: skillHighlights || "No Skill Highlight",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"skillHighlights"}
@@ -730,9 +870,8 @@ const UserProfile = () => {
                         value={contactNo || ""}
                         placeholder="Contact Number"
                         onChange={(e) => setContactNo(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                   </div>
@@ -745,9 +884,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={linkedinUrl || ""}
                         onChange={(e) => setLinkedinUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -757,9 +895,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={githubUrl || ""}
                         onChange={(e) => setGithubUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -769,9 +906,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={facebookUrl || ""}
                         onChange={(e) => setFacebookUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -781,9 +917,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={twitterUrl || ""}
                         onChange={(e) => setTwitterUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -793,9 +928,8 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={discordUrl || ""}
                         onChange={(e) => setDiscordUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                   </div>

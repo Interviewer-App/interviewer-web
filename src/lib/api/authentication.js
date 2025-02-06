@@ -31,6 +31,17 @@ export async function checkUserAvailability(email) {
 }
 
 
+export async function verifyUserEmail(token) {
+  try {
+      const response = await api.get(`/auth/verify-email/${token}`)
+      return response;
+  } catch (error) {
+      console.log('Login failed:');
+      throw error;
+  }
+}
+
+
 export async function providerRegistration(userdata) {
   try {
       const response = await api.post(`/auth/provider-register`,userdata)
