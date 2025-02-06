@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, SquarePen, Warehouse, UserRound, CalendarFold, Swords, BookOpenText } from "lucide-react";
+import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, MessageCircleQuestion , Warehouse, UserRound, CalendarFold, Swords, BookOpenText } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -32,9 +32,9 @@ const companyItems = [
     icon: MonitorCheck,
   },
   {
-    title: "Interviews category",
+    title: "Insights",
     url: "/interview-category",
-    icon: SquarePen,
+    icon: MessageCircleQuestion ,
   },
   {
     title: "Comapny Profile",
