@@ -47,7 +47,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews }) => {
+export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews,isProfileCompleted }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   //   const [interviews, setInterviews] = useState([]);
@@ -166,11 +166,11 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
       }
     }
   };
-  function getPlainTextFromHtml(html) {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
-  }
+  // function getPlainTextFromHtml(html) {
+  //   const div = document.createElement("div");
+  //   div.innerHTML = html;
+  //   return div.textContent || div.innerText || "";
+  // }
 
   const getTimeDifferenceInMinutes = (startTime) => {
     const now = new Date();
@@ -189,52 +189,12 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
     router.push('/user-profile');
   };
 
-  useEffect(() => {
-    const fetchCandidateId = async () => {
-      try {
-        const session = await getSession();
-        const candidateId = session?.user?.candidateID;
-        // console.log('candidateId:', candidateId)
-        if (candidateId) {
-          setCandidateId(candidateId);
-        }
-      } catch (err) {
-        if (err.response) {
-          const { data } = err.response;
-
-          if (data && data.message) {
-            toast({
-              variant: "destructive",
-              title: "Uh oh! Something went wrong.",
-              description: `Candidate Details Fetching Faild: ${data.message}`,
-              action: <ToastAction altText="Try again">Try again</ToastAction>,
-            });
-          } else {
-            toast({
-              variant: "destructive",
-              title: "Uh oh! Something went wrong.",
-              description: "An unexpected error occurred. Please try again.",
-              action: <ToastAction altText="Try again">Try again</ToastAction>,
-            });
-          }
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description:
-              "An unexpected error occurred. Please check your network and try again.",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }
-      }
-    };
-
-    fetchCandidateId();
-  }, []);
 
   useEffect(() => {
     const fetchCandidateDetails = async () => {
       try {
+        const session = await getSession();
+        const candidateId = session?.user?.candidateID;
         const response = await getCandidateById(candidateId);
         // console.log('candidate Details:', response.data)
         if (response.data) {
@@ -271,8 +231,8 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
       }
     };
 
-    if (candidateId) fetchCandidateDetails();
-  }, [candidateId]);
+    fetchCandidateDetails();
+  }, []);
 
 
 
@@ -354,15 +314,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
         <Label className="text-lg font-light">Show past Interviews</Label>
       </div>
 
-      {(
-        !candidateDetails?.experience || candidateDetails?.experience.trim() === "<p><br></p>" ||
-        !candidateDetails?.skillHighlights || candidateDetails?.skillHighlights.trim() === "<p><br></p>" ||
-        !candidateDetails?.discordUrl ||
-        !candidateDetails?.facebookUrl ||
-        !candidateDetails?.githubUrl ||
-        !candidateDetails?.linkedInUrl ||
-        !candidateDetails?.twitterUrl
-      ) ? (
+      {!isProfileCompleted && (
         <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-orange-400">
           <div className="w-full flex items-center justify-between">
             <div>
@@ -376,7 +328,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
             </div>
           </div>
         </div>
-      ) : null}
+      )}
 
 
       {/* <h2 className="text-2xl font-medium">Upcoming Interviews</h2> */}
