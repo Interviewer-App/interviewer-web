@@ -784,7 +784,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     editorId={"jobDescription"}
                     placeholder="Job Description here..."
                     onChange={handleOnChange}
-                    jobDescription={genJobDescription}
+                    // jobDescription={genJobDescription || jobDescription}
+                    value={jobDescription || genJobDescription}    //change this line to store the jobdescription when user go step forward and come back 
                   />
                 </div>
               </div>
@@ -935,7 +936,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
               </div>
               <button
                 onClick={handleScheduleGenerate}
-                className=" h-10 text-black px-3 bg-white hover:border-gray-500 rounded-lg text-sm flex items-center justify-center mt-3"
+                className=" h-10 text-black px-3 bg-white hover:border-gray-500 rounded-lg text-base flex items-center justify-center mt-3 w-full font-bold"
               >
                 {isLoading ? (
                   <LoaderCircle className="animate-spin" />
@@ -954,74 +955,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* <tr>
-                      <td className=" w-[30%]">
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
-                                !inputScheduleDate && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon />
-                              {inputScheduleDate
-                                ? inputScheduleDate.toLocaleDateString()
-                                : "Scheduled Date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={inputScheduleDate}
-                              onSelect={setInputScheduleDate}
-                              initialFocus
-                              disabled={(d) => {
-                                const startDate = new Date(date.from);
-                                const endDate = new Date(date.to);
-
-                                return d < startDate || d > endDate;
-                              }}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </td>
-                      <td className=" w-[30%] p-1">
-                        <input
-                          type="time"
-                          placeholder="Start Time"
-                          name="start_time"
-                          value={inputScheduleStartTime}
-                          onChange={(e) =>
-                            setInputScheduleStartTime(e.target.value)
-                          }
-                          required
-                          className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
-                        />
-                      </td>
-                      <td className=" w-[30%]">
-                        <input
-                          type="time"
-                          placeholder="End Time"
-                          name="end_time"
-                          value={inputScheduleEndTime}
-                          onChange={(e) =>
-                            setInputScheduleEndTime(e.target.value)
-                          }
-                          required
-                          className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
-                        />
-                      </td>
-                      <td className=" w-[10%]">
-                        <button
-                          onClick={handleAddSchedule}
-                          className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center ml-2"
-                        >
-                          +
-                        </button>
-                      </td>
-                    </tr> */}
                     {scheduleList.map((schedule) => (
                       <tr key={schedule.key} className=" bg-gray-800/10">
                         <td className=" py-3 px-4 w-[30%] text-center">
@@ -1088,15 +1021,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 <h1 className="text-start font-semibold text-lg my-2">
                   Category List
                 </h1>
-                {/* <p
-                  className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
-                    }`}
-                >
-                  *Please ensure the total percentage equals 100%. The sum of all
-                  category percentages should not exceed or fall below 100%.
-                  Adjust your inputs accordingly.
-                </p>
-                 */}
 
                 <div className="flex w-full justify-center md:flex-row flex-col md:space-x-2 md:space-y-0 space-y-4 my-6 items-center">
                   <div className="w-[45%]">
@@ -1182,9 +1106,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </div>
                   <div className=" w-[40%] min-h-[300px] flex justify-center items-center mx-auto mt-8 md:mt-0">
                     {categoryList.length > 0 ? (
-                   
-                        <Doughnut data={data} options={options}/>
-                 
+
+                      <Doughnut data={data} options={options} />
+
                     ) : (
                       <p className="text-gray-600 text-xs">
                         Add categories to view the Chart
@@ -1194,7 +1118,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 </div>
               </div>
               {totalPercentage !== 100 ? (
-                <div className="mt-3">
+                <div className="mt-3 bg-black">
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Warning</AlertTitle>
@@ -1225,16 +1149,31 @@ export default function CreateInterviewModal({ setModalOpen }) {
           {stepperCount < 2 ? (
             <button
               onClick={() => setStepperCount(stepperCount + 1)}
-              className={`  mt-6 px-5 py-2 cursor-pointer border-2 border-gray-700 rounded-lg text-center text-sm text-gray-700 hover:text-gray-400 hover:border-gray-400 font-semibold`}
+              disabled={
+                (jobTitle || '').trim() === '' ||
+                ((genJobDescription || '').trim() === '' && (jobDescription || '').trim() === '' || (jobDescription === '<p><br></p>')) ||  ////remove this if someone manage the quilEditor content passing condirtion
+                chipData.length === 0
+              }
+              className={`mt-6 px-5 py-2 rounded-lg text-center text-sm font-semibold ${(jobTitle || '').trim() !== '' &&
+                  ((genJobDescription || '').trim() !== '' || (jobDescription || '').trim() !== '') &&
+                  chipData.length > 0 &&
+                  jobDescription !== '<p><br></p>'  //remove this if someone manage the quilEditor content passing conditon
+                  ? 'bg-white text-black border-2 border-white'
+                  : 'border-2 border-gray-700 text-gray-700'
+                }`}
             >
               Next
             </button>
+
+
+
+
+
           ) : (
             <button
               onClick={handleSubmit}
-              className={` ${
-                totalPercentage === 100 ? "block" : "hidden"
-              } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
+              className={` ${totalPercentage === 100 ? "block" : "hidden"
+                } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
             >
               Create Interview
             </button>
