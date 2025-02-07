@@ -784,8 +784,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     editorId={"jobDescription"}
                     placeholder="Job Description here..."
                     onChange={handleOnChange}
-                    // jobDescription={genJobDescription || jobDescription}
-                    value={jobDescription || genJobDescription}    //change this line to store the jobdescription when user go step forward and come back 
+                    jobDescription={genJobDescription }
+                    value={genJobDescription}    //change this line to store the jobdescription when user go step forward and come back 
                   />
                 </div>
               </div>
@@ -1153,8 +1153,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 // Step 0 validations
                 (stepperCount === 0 && (
                   (jobTitle || '').trim() === '' ||
-                  ((genJobDescription || '').trim() === '' && (jobDescription || '').trim() === '') || 
-                  jobDescription === '<p><br></p>' ||
+                  ((genJobDescription || '').trim() === '') || 
+                  jobDescription === '<p><br></p>' || genJobDescription === '<p><br></p>' ||
                   chipData.length === 0
                 )) ||
                 // Step 1 validations
@@ -1172,8 +1172,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 // Step 0 enabled condition
                 (stepperCount === 0 &&
                   (jobTitle || '').trim() !== '' &&
-                  ((genJobDescription || '').trim() !== '' || (jobDescription || '').trim() !== '') &&
-                  jobDescription !== '<p><br></p>' && // Ensure jobDescription isn't the placeholder value
+                  ((genJobDescription || '').trim() !== '' ) &&
+                  jobDescription !== '<p><br></p>' &&  genJobDescription !== '<p><br></p>'  && // Ensure jobDescription isn't the placeholder value
                   chipData.length > 0) ||
                   // Step 1 enabled condition
                   (stepperCount === 1 &&
