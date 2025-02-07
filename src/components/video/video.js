@@ -316,5 +316,6 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
     </div>
   );
 });
+VideoCall.displayName = 'VideoCall';
 
 export default VideoCall;
