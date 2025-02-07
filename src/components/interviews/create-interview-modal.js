@@ -519,7 +519,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
   const handleOnChange = (content) => {
-    setJobDescription(content);
+    setGenJobDescription(content);
   };
 
   const generateDescription = async (e) => {
