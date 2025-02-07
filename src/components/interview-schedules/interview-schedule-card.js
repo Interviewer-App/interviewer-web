@@ -110,10 +110,10 @@ export default function InterviewScheduleCard({ index, interview, showButton = t
           <div className="p-2">
             <h3 className="font-bold text-lg mb-2">Comapany:{interview.companyName}</h3>
             <h3 className="font-bold text-lg mb-2">Interview Category:{interview.interviewCategory}</h3>
-            <div
+            {/* <div
               className="text-sm text-gray-300"
               dangerouslySetInnerHTML={{ __html: interview.jobDescription }}
-            />
+            /> */}
           </div>
         </TooltipContent>
       </Tooltip>
