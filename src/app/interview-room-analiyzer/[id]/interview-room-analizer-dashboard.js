@@ -279,4 +279,6 @@ const InterviewRoomAnalizerDashboard = forwardRef(
   }
 );
 
+InterviewRoomAnalizerDashboard.displayName = 'InterviewRoomAnalizerDashboard';
+
 export default InterviewRoomAnalizerDashboard;
