@@ -1150,14 +1150,40 @@ export default function CreateInterviewModal({ setModalOpen }) {
             <button
               onClick={() => setStepperCount(stepperCount + 1)}
               disabled={
-                (jobTitle || '').trim() === '' ||
-                ((genJobDescription || '').trim() === '' && (jobDescription || '').trim() === '' || (jobDescription === '<p><br></p>')) ||  ////remove this if someone manage the quilEditor content passing condirtion
-                chipData.length === 0
+                // Step 0 validations
+                (stepperCount === 0 && (
+                  (jobTitle || '').trim() === '' ||
+                  ((genJobDescription || '').trim() === '' && (jobDescription || '').trim() === '') || 
+                  jobDescription === '<p><br></p>' ||
+                  chipData.length === 0
+                )) ||
+                // Step 1 validations
+                (stepperCount === 1 && (
+                  !date?.from || // Check if date range is selected
+                  !date?.to || // Check if date range is selected
+                  (interviewDuration || '').trim() === '' || // Check if interview duration is filled
+                  (inputScheduleStartTime || '').trim() === '' || // Check if start time is filled
+                  (inputScheduleEndTime || '').trim() === '' || // Check if end time is filled
+                  (intervalDuration || '').trim() === '' ||
+                  scheduleList.length === 0 // Check if interval duration is filled
+                ))
               }
-              className={`mt-6 px-5 py-2 rounded-lg text-center text-sm font-semibold ${(jobTitle || '').trim() !== '' &&
+              className={`mt-6 px-5 py-2 rounded-lg text-center text-sm font-semibold ${
+                // Step 0 enabled condition
+                (stepperCount === 0 &&
+                  (jobTitle || '').trim() !== '' &&
                   ((genJobDescription || '').trim() !== '' || (jobDescription || '').trim() !== '') &&
-                  chipData.length > 0 &&
-                  jobDescription !== '<p><br></p>'  //remove this if someone manage the quilEditor content passing conditon
+                  jobDescription !== '<p><br></p>' && // Ensure jobDescription isn't the placeholder value
+                  chipData.length > 0) ||
+                  // Step 1 enabled condition
+                  (stepperCount === 1 &&
+                    date?.from &&
+                    date?.to &&
+                    (interviewDuration || '').trim() !== '' &&
+                    (inputScheduleStartTime || '').trim() !== '' &&
+                    (inputScheduleEndTime || '').trim() !== '' &&
+                    (intervalDuration || '').trim() !== '')   &&
+                    scheduleList.length > 0
                   ? 'bg-white text-black border-2 border-white'
                   : 'border-2 border-gray-700 text-gray-700'
                 }`}
