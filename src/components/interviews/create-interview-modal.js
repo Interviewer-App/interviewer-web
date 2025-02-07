@@ -758,7 +758,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Write a prompt for the job description"
+                    placeholder="What are the primary objectives for this position?"
                     name="prompt"
                     value={descriptionPrompt}
                     onChange={(e) => {
