@@ -5,13 +5,18 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import socket from "../../../lib/utils/socket";
 
-import { useEffect, useState, useCallback ,useRef} from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
 import { PuffLoader } from "react-spinners";
 import Loading from "@/app/loading";
-import { usePathname, useRouter, redirect, useSearchParams } from "next/navigation";
+import {
+  usePathname,
+  useRouter,
+  redirect,
+  useSearchParams,
+} from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import { Slider } from "@/components/ui/slider";
@@ -24,9 +29,9 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams()
-  const userID = searchParams.get('companyID')
-  const sessionID = searchParams.get('sessionID')
+  const searchParams = useSearchParams();
+  const userID = searchParams.get("companyID");
+  const sessionID = searchParams.get("sessionID");
   const pages = ["candidate.Name", "candidate.Email"];
   const [candidateAnswers, setCandidateAnswers] = useState();
   const [analiyzeResponse, setAnaliyzeResponse] = useState({});
@@ -46,7 +51,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [categoryScores, setCategoryScores] = useState([]);
   const [sessionData, setSessionData] = useState({});
   const [availableQuestion, setAvailableQuestion] = useState({});
-  const [typingAnswer, setTypingAnswer] = useState('typing...');
+  const [typingAnswer, setTypingAnswer] = useState("typing...");
   const dashboardRef = useRef();
 
   const { toast } = useToast();
@@ -66,19 +71,16 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     socket.emit("joinInterviewSession", {
       sessionId: sessionID,
       userId: userID,
-      role: 'COMPANY',
+      role: "COMPANY",
     });
 
     socket.on("question", (data) => {
-
       if (data.question) {
         setAvailableQuestion(data.question);
       }
     });
 
-
     socket.on("questions", (data) => {
-
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
     });
@@ -111,7 +113,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         title: "Participant Left",
         description: `Participant has left the meeting`,
         action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
-      })
+      });
     });
 
     socket.on("typingUpdate", (data) => {
@@ -144,7 +146,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     };
     dashboardRef.current?.endCall();
     socket.emit("endInterviewSession", data);
-    router.push(`/session-history/${sessionId}`)
+    router.push(`/session-history/${sessionId}`);
   };
 
   if (status === "loading") {
@@ -167,29 +169,33 @@ const InterviewRoomAnalizerPage = ({ params }) => {
           <div className=" flex items-center justify-start space-x-1">
             <button
               onClick={() => handleTabChange("DASHBOARD")}
-              className={` ${tab === "DASHBOARD" ? "bg-gray-700/50" : ""
-                } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
+              className={` ${
+                tab === "DASHBOARD" ? "bg-gray-700/50" : ""
+              } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
             >
               Dashboard
             </button>
             <button
               onClick={() => handleTabChange("OTHER")}
-              className={` ${tab === "OTHER" ? "bg-gray-700/50" : ""
-                } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
+              className={` ${
+                tab === "OTHER" ? "bg-gray-700/50" : ""
+              } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
             >
               Other
             </button>
             <button
               onClick={() => handleTabChange("SCORE")}
-              className={` ${tab === "SCORE" ? "bg-gray-700/50" : ""
-                } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
+              className={` ${
+                tab === "SCORE" ? "bg-gray-700/50" : ""
+              } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
             >
               Score
             </button>
             <button
               onClick={() => handleTabChange("CANDIDATE_PROFILE")}
-              className={` ${tab === "CANDIDATE_PROFILE" ? "bg-gray-700/50" : ""
-                } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
+              className={` ${
+                tab === "CANDIDATE_PROFILE" ? "bg-gray-700/50" : ""
+              } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
             >
               Candidate Profile
             </button>
@@ -209,6 +215,8 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             sessionId={sessionId}
             questionList={questionList}
             availableQuestion={availableQuestion}
+            categoryScores={categoryScores}
+            setCategoryScores={setCategoryScores}
             setAnaliyzeResponse={setAnaliyzeResponse}
             typingAnswer={typingAnswer}
             setTypingAnswer={setTypingAnswer}
@@ -231,6 +239,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             categoryScores={categoryScores}
             setCategoryScores={setCategoryScores}
             sessionId={sessionId}
+            allocation={true}
           />
         )}
         {tab === "CANDIDATE_PROFILE" && (
