@@ -21,6 +21,7 @@ function InterviewRoomAnalizerOther({
   setCategoryScores,
   categoryScores,
   sessionId,
+  allocation,
 }) {
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [selectedCategoryScoreId, setSelectedCategoryScoreId] = useState(null);
@@ -93,7 +94,7 @@ function InterviewRoomAnalizerOther({
     <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
       <h1 className=" text-3xl font-semibold">Other categories</h1>
       <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-5">
-        <div className=" w-full md:w-[60%] md:pr-8 md:border-r-2 border-gray-700/20 min-h-[500px]">
+        <div className={` w-full ${allocation ? 'md:w-[60%] md:border-r-2 md:pr-8' : 'md:w-full'}   border-gray-700/20 min-h-[500px]`}>
           {categoryScores
             .filter(
               (category) =>
@@ -178,7 +179,7 @@ function InterviewRoomAnalizerOther({
               </div>
             ))}
         </div>
-        <div className=" w-full md:w-[40%] md:pl-8">
+        {allocation && (<div className=" w-full md:w-[40%] md:pl-8">
           <div className=" w-full  bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg px-5 py-5">
             <h1 className=" font-semibold text-xl">Mark Allocation</h1>
             <div className=" w-full">
@@ -197,7 +198,7 @@ function InterviewRoomAnalizerOther({
               )}
             </div>
           </div>
-        </div>
+        </div>)}
       </div>
       {noteModalOpen && (
         <AddCategoryNote
