@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createQuestion } from "@/lib/api/question";
+import { createQuestion, createQuestionForInterview } from "@/lib/api/question";
 
 export default function CreateQuestionModal({ forSession, id, setCreateModalOpen }) {
   const [sessionID, setSessionID] = React.useState("");
@@ -50,7 +50,7 @@ export default function CreateQuestionModal({ forSession, id, setCreateModalOpen
           estimatedTimeInMinutes: parseInt(time, 10),
           interviewId: interviewID,
         };
-        response = await createQuestion(questionDataforInterview);
+        response = await createQuestionForInterview(questionDataforInterview);
       }
 
       if (response) {

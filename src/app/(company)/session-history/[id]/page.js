@@ -67,7 +67,7 @@ function SessionHistoryPage({ params }) {
     };
 
     if (sessionId) fetchSessionDetails();
-  }, [sessionId, toast]);
+  }, [sessionId, isFeedbackModalOpen]);
 
   useEffect(() => {
     const fetchSessionScoreDetails = async () => {
@@ -141,18 +141,18 @@ function SessionHistoryPage({ params }) {
           <div className=" flex flex-col md:flex-row justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-8">
             <div className=" w-full md:w-[50%]">
               <h1 className=" text-3xl font-semibold">
-                {/* {sessionDetails?.interview?.jobTitle || ""} Position */}
-                {sessionDetails?.candidate?.user?.firstName || ""} {sessionDetails?.candidate?.user?.lastName || ""}
+                {sessionDetails?.candidate?.user?.firstName || ""}{" "}
+                {sessionDetails?.candidate?.user?.lastName || ""}
               </h1>
-              <h1 className=" text-xl font-semibold text-gray-500">
+              <h1 className=" text-base text-gray-500">
                 {sessionDetails?.candidate?.user?.email || ""}
               </h1>
-              <h1 className=" text-xl font-semibold text-gray-500">
+              <h1 className=" py-3 font-semibold text-gray-500">
                 {sessionDetails?.interview?.interviewCategory || ""} Interview
               </h1>
               <div className=" w-full px-5">
                 <ul className=" w-full">
-                  <li className=" text-base pt-3 text-gray-400 mt-5">
+                  <li className=" text-base pt-2 text-gray-400 mt-5">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Scheduled Date:{" "}
                     {new Date(sessionDetails?.scheduledDate).toLocaleDateString(
@@ -183,27 +183,42 @@ function SessionHistoryPage({ params }) {
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Feedback: <br />
                     <span className=" italic text-gray-500 text-sm px-5 py-2">
-                      {feedbackDescription ? (<>{feedbackDescription.map((detail) => (
-                        <span key={detail.feedbackId}>{detail.feedbackText}</span>
-                      ))}</>) : (<span>No feedback available</span>)}
+                      {feedbackDescription ? (
+                        <>
+                          {feedbackDescription.map((detail) => (
+                            <span key={detail.feedbackId}>
+                              {detail.feedbackText}
+                            </span>
+                          ))}
+                        </>
+                      ) : (
+                        <span>No feedback available</span>
+                      )}
                     </span>
                   </li>
                 </ul>
               </div>
             </div>
-            <div className=" w-full md:w-[50%] flex flex-col items-center justify-center mt-5 md:mt-0">
+            <div className=" w-full md:w-[70%] flex flex-col items-center justify-center mt-5 md:mt-0">
               <div className="flex items-center justify-between w-full">
                 <div>
                   <h2 className=" text-2xl font-semibold text-center">
                     Overall Score
                   </h2>
+                  <h2 className=" text-base text-gray-500 text-center">
+                    for the entire interview
+                  </h2>
                   <CirculerProgress
                     marks={sessionDetails?.score || 0}
                     catorgory="Overall score"
                   />
-
+                  <p className=" text-gray-300 text-center">
+                  You have Scored {parseInt(sessionDetails?.score).toFixed(2)}% in entire interview.
+                  </p>
+                  <p className=" text-sm text-gray-500 text-center">
+                  Include test marks and non-technical details.
+                  </p>
                 </div>
-
 
                 <div>
                   <h1 className=" text-2xl font-semibold text-center">
@@ -220,8 +235,8 @@ function SessionHistoryPage({ params }) {
                   />
 
                   <p className=" text-gray-300 text-center">
-                    {parseFloat(sessionScoreDetails?.score).toFixed(2) || 0}% Accurate with expected
-                    answers
+                    {parseFloat(sessionScoreDetails?.score).toFixed(2) || 0}%
+                    Accurate with expected answers
                   </p>
                   <p className=" text-sm text-gray-500 text-center">
                     Showing Test Score for{" "}
@@ -229,11 +244,7 @@ function SessionHistoryPage({ params }) {
                     {sessionDetails?.questions?.length || 0} question
                   </p>
                 </div>
-
               </div>
-
-
-
             </div>
           </div>
 
@@ -254,7 +265,12 @@ function SessionHistoryPage({ params }) {
             )}
           </div>
         </div>
-        {isFeedbackModalOpen && (<FeedbackModal setIsFeedbackModalOpen={setIsFeedbackModalOpen} sessionId={sessionId} />)}
+        {isFeedbackModalOpen && (
+          <FeedbackModal
+            setIsFeedbackModalOpen={setIsFeedbackModalOpen}
+            sessionId={sessionId}
+          />
+        )}
       </SidebarInset>
     </>
   );

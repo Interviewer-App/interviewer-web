@@ -30,6 +30,16 @@ export const createQuestion = async (data) => {
     }
 }
 
+export const createQuestionForInterview = async (data) => {
+    try{
+        const response = await axiosInstance.post(`/interview/question/`, data);
+        return response;
+    } catch(error){
+        console.log('Error creating question:', error);
+        throw error;
+    }
+}
+
 export const deleteQuestion = async (questionId) => {
     try{
         const response = await axiosInstance.delete(`/interview-session/question/${questionId}`);
