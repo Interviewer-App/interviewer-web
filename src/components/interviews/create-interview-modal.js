@@ -519,6 +519,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
   const handleOnChange = (content) => {
+    setJobDescription(content);
     setGenJobDescription(content);
   };
 
@@ -785,7 +786,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     placeholder="Job Description here..."
                     onChange={handleOnChange}
                     jobDescription={genJobDescription }
-                    value={genJobDescription}    //change this line to store the jobdescription when user go step forward and come back 
+                    value={jobDescription}    //change this line to store the jobdescription when user go step forward and come back 
                   />
                 </div>
               </div>
