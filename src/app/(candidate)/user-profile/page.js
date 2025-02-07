@@ -1,4 +1,5 @@
 "use client";
+import * as React from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -68,6 +69,11 @@ import {
   getCandidateById,
   updateCandidateById,
 } from "@/lib/api/users";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -84,13 +90,13 @@ import jsPDF from "jspdf";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 
 const UserProfile = () => {
   const [Tab, setTab] = useState("details");
@@ -119,7 +125,7 @@ const UserProfile = () => {
   const [facebookUrl, setFacebookUrl] = useState("");
   const [twitterUrl, setTwitterUrl] = useState("");
   const [discordUrl, setDiscordUrl] = useState("");
-  const [dob, setDob] = useState("");
+  const [dob, setDob] = useState(new Date());
   const [gender, setGender] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
   const pdfRef = useRef();
@@ -404,56 +410,56 @@ const UserProfile = () => {
       logging: true, // Helpful for debugging
       backgroundColor: null, // Keep original background
       windowWidth: input.scrollWidth,
-      windowHeight: input.scrollHeight
+      windowHeight: input.scrollHeight,
     };
 
     // Wait for fonts to load
-    document.fonts.ready.then(() => {
-      html2canvas(input, options).then((canvas) => {
-        const imgData = canvas.toDataURL("image/jpeg", 1.0);
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
-          putOnlyUsedFonts: true,
+    document.fonts.ready
+      .then(() => {
+        html2canvas(input, options).then((canvas) => {
+          const imgData = canvas.toDataURL("image/jpeg", 1.0);
+          const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4",
+            putOnlyUsedFonts: true,
+          });
+
+          // Calculate dimensions
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const imgRatio = canvas.width / canvas.height;
+
+          let imgWidth = pageWidth;
+          let imgHeight = pageWidth / imgRatio;
+
+          // Adjust height if content is longer than page
+          if (imgHeight > pageHeight) {
+            imgWidth = pageHeight * imgRatio;
+            imgHeight = pageHeight;
+          }
+
+          // Add image to PDF
+          pdf.addImage({
+            imageData: imgData,
+            format: "JPEG",
+            x: (pageWidth - imgWidth) / 2,
+            y: 20,
+            width: imgWidth,
+            height: imgHeight,
+            compression: "FAST", // or 'NONE' for better quality
+          });
+
+          // Save PDF
+          pdf.save(`${candidateId}_profile.pdf`);
+          setIsLoading(false);
         });
-
-        // Calculate dimensions
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const imgRatio = canvas.width / canvas.height;
-
-        let imgWidth = pageWidth;
-        let imgHeight = pageWidth / imgRatio;
-
-        // Adjust height if content is longer than page
-        if (imgHeight > pageHeight) {
-          imgWidth = pageHeight * imgRatio;
-          imgHeight = pageHeight;
-        }
-
-        // Add image to PDF
-        pdf.addImage({
-          imageData: imgData,
-          format: 'JPEG',
-          x: (pageWidth - imgWidth) / 2,
-          y: 20,
-          width: imgWidth,
-          height: imgHeight,
-          compression: 'FAST' // or 'NONE' for better quality
-        });
-
-        // Save PDF
-        pdf.save(`${candidateId}_profile.pdf`);
+      })
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
         setIsLoading(false);
       });
-    }).catch((error) => {
-      console.error('Error generating PDF:', error);
-      setIsLoading(false);
-    });
   };
-
-
 
   // const handleDownload = async () => {
   //   try {
@@ -527,7 +533,10 @@ const UserProfile = () => {
           </div>
         </header>
 
-        <div className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative" ref={pdfRef}>
+        <div
+          className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative"
+          ref={pdfRef}
+        >
           <h1 className=" text-3xl font-semibold">Candidate Profile</h1>
           <div className=" w-full flex flex-col md:flex-row justify-center md:justify-start items-center mt-9">
             <Avatar className=" h-28 w-28 md:h-40 md:w-40 ">
@@ -549,27 +558,27 @@ const UserProfile = () => {
                 {candidateDetails?.user?.email}
               </p>
               <div className="flex items-center justify-center gap-6 md:justify-start mt-3">
-              <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
-                {candidateDetails?.user?.role || "Candidate"}
-              </p>
-              <Button
-                onClick={downloadPdf}
-                disabled={isLoading}
-                variant="default"
-                className="gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Generating PDF...
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-4 w-4" />
-                    Download PDF
-                  </>
-                )}
-              </Button>
+                <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
+                  {candidateDetails?.user?.role || "Candidate"}
+                </p>
+                <Button
+                  onClick={downloadPdf}
+                  disabled={isLoading}
+                  variant="default"
+                  className="gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating PDF...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
           </div>
@@ -577,22 +586,25 @@ const UserProfile = () => {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("details")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "details" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  Tab === "details" ? "bg-gray-800" : ""
+                } `}
               >
                 Details
               </button>
               <button
                 onClick={() => setTab("document")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "document" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  Tab === "document" ? "bg-gray-800" : ""
+                } `}
               >
                 Documents
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "settings" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  Tab === "settings" ? "bg-gray-800" : ""
+                } `}
               >
                 Settings
               </button>
@@ -600,16 +612,18 @@ const UserProfile = () => {
             <div className={` ${Tab !== "details" ? "hidden" : "block"} `}>
               <button
                 onClick={() => setIsEdit(true)}
-                className={` ${isEdit ? "hidden" : "block"
-                  } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
+                className={` ${
+                  isEdit ? "hidden" : "block"
+                } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
               >
                 <MdEdit className=" text-base mr-2" />{" "}
                 <span className=" inline-block">Edit Profile</span>
               </button>
               <button
                 onClick={handleSaveChanges}
-                className={` ${isEdit ? "block" : "hidden"
-                  } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
+                className={` ${
+                  isEdit ? "block" : "hidden"
+                } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
               >
                 Save Changes
               </button>
@@ -706,7 +720,9 @@ const UserProfile = () => {
                     )}
                   </div>
                   <div className=" w-[30%] min-h-[500px] bg-gray-700/20 text-gray-400 border-2 border-[#b378ff] px-8 py-5 rounded-lg">
-                    <h1 className=" text-2xl font-semibold h-full text-[#b378ff] mb-5">Summary</h1>
+                    <h1 className=" text-2xl font-semibold h-full text-[#b378ff] mb-5">
+                      Summary
+                    </h1>
                     <p>{documentUrl.summary}</p>
                   </div>
                 </div>
@@ -725,15 +741,17 @@ const UserProfile = () => {
                   <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
                     <h1 className=" text-xl font-semibold">Experiences</h1>
                     <div
-                      className={` ${isEdit ? "hidden" : "block"
-                        } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
+                      className={` ${
+                        isEdit ? "hidden" : "block"
+                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: experience || "No Experiences",
                       }}
                     />
                     <div
-                      className={`${isEdit ? "block" : "hidden"
-                        } mt-5 text-gray-500`}
+                      className={`${
+                        isEdit ? "block" : "hidden"
+                      } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"experience"}
@@ -746,15 +764,17 @@ const UserProfile = () => {
                   <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
                     <h1 className=" text-xl font-semibold">Skill Highlights</h1>
                     <div
-                      className={`${isEdit ? "hidden" : "block"
-                        } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
+                      className={`${
+                        isEdit ? "hidden" : "block"
+                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: skillHighlights || "No Skill Highlight",
                       }}
                     />
                     <div
-                      className={`${isEdit ? "block" : "hidden"
-                        } mt-5 text-gray-500`}
+                      className={`${
+                        isEdit ? "block" : "hidden"
+                      } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"skillHighlights"}
@@ -829,33 +849,20 @@ const UserProfile = () => {
                         })}
                       </p>
                       <div className={` ${isEdit ? "block" : "hidden"}`}>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
-                                !dob && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon />
-                              {dob
-                                ? new Date(dob).toLocaleDateString()
-                                : "Date of Birth"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={dob}
-                              onSelect={setDob}
-                              initialFocus
-                              fromYear={1900}
-                              toYear={new Date().getFullYear()}
-                              disabled={(date) => date > new Date()}
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              value={dayjs(dob)}
+                              onChange={(newValue) => setDob(dayjs(newValue))}
+                              sx={{ width: "100%",
+                                backgroundColor: "#32353b",
+                                border: "none",
+                                color: "white !important",
+                                borderRadius: "5px",
+                                padding: "0",
+                                margin: "0",
+                               }}
                             />
-                          </PopoverContent>
-                        </Popover>
+                        </LocalizationProvider>
                       </div>
                     </div>
                     <div className=" w-full mt-5">
@@ -868,10 +875,11 @@ const UserProfile = () => {
                         type="text"
                         readOnly={!isEdit}
                         value={contactNo || ""}
-                        placeholder="Contact Number"
+                        placeholder="+94 xx xxx xxxx"
                         onChange={(e) => setContactNo(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                   </div>
@@ -884,8 +892,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={linkedinUrl || ""}
                         onChange={(e) => setLinkedinUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -895,8 +904,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={githubUrl || ""}
                         onChange={(e) => setGithubUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -906,8 +916,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={facebookUrl || ""}
                         onChange={(e) => setFacebookUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -917,8 +928,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={twitterUrl || ""}
                         onChange={(e) => setTwitterUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
@@ -928,8 +940,9 @@ const UserProfile = () => {
                         readOnly={!isEdit}
                         value={discordUrl || ""}
                         onChange={(e) => setDiscordUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${
+                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                        } w-full text-sm `}
                       />
                     </div>
                   </div>
