@@ -47,7 +47,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews,isProfileCompleted }) => {
+export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews, isProfileCompleted }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   //   const [interviews, setInterviews] = useState([]);
@@ -381,12 +381,12 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                             <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
                             <AlertDialogDescription className="text-gray-600">
                               By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
-                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  Make sure your profile is completed</span>
+                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Make sure your profile is completed</span>
 
                               <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15}
-                                                                                          className="mt-1"/>  You&apos;re in a quiet environment</span>
-                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  Your camera and microphone are ready</span>
-                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1"/>  You have stable internet connection</span>
+                                className="mt-1" />  You&apos;re in a quiet environment</span>
+                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
+                              <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
 
                             </AlertDialogDescription>
                           </AlertDialogHeader>
@@ -404,27 +404,15 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
               </TimelineHeader>
               <div className="bg-[#18181E]">
                 <TimelineDescription className="-mt-1  px-8 text-[#6F6F7B] ">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div
-                          className={`w-[90%] pb-3 text-justify bg-transparent rounded-lg description cursor-pointer`}
-                          dangerouslySetInnerHTML={{
-                            __html: isExpanded
-                              ? interview.interview.jobDescription
-                              : `${interview.interview.jobDescription.slice(0, 200)}...`,
-                          }}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-[400px] bg-[#18181E] text-white border border-[#2D2D35]">
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: interview.interview.jobDescription,
-                          }}
-                        />
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <div
+                    className={`w-[90%] pb-3 text-justify bg-transparent rounded-lg description`}
+                    dangerouslySetInnerHTML={{
+                      __html: isExpanded
+                        ? interview.interview.jobDescription
+                        : `${interview.interview.jobDescription.slice(0, 200)}...`,
+                    }}
+                  />
+
                   <Accordion type="single" collapsible>
                     <AccordionItem value="item-1">
                       {/* <div className="flex justify-end">
