@@ -33,7 +33,7 @@ const ActionCell = ({ session }) => {
     if (router && session?.sessionId) {
       const userId = session?.userId;
       const data = {
-        sessionId:session?.sessionId,
+        sessionId: session?.sessionId,
         userId,
       };
       socket.emit("endInterviewSession", data);
@@ -59,12 +59,78 @@ const ActionCell = ({ session }) => {
             Copy session ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onClick={handleStartSession}>Start Session</DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer" onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer" onClick={handleCompleteInterviewSession}>Complete Session</DropdownMenuItem>
+          {session?.status != 'completed' && (<DropdownMenuItem className="cursor-pointer" onClick={handleStartSession}>Start Session</DropdownMenuItem>)}
+          {session?.status === 'completed' && (<DropdownMenuItem className="cursor-pointer" onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>)}
+          {session?.status != 'completed' && (<DropdownMenuItem className="cursor-pointer" onClick={handleCompleteInterviewSession}>Complete Session</DropdownMenuItem>)}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+};
+
+const GetStarted = ({ session }) => {
+  const router = useRouter();
+
+  const handleStartSession = () => {
+    if (router && session?.sessionId) {
+      router.push(`/company-interview-session/${encodeURIComponent(session.sessionId)}`);
+    }
+  };
+
+
+  return (
+    <div className="flex items-center justify-center">
+      {session?.status != 'completed' && (
+         <button
+         onClick={handleStartSession}
+         className="
+     mx-auto md:mx-0 
+     text-xs
+     rounded-full 
+     bg-blue-500/50 
+     border-2 border-blue-700 
+     text-blue-300 
+     py-1 px-4 w-fit 
+     transition-all
+     duration-300
+     hover:scale-105
+     hover:bg-blue-500/70
+     hover:border-blue-600
+     hover:text-blue-200
+     active:scale-95
+     active:bg-blue-600/50
+     focus:outline-none
+     focus:ring-2
+     focus:ring-blue-300
+     focus:ring-opacity-50
+     animate-pulse-once
+     shadow-lg
+     shadow-blue-900/20
+     hover:shadow-blue-900/30
+   "
+       >
+         Get Started
+       </button>
+      ) }
+
+      
+
+      {session?.status === 'completed' ? 
+      (<>
+          <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-green-500/50 boeder-2 border-green-700 text-green-300 py-1 px-4 w-fit cursor-pointer">
+        Completed
+      </p>
+      </>) : 
+      
+      (<>
+  
+     
+      </>)}
+      
+
+      
+    </div>
+
   );
 };
 
@@ -123,6 +189,14 @@ export const interviewSessionTableColumns = [
   {
     accessorKey: "score",
     header: "Score",
+  },
+
+  {
+    id: "startBtn",
+    cell: ({ row }) => {
+      const session = row.original;
+      return <GetStarted session={session} />;
+    },
   },
   {
     id: "actions",
