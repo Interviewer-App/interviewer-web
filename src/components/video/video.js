@@ -259,19 +259,21 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
   }));
 
   return (
-    <div className=" bg-gray-900 relative h-full max-h-lvh w-auto">
+    <div className=" bg-black relative h-full max-h-lvh w-auto">
       {/* Timer */}
       <div className="absolute top-4 left-4 text-white z-10">
         <span className="font-medium">{formatTime(callDuration)}</span>
       </div>
 
       {/* Video containers */}
-      <div className=" flex items-center justify-center">
-        <video
-          ref={remoteVideoRef}
-          autoPlay
-          className="h-full w-full object-contain"
-        />
+      <div className=" flex items-center h-full justify-center">
+        <div className=" h-full w-full flex items-center justify-center bg-black">
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            className="h-full w-auto  object-contain"
+          />
+        </div>
         <video
           ref={localVideoRef}
           autoPlay
@@ -342,6 +344,6 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
     </div>
   );
 });
-VideoCall.displayName = 'VideoCall';
+VideoCall.displayName = "VideoCall";
 
 export default VideoCall;
