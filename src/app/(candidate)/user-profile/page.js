@@ -721,9 +721,9 @@ const UserProfile = () => {
                   </div>
                   <div className=" w-[30%] min-h-[500px] bg-gray-700/20 text-gray-400 border-2 border-[#b378ff] px-8 py-5 rounded-lg">
                     <h1 className=" text-2xl font-semibold h-full text-[#b378ff] mb-5">
-                      Summary
+                      Skills
                     </h1>
-                    <p>{documentUrl.summary}</p>
+                    <p>{documentUrl.skills}</p>
                   </div>
                 </div>
 
