@@ -32,7 +32,7 @@ import { useSession, getSession } from "next-auth/react";
 import { getCompletedSessionComparision } from "@/lib/api/interview-session";
 import { Plus, LoaderCircle } from "lucide-react";
 
-
+import { Pie } from 'react-chartjs-2';
 import { Doughnut } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import {
@@ -61,105 +61,133 @@ const InterviewComparision = () => {
   const [firstCandidateName, setFirstCandidateName] = useState("");
   const [secondCandidateName, setSecondCandidateName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
-  
+
+
   // Hardcoded comparison result
   // const hardcodedComparisonResult = {
   //   "overall": {
   //     "score": {
-  //       "c1": 36,
-  //       "c2": 33,
-  //       "diff": 3
+  //       "c1": 48.17,
+  //       "c2": 24.25,
+  //       "diff": "23.92"
   //     },
   //     "time": {
-  //       "c1": 50,
-  //       "c2": 40,
-  //       "diff": "10 mins"
+  //       "c1": "0",
+  //       "c2": "0",
+  //       "diff": "0"
   //     }
   //   },
   //   "categories": [
   //     {
+  //       "name": "CultureFit",
+  //       "score": {
+  //         "c1": 69,
+  //         "c2": 39,
+  //         "diff": "30"
+  //       },
+  //       "metrics": []
+  //     },
+  //     {
+  //       "name": "Behavioral",
+  //       "score": {
+  //         "c1": 72,
+  //         "c2": 48,
+  //         "diff": "24"
+  //       },
+  //       "metrics": []
+  //     },
+  //     {
   //       "name": "Technical",
-  //       "metrics": [
-  //         {
-  //           "metric": "Coding Skills",
-  //           "c1": "Scored 36 out of 36 in a coding question on Spring Boot REST API development, demonstrating a strong grasp of the technology.",
-  //           "c2": "Scored 33 out of 33 in a coding question on finding the sum of even numbers in an array.",
-  //           "importance": "High"
-  //         },
-  //         {
-  //           "metric": "Problem-Solving Approach",
-  //           "c1": "Provided clear and detailed answers, showing a logical and structured approach to problem-solving.",
-  //           "c2": "Showed a good understanding of core programming concepts but lacked clear structure in explaining the approach.",
-  //           "importance": "High"
-  //         }
-  //       ]
+  //       "score": {
+  //         "c1": 25.83333333333333,
+  //         "c2": 5,
+  //         "diff": "20.833333333333332"
+  //       },
+  //       "metrics": []
+  //     },
+  //     {
+  //       "name": "dsdsdsds",
+  //       "score": {
+  //         "c1": 25.83333333333333,
+  //         "c2": 5,
+  //         "diff": "20.833333333333332"
+  //       },
+  //       "metrics": []
   //     }
   //   ],
   //   "strengths": {
   //     "c1": {
   //       "strengths": [
-  //         "Strong Spring Boot technical skills",
-  //         "Excelled in open-ended technical discussions",
-  //         "Demonstrates a strong understanding of core Java concepts"
+  //         "Strong understanding of Java fundamentals",
+  //         "Good problem-solving approach",
+  //         "Good communication skills"
   //       ],
   //       "weaknesses": [
-  //         "Could benefit from improving time management during interviews"
+  //         "bad communitcation skills",
+  //         "bad programming knowlegde"
   //       ]
   //     },
   //     "c2": {
   //       "strengths": [
-  //         "Showed good problem-solving skills",
-  //         "Understands fundamental programming principles including OOP"
+  //         "Good communication skills"
   //       ],
   //       "weaknesses": [
-  //         "Technical skills could benefit from further enhancement",
-  //         "Some difficulty in communicating technical concepts clearly"
+  //         "Lacks technical skills",
+  //         "Poor problem-solving approach"
   //       ]
   //     }
   //   },
   //   "experience": {
   //     "projects": {
-  //       "c1": "No information provided in the given data.",
-  //       "c2": "No information provided in the given data.",
-  //       "comparison": "No comparison can be made as project information is missing."
+  //       "c1": null,
+  //       "c2": null,
+  //       "comparison": null
   //     },
   //     "education": {
-  //       "c1": "No information provided in the given data.",
-  //       "c2": "No information provided in the given data.",
-  //       "relevance": "No comparison can be made as education information is missing."
+  //       "c1": null,
+  //       "c2": null,
+  //       "relevance": null
   //     }
   //   },
   //   "recommendation": {
   //     "best": "c1",
-  //     "reason": "Candidate c1 demonstrated stronger technical skills, including a comprehensive understanding of Spring Boot and Java fundamentals, as well as a more structured problem-solving approach.",
-  //     "factors": [
-  //       "Technical performance",
-  //       "Problem-solving skills",
-  //       "Communication abilities"
-  //     ],
-  //     "confidence": "high"
+  //     "reason": "Overall, candidate 1 has a stronger technical background, better problem-solving skills, and better communication skills than candidate 2.",
+  //     "factors": [],
+  //     "confidence": "med"
   //   },
   //   "summary": {
-  //     "technical": "Both candidates showed a good understanding of core programming concepts. Candidate c1 demonstrated stronger technical skills in the context of Java and Spring Boot, while candidate c2 could benefit from further strengthening their technical foundation.",
-  //     "culture": "No information provided in the given data.",
-  //     "growth": "With continued development and experience, both candidates have the potential to grow into successful software engineers."
+  //     "technical": "Candidate 1 has a strong technical background, while candidate 2 is lacking in this area.",
+  //     "culture": "Both candidates have good communication skills and would be a good fit for the company's culture.",
+  //     "growth": "Both candidates have the potential to grow and develop in their careers."
   //   }
-  // };
+  // }
 
+  const generateChartData = () => {
+    if (!comparisonResult?.categories) return { labels: [], datasets: [] };
 
+    const labels = comparisonResult.categories.map(cat => cat.name);
+    const c1Scores = comparisonResult.categories.map(cat => cat.score?.c1 || 0);
+    const c2Scores = comparisonResult.categories.map(cat => cat.score?.c2 || 0);
 
-  const chartData = {
-    labels: [firstCandidateName, secondCandidateName], // The candidates
-    datasets: [
-      {
-        label: 'Overall Score', // You can adjust this label to match your comparison metric
-        data: [comparisonResult?.overall?.score?.c1, comparisonResult?.overall?.score?.c2], // Using the comparison result for data
-        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'], // Blue for Candidate 1, Red for Candidate 2
-        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-        borderWidth: 1,
-      },
-    ],
+    return {
+      labels,
+      datasets: [
+        {
+          label: firstCandidateName,
+          data: c1Scores,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+        },
+        {
+          label: secondCandidateName,
+          data: c2Scores,
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+        },
+      ],
+    };
   };
 
 
@@ -177,7 +205,7 @@ const InterviewComparision = () => {
         borderWidth: 1,
       },
       {
-        label: secondCandidateName, 
+        label: secondCandidateName,
         data: [
           comparisonResult?.strengths?.c2?.strengths.length || 0, // Number of strengths for Candidate 2
           comparisonResult?.strengths?.c2?.weaknesses.length || 0  // Number of weaknesses for Candidate 2
@@ -188,6 +216,7 @@ const InterviewComparision = () => {
       }
     ],
   };
+
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -216,9 +245,9 @@ const InterviewComparision = () => {
     fetchInterviews();
   }, []);
 
-  
 
- 
+
+
 
   const handleCompareInterviews = async () => {
     if (firstSessionId && secondSessionId) {
@@ -308,14 +337,6 @@ const InterviewComparision = () => {
             <div className="flex items-center justify-between p-9 ">
 
               <h1 className="text-2xl font-semibold">Compare Between Candidates</h1>
-
-              {/* 
-              <button
-        
-        className="rounded-lg bg-white text-black font-bold px-2 py-2"
-      >
-       Compare All Interviews
-      </button> */}
             </div>
 
 
@@ -360,8 +381,8 @@ const InterviewComparision = () => {
                     setSecondCandidateName(candidateName); // Set the candidate name
                   }}
                   disabledEmail={firstCandidateName} // Add this line
-                />              
-                </div>
+                />
+              </div>
 
               {/* Add Category Button */}
               <div>
@@ -383,7 +404,7 @@ const InterviewComparision = () => {
               <>
                 <div className="flex justify-around mt-10 md:flex-row flex-col space-y-4 md:space-y-0 ">
                   <div className="bg-slate-600/10 p-6 md:w-1/3 w-full rounded-lg">
-                  <h2 className="text-xl font-bold mb-4">First Candidate</h2>
+                    <h2 className="text-xl font-bold mb-4">First Candidate</h2>
                     <h2 className="text-xl font-bold mb-4">{firstCandidateName}</h2>
                     {comparisonResult?.overall && (
                       <div className="space-y-2">
@@ -402,10 +423,22 @@ const InterviewComparision = () => {
                         </ul>
                       </div>
                     )}
+
+                    {comparisonResult?.strengths?.c1?.weaknesses && (
+                      <div className="mt-4">
+                        <h3 className="font-semibold">Weaknesses</h3>
+                        <ul className="list-disc pl-4">
+                          {comparisonResult.strengths.c1.weaknesses.map((weakness, index) => (
+                            <li key={index}>{weakness}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                   </div>
 
                   <div className="bg-slate-600/10 p-6 md:w-1/3 w-full rounded-lg">
-                  <h2 className="text-xl font-bold mb-4">Second Candidate</h2>
+                    <h2 className="text-xl font-bold mb-4">Second Candidate</h2>
                     <h2 className="text-xl font-bold mb-4">{secondCandidateName}</h2>
                     {comparisonResult?.overall && (
                       <div className="space-y-2">
@@ -424,25 +457,85 @@ const InterviewComparision = () => {
                         </ul>
                       </div>
                     )}
+
+
+                    {/* Display weaknesses for the first candidate */}
+
+                    {/* Display weaknesses for the second candidate */}
+                    {comparisonResult?.strengths?.c2?.weaknesses && (
+                      <div className="mt-4">
+                        <h3 className="font-semibold">Weaknesses</h3>
+                        <ul className="list-disc pl-4">
+                          {comparisonResult.strengths.c2.weaknesses.map((weakness, index) => (
+                            <li key={index}>{weakness}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+
                   </div>
                 </div>
 
-
-
-                <div className="flex justify-around mt-10 flex-col md:flex-row space-y-4 md:space-y-0">
-                  {/* Display chart */}
-                  <div className="bg-slate-600/10 p-6 md:w-1/3 rounded-lg w-full">
-                    <h2 className="text-xl font-bold mb-4">Overall Score Comparison</h2>
-                    <Bar data={chartData} options={{ responsive: true }} />
-                  </div>
-
-
-                  {/*dougnut chart for declaration */}
-                  <div className="bg-slate-600/10 p-6 md:w-1/3 rounded-lg w-full">
-                    <h2 className="text-xl font-bold mb-4">Strengths vs Weaknesses</h2>
-                    <Doughnut data={doughnutChartData} options={{ responsive: true }} />
-                  </div>
+                <div className="mt-10 bg-slate-600/10 p-6 rounded-lg h-fit">
+                  <h2 className="text-xl font-bold mb-4 text-center">Score Comparison</h2>
+                  <Bar
+                    data={generateChartData()}
+                    options={{
+                      responsive: true,
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: 'Scores'
+                          }
+                        },
+                        x: {
+                          ticks: {
+                            autoSkip: false
+                          }
+                        }
+                      }
+                    }}
+                  />
                 </div>
+
+
+                {/* <div className="flex justify-around mt-10 flex-col md:flex-row space-y-4 md:space-y-0">
+      
+                  <div className="bg-slate-600/10 p-6 md:w-1/3 rounded-lg w-full">
+                    <h2 className="text-xl font-bold mb-4">{firstCandidateName} - Strengths vs Weaknesses</h2>
+                    <Pie
+                      data={candidate1PieChartData}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: 'top',
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+
+                 
+                  <div className="bg-slate-600/10 p-6 md:w-1/3 rounded-lg w-full">
+                    <h2 className="text-xl font-bold mb-4">{secondCandidateName} - Strengths vs Weaknesses</h2>
+                    <Pie
+                      data={candidate2PieChartData}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: 'top',
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </div> */}
+
 
 
                 {/* Recommendation Section */}
