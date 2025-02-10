@@ -61,11 +61,6 @@ export const columns = [
       return createdAt.toLocaleDateString('en-US', options); // Formats it to "January 16, 2025"
     },
   },
-  
-  {
-    accessorKey: "reviewedBy",  
-    header: "reviewed By",
-  },
 
   {
     accessorKey: "score",  
