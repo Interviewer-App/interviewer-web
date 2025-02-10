@@ -53,6 +53,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [availableQuestion, setAvailableQuestion] = useState({});
   const [typingAnswer, setTypingAnswer] = useState("typing...");
   const dashboardRef = useRef();
+  const [technicalStatus, setTechnicalStatus] = useState('');
 
   const { toast } = useToast();
   useEffect(() => {
@@ -83,6 +84,10 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     socket.on("questions", (data) => {
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
+    });
+    
+    socket.on("technicalStatus", (data) => {
+      setTechnicalStatus(data.technicalStatus);
     });
 
     socket.on("answerSubmitted", (data) => {
@@ -219,6 +224,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             setCategoryScores={setCategoryScores}
             setAnaliyzeResponse={setAnaliyzeResponse}
             typingAnswer={typingAnswer}
+            technicalStatus={technicalStatus}
             setTypingAnswer={setTypingAnswer}
             ref={dashboardRef}
           />
