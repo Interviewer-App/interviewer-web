@@ -13,7 +13,6 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     const verifyEmail = async () => {
-        debugger
       if (!token) return;
 
       try {

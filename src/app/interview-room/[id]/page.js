@@ -179,7 +179,6 @@ const InterviewRoomPage = ({ params }) => {
     });
 
     socket.on("technicalStatus", (data) => {
-      debugger
       setTechnicalStatus(data.technicalStatus);
       if (data.technicalStatus === "ongoing") {
         setIsTechnicalOngoing(true);
