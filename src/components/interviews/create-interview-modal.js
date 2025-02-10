@@ -58,6 +58,7 @@ import {
 } from "@/lib/api/interview-category";
 import dynamic from "next/dynamic";
 import {
+  generateInterviewDuration,
   generateInterviewJobDescription,
   generateInterviewSchedules,
 } from "@/lib/api/ai";
@@ -69,6 +70,7 @@ import { Plus } from "lucide-react";
 
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { set } from "zod";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -203,8 +205,8 @@ function ColorlibStepIcon(props) {
 
   const icons = {
     1: <SettingsIcon />,
-    2: <AvTimerSharpIcon />,
-    3: <CategorySharpIcon />,
+    2: <CategorySharpIcon />,
+    3: <AvTimerSharpIcon />,
   };
 
   return (
@@ -235,7 +237,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const steps = ["Interview Details", "Schedules", "Categories"];
+const steps = ["Interview Details", "Categories", "Schedules"];
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -268,12 +270,16 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
   const [interviewCatDesc, setInterviewCateDesc] = React.useState([]);
   const [interviewCatName, setInterviewCatName] = React.useState([]);
+  const [scheduleTiemDuration, setScheduleTimeDuration] = React.useState("");
+  const [scheduleLevel, setScheduleLevel] = React.useState("");
+  const [dailySessions, setDailySessions] = React.useState([]);
+  const [durationLoading, setDurationLoading] = React.useState(false);
 
   const { toast } = useToast();
 
-  React.useEffect(() => {
-    console.log("date", inputScheduleStartTime);
-  }, [inputScheduleStartTime]);
+  // React.useEffect(() => {
+  //   console.log("date", inputScheduleStartTime);
+  // }, [inputScheduleStartTime]);
 
   React.useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -335,6 +341,31 @@ export default function CreateInterviewModal({ setModalOpen }) {
       setInputPercentage("");
       setInputCatagory("");
     }
+  };
+
+  const handleDailySchedule = (e) => {
+    e.preventDefault();
+    if (!inputScheduleStartTime || !inputScheduleEndTime || !intervalDuration) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `All fields are required.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+      return;
+    }
+    setDailySessions((prev) => [
+      ...prev,
+      {
+        key: dailySessions.length,
+        startTime: inputScheduleStartTime,
+        endTime: inputScheduleEndTime,
+        intervalMinutes: intervalDuration,
+      },
+    ]);
+    setInputScheduleStartTime("");
+    setInputScheduleEndTime("");
+    setIntervalDuration("");
   };
 
   const handleDeleteCategory = (catagoryToDelete) => () => {
@@ -414,6 +445,12 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const handleDeleteSchedule = (scheduleToDelete) => () => {
     setScheduleList((schedule) =>
       schedule.filter((schedule) => schedule.key !== scheduleToDelete.key)
+    );
+  };
+
+  const handleDeleteDailySession = (sessionToDelete) => () => {
+    setDailySessions((session) =>
+      dailySessions.filter((session) => session.key !== sessionToDelete.key)
     );
   };
 
@@ -568,6 +605,61 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
 
+  const handleGenerateInterviewDuration = async (e) => {
+    setDurationLoading(true);
+    e.preventDefault();
+    try {
+      const data = {
+        jobTitle: jobTitle,
+        jobDescription: jobDescription,
+        requiredSkills: chipData.map((chip) => chip.label).join(", "),
+        categoryAssignments: categoryList.map((catagory) => {
+          return {
+            percentage : parseFloat(catagory.percentage),
+            name : catagory.catagory,
+          };
+        }),
+        difficulty: scheduleLevel,
+        length: scheduleTiemDuration,
+      };
+      const response = await generateInterviewDuration(data);
+
+      if (response) {
+        setInterviewDuration(response.data.duration);
+        setDurationLoading(false);
+      }
+    } catch (err) {
+      setDurationLoading(false);
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview duration generation failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
     try {
@@ -672,9 +764,13 @@ export default function CreateInterviewModal({ setModalOpen }) {
         duration: parseInt(interviewDuration, 10),
         startDate: date.from,
         endDate: date.to,
-        dailyStartTime: inputScheduleStartTime,
-        dailyEndTime: inputScheduleEndTime,
-        intervalMinutes: parseInt(intervalDuration, 10),
+        dailySessions: dailySessions.map((session) => {
+          return {
+            startTime: session.startTime,
+            endTime: session.endTime,
+            intervalMinutes: parseInt(session.intervalMinutes, 10),
+          };
+        }),
         nonWorkingDates: [],
       };
       const response = await generateInterviewSchedules(data);
@@ -785,8 +881,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     editorId={"jobDescription"}
                     placeholder="Job Description here..."
                     onChange={handleOnChange}
-                    jobDescription={genJobDescription }
-                    value={jobDescription}    //change this line to store the jobdescription when user go step forward and come back 
+                    jobDescription={genJobDescription}
+                    value={jobDescription} //change this line to store the jobdescription when user go step forward and come back
                   />
                 </div>
               </div>
@@ -833,118 +929,340 @@ export default function CreateInterviewModal({ setModalOpen }) {
               </Paper>
             </div>
           )}
-          {stepperCount === 1 && (
+          {stepperCount === 2 && (
             <div className=" w-full mt-5 min-h-[350px]">
-              <div className=" w-full flex justify-between items-center mt-5">
-                <div className=" w-full md:w-[48%]">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon />
-                        {date?.from ? (
-                          date.to ? (
-                            <>
-                              {date.from.toLocaleDateString("en-GB", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              })}{" "}
-                              -{" "}
-                              {date.to.toLocaleDateString("en-GB", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              })}
-                            </>
-                          ) : (
-                            date.from.toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })
-                          )
-                        ) : (
-                          <span>Pick Date Range</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="range"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                        numberOfMonths={2}
-                        disabled={(date) =>
-                          date < new Date().setHours(0, 0, 0, 0)
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
+              <div className=" w-full border-2 border-yellow-500/40 bg-yellow-900/5  rounded-lg p-5 mt-5">
+                <p className=" text-xs pb-2 text-yellow-700">
+                  *If you're unsure about the appropriate time duration, we can
+                  assist you in selecting the most suitable one based on your
+                  needs.
+                </p>
+                <div className=" w-full flex justify-between items-center gap-2">
+                  <div className=" w-full md:w-[45%]">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className={`!bg-[#32353b] h-[45px] m-0 px-2 focus:outline-none outline-none w-full`}
+                          variant="outline"
+                        >
+                          {scheduleLevel || "Interview Skill Level"}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>
+                          Interview Skill Level
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup
+                          value={scheduleLevel}
+                          onValueChange={setScheduleLevel}
+                        >
+                          <DropdownMenuRadioItem key="Easy" value="Easy">
+                            Easy
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key="Medium" value="Medium">
+                            Medium
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key="Hard" value="Hard">
+                            Hard
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <div className=" w-full md:w-[45%]">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className={`!bg-[#32353b] h-[45px] m-0 px-2 focus:outline-none outline-none w-full`}
+                          variant="outline"
+                        >
+                          {scheduleTiemDuration || "Interview Time Duration"}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>
+                          Interview Time Duration
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup
+                          value={scheduleTiemDuration}
+                          onValueChange={setScheduleTimeDuration}
+                        >
+                          <DropdownMenuRadioItem key="Short" value="Short">
+                            Short
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key="Medium" value="Medium">
+                            Medium
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key="Lengthy" value="Lengthy">
+                            Lengthy
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <button
+                    onClick={handleGenerateInterviewDuration}
+                    type="button"
+                    className="bg-white text-black h-[45px] rounded-lg text-sm w-14 flex align-middle items-center justify-center text-center"
+                  >
+                    {durationLoading ? (
+                      <LoaderCircle className="animate-spin" />
+                    ) : (
+                      <WandSparkles />
+                    )}
+                  </button>
                 </div>
-                <input
-                  type="number"
-                  name="interviewDuration"
-                  value={interviewDuration}
-                  onChange={(e) => setInterviewDuration(e.target.value)}
-                  placeholder="Interview duration (minutes)"
-                  className=" h-[45px] w-full md:w-[48%] rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 focus:outline-none"
-                />
               </div>
-              <h1 className=" text-sm pt-3">Daily</h1>
-              <div className=" w-full mt-3 flex justify-between items-center flex-col md:flex-row">
-                <div className="w-full md:w-[32%]">
-                  <p className=" text-xs">Start Time</p>
-                  <input
-                    type="time"
-                    placeholder="Start Time"
-                    name="start_time"
-                    value={inputScheduleStartTime}
-                    onChange={(e) => setInputScheduleStartTime(e.target.value)}
-                    required
-                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
-                  />
-                </div>
-                <div className="w-full md:w-[32%]">
-                  <p className=" text-xs">End Time</p>
-                  <input
-                    type="time"
-                    placeholder="End Time"
-                    name="end_time"
-                    value={inputScheduleEndTime}
-                    onChange={(e) => setInputScheduleEndTime(e.target.value)}
-                    required
-                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
-                  />
-                </div>
-                <div className="w-full md:w-[32%]">
-                  <p className=" text-xs">Interval duration</p>
+              <div className="w-full border-2 border-blue-500/40 bg-blue-900/5 p-5 rounded-lg mt-5 ">
+                <h1 className=" text-blue-500 font-semibold pb-5">
+                  Generate Interview Schedules
+                </h1>
+                <div className=" w-full flex justify-between items-center">
+                  <div className=" w-full md:w-[48%]">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {date?.from ? (
+                            date.to ? (
+                              <>
+                                {date.from.toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })}{" "}
+                                -{" "}
+                                {date.to.toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              </>
+                            ) : (
+                              date.from.toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })
+                            )
+                          ) : (
+                            <span>Pick Date Range</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="range"
+                          selected={date}
+                          onSelect={setDate}
+                          initialFocus
+                          numberOfMonths={2}
+                          disabled={(date) =>
+                            date < new Date().setHours(0, 0, 0, 0)
+                          }
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <input
                     type="number"
-                    placeholder="Minutes"
-                    name="interval_duration"
-                    value={intervalDuration}
-                    onChange={(e) => setIntervalDuration(e.target.value)}
-                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 focus:outline-none"
+                    name="interviewDuration"
+                    value={interviewDuration}
+                    onChange={(e) => setInterviewDuration(e.target.value)}
+                    placeholder="Interview duration (minutes)"
+                    className=" h-[45px] w-full md:w-[48%] rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 focus:outline-none"
                   />
                 </div>
-              </div>
-              <button
-                onClick={handleScheduleGenerate}
-                className=" h-10 text-black px-3 bg-white hover:border-gray-500 rounded-lg text-base flex items-center justify-center mt-3 w-full font-bold"
-              >
-                {isLoading ? (
-                  <LoaderCircle className="animate-spin" />
-                ) : (
-                  <span>Generate Schedules</span>
+                <h1 className=" text-sm pt-3">Daily</h1>
+                {dailySessions.length > 0 && (
+                  <>
+                    {dailySessions.map((session, index) => (
+                      <div
+                        key={index}
+                        className=" w-full mt-3 flex justify-between items-center gap-2 flex-col md:flex-row"
+                      >
+                        <div className="w-full md:w-[32%]">
+                          <p className=" text-xs">Start Time</p>
+                          <input
+                            type="time"
+                            placeholder="Start Time"
+                            name="start_time"
+                            value={session.startTime}
+                            readOnly
+                            className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
+                          />
+                        </div>
+                        <div className="w-full md:w-[32%]">
+                          <p className=" text-xs">End Time</p>
+                          <input
+                            type="time"
+                            placeholder="End Time"
+                            name="end_time"
+                            value={session.endTime}
+                            readOnly
+                            className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
+                          />
+                        </div>
+                        <div className="w-full md:w-[32%]">
+                          <p className=" text-xs">Interval duration</p>
+                          <input
+                            type="number"
+                            placeholder="Minutes"
+                            name="interval_duration"
+                            value={session.intervalMinutes}
+                            readOnly
+                            className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 focus:outline-none"
+                          />
+                        </div>
+                        <div className=" w-[10%] flex items-center justify-center">
+                          <IoCloseCircle
+                            onClick={handleDeleteDailySession(session)}
+                            className=" text-gray-500 text-2xl mt-4 cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </>
                 )}
-              </button>
+                <div className=" w-full mt-3 flex justify-between items-center gap-2 flex-col md:flex-row">
+                  <div className="w-full md:w-[32%]">
+                    <p className=" text-xs">Start Time</p>
+                    <input
+                      type="time"
+                      placeholder="Start Time"
+                      name="start_time"
+                      value={inputScheduleStartTime}
+                      onChange={(e) =>
+                        setInputScheduleStartTime(e.target.value)
+                      }
+                      required
+                      className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
+                    />
+                  </div>
+                  <div className="w-full md:w-[32%]">
+                    <p className=" text-xs">End Time</p>
+                    <input
+                      type="time"
+                      placeholder="End Time"
+                      name="end_time"
+                      value={inputScheduleEndTime}
+                      onChange={(e) => setInputScheduleEndTime(e.target.value)}
+                      required
+                      className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
+                    />
+                  </div>
+                  <div className="w-full md:w-[32%]">
+                    <p className=" text-xs">Interval duration</p>
+                    <input
+                      type="number"
+                      placeholder="Minutes"
+                      name="interval_duration"
+                      value={intervalDuration}
+                      onChange={(e) => setIntervalDuration(e.target.value)}
+                      className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 focus:outline-none"
+                    />
+                  </div>
+                  <div className=" w-[10%]">
+                    <button
+                      onClick={handleDailySchedule}
+                      className=" h-[45px] mt-4 aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <button
+                  onClick={handleScheduleGenerate}
+                  className=" h-10 text-black px-3 bg-white hover:border-gray-500 rounded-lg text-base flex items-center justify-center mt-3 w-full font-bold"
+                >
+                  {isLoading ? (
+                    <LoaderCircle className="animate-spin" />
+                  ) : (
+                    <span>Generate Schedules</span>
+                  )}
+                </button>
+                <div className=" w-full justify-center items-center flex gap-5 my-5 ">
+                  <hr className=" w-full border-[1px] border-gray-500/50" />
+                  <p className=" text-gray-500/50 font-semibold text-center">
+                    OR
+                  </p>
+                  <hr className=" w-full border-[1px] border-gray-500/50" />
+                </div>
+                <h1 className=" text-blue-500 font-semibold pb-2">
+                  Add Manually
+                </h1>
+                <div className=" flex justify-between items-center gap-1">
+                  <div className=" w-[30%]">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                            !inputScheduleDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {inputScheduleDate
+                            ? inputScheduleDate.toLocaleDateString()
+                            : "Scheduled Date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={inputScheduleDate}
+                          onSelect={setInputScheduleDate}
+                          initialFocus
+                          disabled={(date) =>
+                            date < new Date().setHours(0, 0, 0, 0)
+                          }
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className=" w-[30%] p-1">
+                    <input
+                      type="time"
+                      placeholder="Start Time"
+                      name="start_time"
+                      value={inputScheduleStartTime}
+                      onChange={(e) =>
+                        setInputScheduleStartTime(e.target.value)
+                      }
+                      required
+                      className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
+                    />
+                  </div>
+                  <div className=" w-[30%]">
+                    <input
+                      type="time"
+                      placeholder="End Time"
+                      name="end_time"
+                      value={inputScheduleEndTime}
+                      onChange={(e) => setInputScheduleEndTime(e.target.value)}
+                      required
+                      className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mt-3 md:mt-0"
+                    />
+                  </div>
+                  <div className=" w-[10%]">
+                    <button
+                      onClick={handleAddSchedule}
+                      className=" h-[45px] aspect-square text-black bg-white hover:border-gray-500 rounded-lg text-3xl flex items-center justify-center ml-1"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div className=" mt-5">
                 <table className=" w-full">
                   <thead className=" bg-gray-700/20 text-center rounded-lg text-sm">
@@ -956,8 +1274,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {scheduleList.map((schedule) => (
-                      <tr key={schedule.key} className=" bg-gray-800/10">
+                    {scheduleList.map((schedule, index) => (
+                      <tr key={index} className=" bg-gray-800/10">
                         <td className=" py-3 px-4 w-[30%] text-center">
                           {new Date(schedule.date).toLocaleDateString("en-GB", {
                             day: "numeric",
@@ -984,13 +1302,17 @@ export default function CreateInterviewModal({ setModalOpen }) {
               </div>
             </div>
           )}
-          {stepperCount === 2 && (
+          {stepperCount === 1 && (
             <div className=" w-full mt-5 min-h-[350px] ">
-              <div className="flex flex-col bg-[#262930] rounded-xl my-5 px-5 border-2 border-teal-600">
-                <h1 className="text-start font-semibold text-lg mt-2">
+              <div className="flex flex-col bg-yellow-900/10 rounded-xl my-5 px-5 border-2 border-yellow-600/40">
+                <h1 className="text-start font-semibold text-yellow-600 text-lg pt-2">
                   Add New Category to List
                 </h1>
-                <div className="flex w-full justify-between  items-center py-5 flex-col md:flex-row md:space-y-0 space-y-5 md:space-x-3">
+                <p className=" text-xs py-2 text-yellow-700">
+                  *If you haven&apos;t added categories for your company before,
+                  you can now add a new category based on your needs.
+                </p>
+                <div className="flex w-full justify-between  items-center pb-5 flex-col md:flex-row md:space-y-0 space-y-5 md:space-x-3">
                   <input
                     type="text"
                     name="Name"
@@ -1018,12 +1340,16 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </button>
                 </div>
               </div>
-              <div className="border-2 border-orange-500 rounded-xl px-5 py-3 flex md:flex-col flex-col">
-                <h1 className="text-start font-semibold text-lg my-2">
+              <div className="border-2 border-gray-500/40 bg-gray-900/5 rounded-xl px-5 py-3 flex md:flex-col flex-col">
+                <h1 className="text-start font-semibold text-lg my-2 text-gray-200">
                   Category List
                 </h1>
-
-                <div className="flex w-full justify-center md:flex-row flex-col md:space-x-2 md:space-y-0 space-y-4 my-6 items-center">
+                <p className=" text-xs text-gray-600">
+                  *You can select the categories you are going to evaluate in
+                  this interview and assign a weight to each category out of
+                  100%.
+                </p>
+                <div className="flex w-full justify-center md:flex-row flex-col md:space-x-2 md:space-y-0 space-y-4 my-5 items-center">
                   <div className="w-[45%]">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -1107,9 +1433,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </div>
                   <div className=" w-[40%] min-h-[300px] flex justify-center items-center mx-auto mt-8 md:mt-0">
                     {categoryList.length > 0 ? (
-
                       <Doughnut data={data} options={options} />
-
                     ) : (
                       <p className="text-gray-600 text-xs">
                         Add categories to view the Chart
@@ -1119,11 +1443,16 @@ export default function CreateInterviewModal({ setModalOpen }) {
                 </div>
               </div>
               {totalPercentage !== 100 ? (
-                <div className="mt-3 bg-black">
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Warning</AlertTitle>
-                    <AlertDescription>
+                <div className="mt-3">
+                  <Alert
+                    className="bg-red-500/5 border-2 border-red-500/40"
+                    variant="destructive"
+                  >
+                    <AlertCircle className="h-4 w-4 !text-red-600" />
+                    <AlertTitle className=" font-semibold text-red-600">
+                      Warning
+                    </AlertTitle>
+                    <AlertDescription className="text-xs text-red-600">
                       Please ensure the total percentage equals 100%. The sum of
                       all category percentages should not exceed or fall below
                       100%. Adjust your inputs accordingly.
@@ -1152,55 +1481,44 @@ export default function CreateInterviewModal({ setModalOpen }) {
               onClick={() => setStepperCount(stepperCount + 1)}
               disabled={
                 // Step 0 validations
-                (stepperCount === 0 && (
-                  (jobTitle || '').trim() === '' ||
-                  ((genJobDescription || '').trim() === '') || 
-                  jobDescription === '<p><br></p>' || genJobDescription === '<p><br></p>' ||
-                  chipData.length === 0
-                )) ||
+                stepperCount === 0 &&
+                ((jobTitle || "").trim() === "" ||
+                  (genJobDescription || "").trim() === "" ||
+                  jobDescription === "<p><br></p>" ||
+                  genJobDescription === "<p><br></p>" ||
+                  chipData.length === 0)
                 // Step 1 validations
-                (stepperCount === 1 && (
-                  !date?.from || // Check if date range is selected
-                  !date?.to || // Check if date range is selected
-                  (interviewDuration || '').trim() === '' || // Check if interview duration is filled
-                  (inputScheduleStartTime || '').trim() === '' || // Check if start time is filled
-                  (inputScheduleEndTime || '').trim() === '' || // Check if end time is filled
-                  (intervalDuration || '').trim() === '' ||
-                  scheduleList.length === 0 // Check if interval duration is filled
-                ))
+                // (stepperCount === 1 && totalPercentage === 100) // Check if interval duration is filled
               }
               className={`mt-6 px-5 py-2 rounded-lg text-center text-sm font-semibold ${
                 // Step 0 enabled condition
                 (stepperCount === 0 &&
-                  (jobTitle || '').trim() !== '' &&
-                  ((genJobDescription || '').trim() !== '' ) &&
-                  jobDescription !== '<p><br></p>' &&  genJobDescription !== '<p><br></p>'  && // Ensure jobDescription isn't the placeholder value
+                  (jobTitle || "").trim() !== "" &&
+                  (genJobDescription || "").trim() !== "" &&
+                  jobDescription !== "<p><br></p>" &&
+                  genJobDescription !== "<p><br></p>" && // Ensure jobDescription isn't the placeholder value
                   chipData.length > 0) ||
-                  // Step 1 enabled condition
-                  (stepperCount === 1 &&
-                    date?.from &&
-                    date?.to &&
-                    (interviewDuration || '').trim() !== '' &&
-                    (inputScheduleStartTime || '').trim() !== '' &&
-                    (inputScheduleEndTime || '').trim() !== '' &&
-                    (intervalDuration || '').trim() !== '')   &&
-                    scheduleList.length > 0
-                  ? 'bg-white text-black border-2 border-white'
-                  : 'border-2 border-gray-700 text-gray-700'
-                }`}
+                // Step 1 enabled condition
+
+                totalPercentage === 100
+                  ? "bg-white text-black border-2 border-white"
+                  : "border-2 border-gray-700 text-gray-700"
+              }`}
             >
               Next
             </button>
-
-
-
-
-
           ) : (
             <button
               onClick={handleSubmit}
-              className={` ${totalPercentage === 100 ? "block" : "hidden"
-                } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
+              className={` ${
+                stepperCount === 2 &&
+                date?.from &&
+                date?.to &&
+                dailySessions.length > 0 &&
+                scheduleList.length > 0
+                  ? "block"
+                  : "hidden"
+              } mt-6 px-5 py-2 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold`}
             >
               Create Interview
             </button>
