@@ -165,7 +165,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         <div>
                           <div className=" flex justify-start items-center">
                             <h1 className="text-md text-gray-400 font-semibold">
-                              Qestion {index + 1} :
+                              Qestion  :
                             </h1>
                             <h1 className="text-md text-gray-400 font-semibold px-2 ">
                               {question.estimatedTimeMinutes} min
