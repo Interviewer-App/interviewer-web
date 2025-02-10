@@ -70,7 +70,13 @@ export const columns = [
   {
     accessorKey: "score",  
     header: "score",
+    cell: ({ row }) => {
+      const score = row.original.score; // Get the score value
+      // If the score is a decimal (e.g., 0.85), multiply by 100 to get percentage
+      return `${score.toFixed(2)}%`; // Show percentage with two decimal places
+    },
   },
+  
   // {
   //   accessorKey: "interviewCategory",  
   //   header: "interviewCategory",
