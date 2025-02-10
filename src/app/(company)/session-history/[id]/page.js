@@ -138,8 +138,8 @@ function SessionHistoryPage({ params }) {
 
         <div className="px-9 py-4  max-w-[1500px] w-full mx-auto">
           <h1 className=" text-4xl font-semibold">Session History</h1>
-          <div className=" flex flex-col md:flex-row justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-8">
-            <div className=" w-full md:w-[50%]">
+          <div className=" flex flex-col md:flex-row justify-start md:justify-between gap-5 mt-5 w-full">
+            <div className=" w-full md:w-[30%] bg-gray-500/20 rounded-lg p-8">
               <h1 className=" text-3xl font-semibold">
                 {sessionDetails?.candidate?.user?.firstName || ""}{" "}
                 {sessionDetails?.candidate?.user?.lastName || ""}
@@ -152,7 +152,7 @@ function SessionHistoryPage({ params }) {
               </h1>
               <div className=" w-full px-5">
                 <ul className=" w-full">
-                  <li className=" text-base pt-2 text-gray-400 mt-5">
+                  <li className=" text-sm pt-2 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Scheduled Date:{" "}
                     {new Date(sessionDetails?.scheduledDate).toLocaleDateString(
@@ -164,22 +164,22 @@ function SessionHistoryPage({ params }) {
                       }
                     ) || ""}
                   </li>
-                  <li className=" text-base pt-1 text-gray-400">
+                  <li className=" text-sm pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Scheduled Time:{" "}
                     {new Date(
                       sessionDetails?.scheduledAt
                     ).toLocaleTimeString() || ""}
                   </li>
-                  <li className=" text-base pt-1 text-gray-400">
+                  <li className=" text-sm pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Test Questions: {sessionDetails?.questions?.length || 0}
                   </li>
-                  <li className=" text-base pt-1 text-gray-400">
+                  <li className=" text-sm pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Test score: {sessionScoreDetails?.totalScore || 0}
                   </li>
-                  <li className=" text-base pt-1 text-gray-400">
+                  <li className=" text-sm pt-1 text-gray-400">
                     <FaDotCircle className="inline-block text-gray-400 mr-2" />
                     Feedback: <br />
                     <span className=" italic text-gray-500 text-sm px-5 py-2">
@@ -199,32 +199,33 @@ function SessionHistoryPage({ params }) {
                 </ul>
               </div>
             </div>
-            <div className=" w-full md:w-[70%] flex flex-col items-center justify-center mt-5 md:mt-0">
+            <div className=" w-full md:w-[70%] bg-gray-500/20 rounded-lg p-8 flex flex-col items-center justify-center mt-5 md:mt-0">
               <div className="flex items-center justify-between w-full">
-                <div>
+                <div className=" w-[30%]">
                   <h2 className=" text-2xl font-semibold text-center">
                     Overall Score
                   </h2>
-                  <h2 className=" text-base text-gray-500 text-center">
+                  <h2 className=" text-sm text-gray-500 text-center">
                     for the entire interview
                   </h2>
                   <CirculerProgress
                     marks={sessionDetails?.score || 0}
                     catorgory="Overall score"
                   />
-                  <p className=" text-gray-300 text-center">
-                  You have Scored {parseInt(sessionDetails?.score).toFixed(2)}% in entire interview.
+                  <p className=" text-gray-300 text-center text-sm">
+                    You have Scored {parseInt(sessionDetails?.score).toFixed(2)}
+                    % in entire interview.
                   </p>
-                  <p className=" text-sm text-gray-500 text-center">
-                  Include test marks and non-technical details.
+                  <p className=" text-xs text-gray-500 text-center">
+                    Include test marks and non-technical details.
                   </p>
                 </div>
 
-                <div>
+                <div className=" w-[30%]">
                   <h1 className=" text-2xl font-semibold text-center">
                     Test Score
                   </h1>
-                  <h2 className=" text-base text-gray-500 text-center">
+                  <h2 className=" text-sm text-gray-500 text-center">
                     {" "}
                     {sessionScoreDetails?.numberOfAnswers || 0}/
                     {sessionDetails?.questions?.length || 0} Questions
@@ -234,14 +235,39 @@ function SessionHistoryPage({ params }) {
                     catorgory="Test score"
                   />
 
-                  <p className=" text-gray-300 text-center">
+                  <p className=" text-gray-300 text-center text-sm">
                     {parseFloat(sessionScoreDetails?.score).toFixed(2) || 0}%
                     Accurate with expected answers
                   </p>
-                  <p className=" text-sm text-gray-500 text-center">
+                  <p className=" text-xs text-gray-500 text-center">
                     Showing Test Score for{" "}
                     {sessionScoreDetails?.numberOfAnswers || 0} out of{" "}
                     {sessionDetails?.questions?.length || 0} question
+                  </p>
+                </div>
+
+                <div className=" w-[30%]">
+                  <h2 className=" text-2xl font-semibold text-center">
+                    Soft Skills
+                  </h2>
+                  <h2 className=" text-sm text-gray-500 text-center">
+                    Soft skills evaluation
+                  </h2>
+                  <CirculerProgress
+                    marks={
+                      sessionDetails?.score - sessionScoreDetails?.score || 0
+                    }
+                    catorgory="Soft Skills"
+                  />
+                  <p className=" text-gray-300 text-center text-sm">
+                    You have Scored{" "}
+                    {parseInt(
+                      sessionDetails?.score - sessionScoreDetails?.score || 0
+                    ).toFixed(2)}
+                    % in in the soft skills assessment.
+                  </p>
+                  <p className=" text-xs text-gray-500 text-center">
+                    Showing Score for Soft Skills evaluation.
                   </p>
                 </div>
               </div>
