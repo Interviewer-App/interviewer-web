@@ -49,7 +49,7 @@ function InterviewRoomAnalizerOther({
         });
       }
     };
-    fetchCategoryPercentage();
+    if ( sessionId) fetchCategoryPercentage();
   }, [sessionId]);
 
   const handleOpenNoteModal = (categoryId, categoryName) => {
