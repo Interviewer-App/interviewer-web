@@ -18,7 +18,9 @@ import { IoCloseCircle } from "react-icons/io5";
 import { CalendarIcon, Percent } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
-
+import brownzeTrophy from "@/assets/analyze/brownzeTrophy.png"
+import silverTrophy from "@/assets/analyze/silverTrophy.png"
+import goldTrophy from "@/assets/analyze/goldTrophy.png"
 //UI Components
 import { Chip } from "@mui/material";
 import { useToast } from "@/hooks/use-toast";
@@ -467,7 +469,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-                interviewStatusDetails.completedSchedules,
+              interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -682,12 +684,10 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } Successfully!`,
-          description: `The interview has been ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
+            } Successfully!`,
+          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
+            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -898,9 +898,8 @@ export default function InterviewPreviewPage({ params }) {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <span
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold`}
                   >
                     Publish Now
                   </span>
@@ -932,9 +931,8 @@ export default function InterviewPreviewPage({ params }) {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <span
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } py-2.5 min-w-[130px] w-[130px] mt-5 md:mt-0 cursor-pointer bg-gradient-to-b from-red-600 to-red-700 rounded-lg text-center text-sm text-white font-semibold`}
                   >
                     Unpublish
                   </span>
@@ -968,66 +966,58 @@ export default function InterviewPreviewPage({ params }) {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("overview")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "overview" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "overview" ? "bg-gray-800" : ""
+                  } `}
               >
                 Overview
               </button>
               <button
                 onClick={() => setTab("questions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "questions" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "questions" ? "bg-gray-800" : ""
+                  } `}
               >
                 Insights
               </button>
               <button
                 onClick={() => setTab("sessions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "sessions" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "sessions" ? "bg-gray-800" : ""
+                  } `}
               >
                 Interview Sessions
               </button>
 
               <button
                 onClick={() => setTab("invitation")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "invitation" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "invitation" ? "bg-gray-800" : ""
+                  } `}
               >
                 Invitation
               </button>
               <button
                 onClick={() => setTab("candidates")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "candidates" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidates" ? "bg-gray-800" : ""
+                  } `}
               >
                 Candidates
               </button>
               <button
                 onClick={() => setTab("candidateAnalyze")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "candidateAnalyze" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidateAnalyze" ? "bg-gray-800" : ""
+                  } `}
               >
                 Analyze
               </button>
               <button
                 onClick={() => setTab("edit")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "edit" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "edit" ? "bg-gray-800" : ""
+                  } `}
               >
                 Edit
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  tab === "settings" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "settings" ? "bg-gray-800" : ""
+                  } `}
               >
                 Settings
               </button>
@@ -1196,9 +1186,8 @@ export default function InterviewPreviewPage({ params }) {
                       readOnly={!editDetails}
                       value={title || ""}
                       onChange={(e) => setTitle(e.target.value)}
-                      className={` ${
-                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                      } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
+                      className={` ${!editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
+                        } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
                     />
                   </h1>
                   {interviewDetail.status !== "ACTIVE" &&
@@ -1206,9 +1195,8 @@ export default function InterviewPreviewPage({ params }) {
                       <div>
                         <button
                           onClick={() => setEditDetails(!editDetails)}
-                          className={` ${
-                            editDetails ? "hidden" : "block"
-                          } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
+                          className={` ${editDetails ? "hidden" : "block"
+                            } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
                         >
                           <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
                           Edit details
@@ -1216,20 +1204,18 @@ export default function InterviewPreviewPage({ params }) {
 
                         <button
                           onClick={handleSaveChanges}
-                          className={` ${
-                            editDetails && totalPercentage == 100
+                          className={` ${editDetails && totalPercentage == 100
                               ? "block"
                               : "hidden"
-                          } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                            } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
                         <button
-                          className={` ${
-                            editDetails && totalPercentage != 100
+                          className={` ${editDetails && totalPercentage != 100
                               ? "block"
                               : "hidden"
-                          } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                            } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
@@ -1242,9 +1228,8 @@ export default function InterviewPreviewPage({ params }) {
                       Description
                     </h1>
                     <div
-                      className={` ${
-                        editDetails ? "hidden" : "block"
-                      } text-justify w-full bg-transparent rounded-lg description`}
+                      className={` ${editDetails ? "hidden" : "block"
+                        } text-justify w-full bg-transparent rounded-lg description`}
                       dangerouslySetInnerHTML={{ __html: description }}
                     />
 
@@ -1320,7 +1305,7 @@ export default function InterviewPreviewPage({ params }) {
                                       className={cn(
                                         "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
                                         !inputScheduleDate &&
-                                          "text-muted-foreground"
+                                        "text-muted-foreground"
                                       )}
                                     >
                                       <CalendarIcon />
@@ -1408,14 +1393,12 @@ export default function InterviewPreviewPage({ params }) {
                                   <>
                                     <IoCloseCircle
                                       onClick={handleDeleteSchedule(schedule)}
-                                      className={` ${
-                                        schedule.isBooked ? "hidden" : "block"
-                                      } text-gray-500 text-2xl cursor-pointer`}
+                                      className={` ${schedule.isBooked ? "hidden" : "block"
+                                        } text-gray-500 text-2xl cursor-pointer`}
                                     />
                                     <div
-                                      className={` ${
-                                        schedule.isBooked ? "block" : "hidden"
-                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                      className={` ${schedule.isBooked ? "block" : "hidden"
+                                        } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                     >
                                       <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                       <div className=" ml-2">Booked</div>
@@ -1423,9 +1406,8 @@ export default function InterviewPreviewPage({ params }) {
                                   </>
                                 ) : (
                                   <div
-                                    className={` ${
-                                      schedule.isBooked ? "block" : "hidden"
-                                    } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                    className={` ${schedule.isBooked ? "block" : "hidden"
+                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                   >
                                     <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                     <div className=" ml-2">Booked</div>
@@ -1445,9 +1427,8 @@ export default function InterviewPreviewPage({ params }) {
                       </h1>
                       {editDetails && (
                         <p
-                          className={` text-red-500 text-xs py-2 ${
-                            totalPercentage !== 100 ? "block" : "hidden"
-                          }`}
+                          className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
+                            }`}
                         >
                           *Please ensure the total percentage equals 100%. The
                           sum of all category percentages should not exceed or
@@ -1456,9 +1437,8 @@ export default function InterviewPreviewPage({ params }) {
                       )}
 
                       <div
-                        className={`flex w-full justify-between space-x-2 ${
-                          editDetails ? "block" : "hidden"
-                        }`}
+                        className={`flex w-full justify-between space-x-2 ${editDetails ? "block" : "hidden"
+                          }`}
                       >
                         <div className="w-[40%]">
                           <DropdownMenu>
@@ -1535,9 +1515,8 @@ export default function InterviewPreviewPage({ params }) {
                                   {catagory.percentage}
                                 </td>
                                 <td
-                                  className={` p-3 w-[20%] text-center ${
-                                    editDetails ? "block" : "hidden"
-                                  }`}
+                                  className={` p-3 w-[20%] text-center ${editDetails ? "block" : "hidden"
+                                    }`}
                                 >
                                   <IoCloseCircle
                                     onClick={handleDeleteCategory(catagory)}
@@ -1688,9 +1667,8 @@ export default function InterviewPreviewPage({ params }) {
               <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 mb-5 rounded-lg">
                 <button
                   onClick={() => setQuestionTab("technical")}
-                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                    questionTab === "technical" ? "bg-gray-800" : ""
-                  } `}
+                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${questionTab === "technical" ? "bg-gray-800" : ""
+                    } `}
                 >
                   Technical
                 </button>
@@ -1704,9 +1682,8 @@ export default function InterviewPreviewPage({ params }) {
                       <button
                         key={index}
                         onClick={() => handleQuestionTabChange(category)}
-                        className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                          questionTab === category.catagory ? "bg-gray-800" : ""
-                        }`}
+                        className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${questionTab === category.catagory ? "bg-gray-800" : ""
+                          }`}
                       >
                         {category.catagory}
                       </button>
@@ -1888,8 +1865,8 @@ export default function InterviewPreviewPage({ params }) {
                         {selectedSortCategory === "overall"
                           ? "Overall"
                           : categoryList.find(
-                              (cat) => cat.key === selectedSortCategory
-                            )?.catagory || "Select Category"}
+                            (cat) => cat.key === selectedSortCategory
+                          )?.catagory || "Select Category"}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
@@ -1948,14 +1925,32 @@ export default function InterviewPreviewPage({ params }) {
                           {parseInt(candidate.score).toFixed(2)}%
                         </p>
                       </div>
-                      <div className="w-[5%] ">
-                        {index < 3 && (
+                      <div className="w-[5%]">
+                        {index === 0 && (
                           <Image
-                            src={Trophy}
-                            alt="trophy"
+                            src={goldTrophy}
+                            alt="gold trophy"
                             width={30}
                             height={30}
-                            className=" mr-3"
+                            className="mr-3"
+                          />
+                        )}
+                        {index === 1 && (
+                          <Image
+                            src={silverTrophy}
+                            alt="silver trophy"
+                            width={30}
+                            height={30}
+                            className="mr-3"
+                          />
+                        )}
+                        {index === 2 && (
+                          <Image
+                            src={brownzeTrophy}
+                            alt="bronze trophy"
+                            width={30}
+                            height={30}
+                            className="mr-3"
                           />
                         )}
                       </div>
