@@ -84,6 +84,36 @@ const InterviewRoomPage = ({ params }) => {
     setTranscript,
   } = useSpeechRecognition({ continuous: true });
 
+  const [questionCountDown, setQuestionCountDown] = useState(0);
+
+  useEffect(() => {
+    if (question?.estimatedTimeMinutes) {
+      const totalSeconds = question.estimatedTimeMinutes * 60;
+      setQuestionCountDown(totalSeconds); // Initialize countdown in seconds
+
+      const interval = setInterval(() => {
+        setQuestionCountDown((prevCountDown) => {
+          if (prevCountDown <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prevCountDown - 1;
+        });
+      }, 1000); // Update every second
+
+      return () => clearInterval(interval);
+    }
+  }, [question]);
+
+  // Format time as MM:SS
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0"); // Two-digit minutes
+    const secs = (seconds % 60).toString().padStart(2, "0"); // Two-digit seconds
+    return `${minutes}:${secs}`;
+  };
+
   const startStopListening = () => {
     isListening ? stopListening() : startListening();
   };
@@ -285,9 +315,13 @@ const InterviewRoomPage = ({ params }) => {
                   {questionType === "OPEN_ENDED" ? (
                     <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
                       <div className="absolute inset-0 bg-black -z-20"></div>
-                      <div className="w-[70%] max-w-[1100px]">
-                        <div className="relative w-full py-9">
-                          <div className="p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
+                      <div className="w-[70%] max-w-[1100px] relative">
+                        <div className=" w-full py-9">
+                          <div className=" relative p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
+                            <div className=" absolute top-4 right-4 text-2xl font-semibold">
+                              <span className=" text-sm font-normal">Time Remaining</span>{" "}
+                              <p className=" text-right">{formatTime(questionCountDown)}</p>
+                            </div>
                             <h1 className="text-2xl font-semibold">
                               Question{" "}
                             </h1>
@@ -387,6 +421,7 @@ const InterviewRoomPage = ({ params }) => {
                       isSubmitBtnAvailable={isSubmitBtnAvailable}
                       sessionID={sessionId}
                       socket={socket}
+                      time={formatTime(questionCountDown)}
                     />
                   )}
                 </ResizablePanel>
@@ -743,7 +778,11 @@ const InterviewRoomPage = ({ params }) => {
               : 100
           }
         >
-          <div className="flex flex-col h-[300px] w-full justify-center items-center">
+          <div
+            className={`flex flex-col w-full justify-center items-center ${
+              technicalStatus === "toBeConducted" ? "h-lvh" : "h-[300px]"
+            }`}
+          >
             <VideoCall sessionId={sessionId} isCandidate={true} />
           </div>
         </ResizablePanel>
