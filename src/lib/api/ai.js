@@ -51,3 +51,13 @@ export const generateInterviewSchedules = async (data) => {
     throw error;
   }
 };
+
+export const generateInterviewDuration = async (data) => {
+  try {
+    const response = await axiosInstance.post(`/ai/generate-interview-duration`, data);
+    return response;
+  } catch (error) {
+    console.log("Error generate duration:", error);
+    throw error;
+  }
+};
