@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -58,6 +58,35 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     const [allAnswered, setAllAnswered] = useState(false);
     const [isAllUnansweredOrNoneAnswered, setIsAllUnansweredOrNoneAnswered] =
       useState(true);
+    const [questionCountDown, setQuestionCountDown] = useState(0);
+
+    useEffect(() => {
+      if (availableQuestion?.estimatedTimeMinutes) {
+        const totalSeconds = availableQuestion.estimatedTimeMinutes * 60;
+        setQuestionCountDown(totalSeconds); // Initialize countdown in seconds
+    
+        const interval = setInterval(() => {
+          setQuestionCountDown((prevCountDown) => {
+            if (prevCountDown <= 1) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prevCountDown - 1;
+          });
+        }, 1000); // Update every second
+    
+        return () => clearInterval(interval);
+      }
+    }, [availableQuestion]);
+    
+    // Format time as MM:SS
+    const formatTime = (seconds) => {
+      const minutes = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, "0"); // Two-digit minutes
+      const secs = (seconds % 60).toString().padStart(2, "0"); // Two-digit seconds
+      return `${minutes}:${secs}`;
+    };
 
     useEffect(() => {
       const unansweredQuestions = questionList.filter(
@@ -150,11 +179,12 @@ const InterviewRoomAnalizerDashboard = forwardRef(
 
 
                   <h1 className=" text-3xl font-semibold">Question List</h1>
-                  <div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] py-2 px-4 rounded-lg flex items-center justify-between">
-                    <div className=" mr-9 text-justify text-sm pt-3">
+                  {technicalStatus === "ongoing" && (<div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] p-4 rounded-lg">
+                    <h1 className=" text-2xl font-semibold">{formatTime(questionCountDown)}</h1>
+                    <p className=" text-sm text-justify pt-3">
                       {typingAnswer}
-                    </div>
-                  </div>
+                    </p>
+                  </div>)}
 
                   <div className=" mt-5 w-full">
                     {questionList.map((question, index) => (

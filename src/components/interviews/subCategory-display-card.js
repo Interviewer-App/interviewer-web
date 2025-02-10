@@ -102,24 +102,42 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
       const r = Math.floor(Math.random() * 256);
       const g = Math.floor(Math.random() * 256);
       const b = Math.floor(Math.random() * 256);
-      return `rgba(${r}, ${g}, ${b}, 0.2)`;
+      return `rgba(${r}, ${g}, ${b}, 0.2)`; // Fixed template literal
     };
-
+  
     const generateRandomBorderColor = (color) => color.replace("0.2", "1");
-
+  
+    // Calculate total percentage from subcategories
+    const totalPercentage = subcategories.reduce(
+      (acc, cat) => acc + parseFloat(cat.percentage),
+      0
+    );
+    const remaining = 100 - totalPercentage;
+  
+    // Generate colors for subcategories
     const backgroundColors = subcategories.map(() => generateRandomColor());
-    const borderColors = backgroundColors.map((color) =>
+    const borderColors = backgroundColors.map((color) => 
       generateRandomBorderColor(color)
     );
-
+  
+    // Create dataset with remaining value
     const dataset = {
-      labels: subcategories.map((cat) => cat.name),
+      labels: [...subcategories.map((cat) => cat.name), "Remaining"], // Add Remaining label
       datasets: [
         {
           label: "Percentage",
-          data: subcategories.map((cat) => parseFloat(cat.percentage)),
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
+          data: [
+            ...subcategories.map((cat) => parseFloat(cat.percentage)),
+            remaining // Add remaining value
+          ],
+          backgroundColor: [
+            ...backgroundColors,
+            "rgba(7, 9, 11, 1)" // Remaining background color
+          ],
+          borderColor: [
+            ...borderColors,
+            "rgba(207, 207, 207, 1)" // Remaining border color
+          ],
           borderWidth: 1,
         },
       ],

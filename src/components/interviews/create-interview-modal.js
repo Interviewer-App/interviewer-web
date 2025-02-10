@@ -933,7 +933,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
             <div className=" w-full mt-5 min-h-[350px]">
               <div className=" w-full border-2 border-yellow-500/40 bg-yellow-900/5  rounded-lg p-5 mt-5">
                 <p className=" text-xs pb-2 text-yellow-700">
-                  *If you're unsure about the appropriate time duration, we can
+                  *If you&apos;re unsure about the appropriate time duration, we can
                   assist you in selecting the most suitable one based on your
                   needs.
                 </p>
