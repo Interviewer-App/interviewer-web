@@ -50,6 +50,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       setTypingAnswer,
       categoryScores,
       setCategoryScores,
+      technicalStatus,
     },
     ref
   ) => {
@@ -101,6 +102,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       setTypingAnswer("typing...");
     };
 
+
+
     return (
       <div className=" h-[90vh] w-full bg-black">
         <ResizablePanelGroup direction="horizontal">
@@ -108,7 +111,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={60}>
                 <div className=" h-full w-full overflow-y-auto p-6 relative">
-                  {allAnswered ? (
+                  {technicalStatus === 'completed' && (
                     <button
                       variant="secondary"
                       className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
@@ -116,29 +119,27 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     >
                       End Technical Test
                     </button>
-                  ) : (
-                    <>
-                      {questionList.filter(
-                        (question) => question.isAnswered === true
-                      ).length === 0 ? (
-                        <button
+                  ) }
+                   
+                     
+                       {technicalStatus === 'toBeConducted' && ( <button
                           variant="secondary"
                           className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
                           onClick={startTechnicalQuestions}
                         >
                           Start Technical Test
-                        </button>
-                      ) : (
-                        <button
+                        </button>)}
+                      
+                        {technicalStatus === 'ongoing' && (<button
                           variant="secondary"
                           className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
                           onClick={nextQuestion}
                         >
                           Next Question
-                        </button>
-                      )}
-                    </>
-                  )}
+                        </button>)}
+                     
+                   
+                  
                   <h1 className=" text-3xl font-semibold">Question List</h1>
                   <div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] py-2 px-4 rounded-lg flex items-center justify-between">
                     <div className=" mr-9 text-justify text-sm pt-3">
@@ -203,7 +204,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={140}>
-            {isAllUnansweredOrNoneAnswered ? (
+            {technicalStatus !== 'ongoing' ? (
               <div className=" h-full overflow-y-auto p-6 overflow-x-hidden">
                 <InterviewRoomAnalizerOther
                   categoryScores={categoryScores}
