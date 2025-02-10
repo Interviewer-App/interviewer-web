@@ -70,7 +70,8 @@ const InterviewRoomPage = ({ params }) => {
   const [totalScore, setTotalScore] = useState(0);
   const [numberOfAnswers, setNumberOfAnswers] = useState(0);
   const [questionType, setQuestionType] = useState();
-  const [isParticipantJoined, setIsParticipantJoined] = useState(false);
+  const [isTechnicalOngoing, setIsTechnicalOngoing] = useState(false);
+  const [technicalStatus, setTechnicalStatus] = useState("");
 
   const {
     isListening,
@@ -175,11 +176,13 @@ const InterviewRoomPage = ({ params }) => {
       setNumberOfAnswers(data.totalScore.numberOfAnswers);
     });
 
-    socket.on("participantJoined", (data) => {
-      if (data.role === "COMPANY") {
-        setIsParticipantJoined(true);
+    socket.on("technicalStatus", (data) => {
+      debugger
+      setTechnicalStatus(data.technicalStatus);
+      if (data.technicalStatus === "ongoing") {
+        setIsTechnicalOngoing(true);
       } else {
-        setIsParticipantJoined(false);
+        setIsTechnicalOngoing(false);
       }
     });
 
@@ -193,6 +196,7 @@ const InterviewRoomPage = ({ params }) => {
       socket.off("navigateNextQuestion");
       socket.off("answerSubmitted");
       socket.off("participantLeft");
+      socket.off("technicalStatus");
     };
   }, []);
 
@@ -406,7 +410,7 @@ const InterviewRoomPage = ({ params }) => {
               </ResizablePanel>
             ) : (
               <>
-                {isParticipantJoined ? (
+                {technicalStatus === "toBeConducted" ? (
                   <></>
                 ) : (
                   <ResizablePanel defaultSize={250}>
@@ -442,7 +446,7 @@ const InterviewRoomPage = ({ params }) => {
         )}
         <ResizableHandle withHandle />
         <ResizablePanel
-          defaultSize={isParticipantJoined && !isQuestionAvailabe ? 250 : 50}
+          defaultSize={technicalStatus === 'toBeConducted' && !isQuestionAvailabe ? 250 : 50}
         >
           <VideoCall sessionId={sessionId} isCandidate={true} />
         </ResizablePanel>
