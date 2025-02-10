@@ -87,6 +87,15 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       setTypingAnswer("typing...");
     };
 
+    const endTechnicalTest = () => {
+      const data = {
+        sessionId: sessionId,
+      };
+      socket.emit("endTest", data);
+      setAnaliyzeResponse({});
+      setTypingAnswer("typing...");
+    };
+
     const startTechnicalQuestions = () => {
       const data = {
         sessionId: sessionId,
@@ -111,35 +120,35 @@ const InterviewRoomAnalizerDashboard = forwardRef(
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={60}>
                 <div className=" h-full w-full overflow-y-auto p-6 relative">
-                  {technicalStatus === 'completed' && (
+                  {technicalStatus === 'testEnd' && (
                     <button
                       variant="secondary"
                       className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
-                      onClick={nextQuestion}
+                      onClick={endTechnicalTest}
                     >
                       End Technical Test
                     </button>
-                  ) }
-                   
-                     
-                       {technicalStatus === 'toBeConducted' && ( <button
-                          variant="secondary"
-                          className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
-                          onClick={startTechnicalQuestions}
-                        >
-                          Start Technical Test
-                        </button>)}
-                      
-                        {technicalStatus === 'ongoing' && (<button
-                          variant="secondary"
-                          className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
-                          onClick={nextQuestion}
-                        >
-                          Next Question
-                        </button>)}
-                     
-                   
-                  
+                  )}
+
+
+                  {technicalStatus === 'toBeConducted' && (<button
+                    variant="secondary"
+                    className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
+                    onClick={startTechnicalQuestions}
+                  >
+                    Start Technical Test
+                  </button>)}
+
+                  {technicalStatus === 'ongoing' && (<button
+                    variant="secondary"
+                    className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
+                    onClick={nextQuestion}
+                  >
+                    Next Question
+                  </button>)}
+
+
+
                   <h1 className=" text-3xl font-semibold">Question List</h1>
                   <div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] py-2 px-4 rounded-lg flex items-center justify-between">
                     <div className=" mr-9 text-justify text-sm pt-3">
@@ -204,7 +213,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={140}>
-            {technicalStatus !== 'ongoing' ? (
+            {technicalStatus === 'toBeConducted' || technicalStatus === 'completed' ? (
               <div className=" h-full overflow-y-auto p-6 overflow-x-hidden">
                 <InterviewRoomAnalizerOther
                   categoryScores={categoryScores}
@@ -263,13 +272,19 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         ) || "No areas of improvement found"}
                       </ul>
                     </div>
-                    <div className=" w-full mt-2">
+                    {/* <div className=" w-full mt-2">
                       <h1 className="py-3 font-semibold text-lg">Alignment</h1>
                       <p className=" text-sm text-gray-400">
                         {analiyzeResponse?.alignment || ""}
                       </p>
-                    </div>
+                    </div> */}
                   </div>
+                </div>
+                <div className=" w-full bg-blue-700/20 mt-5 text-gray-400 border-2 border-blue-700 px-4 py-3 rounded-lg">
+                  <h1 className="py-3 font-semibold text-lg">Alignment</h1>
+                  <p className=" text-sm text-gray-400">
+                    {analiyzeResponse?.alignment || ""}
+                  </p>
                 </div>
                 <div className=" w-full bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg py-4 px-7">
                   <h1 className=" font-semibold text-lg">Available Question</h1>

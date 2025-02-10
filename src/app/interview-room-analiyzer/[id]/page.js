@@ -87,6 +87,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
     
     socket.on("technicalStatus", (data) => {
+      debugger
       setTechnicalStatus(data.technicalStatus);
     });
 
