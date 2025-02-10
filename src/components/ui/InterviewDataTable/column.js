@@ -189,7 +189,13 @@ export const interviewSessionTableColumns = [
   {
     accessorKey: "score",
     header: "Score",
+    cell: ({ row }) => {
+      const score = row.getValue("score");
+      const formattedScore = score ? `${score}%` : "N/A";  // Format score as percentage
+      return formattedScore;
+    },
   },
+
 
   {
     id: "startBtn",
