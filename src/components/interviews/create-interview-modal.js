@@ -1,12 +1,12 @@
 "use client";
-import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
-
+import { HexColorPicker } from "react-colorful";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import React, { useEffect, useState,useRef } from "react";
 
 import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
@@ -276,6 +276,11 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [durationLoading, setDurationLoading] = React.useState(false);
 
   const { toast } = useToast();
+
+
+  const [color, setColor] = useState("#034f84");
+  const [isPickerVisible, setPickerVisible] = useState(false);
+  const colorPickerRef = useRef(null);
 
   // React.useEffect(() => {
   //   console.log("date", inputScheduleStartTime);
@@ -670,6 +675,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
         companyId: companyId,
         categoryName: interviewCatName,
         description: interviewCatDesc,
+        color:color
       });
 
       if (response) {
@@ -810,6 +816,26 @@ export default function CreateInterviewModal({ setModalOpen }) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
+        setPickerVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
+  
+  const toggleColorPicker = () => {
+    setPickerVisible(!isPickerVisible);
   };
 
   return (
@@ -1319,7 +1345,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     onChange={(e) => setInterviewCatName(e.target.value)}
                     value={interviewCatName}
                     required
-                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm"
+                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-2/5 focus:outline-none focus:ring-2 focus:ring-white text-sm"
                     placeholder="Category Name..."
                   />
                   <textarea
@@ -1328,9 +1354,29 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
                     value={interviewCatDesc} // Binding input to state
                     required
-                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white text-sm h-[44px]"
+                    className="bg-[#32353b] text-white rounded-lg px-4 py-3 w-2/5 focus:outline-none focus:ring-2 focus:ring-white text-sm h-[44px]"
                     placeholder="Category Description..."
                   />
+
+                  <div
+                    onClick={toggleColorPicker}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      backgroundColor: color,
+                      cursor: 'pointer',
+                      border: '2px solid #ccc'
+                    }}
+                  />
+
+
+                  {isPickerVisible && (
+                    <div ref={colorPickerRef} style={{ position: 'absolute', marginTop: '10px' }}>
+                      <HexColorPicker color={color} onChange={setColor} />
+                    </div>
+                  )}
+
                   <button
                     type="button" // Change the button type to 'button' since it's not in a form anymore
                     onClick={handleCategorySubmit} // Manually handle submission

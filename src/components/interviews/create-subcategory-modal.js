@@ -46,7 +46,7 @@ function CreateSubcategoryModal({
           title: "Success!",
           description: "Subcategory added successfully",
         });
-        setModalOpen(false);
+        setModalOpen(false);  
       }
     } catch (err) {
       if (err.response) {

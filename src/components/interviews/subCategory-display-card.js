@@ -122,7 +122,7 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
   
     // Create dataset with remaining value
     const dataset = {
-      labels: [...subcategories.map((cat) => cat.name), "Remaining"], // Add Remaining label
+      labels: [...subcategories.map((cat) => cat.name), ], // Add Remaining label
       datasets: [
         {
           label: "Percentage",
