@@ -341,6 +341,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
             (cat) => cat.categoryId === inputCatagory.trim()
           )?.categoryName,
           percentage: inputPercentage.trim(),
+          color:interviewCategories.find(
+            (cat) => cat.categoryId === inputCatagory.trim()
+          )?.color,
+          
         },
       ]);
       setInputPercentage("");
@@ -470,6 +474,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
     let total = 0;
     categoryList.map((catagory) => {
       total += parseFloat(catagory.percentage);
+
     });
     setTotalPercentage(total);
   }, [categoryList]);
@@ -622,6 +627,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
           return {
             percentage : parseFloat(catagory.percentage),
             name : catagory.catagory,
+    
           };
         }),
         difficulty: scheduleLevel,
@@ -726,7 +732,37 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
 
+
+  // Function to convert Hex to RGBA with opacity
+  const hexToRgba = (hex, opacity = 0.2) => {
+    if (!hex || typeof hex !== 'string') {
+      console.warn("Invalid hex color:", hex);  // Optional: log a warning if color is invalid
+      return `rgba(0, 0, 0, ${opacity})`;  // Return a default color (black) if the hex is invalid
+    }
+  
+    // Remove the hash symbol if it exists
+    hex = hex.replace('#', '');
+  
+    // Ensure it's a valid hex color (6 characters long)
+    if (hex.length !== 6) {
+      console.warn("Invalid hex color:", hex);  // Optional: log a warning if color is invalid
+      return `rgba(0, 0, 0, ${opacity})`;  // Return a default color (black) if invalid
+    }
+  
+    // Convert the hex string into RGB values
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+  
+    // Return the RGBA format
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+  
+  
+  
+
   useEffect(() => {
+    
     // Calculate total percentage from categories
     const totalPercentage = categoryList.reduce(
       (acc, cat) => acc + parseFloat(cat.percentage),
@@ -737,24 +773,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
     const remaining = 100 - totalPercentage;
   
     // Define your existing color scheme
-    const backgroundColors = [
-      "rgba(255, 99, 132, 0.2)",
-      "rgba(54, 162, 235, 0.2)",
-      "rgba(255, 206, 86, 0.2)",
-      "rgba(75, 192, 192, 0.2)",
-      "rgba(153, 102, 255, 0.2)",
-      "rgba(255, 159, 64, 0.2)",
-    ];
-  
-    const borderColors = [
-      "rgba(255, 99, 132, 1)",
-      "rgba(54, 162, 235, 1)",
-      "rgba(255, 206, 86, 1)",
-      "rgba(75, 192, 192, 1)",
-      "rgba(153, 102, 255, 1)",
-      "rgba(255, 159, 64, 1)",
-    ];
-  
+    const backgroundColors = categoryList.map(cat => hexToRgba(cat.color, 0.2));
+    const borderColors = categoryList.map(cat => hexToRgba(cat.color, 1));
+
     // Create the dataset with the remaining value
     const data = {
       labels: [...categoryList.map((cat) => cat.catagory), ], // Add "Remaining" label
@@ -766,12 +787,12 @@ export default function CreateInterviewModal({ setModalOpen }) {
             remaining, // Add the remaining value
           ],
           backgroundColor: [
-            ...backgroundColors.slice(0, categoryList.length), // Use existing colors for categories
-            "rgba(7, 9, 11, 0.2)", // Dummy color for the remaining value
+            ...backgroundColors, // Use existing colors for categories
+            "rgba(192, 192, 192,0.05)"// Dummy color for the remaining value
           ],
           borderColor: [
-            ...borderColors.slice(0, categoryList.length), // Use existing border colors for categories
-            "rgba(7, 9, 11, 1)", // Dummy border color for the remaining value
+            ...borderColors, // Use existing border colors for categories
+            "rgba(192, 192, 192,0.2)" // Dummy border color for the remaining value
           ],
           borderWidth: 1,
         },
