@@ -25,6 +25,7 @@ function CreateSubcategoryModal({
     if (isUpdate) {
       setName(subcategory.name);
       setPercentage(subcategory.percentage);
+      setColor(subcategory.color || "#034f84");
     }
   }, [subcategory]);
 
@@ -107,6 +108,7 @@ function CreateSubcategoryModal({
       const data = {
         name,
         percentage: parseInt(percentage),
+        color:color
       };
       const response = await updateInterviewSubCategory(subcategory.id, data);
       if (response.data) {
@@ -114,6 +116,7 @@ function CreateSubcategoryModal({
           variant: "success",
           title: "Success!",
           description: "Subcategory updated successfully",
+
         });
         setModalOpen(false);
       }
