@@ -56,7 +56,6 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
 
   useEffect(() => {
     const fetchSubInterviewCategory = async () => {
-      
       try {
         const response = await fetchInterviewSubCategory(
           assignment.assignmentId
@@ -99,19 +98,18 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
   }, [assignment, createModalOpen, updateModalOpen, deleteTrger]);
 
   // Function to convert Hex to RGBA with opacity
-const hexToRgba = (hex, opacity = 0.2) => {
-  // Remove the hash symbol if it exists
-  hex = hex.replace('#', '');
+  const hexToRgba = (hex, opacity = 0.2) => {
+    // Remove the hash symbol if it exists
+    hex = hex.replace("#", "");
 
-  // Convert the hex string into RGB values
-  let r = parseInt(hex.substring(0, 2), 16);
-  let g = parseInt(hex.substring(2, 4), 16);
-  let b = parseInt(hex.substring(4, 6), 16);
+    // Convert the hex string into RGB values
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
 
-  // Return the RGBA format
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-};
-
+    // Return the RGBA format
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
 
   useEffect(() => {
     // Calculate total percentage from subcategories
@@ -120,11 +118,13 @@ const hexToRgba = (hex, opacity = 0.2) => {
       0
     );
     const remaining = 100 - totalPercentage;
-  
+
     // Use actual colors from subcategories
-    const backgroundColors = subcategories.map(cat => hexToRgba(cat.color, 0.2));
-    const borderColors = subcategories.map(cat => hexToRgba(cat.color, 1));
-  
+    const backgroundColors = subcategories.map((cat) =>
+      hexToRgba(cat.color, 0.2)
+    );
+    const borderColors = subcategories.map((cat) => hexToRgba(cat.color, 1));
+
     // Create dataset with remaining value
     const dataset = {
       labels: [...subcategories.map((cat) => cat.name)],
@@ -133,15 +133,15 @@ const hexToRgba = (hex, opacity = 0.2) => {
           label: "Percentage",
           data: [
             ...subcategories.map((cat) => parseFloat(cat.percentage)),
-            remaining
+            remaining,
           ],
           backgroundColor: [
             ...backgroundColors,
-            "rgba(192, 192, 192,0.05)" // Remaining background color
+            "rgba(192, 192, 192,0.05)", // Remaining background color
           ],
           borderColor: [
             ...borderColors,
-            "rgba(192, 192, 192,0.2)" // Remaining border color
+            "rgba(192, 192, 192,0.2)", // Remaining border color
           ],
           borderWidth: 1,
         },
@@ -210,11 +210,13 @@ const hexToRgba = (hex, opacity = 0.2) => {
     <div className=" mt-9">
       <div className="flex justify-between">
         {/* <div className=" bg-blue-700/10 w-[65%] text-blue-400 border-2 border-blue-700 px-8 py-5 rounded-lg"> */}
-        <div className={`w-[65%] border-2  px-8 py-5 rounded-lg bg-opacity-10`}
-        style={{ backgroundColor: `${assignment.color}1A`,
-          border: `2px solid ${assignment.color}`,
-          color: assignment.color
-         }}
+        <div
+          className={`w-[65%] border-2  px-8 py-5 rounded-lg bg-opacity-10`}
+          style={{
+            backgroundColor: `${assignment.color}1A`,
+            border: `2px solid ${assignment.color}`,
+            color: assignment.color,
+          }}
         >
           <span className=" text-2xl">{assignment.catagory}</span>
           <span className=" text-2xl float-right">
@@ -223,7 +225,9 @@ const hexToRgba = (hex, opacity = 0.2) => {
         </div>
         <button
           onClick={() => setCreateModalOpen(true)}
-          className={` ${subcategories.length > 0 ? 'block' : ' hidden'} aspect-square h-11 flex justify-center items-center text-2xl text-black bg-white rounded-lg font-semibold`}
+          className={` ${
+            subcategories.length > 0 ? "block" : " hidden"
+          } aspect-square h-11 flex justify-center items-center text-2xl text-black bg-white rounded-lg font-semibold`}
         >
           +
         </button>
@@ -237,20 +241,19 @@ const hexToRgba = (hex, opacity = 0.2) => {
                 className=" bg-gray-700/10 flex justify-between gap-10 items-center text-gray-400 border-2 border-gray-700 px-5 py-3 rounded-lg mt-4"
               >
                 <div className="">
-                  <p className=" text-base text-gray-300">{subAssignment.name}</p>
+                  <p className=" text-base text-gray-300">
+                    {subAssignment.name}
+                  </p>
                   <p className=" text-sm">{subAssignment.percentage}%</p>
                 </div>
                 <div className="flex gap-x-2 items-center">
                   {/* Color Circle */}
                   <div
+                    className=" h-7 rounded-sm aspect-square"
                     style={{
-                      width: "30px", // Adjust size of the circle
-                      height: "30px",
-                      borderRadius: "50%",
-                      backgroundColor: subAssignment.color, // Dynamically set the color
-                      border: "2px solid #ccc", // Optional: adds a border around the circle
+                      backgroundColor: subAssignment.color,
                     }}
-              />
+                  />
                   <button
                     onClick={() => handleUpdateSubCategory(subAssignment)}
                     className="text-gray-400 hover:text-gray-200 border-gray-400 hover:bg-gray-400/20 border-2  text-lg aspect-square h-7 rounded-sm flex items-center justify-center"
@@ -293,11 +296,11 @@ const hexToRgba = (hex, opacity = 0.2) => {
             <div className=" min-h-[400px] flex flex-col justify-center items-center">
               <p className="text-gray-500">No Subcategories Found</p>
               <button
-          onClick={() => setCreateModalOpen(true)}
-          className=" h-10 mt-2 flex justify-center items-center px-5 text-sm text-black bg-white rounded-lg font-semibold"
-        >
-          Add Subcategory
-        </button>
+                onClick={() => setCreateModalOpen(true)}
+                className=" h-10 mt-2 flex justify-center items-center px-5 text-sm text-black bg-white rounded-lg font-semibold"
+              >
+                Add Subcategory
+              </button>
             </div>
           )}
         </div>

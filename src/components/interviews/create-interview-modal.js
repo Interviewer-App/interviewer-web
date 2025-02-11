@@ -1410,13 +1410,10 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
                   <div
                     onClick={toggleColorPicker}
+                    className=" h-[44px] aspect-square rounded-lg"
                     style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
                       backgroundColor: color,
-                      cursor: 'pointer',
-                      border: '2px solid #ccc'
+                      cursor: 'pointer'
                     }}
                   />
 

@@ -2,7 +2,7 @@ import {
   createInterviewSubCategory,
   updateInterviewSubCategory,
 } from "@/lib/api/interview";
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { MdClose } from "react-icons/md";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -20,7 +20,6 @@ function CreateSubcategoryModal({
   const [isPickerVisible, setPickerVisible] = useState(false);
   const colorPickerRef = useRef(null);
 
-
   useEffect(() => {
     if (isUpdate) {
       setName(subcategory.name);
@@ -35,7 +34,7 @@ function CreateSubcategoryModal({
       const data = {
         name,
         percentage: parseInt(percentage),
-        color:color
+        color: color,
       };
       const response = await createInterviewSubCategory(
         assignment.assignmentId,
@@ -47,7 +46,7 @@ function CreateSubcategoryModal({
           title: "Success!",
           description: "Subcategory added successfully",
         });
-        setModalOpen(false);  
+        setModalOpen(false);
       }
     } catch (err) {
       if (err.response) {
@@ -80,10 +79,12 @@ function CreateSubcategoryModal({
     }
   };
 
-
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
+      if (
+        colorPickerRef.current &&
+        !colorPickerRef.current.contains(event.target)
+      ) {
         setPickerVisible(false);
       }
     };
@@ -94,12 +95,9 @@ function CreateSubcategoryModal({
     };
   }, []);
 
-
-  
   const toggleColorPicker = () => {
     setPickerVisible(!isPickerVisible);
   };
-
 
   const HandleUpdateSubInterviewCategory = async (e) => {
     e.preventDefault();
@@ -108,7 +106,7 @@ function CreateSubcategoryModal({
       const data = {
         name,
         percentage: parseInt(percentage),
-        color:color
+        color: color,
       };
       const response = await updateInterviewSubCategory(subcategory.id, data);
       if (response.data) {
@@ -116,7 +114,6 @@ function CreateSubcategoryModal({
           variant: "success",
           title: "Success!",
           description: "Subcategory updated successfully",
-
         });
         setModalOpen(false);
       }
@@ -183,28 +180,26 @@ function CreateSubcategoryModal({
               required
               className=" h-[45px] w-full md:w-[40%] rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
             />
-          </div>
+            <div>
+              {/* <p className=" pb-2 text-sm text-gray-500">Set a color to your sub category</p> */}
+              <div
+                onClick={toggleColorPicker}
+                className=" h-[45px] rounded-lg aspect-square"
+                style={{
+                  backgroundColor: color,
+                  cursor: "pointer",
+                }}
+              />
 
-          <div className="flex flex-row items-center space-x-3 px-2 py-2 bg-[#32353b] rounded-lg justify-center">
-            <p>Set a color to your sub category:</p>
-            <div
-              onClick={toggleColorPicker}
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: color,
-                cursor: 'pointer',
-                border: '2px solid #ccc'
-              }}
-            />
-
-
-            {isPickerVisible && (
-              <div ref={colorPickerRef} style={{ position: 'absolute', marginTop: '10px' }}>
-                <HexColorPicker color={color} onChange={setColor} />
-              </div>
-            )}
+              {isPickerVisible && (
+                <div
+                  ref={colorPickerRef}
+                  style={{ position: "absolute", marginTop: "10px" }}
+                >
+                  <HexColorPicker color={color} onChange={setColor} />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className=" w-full flex justify-end items-center">
@@ -226,8 +221,6 @@ function CreateSubcategoryModal({
               </button>
             )}
           </div>
-
-
         </form>
       </div>
     </div>
