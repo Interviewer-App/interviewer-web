@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { deleteCategory } from "@/lib/api/interview-category";
 import {
@@ -11,60 +11,95 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 import InterviewCategoryModal from "@/components/interviews/interviewCategoryModal";
 
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+
 const ActionCell = ({ interviewCategoryDetails }) => {
   // const router = useRouter();
-  const { toast } = useToast()
-        const [modalOpen,setModalOpen]= useState(false);
+  const { toast } = useToast();
+  const [modalOpen, setModalOpen] = useState(false);
 
-      const handleDelete = async () => {
-        try {
-          
-          await deleteCategory(interviewCategoryDetails.categoryId);
+  const handleDelete = async () => {
+    try {
+      const response = await deleteCategory(
+        interviewCategoryDetails.categoryId
+      );
+      if (response.status === 200) {
+        toast({
+          title: "Sucess",
+          description: "Interview Category Deleted sucessfully",
+        });
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
           toast({
-            title: "Sucess",
-            description: "Interview Category Deleted sucessfully",
-          })
-        } catch (error) {
-          console.error("Error deleting category:", error);
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Category deleting Faild: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
           toast({
-            title: "Error",
-            description: "Failed to delete the category. Please try again.",
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         }
-      };
-      
-      const handleUpdate = async () => {
-        setModalOpen(true)
-        
-      };
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
+  const handleUpdate = async () => {
+    setModalOpen(true);
+  };
 
   return (
     <>
-    <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleDelete()}>Delete</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleUpdate()}>Update</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => handleDelete()}>
+            Delete
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUpdate()}>
+            Update
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-        {modalOpen && <InterviewCategoryModal setModalOpen={setModalOpen} isUpdated={true} interviewCategoryDetails={interviewCategoryDetails}/>}
-        </>
+      {modalOpen && (
+        <InterviewCategoryModal
+          setModalOpen={setModalOpen}
+          isUpdated={true}
+          interviewCategoryDetails={interviewCategoryDetails}
+        />
+      )}
+    </>
   );
 };
-
 
 export const columns = [
   {
@@ -88,7 +123,7 @@ export const columns = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },  
+  },
   {
     accessorKey: "categoryName",
     header: ({ column }) => (
@@ -103,16 +138,16 @@ export const columns = [
   },
 
   {
-    accessorKey: "description",  
+    accessorKey: "description",
     header: "Description",
   },
   {
-    accessorKey: "createdAt",  
+    accessorKey: "createdAt",
     header: "created At",
     cell: ({ row }) => {
       const createdAt = new Date(row.original.createdAt); // Parse the date string
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return createdAt.toLocaleDateString('en-US', options); // Formats it to "January 16, 2025"
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return createdAt.toLocaleDateString("en-US", options); // Formats it to "January 16, 2025"
     },
   },
   {

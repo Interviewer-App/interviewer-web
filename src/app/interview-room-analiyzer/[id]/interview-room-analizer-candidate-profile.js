@@ -279,48 +279,73 @@ function InterviewRoomAnalizerCandidateProfile({ candidateId }) {
             <h2 className=" text-xl font-semibold">Social Media</h2>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
               <FaLinkedin className=" text-3xl" />
-              <p
-                type="text"
-                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              <a
+                href={candidateDetails?.linkedInUrl || "#"}
+                target="_blank"
+                className={` ${
+                  !candidateDetails?.linkedInUrl
+                    ? "text-gray-400 pointer-events-none"
+                    : "text-blue-500"
+                } focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                {candidateDetails?.linkedInUrl}
-              </p>
+                {candidateDetails?.linkedInUrl || "No LinkedIn URL"}
+              </a>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
               <FaGithub className=" text-3xl" />
-              <p
-                type="text"
-                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              <a
+                href={candidateDetails?.githubUrl || "#"}
+                target="_blank"
+                className={` ${
+                  !candidateDetails?.githubUrl
+                    ? "text-gray-400 pointer-events-none"
+                    : "text-blue-500"
+                } focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                {candidateDetails?.githubUrl}
-              </p>
+                {candidateDetails?.githubUrl || "No Github URL"}
+              </a>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
               <FaFacebookSquare className=" text-3xl" />
-              <p
-                type="text"
-                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              <a
+               href={candidateDetails?.facebookUrl || "#"}
+                target="_blank"
+                className={` ${
+                  !candidateDetails?.facebookUrl
+                    ? "text-gray-400 pointer-events-none"
+                    : "text-blue-500"
+                } focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                {candidateDetails?.facebookUrl}
-              </p>
+                {candidateDetails?.facebookUrl || "No Facebook URL"}
+              </a>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
               <FaXTwitter className=" text-3xl" />
-              <p
-                type="text"
-                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              <a
+                href={candidateDetails?.twitterUrl || "#"}
+                target="_blank"
+                className={` ${
+                  !candidateDetails?.twitterUrl
+                    ? "text-gray-400 pointer-events-none"
+                    : "text-blue-500"
+                } focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                {candidateDetails?.twitterUrl}
-              </p>
+                {candidateDetails?.twitterUrl || "No X URL"}
+              </a>
             </div>
             <div className=" w-full mt-5 flex justify-start items-center gap-2">
               <FaDiscord className=" text-3xl" />
-              <p
-                type="text"
-                className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
+              <a
+                href={candidateDetails?.discordUrl || "#"}
+                target="_blank"
+                className={` ${
+                  !candidateDetails?.discordUrl
+                    ? "text-gray-400 pointer-events-none"
+                    : "text-blue-500"
+                } focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
               >
-                {candidateDetails?.discordUrl}
-              </p>
+                {candidateDetails?.discordUrl || "No Discord URL"}
+              </a>
             </div>
           </div>
         </div>

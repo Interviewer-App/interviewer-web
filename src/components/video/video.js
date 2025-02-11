@@ -410,13 +410,13 @@ const VideoCall = forwardRef(({ sessionId, isCandidate , senderId , role}, ref) 
             </SheetTrigger>
 
             {/* Chat Sheet Content */}
-            <SheetContent side="right" className="w-full sm:w-[400px]">
+            <SheetContent side="right" className="w-full sm:w-[400px] h-full !text-white !bg-[#1f2126] !p-0 border-l-2 border-gray-500/20">
               <SheetHeader>
-                <SheetTitle className="text-xl font-bold text-gray-800">Chat</SheetTitle>
+                <SheetTitle className="text-xl font-bold text-gray-800 py-3 px-5 !rounded-b-lg bg-[#1f2126]">Chat</SheetTitle>
               </SheetHeader>
 
               {/* Message Display */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 pb-20 pt-4 overflow-y-auto overflow-x-hidden h-full w-full space-y-2 scrollbar-hidden">
                 {messages.map((msg, index) => (
                   <div
                     key={index}
@@ -424,7 +424,7 @@ const VideoCall = forwardRef(({ sessionId, isCandidate , senderId , role}, ref) 
                       }`}
                   >
                     <div
-                      className={`max-w-xs p-3 rounded-lg ${msg.senderRole === role ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+                      className={`max-w-xs px-5 py-2 mx-4 text-sm rounded-lg ${msg.senderRole === role ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
                         }`}
                     >
                       <p className="text-sm">{msg.message}</p>
@@ -436,15 +436,15 @@ const VideoCall = forwardRef(({ sessionId, isCandidate , senderId , role}, ref) 
               </div>
 
               {/* Message Input */}
-              <SheetFooter className="p-4 border-t">
+              <SheetFooter className="p-4 w-full bg-[#1f2126] absolute rounded-t-lg bottom-0 ">
                 <div className="flex gap-2 w-full">
-                  <Input
+                  <input
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
-                    className="flex-1"
+                    className="flex-1 text-white rounded-lg text-sm px-4 py-1 outline-none !bg-[#32353b] !focus:outline-none"
                   />
-                  <Button onClick={sendMessage} className="bg-blue-500 hover:bg-blue-600">
+                  <Button onClick={sendMessage} className="bg-blue-500 hover:bg-blue-600 text-sm font-semibold">
                     Send
                   </Button>
                 </div>
