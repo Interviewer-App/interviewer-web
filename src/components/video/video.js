@@ -424,10 +424,10 @@ const VideoCall = forwardRef(({ sessionId, isCandidate , senderId , role}, ref) 
                       }`}
                   >
                     <div
-                      className={`max-w-xs px-5 py-2 mx-4 text-sm rounded-lg ${msg.senderRole === role ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+                      className={`max-w-xs px-5 py-2 mx-4 text-sm rounded-lg self-end break-all ${msg.senderRole === role ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
                         }`}
                     >
-                      <p className="text-sm">{msg.message}</p>
+                      <p className="text-sm decoration-slice">{msg.message}</p>
                       {/* <p className="text-xs text-gray-400 mt-1">{new Date(msg.timestamp).toLocaleTimeString()}</p> */}
                     </div>
                   </div>
