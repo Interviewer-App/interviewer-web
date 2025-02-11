@@ -2,11 +2,11 @@ import {
   createInterviewSubCategory,
   updateInterviewSubCategory,
 } from "@/lib/api/interview";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { MdClose } from "react-icons/md";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-
+import { HexColorPicker } from "react-colorful";
 function CreateSubcategoryModal({
   isUpdate,
   assignment,
@@ -16,6 +16,10 @@ function CreateSubcategoryModal({
   const [name, setName] = useState("");
   const [percentage, setPercentage] = useState("");
   const { toast } = useToast();
+  const [color, setColor] = useState("#034f84");
+  const [isPickerVisible, setPickerVisible] = useState(false);
+  const colorPickerRef = useRef(null);
+
 
   useEffect(() => {
     if (isUpdate) {
@@ -30,6 +34,7 @@ function CreateSubcategoryModal({
       const data = {
         name,
         percentage: parseInt(percentage),
+        color:color
       };
       const response = await createInterviewSubCategory(
         assignment.assignmentId,
@@ -73,6 +78,27 @@ function CreateSubcategoryModal({
       }
     }
   };
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
+        setPickerVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
+  
+  const toggleColorPicker = () => {
+    setPickerVisible(!isPickerVisible);
+  };
+
 
   const HandleUpdateSubInterviewCategory = async (e) => {
     e.preventDefault();
@@ -156,6 +182,28 @@ function CreateSubcategoryModal({
             />
           </div>
 
+          <div className="flex flex-row items-center space-x-3 px-2 py-2 bg-[#32353b] rounded-lg justify-center">
+            <p>Set a color to your sub category:</p>
+            <div
+              onClick={toggleColorPicker}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: color,
+                cursor: 'pointer',
+                border: '2px solid #ccc'
+              }}
+            />
+
+
+            {isPickerVisible && (
+              <div ref={colorPickerRef} style={{ position: 'absolute', marginTop: '10px' }}>
+                <HexColorPicker color={color} onChange={setColor} />
+              </div>
+            )}
+          </div>
+
           <div className=" w-full flex justify-end items-center">
             {isUpdate ? (
               <button
@@ -175,6 +223,8 @@ function CreateSubcategoryModal({
               </button>
             )}
           </div>
+
+
         </form>
       </div>
     </div>
