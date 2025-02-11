@@ -116,6 +116,24 @@ export const columns = [
     },
   },
   {
+    accessorKey: "color", // New column for color
+    header: "Color",
+    cell: ({ row }) => {
+      const color = row.original.color;
+      return (
+        <div
+          style={{
+            backgroundColor: color || "#07090b", // Default to white if no color is provided
+            height: "30px",
+            width: "30px",
+            borderRadius: "50%",
+            margin: "auto"
+          }}
+        ></div>
+      );
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const interviewCategory = row.original;
