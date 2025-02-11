@@ -40,6 +40,7 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
     if (isUpdated && interviewCategoryDetails) {
       setCategoryName(interviewCategoryDetails.categoryName);
       setDescription(interviewCategoryDetails.description);
+      setColor(interviewCategoryDetails.color);
     }
   }, [isUpdated, interviewCategoryDetails]);
 
