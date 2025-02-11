@@ -74,7 +74,8 @@ function CodeEditor({
         direction="vertical"
         className=" relative min-h-[calc-200vh-4rem-1px] bg-black text-white mx-auto"
       >
-        <div className=" absolute top-4 right-4 text-2xl font-semibold">
+        <div className=" absolute top-6 right-4 text-gray-400 text-2xl font-semibold">
+        <span className=" text-sm font-normal">Time Remaining</span>{" "}
           <p className=" text-right">{time}</p>
         </div>
         {/* QUESTION SECTION */}

@@ -318,7 +318,7 @@ const InterviewRoomPage = ({ params }) => {
                       <div className="w-[70%] max-w-[1100px] relative">
                         <div className=" w-full py-9">
                           <div className=" relative p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
-                            <div className=" absolute top-4 right-4 text-2xl font-semibold">
+                            <div className=" absolute top-4 right-4 text-gray-400 text-2xl font-semibold">
                               <span className=" text-sm font-normal">Time Remaining</span>{" "}
                               <p className=" text-right">{formatTime(questionCountDown)}</p>
                             </div>
