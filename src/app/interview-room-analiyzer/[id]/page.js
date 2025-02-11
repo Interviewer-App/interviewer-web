@@ -227,6 +227,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             technicalStatus={technicalStatus}
             setTypingAnswer={setTypingAnswer}
             ref={dashboardRef}
+            userID={userID}
           />
         )}
         {tab === "SCORE" && (

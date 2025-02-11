@@ -132,3 +132,16 @@ export const fetchDocumet = async (candidateId) => {
     throw error;
   }
 };
+
+
+export const generatePdfPage = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ai/generate`, data
+    );
+    return response;
+  } catch (error) {
+    console.log("Error fetching document:", error);
+    throw error;
+  }
+};

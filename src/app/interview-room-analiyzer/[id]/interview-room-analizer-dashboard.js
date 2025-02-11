@@ -51,6 +51,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       categoryScores,
       setCategoryScores,
       technicalStatus,
+      userID
     },
     ref
   ) => {
@@ -237,6 +238,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   sessionId={sessionId}
                   isCandidate={false}
                   ref={videoCallRef}
+                  senderId={userID}
+                  role='COMPANY'
                 />
               </ResizablePanel>
             </ResizablePanelGroup>

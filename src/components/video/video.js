@@ -17,12 +17,26 @@ import {
   Settings,
   Link2,
   PhoneOff,
+  MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import socketChat from "@/lib/utils/socket";
 
-const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
+const VideoCall = forwardRef(({ sessionId, isCandidate , senderId , role}, ref) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [peer, setPeer] = useState(null);
@@ -37,6 +51,20 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
   const activeCalls = useRef([]);
   const [callDuration, setCallDuration] = useState(0);
   const router = useRouter();
+
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const messagesEndRef = useRef(null);
+  const [unreadCount, setUnreadCount] = useState(0); // State to track unread messages
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat when new messages are added
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -125,6 +153,23 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
       activeCalls.current.forEach((call) => call.close());
     };
   }, [sessionId]);
+
+
+  useEffect(() => {
+      socketChat.on('receiveMessage', (data) => {
+        setMessages((prevMessages) => [...prevMessages, data]);
+        if (!isChatOpen) {
+          // Increment unread count only if the chat is not open
+          setUnreadCount((prevCount) => prevCount + 1);
+        }
+      });
+
+      return () => {
+        socketChat.off('receiveMessage');
+      };
+  }, [isChatOpen]);
+
+
 
   const toggleMic = () => {
     if (originalAudioTrack.current) {
@@ -258,6 +303,25 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
     endCall: handleEndCall,
   }));
 
+  const handleChatButtonClick = () => {
+    setIsChatOpen(!isChatOpen);
+    setUnreadCount(0); 
+  }
+
+  const sendMessage = () => {
+    if (newMessage.trim()) {
+      const messageData = {
+        sessionId,
+        message: newMessage,
+        senderId,
+        senderRole: isCandidate ? 'CANDIDATE' : 'COMPANY',    
+      };
+      socketChat.emit('sendMessage', messageData);
+      // setMessages((prevMessages) => [...prevMessages, messageData]);
+      setNewMessage('');
+    }
+  };
+
   return (
     <div className=" bg-black relative h-full max-h-lvh w-auto">
       {/* Timer */}
@@ -329,6 +393,66 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
             )}
           </Button>
 
+          <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
+            {/* Chat Button */}
+            <SheetTrigger asChild>
+              <Button onClick={handleChatButtonClick} className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white">
+                <MessageCircle className="h-5 w-5"/>
+                {unreadCount > 0 && (
+          <span
+            className="absolute top-4 right-30 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+            style={{ fontSize: "10px" }}
+          >
+            {unreadCount}
+          </span>
+        )}
+              </Button>
+            </SheetTrigger>
+
+            {/* Chat Sheet Content */}
+            <SheetContent side="right" className="w-full sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle className="text-xl font-bold text-gray-800">Chat</SheetTitle>
+              </SheetHeader>
+
+              {/* Message Display */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${msg.senderRole === role ? 'justify-end' : 'justify-start'
+                      }`}
+                  >
+                    <div
+                      className={`max-w-xs p-3 rounded-lg ${msg.senderRole === role ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+                        }`}
+                    >
+                      <p className="text-sm">{msg.message}</p>
+                      {/* <p className="text-xs text-gray-400 mt-1">{new Date(msg.timestamp).toLocaleTimeString()}</p> */}
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef}></div> {/* Auto-scroll anchor */}
+              </div>
+
+              {/* Message Input */}
+              <SheetFooter className="p-4 border-t">
+                <div className="flex gap-2 w-full">
+                  <Input
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type a message..."
+                    className="flex-1"
+                  />
+                  <Button onClick={sendMessage} className="bg-blue-500 hover:bg-blue-600">
+                    Send
+                  </Button>
+                </div>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+
           {isCandidate && (
             <Button
               variant="destructive"
@@ -341,6 +465,7 @@ const VideoCall = forwardRef(({ sessionId, isCandidate }, ref) => {
           )}
         </div>
       </div>
+
     </div>
   );
 });

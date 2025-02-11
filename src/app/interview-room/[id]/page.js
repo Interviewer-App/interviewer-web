@@ -783,7 +783,7 @@ const InterviewRoomPage = ({ params }) => {
               technicalStatus === "toBeConducted" ? "h-lvh" : "h-[300px]"
             }`}
           >
-            <VideoCall sessionId={sessionId} isCandidate={true} />
+            <VideoCall sessionId={sessionId} isCandidate={true} senderId={userId} role='CANDIDATE'/>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
