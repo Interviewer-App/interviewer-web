@@ -723,7 +723,7 @@ const UserProfile = () => {
                     <h1 className=" text-2xl font-semibold h-full text-[#b378ff] mb-5">
                       Skills
                     </h1>
-                    <p>{documentUrl.skills}</p>
+                    <p className=" self-end break-all w-full">{documentUrl.skills}</p>
                   </div>
                 </div>
 
