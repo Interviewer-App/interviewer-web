@@ -209,7 +209,13 @@ const hexToRgba = (hex, opacity = 0.2) => {
   return (
     <div className=" mt-9">
       <div className="flex justify-between">
-        <div className=" bg-blue-700/10 w-[65%] text-blue-400 border-2 border-blue-700 px-8 py-5 rounded-lg">
+        {/* <div className=" bg-blue-700/10 w-[65%] text-blue-400 border-2 border-blue-700 px-8 py-5 rounded-lg"> */}
+        <div className={`w-[65%] border-2  px-8 py-5 rounded-lg bg-opacity-10`}
+        style={{ backgroundColor: `${assignment.color}1A`,
+          border: `2px solid ${assignment.color}`,
+          color: assignment.color
+         }}
+        >
           <span className=" text-2xl">{assignment.catagory}</span>
           <span className=" text-2xl float-right">
             {assignment.percentage}%
