@@ -281,7 +281,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const [color, setColor] = useState("#034f84");
   const [isPickerVisible, setPickerVisible] = useState(false);
   const colorPickerRef = useRef(null);
-
+  const [categoryChartData, setCategoryChartData] = useState({});
   // React.useEffect(() => {
   //   console.log("date", inputScheduleStartTime);
   // }, [inputScheduleStartTime]);
@@ -726,32 +726,61 @@ export default function CreateInterviewModal({ setModalOpen }) {
     }
   };
 
-  const data = {
-    labels: categoryList.map((cat) => cat.catagory),
-    datasets: [
-      {
-        label: "Percentage",
-        data: categoryList.map((cat) => parseFloat(cat.percentage)),
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+  useEffect(() => {
+    // Calculate total percentage from categories
+    const totalPercentage = categoryList.reduce(
+      (acc, cat) => acc + parseFloat(cat.percentage),
+      0
+    );
+  
+    // Calculate the remaining percentage
+    const remaining = 100 - totalPercentage;
+  
+    // Define your existing color scheme
+    const backgroundColors = [
+      "rgba(255, 99, 132, 0.2)",
+      "rgba(54, 162, 235, 0.2)",
+      "rgba(255, 206, 86, 0.2)",
+      "rgba(75, 192, 192, 0.2)",
+      "rgba(153, 102, 255, 0.2)",
+      "rgba(255, 159, 64, 0.2)",
+    ];
+  
+    const borderColors = [
+      "rgba(255, 99, 132, 1)",
+      "rgba(54, 162, 235, 1)",
+      "rgba(255, 206, 86, 1)",
+      "rgba(75, 192, 192, 1)",
+      "rgba(153, 102, 255, 1)",
+      "rgba(255, 159, 64, 1)",
+    ];
+  
+    // Create the dataset with the remaining value
+    const data = {
+      labels: [...categoryList.map((cat) => cat.catagory), ], // Add "Remaining" label
+      datasets: [
+        {
+          label: "Percentage",
+          data: [
+            ...categoryList.map((cat) => parseFloat(cat.percentage)),
+            remaining, // Add the remaining value
+          ],
+          backgroundColor: [
+            ...backgroundColors.slice(0, categoryList.length), // Use existing colors for categories
+            "rgba(7, 9, 11, 0.2)", // Dummy color for the remaining value
+          ],
+          borderColor: [
+            ...borderColors.slice(0, categoryList.length), // Use existing border colors for categories
+            "rgba(7, 9, 11, 1)", // Dummy border color for the remaining value
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  
+    // Set the updated dataset to state or use it as needed
+    setCategoryChartData(data);
+  }, [categoryList]);
 
   const options = {
     plugins: {
@@ -1479,7 +1508,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   </div>
                   <div className=" w-[40%] min-h-[300px] flex justify-center items-center mx-auto mt-8 md:mt-0">
                     {categoryList.length > 0 ? (
-                      <Doughnut data={data} options={options} />
+                      <Doughnut data={categoryChartData} options={options} />
                     ) : (
                       <p className="text-gray-600 text-xs">
                         Add categories to view the Chart
