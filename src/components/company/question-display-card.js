@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 //UI Components
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,15 @@ function QuestionDisplayCard({
   const [questionType, setQuestionType] = useState(question.type);
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px"; 
+    }
+  }, [questionText]);
 
   const handleUpdateQuestion = async (e) => {
     e.preventDefault();
@@ -258,6 +267,7 @@ function QuestionDisplayCard({
       </div>
       <div className="w-full py-3 text-gray-400 px-6 rounded-b-lg">
         <textarea
+          ref={textareaRef}
           readOnly={!isEditing}
           className={`text-base w-full rounded-md ${
             isEditing ? "bg-gray-700 py-2 px-4" : "bg-transparent text-gray-500"
