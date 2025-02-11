@@ -229,7 +229,17 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
                   <p className=" text-base text-gray-300">{subAssignment.name}</p>
                   <p className=" text-sm">{subAssignment.percentage}%</p>
                 </div>
-                <div className=" flex gap-x-2 ">
+                <div className="flex gap-x-2 items-center">
+                  {/* Color Circle */}
+                  <div
+                    style={{
+                      width: "30px", // Adjust size of the circle
+                      height: "30px",
+                      borderRadius: "50%",
+                      backgroundColor: subAssignment.color, // Dynamically set the color
+                      border: "2px solid #ccc", // Optional: adds a border around the circle
+                    }}
+              />
                   <button
                     onClick={() => handleUpdateSubCategory(subAssignment)}
                     className="text-gray-400 hover:text-gray-200 border-gray-400 hover:bg-gray-400/20 border-2  text-lg aspect-square h-7 rounded-sm flex items-center justify-center"
