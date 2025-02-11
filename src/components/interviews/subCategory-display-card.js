@@ -136,7 +136,7 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
           ],
           borderColor: [
             ...borderColors,
-            "rgba(207, 207, 207, 1)" // Remaining border color
+            "rgba(7, 9, 11, 1)" // Remaining border color
           ],
           borderWidth: 1,
         },
