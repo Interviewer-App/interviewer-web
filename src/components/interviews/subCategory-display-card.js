@@ -56,6 +56,7 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
 
   useEffect(() => {
     const fetchSubInterviewCategory = async () => {
+      
       try {
         const response = await fetchInterviewSubCategory(
           assignment.assignmentId
@@ -97,16 +98,22 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
     if (assignment.assignmentId) fetchSubInterviewCategory();
   }, [assignment, createModalOpen, updateModalOpen, deleteTrger]);
 
+  // Function to convert Hex to RGBA with opacity
+const hexToRgba = (hex, opacity = 0.2) => {
+  // Remove the hash symbol if it exists
+  hex = hex.replace('#', '');
+
+  // Convert the hex string into RGB values
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+
+  // Return the RGBA format
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+
   useEffect(() => {
-    const generateRandomColor = () => {
-      const r = Math.floor(Math.random() * 256);
-      const g = Math.floor(Math.random() * 256);
-      const b = Math.floor(Math.random() * 256);
-      return `rgba(${r}, ${g}, ${b}, 0.2)`; // Fixed template literal
-    };
-  
-    const generateRandomBorderColor = (color) => color.replace("0.2", "1");
-  
     // Calculate total percentage from subcategories
     const totalPercentage = subcategories.reduce(
       (acc, cat) => acc + parseFloat(cat.percentage),
@@ -114,29 +121,27 @@ function SubCategoryDisplayCard({ selectedSubAssignment }) {
     );
     const remaining = 100 - totalPercentage;
   
-    // Generate colors for subcategories
-    const backgroundColors = subcategories.map(() => generateRandomColor());
-    const borderColors = backgroundColors.map((color) => 
-      generateRandomBorderColor(color)
-    );
+    // Use actual colors from subcategories
+    const backgroundColors = subcategories.map(cat => hexToRgba(cat.color, 0.2));
+    const borderColors = subcategories.map(cat => hexToRgba(cat.color, 1));
   
     // Create dataset with remaining value
     const dataset = {
-      labels: [...subcategories.map((cat) => cat.name), ], // Add Remaining label
+      labels: [...subcategories.map((cat) => cat.name)],
       datasets: [
         {
           label: "Percentage",
           data: [
             ...subcategories.map((cat) => parseFloat(cat.percentage)),
-            remaining // Add remaining value
+            remaining
           ],
           backgroundColor: [
             ...backgroundColors,
-            "rgba(7, 9, 11, 1)" // Remaining background color
+            "rgba(192, 192, 192,0.05)" // Remaining background color
           ],
           borderColor: [
             ...borderColors,
-            "rgba(7, 9, 11, 1)" // Remaining border color
+            "rgba(192, 192, 192,0.2)" // Remaining border color
           ],
           borderWidth: 1,
         },
