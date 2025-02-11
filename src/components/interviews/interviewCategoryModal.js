@@ -1,15 +1,14 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useState,useRef,useEffect } from "react";
 import { MdClose } from "react-icons/md";
 import { createInterview } from "@/lib/api/interview";
 import { getSession } from "next-auth/react";
-import { useEffect } from "react";
 import { createCategory } from "@/lib/api/interview-category";
 import { useToast } from "@/hooks/use-toast"
 import { updateCategory } from "@/lib/api/interview-category";
 import { ToastAction } from "@/components/ui/toast"
-
+import { HexColorPicker } from "react-colorful";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -20,34 +19,35 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
   const { toast } = useToast()
   const [categoryName, setCategoryName] = useState("");
   // const [InterviewDescription, setInterviewDescription] = useState("");
-  const [description,setDescription]=useState("");
+  const [description, setDescription] = useState("");
   // Handle form submission
-  const [companyId, setCompanyId] = useState(null); 
-  
-
+  const [companyId, setCompanyId] = useState(null);
+  const [color, setColor] = useState("#034f84");
+  const [isPickerVisible, setPickerVisible] = useState(false);
+  const colorPickerRef = useRef(null);
   // const [isUpdated,isSetUpdated]=useState(false);
 
   useEffect(() => {
     const fetchSessionData = async () => {
-      const session = await getSession(); 
+      const session = await getSession();
       if (session?.user?.companyID) {
-        setCompanyId(session.user.companyID); 
+        setCompanyId(session.user.companyID);
       }
     };
-  
-    fetchSessionData(); 
-  
+
+    fetchSessionData();
+
     if (isUpdated && interviewCategoryDetails) {
       setCategoryName(interviewCategoryDetails.categoryName);
       setDescription(interviewCategoryDetails.description);
     }
   }, [isUpdated, interviewCategoryDetails]);
-  
+
 
   // const handleSubmit = async (e) => {
 
   //   e.preventDefault();
-    
+
   //   //validations
   //   // if (!InterviewName || !InterviewDescription ) {
   //   //   alert("Please fill in all required fields");
@@ -56,13 +56,13 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
 
   //   // Make an API call 
   //   try {
-      // await createCategory({
-      //   companyId: companyId,
-      //   categoryName: categoryName,
-      //   description: description,
-      // });
+  // await createCategory({
+  //   companyId: companyId,
+  //   categoryName: categoryName,
+  //   description: description,
+  // });
 
-      
+
   //     toast({
   //       title: "Interview Category Created Successfully!",
   //       description: "The interview category has been successfully created.",
@@ -74,17 +74,31 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
   //     // alert("Failed to create interview. Please try again.");
   //   }
   // };
-  
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
+        setPickerVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const session = await getSession();
 
       const companyId = session?.user?.companyID
-      const response =       await createCategory({
+      const response = await createCategory({
         companyId: companyId,
         categoryName: categoryName,
         description: description,
+        color:color
       });
 
       if (response) {
@@ -131,7 +145,7 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
         description,
       });
 
-      if(response){
+      if (response) {
         setModalOpen()
         toast({
           title: "Interview Category updated Successfully!",
@@ -144,7 +158,7 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
         description: "The interview category has been successfully updated.",
       });
 
-      setModalOpen(false); 
+      setModalOpen(false);
     } catch (err) {
       if (err.response) {
         const { data } = err.response;
@@ -174,6 +188,10 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
         });
       }
     }
+  };
+
+  const toggleColorPicker = () => {
+    setPickerVisible(!isPickerVisible);
   };
 
 
@@ -207,28 +225,49 @@ const InterviewCategoryModal = ({ setModalOpen, isUpdated, interviewCategoryDeta
             rows={5}
             className="w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-3 mb-5"
           />
+          <div className="flex flex-row items-center space-x-3 px-2 py-2 bg-[#32353b] rounded-lg justify-center">
+            <p>Set a color to your category:</p>
+            <div
+              onClick={toggleColorPicker}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: color,
+                cursor: 'pointer',
+                border: '2px solid #ccc'
+              }}
+            />
+
+
+            {isPickerVisible && (
+              <div ref={colorPickerRef} style={{ position: 'absolute', marginTop: '10px' }}>
+                <HexColorPicker color={color} onChange={setColor} />
+              </div>
+            )}
+          </div>
 
 
 
           <div className="w-full flex justify-center items-center">
             {isUpdated ? (<>
-            <button
-              type="button"
-              onClick={updateInterviewCategory}
-              className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
-            >
-              Update Category
-            </button>
+              <button
+                type="button"
+                onClick={updateInterviewCategory}
+                className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
+              >
+                Update Category
+              </button>
             </>) : (<>
               <button
-              type="submit"
-              className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
-            >
-              Submit Category
-            </button>
+                type="submit"
+                className="h-12 min-w-[150px] w-full md:w-[40%] mt-8 cursor-pointer bg-white rounded-lg text-center text-base text-black font-semibold"
+              >
+                Submit Category
+              </button>
             </>)}
           </div>
-          
+
         </form>
       </div>
     </div>
