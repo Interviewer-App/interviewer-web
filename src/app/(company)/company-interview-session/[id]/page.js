@@ -113,6 +113,7 @@ function InterviewSessionPreviewPage({ params }) {
     .map((category) => ({
       name: category.categoryAssignment.category.categoryName,
       id: category.categoryAssignment.category.categoryId,
+      color: category.categoryAssignment.category.color,
     }));
     setItems(tabData);
   }, [sessionDetails]);
