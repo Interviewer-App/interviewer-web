@@ -30,10 +30,6 @@ function InterviewRoomAnalizerOther({
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log("categoryScores", categoryScores);
-  }, [categoryScores]);
-
-  useEffect(() => {
     const fetchCategoryPercentage = async () => {
       try {
         const response = await getInterviewCategoryByInterviewId(sessionId);
@@ -188,6 +184,9 @@ function InterviewRoomAnalizerOther({
                   <div
                     key={index}
                     className=" w-full flex justify-between items-center mt-3 bg-gray-700/30 rounded-lg px-5 py-2"
+                    style={{
+                      backgroundColor: `${category.category.color}5A`
+                    }}
                   >
                     <h1>{category.category.categoryName}</h1>
                     <p>{category.percentage}%</p>
