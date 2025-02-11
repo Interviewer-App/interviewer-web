@@ -17,7 +17,10 @@ const SortableLinks = ({ id }) => {
 
   return (
     <div ref={setNodeRef} style={style} key={uniqueId}>
-      <Card className="p-4 relative !bg-blue-500/10 !border-blue-500 !text-sm flex justify-between gap-5 group">
+      <Card
+        className="p-4 relative !text-sm flex justify-between gap-5 group"
+        style={{ backgroundColor: `${id.color}1A`, borderColor: `${id.color}` }}
+      >
         <div>{id.name}</div>
         <div className="flex justify-center items-center gap-4">
           <button
