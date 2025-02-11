@@ -770,7 +770,7 @@ const InterviewRoomPage = ({ params }) => {
             )}
           </>
         )} */}
-        <ResizableHandle withHandle />
+        {technicalStatus === "toBeConducted" && !isQuestionAvailabe && (<ResizableHandle withHandle />)}
         <ResizablePanel
           defaultSize={
             technicalStatus === "toBeConducted" && !isQuestionAvailabe
