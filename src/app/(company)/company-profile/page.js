@@ -92,7 +92,7 @@ const InterviewCategoryPage = () => {
       }
     };
 
-    if(Tab === 'Team') fetchTeamData();
+    if (Tab === "Team") fetchTeamData();
   }, [page, limit, modalOpen, teams, Tab]);
 
   const handleNextPage = () => {
@@ -460,81 +460,165 @@ const InterviewCategoryPage = () => {
                     <h2 className=" text-xl font-semibold">Social Media</h2>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <TbWorldWww className=" text-3xl" />
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={websiteUrl || ""}
-                        placeholder="Website URL"
-                        onChange={(e) => setWebsiteUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
+                          value={websiteUrl || ""}
+                          placeholder="Website URL"
+                          onChange={(e) => setWebsiteUrl(e.target.value)}
+                          className={` focus:outline-none rounded-lg ${
+                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
+                        />
+                      ) : (
+                        <a
+                          href={websiteUrl || "#"}
+                          target="_blank"
+                          className={` text-sm ${
+                            !websiteUrl
+                              ? "text-gray-400 pointer-events-none"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {websiteUrl || "Website URL"}
+                        </a>
+                      )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <FaLinkedin className=" text-3xl" />
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={linkedinUrl || ""}
-                        placeholder="Linkedin URL"
-                        onChange={(e) => setLinkedinUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
+                          value={linkedinUrl || ""}
+                          placeholder="Linkedin URL"
+                          onChange={(e) => setLinkedinUrl(e.target.value)}
+                          className={` focus:outline-none rounded-lg ${
+                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
+                        />
+                      ) : (
+                        <a
+                          href={linkedinUrl || "#"}
+                          target="_blank"
+                          className={` text-sm ${
+                            !linkedinUrl
+                              ? "text-gray-400 pointer-events-none"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {linkedinUrl || "Linkedin URL"}
+                        </a>
+                      )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <FaGithub className=" text-3xl" />
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={githubUrl || ""}
-                        placeholder="Github URL"
-                        onChange={(e) => setGithubUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
+                          value={githubUrl || ""}
+                          placeholder="Github URL"
+                          onChange={(e) => setGithubUrl(e.target.value)}
+                          className={` focus:outline-none rounded-lg ${
+                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
+                        />
+                      ) : (
+                        <a
+                          href={githubUrl || "#"}
+                          target="_blank"
+                          className={` text-sm ${
+                            !githubUrl
+                              ? "text-gray-400 pointer-events-none"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {githubUrl || "Github URL"}
+                        </a>
+                      )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <FaFacebookSquare className=" text-3xl" />
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={facebookUrl || ""}
-                        placeholder="Facebook URL"
-                        onChange={(e) => setFacebookUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
+                          value={facebookUrl || ""}
+                          placeholder="Facebook URL"
+                          onChange={(e) => setFacebookUrl(e.target.value)}
+                          className={` focus:outline-none rounded-lg ${
+                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
+                        />
+                      ) : (
+                        <a
+                          href={facebookUrl || "#"}
+                          target="_blank"
+                          className={` text-sm ${
+                            !facebookUrl
+                              ? "text-gray-400 pointer-events-none"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {facebookUrl || "Facebook URL"}
+                        </a>
+                      )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <FaXTwitter className=" text-3xl" />
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={twitterUrl || ""}
-                        placeholder="Twitter URL"
-                        onChange={(e) => setTwitterUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
+                          value={twitterUrl || ""}
+                          placeholder="X URL"
+                          onChange={(e) => setTwitterUrl(e.target.value)}
+                          className={` focus:outline-none rounded-lg ${
+                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
+                        />
+                      ) : (
+                        <a
+                          href={twitterUrl || "#"}
+                          target="_blank"
+                          className={` text-sm ${
+                            !twitterUrl
+                              ? "text-gray-400 pointer-events-none"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {twitterUrl || "X URL"}
+                        </a>
+                      )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <FaDiscord className=" text-3xl" />
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={discordUrl || ""}
-                        placeholder="Discord URL"
-                        onChange={(e) => setDiscordUrl(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
+                          value={discordUrl || ""}
+                          placeholder="Discord URL"
+                          onChange={(e) => setDiscordUrl(e.target.value)}
+                          className={` focus:outline-none rounded-lg ${
+                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
+                        />
+                      ) : (
+                        <a
+                          href={discordUrl || "#"}
+                          target="_blank"
+                          className={` text-sm ${
+                            !discordUrl
+                              ? "text-gray-400 pointer-events-none"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {discordUrl || "Discord URL"}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
