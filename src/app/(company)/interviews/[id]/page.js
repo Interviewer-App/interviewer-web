@@ -116,7 +116,7 @@ import InvitedCandidates from "@/components/interviews/invite-candidates";
 import QuestionDisplayCard from "@/components/company/question-display-card";
 import { CandidateDataTable } from "@/components/ui/candidateDataTable/DataTable";
 import SubCategoryDisplayCard from "@/components/interviews/subCategory-display-card";
-import Image from "next/image";
+import Image from "next/image"; 
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -351,6 +351,7 @@ export default function InterviewPreviewPage({ params }) {
                   catagory: matchingCategory?.categoryName || "",
                   percentage: category.percentage,
                   assignmentId: category.assignmentId,
+                  color: matchingCategory?.color || "#000000",
                 };
               }
             );
