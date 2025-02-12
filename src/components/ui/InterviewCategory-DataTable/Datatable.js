@@ -47,7 +47,7 @@ export function DataTable({ columns, data }) {
         <div className="px-6 mb-8">
             <div className="flex items-center justify-between py-4">
                 <Input
-                    placeholder="Filter categories..."
+                    placeholder="Filter Insights..."
                     value={table.getColumn("categoryName")?.getFilterValue() ?? ""}
                     onChange={(event) =>
                         table.getColumn("categoryName")?.setFilterValue(event.target.value)
