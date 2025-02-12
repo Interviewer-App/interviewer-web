@@ -8,7 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import React from 'react'
+import React from "react";
 import {
   SidebarInset,
   SidebarProvider,
@@ -22,7 +22,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { ComboboxDemo } from "@/components/ui/comboxDemo";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -32,7 +32,7 @@ import { useSession, getSession } from "next-auth/react";
 import { getCompletedSessionComparision } from "@/lib/api/interview-session";
 import { Plus, LoaderCircle } from "lucide-react";
 
-import { Pie } from 'react-chartjs-2';
+import { Pie } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import {
@@ -47,127 +47,133 @@ import {
 } from "chart.js";
 
 // Register chart components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
-
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const InterviewComparision = () => {
   const { toast } = useToast();
   const [interviews, setInterviews] = useState([]);
   const [selectedInterview, setSelectedInterview] = useState(""); // State to store selected interview
-  const [firstSessionId, setFirstSessionId] = useState(null)
-  const [secondSessionId, setSecondSessionId] = useState(null)
-  const [comparisonResult, setComparisonResult] = useState(null);
+  const [firstSessionId, setFirstSessionId] = useState(null);
+  const [secondSessionId, setSecondSessionId] = useState(null);
+  const [comparisonResult, setComparisonResult] = useState({});
   const [isComparePressed, setIsComparePressed] = useState(false);
   const [firstCandidateName, setFirstCandidateName] = useState("");
   const [secondCandidateName, setSecondCandidateName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-
   // Hardcoded comparison result
   // const hardcodedComparisonResult = {
-  //   "overall": {
-  //     "score": {
-  //       "c1": 48.17,
-  //       "c2": 24.25,
-  //       "diff": "23.92"
+  //   overall: {
+  //     score: {
+  //       c1: 48.17,
+  //       c2: 24.25,
+  //       diff: "23.92",
   //     },
-  //     "time": {
-  //       "c1": "0",
-  //       "c2": "0",
-  //       "diff": "0"
-  //     }
+  //     time: {
+  //       c1: "0",
+  //       c2: "0",
+  //       diff: "0",
+  //     },
   //   },
-  //   "categories": [
+  //   categories: [
   //     {
-  //       "name": "CultureFit",
-  //       "score": {
-  //         "c1": 69,
-  //         "c2": 39,
-  //         "diff": "30"
+  //       name: "CultureFit",
+  //       score: {
+  //         c1: 69,
+  //         c2: 39,
+  //         diff: "30",
   //       },
-  //       "metrics": []
+  //       metrics: [],
   //     },
   //     {
-  //       "name": "Behavioral",
-  //       "score": {
-  //         "c1": 72,
-  //         "c2": 48,
-  //         "diff": "24"
+  //       name: "Behavioral",
+  //       score: {
+  //         c1: 72,
+  //         c2: 48,
+  //         diff: "24",
   //       },
-  //       "metrics": []
+  //       metrics: [],
   //     },
   //     {
-  //       "name": "Technical",
-  //       "score": {
-  //         "c1": 25.83333333333333,
-  //         "c2": 5,
-  //         "diff": "20.833333333333332"
+  //       name: "Technical",
+  //       score: {
+  //         c1: 25.83333333333333,
+  //         c2: 5,
+  //         diff: "20.833333333333332",
   //       },
-  //       "metrics": []
+  //       metrics: [],
   //     },
   //     {
-  //       "name": "dsdsdsds",
-  //       "score": {
-  //         "c1": 25.83333333333333,
-  //         "c2": 5,
-  //         "diff": "20.833333333333332"
+  //       name: "dsdsdsds",
+  //       score: {
+  //         c1: 25.83333333333333,
+  //         c2: 5,
+  //         diff: "20.833333333333332",
   //       },
-  //       "metrics": []
-  //     }
+  //       metrics: [],
+  //     },
   //   ],
-  //   "strengths": {
-  //     "c1": {
-  //       "strengths": [
+  //   strengths: {
+  //     c1: {
+  //       strengths: [
   //         "Strong understanding of Java fundamentals",
   //         "Good problem-solving approach",
-  //         "Good communication skills"
+  //         "Good communication skills",
   //       ],
-  //       "weaknesses": [
-  //         "bad communitcation skills",
-  //         "bad programming knowlegde"
-  //       ]
+  //       weaknesses: ["bad communitcation skills", "bad programming knowlegde"],
   //     },
-  //     "c2": {
-  //       "strengths": [
-  //         "Good communication skills"
-  //       ],
-  //       "weaknesses": [
-  //         "Lacks technical skills",
-  //         "Poor problem-solving approach"
-  //       ]
-  //     }
-  //   },
-  //   "experience": {
-  //     "projects": {
-  //       "c1": null,
-  //       "c2": null,
-  //       "comparison": null
+  //     c2: {
+  //       strengths: ["Good communication skills"],
+  //       weaknesses: ["Lacks technical skills", "Poor problem-solving approach"],
   //     },
-  //     "education": {
-  //       "c1": null,
-  //       "c2": null,
-  //       "relevance": null
-  //     }
   //   },
-  //   "recommendation": {
-  //     "best": "c1",
-  //     "reason": "Overall, candidate 1 has a stronger technical background, better problem-solving skills, and better communication skills than candidate 2.",
-  //     "factors": [],
-  //     "confidence": "med"
+  //   experience: {
+  //     projects: {
+  //       c1: null,
+  //       c2: null,
+  //       comparison: null,
+  //     },
+  //     education: {
+  //       c1: null,
+  //       c2: null,
+  //       relevance: null,
+  //     },
   //   },
-  //   "summary": {
-  //     "technical": "Candidate 1 has a strong technical background, while candidate 2 is lacking in this area.",
-  //     "culture": "Both candidates have good communication skills and would be a good fit for the company's culture.",
-  //     "growth": "Both candidates have the potential to grow and develop in their careers."
-  //   }
-  // }
+  //   recommendation: {
+  //     best: "c1",
+  //     reason:
+  //       "Overall, candidate 1 has a stronger technical background, better problem-solving skills, and better communication skills than candidate 2.",
+  //     factors: [],
+  //     confidence: "med",
+  //   },
+  //   summary: {
+  //     technical:
+  //       "Candidate 1 has a strong technical background, while candidate 2 is lacking in this area.",
+  //     culture:
+  //       "Both candidates have good communication skills and would be a good fit for the company's culture.",
+  //     growth:
+  //       "Both candidates have the potential to grow and develop in their careers.",
+  //   },
+  // };
 
   const generateChartData = () => {
     if (!comparisonResult?.categories) return { labels: [], datasets: [] };
 
-    const labels = comparisonResult.categories.map(cat => cat.name);
-    const c1Scores = comparisonResult.categories.map(cat => cat.score?.c1 || 0);
-    const c2Scores = comparisonResult.categories.map(cat => cat.score?.c2 || 0);
+    const labels = comparisonResult.categories.map((cat) => cat.name);
+    const c1Scores = comparisonResult.categories.map(
+      (cat) => cat.score?.c1 || 0
+    );
+    const c2Scores = comparisonResult.categories.map(
+      (cat) => cat.score?.c2 || 0
+    );
 
     return {
       labels,
@@ -175,48 +181,49 @@ const InterviewComparision = () => {
         {
           label: firstCandidateName,
           data: c1Scores,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
         },
         {
           label: secondCandidateName,
           data: c2Scores,
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+          borderColor: "rgba(255, 99, 132, 1)",
           borderWidth: 1,
         },
       ],
     };
   };
 
-
   const doughnutChartData = {
-    labels: ['Strengths', 'Weaknesses'], // The labels for each section
+    labels: ["Strengths", "Weaknesses"], // The labels for each section
     datasets: [
       {
         label: firstCandidateName,
         data: [
           comparisonResult?.strengths?.c1?.strengths.length || 0, // Number of strengths for Candidate 1
-          comparisonResult?.strengths?.c1?.weaknesses.length || 0  // Number of weaknesses for Candidate 1
+          comparisonResult?.strengths?.c1?.weaknesses.length || 0, // Number of weaknesses for Candidate 1
         ],
-        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'], // Blue for strengths, Red for weaknesses
-        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'], // Same color border for the sections
+        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"], // Blue for strengths, Red for weaknesses
+        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"], // Same color border for the sections
         borderWidth: 1,
       },
       {
         label: secondCandidateName,
         data: [
           comparisonResult?.strengths?.c2?.strengths.length || 0, // Number of strengths for Candidate 2
-          comparisonResult?.strengths?.c2?.weaknesses.length || 0  // Number of weaknesses for Candidate 2
+          comparisonResult?.strengths?.c2?.weaknesses.length || 0, // Number of weaknesses for Candidate 2
         ],
-        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)'], // Green for strengths, Purple for weaknesses
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'], // Same color border for the sections
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+        ], // Green for strengths, Purple for weaknesses
+        borderColor: ["rgba(75, 192, 192, 1)", "rgba(153, 102, 255, 1)"], // Same color border for the sections
         borderWidth: 1,
-      }
+      },
     ],
   };
-
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -244,10 +251,6 @@ const InterviewComparision = () => {
     };
     fetchInterviews();
   }, []);
-
-
-
-
 
   const handleCompareInterviews = async () => {
     if (firstSessionId && secondSessionId) {
@@ -281,10 +284,10 @@ const InterviewComparision = () => {
       }
     } else {
       toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "Please select both candidates to compare",
-        })
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please select both candidates to compare",
+      });
     }
   };
 
@@ -312,8 +315,6 @@ const InterviewComparision = () => {
   //   });
   // };
 
-
-
   return (
     <>
       <SidebarInset>
@@ -334,17 +335,10 @@ const InterviewComparision = () => {
         <div className="w-[90%] max-w-[1500px] mx-auto p-6 relative">
           <h1 className=" text-3xl font-semibold">Candidate comparision</h1>
           <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
-            <div className="flex items-center justify-between p-9 ">
-
-              <h1 className="text-2xl font-semibold">Compare Between Candidates</h1>
-            </div>
-
-
-            <div className="flex items-center justify-between p-9 flex-col md:flex-row ">
-
-              <div>
+            <div className="flex items-center justify-between gap-5 flex-col md:flex-row ">
+              <div className=" w-full md:w-1/4">
                 <Select onValueChange={setSelectedInterview}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className=" w-full !bg-[#32353b]">
                     <SelectValue placeholder="Select a Interview" />
                   </SelectTrigger>
                   <SelectContent>
@@ -355,7 +349,8 @@ const InterviewComparision = () => {
                           key={interview.interviewID}
                           value={interview.interviewID}
                         >
-                          {interview.jobTitle.replace(/<[^>]+>/g, "")} {/* Remove HTML tags */}
+                          {interview.jobTitle.replace(/<[^>]+>/g, "")}{" "}
+                          {/* Remove HTML tags */}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -363,7 +358,7 @@ const InterviewComparision = () => {
                 </Select>
               </div>
 
-              <div>
+              <div className=" w-full md:w-1/4">
                 <ComboboxDemo
                   selectedInterview={selectedInterview}
                   onSelect={(sessionId, candidateName) => {
@@ -371,9 +366,10 @@ const InterviewComparision = () => {
                     setFirstCandidateName(candidateName); // Set the candidate name
                   }}
                   disabledEmail={secondCandidateName} // Add this line
+                />{" "}
+              </div>
 
-                />              </div>
-              <div>
+              <div className=" w-full md:w-1/4">
                 <ComboboxDemo
                   selectedInterview={selectedInterview}
                   onSelect={(sessionId, candidateName) => {
@@ -385,100 +381,164 @@ const InterviewComparision = () => {
               </div>
 
               {/* Add Category Button */}
-              <div>
+              <div className=" w-full md:w-1/4">
                 <button
-
-                  className="rounded-lg bg-white text-black font-bold px-2 py-2"
+                  className="rounded-lg bg-white text-black font-bold px-2 py-2 w-full"
                   onClick={handleCompareInterviews}
                 >
-                  Compare Interviews
+                  {isLoading ? (
+                    <LoaderCircle className="mx-auto animate-spin" size={24} />
+                  ) : (
+                    "Compare Interviews"
+                  )}
                 </button>
               </div>
             </div>
 
-            {isLoading && (
+            {/* {isLoading && (
               <LoaderCircle className="mx-auto mt-10 animate-spin" size={48} />
-            )}
+              )} */}
 
             {isComparePressed && (
               <>
-                <div className="flex justify-around mt-10 md:flex-row flex-col space-y-4 md:space-y-0 ">
-                  <div className="bg-slate-600/10 p-6 md:w-1/3 w-full rounded-lg">
-                    <h2 className="text-xl font-bold mb-4">First Candidate</h2>
-                    <h2 className="text-xl font-bold mb-4">{firstCandidateName}</h2>
+                <div className="flex items-center justify-between mt-8 ">
+                  <h1 className="text-3xl font-semibold">
+                    Compare Between Candidates
+                  </h1>
+                </div>
+                <div className="flex justify-between mt-8 md:flex-row flex-col gap-8">
+                  <div className="bg-blue-700/10 border-2 border-blue-900  p-8 md:w-1/2 w-full rounded-lg">
+                    <h2 className="text-2xl font-bold mb-4 text-blue-500">
+                      First Candidate
+                    </h2>
+                    <h2 className="text-xl font-bold mb-3">
+                      <div className=" text-gray-500">
+                        <span className=" text-white">Name: </span>
+                        {firstCandidateName || "Candidate 1"}
+                      </div>
+                    </h2>
                     {comparisonResult?.overall && (
-                      <div className="space-y-2">
-                        <p><strong>Overall Score:</strong> {comparisonResult.overall.score.c1.toFixed(2)}</p>
-                        <p><strong>Time Spent:</strong> {comparisonResult.overall.time.c1} mins</p>
+                      <div className="space-y-3 text-xl">
+                        <div>
+                          <strong>Overall Score:</strong>{" "}
+                          <span className=" text-gray-500">
+                            {comparisonResult.overall.score.c1.toFixed(2)}%
+                          </span>
+                        </div>
+                        <div>
+                          <strong>Time Spent:</strong>{" "}
+                          <span className=" text-gray-500">
+                            {comparisonResult.overall.time.c1} mins
+                          </span>
+                        </div>
                       </div>
                     )}
 
-                    {comparisonResult?.strengths?.c1 && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold">Strengths</h3>
-                        <ul className="list-disc pl-4">
-                          {comparisonResult.strengths.c1.strengths.map((strength, index) => (
-                            <li key={index}>{strength}</li>
-                          ))}
+                    <div className="mt-4">
+                      <h3 className="font-semibold text-xl">Strengths</h3>
+                      {comparisonResult?.strengths?.c1 ? (
+                        <ul className="list-disc pl-4 text-sm font-normal text-gray-500">
+                          {comparisonResult.strengths.c1.strengths.map(
+                            (strength, index) => (
+                              <li key={index}>{strength}</li>
+                            )
+                          )}
                         </ul>
-                      </div>
-                    )}
+                      ) : (
+                        <p className=" text-gray-600 text-xs italic">
+                          No strengths available
+                        </p>
+                      )}
+                    </div>
 
-                    {comparisonResult?.strengths?.c1?.weaknesses && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold">Weaknesses</h3>
-                        <ul className="list-disc pl-4">
-                          {comparisonResult.strengths.c1.weaknesses.map((weakness, index) => (
-                            <li key={index}>{weakness}</li>
-                          ))}
+                    <div className="mt-4">
+                      <h3 className="font-semibold text-xl">Weaknesses</h3>
+                      {comparisonResult?.strengths?.c1?.weaknesses ? (
+                        <ul className="list-disc pl-4 text-sm font-normal text-gray-500">
+                          {comparisonResult.strengths.c1.weaknesses.map(
+                            (weakness, index) => (
+                              <li key={index}>{weakness}</li>
+                            )
+                          )}
                         </ul>
-                      </div>
-                    )}
-
+                      ) : (
+                        <p className=" text-gray-600 text-xs italic">
+                          No weaknesses available
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="bg-slate-600/10 p-6 md:w-1/3 w-full rounded-lg">
-                    <h2 className="text-xl font-bold mb-4">Second Candidate</h2>
-                    <h2 className="text-xl font-bold mb-4">{secondCandidateName}</h2>
+                  <div className="bg-yellow-700/10 border-yellow-900 border-2 p-6 md:w-1/2 w-full rounded-lg">
+                    <h2 className="text-2xl font-bold mb-4 text-yellow-500">
+                      Second Candidate
+                    </h2>
+                    <h2 className="text-xl font-bold mb-3">
+                      <div className=" text-gray-500">
+                        <span className=" text-white">Name: </span>
+                        {secondCandidateName || "Candidate 2"}
+                      </div>
+                    </h2>
                     {comparisonResult?.overall && (
-                      <div className="space-y-2">
-                        <p><strong>Overall Score:</strong> {comparisonResult.overall.score.c2.toFixed(2)}</p>
-                        <p><strong>Time Spent:</strong> {comparisonResult.overall.time.c2} mins</p>
+                      <div className="space-y-3 text-xl">
+                        <div>
+                          <strong>Overall Score:</strong>{" "}
+                          <span className=" text-gray-500">
+                            {comparisonResult.overall.score.c2.toFixed(2) || 0}%
+                          </span>
+                        </div>
+                        <div>
+                          <strong>Time Spent:</strong>{" "}
+                          <span className=" text-gray-500">
+                            {comparisonResult.overall.time.c2 || 0} mins
+                          </span>
+                        </div>
                       </div>
                     )}
 
-                    {comparisonResult?.strengths?.c2 && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold">Strengths</h3>
-                        <ul className="list-disc pl-4">
-                          {comparisonResult.strengths.c2.strengths.map((strength, index) => (
-                            <li key={index}>{strength}</li>
-                          ))}
+                    <div className="mt-4">
+                      <h3 className="font-semibold text-xl">Strengths</h3>
+                      {comparisonResult?.strengths?.c2 ? (
+                        <ul className="list-disc pl-4 text-sm font-normal text-gray-500">
+                          {comparisonResult.strengths.c2.strengths.map(
+                            (strength, index) => (
+                              <li key={index}>{strength}</li>
+                            )
+                          )}
                         </ul>
-                      </div>
-                    )}
-
+                      ) : (
+                        <p className=" text-gray-600 text-xs italic">
+                          No strengths available
+                        </p>
+                      )}
+                    </div>
 
                     {/* Display weaknesses for the first candidate */}
 
                     {/* Display weaknesses for the second candidate */}
-                    {comparisonResult?.strengths?.c2?.weaknesses && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold">Weaknesses</h3>
-                        <ul className="list-disc pl-4">
-                          {comparisonResult.strengths.c2.weaknesses.map((weakness, index) => (
-                            <li key={index}>{weakness}</li>
-                          ))}
+                    <div className="mt-4">
+                      <h3 className="font-semibold text-xl">Weaknesses</h3>
+                      {comparisonResult?.strengths?.c2?.weaknesses ? (
+                        <ul className="list-disc pl-4 text-sm font-normal text-gray-500">
+                          {comparisonResult.strengths.c2.weaknesses.map(
+                            (weakness, index) => (
+                              <li key={index}>{weakness}</li>
+                            )
+                          )}
                         </ul>
-                      </div>
-                    )}
-
-
+                      ) : (
+                        <p className=" text-gray-600 text-xs italic">
+                          No weaknesses available
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-10 bg-slate-600/10 p-6 rounded-lg h-fit">
-                  <h2 className="text-xl font-bold mb-4 text-center">Score Comparison</h2>
+                <div className="mt-8 bg-slate-700/10 border-2 border-slate-900 p-6 rounded-lg h-fit">
+                  <h2 className="text-2xl font-bold mb-4 text-slate-500">
+                    Score Comparison
+                  </h2>
                   <Bar
                     data={generateChartData()}
                     options={{
@@ -488,19 +548,18 @@ const InterviewComparision = () => {
                           beginAtZero: true,
                           title: {
                             display: true,
-                            text: 'Scores'
-                          }
+                            text: "Scores",
+                          },
                         },
                         x: {
                           ticks: {
-                            autoSkip: false
-                          }
-                        }
-                      }
+                            autoSkip: false,
+                          },
+                        },
+                      },
                     }}
                   />
                 </div>
-
 
                 {/* <div className="flex justify-around mt-10 flex-col md:flex-row space-y-4 md:space-y-0">
       
@@ -536,47 +595,86 @@ const InterviewComparision = () => {
                   </div>
                 </div> */}
 
-
-
                 {/* Recommendation Section */}
-                <div className="mt-10 bg-slate-600/10 p-6 rounded-lg">
-                  <h2 className="text-xl font-bold mb-4">Recommendation</h2>
-                  {comparisonResult?.recommendation && (
-                    <div className="space-y-2">
-                      <p><strong>Best Candidate:</strong> {comparisonResult.recommendation.best}</p>
-                      <p><strong>Reason:</strong> {comparisonResult.recommendation.reason}</p>
-                      <p><strong>Factors:</strong> {comparisonResult.recommendation.factors.join(', ')}</p>
-                      <p><strong>Confidence:</strong> {comparisonResult.recommendation.confidence}</p>
+                <div className="mt-8 bg-slate-700/10 border-2 border-slate-900 p-8 rounded-lg">
+                  <h2 className="text-2xl font-bold mb-4 text-slate-500">
+                    Recommendation
+                  </h2>
+                  {comparisonResult?.recommendation ? (
+                    <div className="space-y-2  text-lg">
+                      <div className=" text-gray-500 py-2">
+                        <strong className=" text-white">Best Candidate:</strong>{" "}
+                        {comparisonResult.recommendation.best}
+                      </div>
+                      <div className="py-2">
+                        <strong>Reason</strong>{" "}
+                        <p className=" text-sm text-gray-500">
+                          {comparisonResult.recommendation.reason}
+                        </p>
+                      </div>
+                      <div className="py-2">
+                        <strong>Factors</strong>{" "}
+                        <p className=" text-sm text-gray-500">
+                          {comparisonResult.recommendation.factors.join(", ") ||
+                            "no factors"}
+                        </p>
+                      </div>
+                      <div className="py-2">
+                        <strong>Confidence</strong>{" "}
+                        <p className=" text-sm text-gray-500">
+                          {comparisonResult.recommendation.confidence}
+                        </p>
+                      </div>
                     </div>
+                  ) : (
+                    <p className=" text-center text-gray-600 text-sm italic">
+                      No recommendation available
+                    </p>
                   )}
                 </div>
 
                 {/* Summary Section */}
-                <div className="mt-10 bg-slate-600/10 p-6 rounded-lg">
-                  <h2 className="text-xl font-bold mb-4">Summary</h2>
-                  {comparisonResult?.summary && (
-                    <div className="space-y-2">
-                      <p><strong>Technical:</strong> {comparisonResult.summary.technical}</p>
-                      <p><strong>Culture:</strong> {comparisonResult.summary.culture}</p>
-                      <p><strong>Growth:</strong> {comparisonResult.summary.growth}</p>
+                <div className="mt-8 bg-slate-700/10 border-2 border-slate-900 p-8 rounded-lg">
+                  <h2 className="text-2xl font-bold mb-4 text-slate-500">
+                    Summary
+                  </h2>
+                  {comparisonResult?.summary ? (
+                    <div className="space-y-2 text-lg">
+                      <div className="py-2">
+                        <strong>Technical</strong>{" "}
+                        <p className=" text-sm text-gray-500">
+                          {comparisonResult.summary.technical ||
+                            "no technical summary"}
+                        </p>
+                      </div>
+                      <div className="py-2">
+                        <strong>Culture</strong>{" "}
+                        <p className=" text-sm text-gray-500">
+                          {comparisonResult.summary.culture ||
+                            "no summary of culture."}
+                        </p>
+                      </div>
+                      <div className="py-2">
+                        <strong>Growth</strong>{" "}
+                        <p className=" text-sm text-gray-500">
+                          {comparisonResult.summary.growth ||
+                            "no summary of growth"}
+                        </p>
+                      </div>
                     </div>
+                  ) : (
+                    <p className=" text-center text-gray-600 text-sm italic">
+                      No summary available
+                    </p>
                   )}
                 </div>
-
-
-              </>)}
-
-
-
-
+              </>
+            )}
           </div>
-
         </div>
-
-
       </SidebarInset>
     </>
-  )
-}
+  );
+};
 
-export default InterviewComparision
+export default InterviewComparision;
