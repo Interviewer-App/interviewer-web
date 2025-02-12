@@ -181,15 +181,15 @@ const InterviewComparision = () => {
         {
           label: firstCandidateName,
           data: c1Scores,
-          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          backgroundColor: "rgba(54, 162, 235, 0.3)",
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
         },
         {
           label: secondCandidateName,
           data: c2Scores,
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(234, 179, 8, 0.3)",
+          borderColor: "rgba(234, 179, 8, 1)",
           borderWidth: 1,
         },
       ],
@@ -205,8 +205,8 @@ const InterviewComparision = () => {
           comparisonResult?.strengths?.c1?.strengths.length || 0, // Number of strengths for Candidate 1
           comparisonResult?.strengths?.c1?.weaknesses.length || 0, // Number of weaknesses for Candidate 1
         ],
-        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"], // Blue for strengths, Red for weaknesses
-        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"], // Same color border for the sections
+        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(234, 179, 8, 0.2)"], // Blue for strengths, Red for weaknesses
+        borderColor: ["rgba(54, 162, 235, 1)", "rgba(234, 179, 8, 1)"], // Same color border for the sections
         borderWidth: 1,
       },
       {
@@ -217,9 +217,9 @@ const InterviewComparision = () => {
         ],
         backgroundColor: [
           "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
+          "rgba(234, 179, 8, 0.2)",
         ], // Green for strengths, Purple for weaknesses
-        borderColor: ["rgba(75, 192, 192, 1)", "rgba(153, 102, 255, 1)"], // Same color border for the sections
+        borderColor: ["rgba(75, 192, 192, 1)", "rgba(234, 179, 8, 1)"], // Same color border for the sections
         borderWidth: 1,
       },
     ],
