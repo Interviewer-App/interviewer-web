@@ -25,7 +25,6 @@ import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import { AlertCircle } from "lucide-react"
 import { getCompanyById } from "@/lib/api/users";
-
 import {
   Alert,
   AlertDescription,
