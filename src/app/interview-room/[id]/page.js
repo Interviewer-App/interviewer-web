@@ -275,7 +275,7 @@ const InterviewRoomPage = ({ params }) => {
         {technicalStatus === "toBeConducted" && (
           <>
             {isParticipantJoined ? (
-              <></>
+              <ResizablePanel defaultSize={0}></ResizablePanel>
             ) : (
               <>
                 <ResizablePanel defaultSize={250}>
@@ -314,13 +314,17 @@ const InterviewRoomPage = ({ params }) => {
                 <ResizablePanel defaultSize={250}>
                   {questionType === "OPEN_ENDED" ? (
                     <div className="flex flex-col justify-center items-center w-full text-white py-3 bg-black">
-                      <div className="absolute inset-0 bg-black -z-20"></div>
-                      <div className="w-[70%] max-w-[1100px] relative">
+                      {/* <div className="absolute inset-0 bg-black -z-20"></div> */}
+                      <div className="w-[80%] max-w-[1500px] mx-auto flex flex-col justify-between h-lvh relative">
                         <div className=" w-full py-9">
-                          <div className=" relative p-8 h-[300px] bg-neutral-900 text-white shadow-md flex flex-col justify-center">
-                            <div className=" absolute top-4 right-4 text-gray-400 text-2xl font-semibold">
-                              <span className=" text-sm font-normal">Time Remaining</span>{" "}
-                              <p className=" text-right">{formatTime(questionCountDown)}</p>
+                          <div className=" relative p-8 rounded-lg bg-neutral-900 text-white shadow-md flex flex-col justify-center">
+                            <div className=" absolute top-4 right-6 text-gray-400 text-2xl font-semibold">
+                              <span className=" text-sm font-normal">
+                                Time Remaining
+                              </span>{" "}
+                              <p className=" text-right">
+                                {formatTime(questionCountDown)}
+                              </p>
                             </div>
                             <h1 className="text-2xl font-semibold">
                               Question{" "}
@@ -336,82 +340,133 @@ const InterviewRoomPage = ({ params }) => {
                         </div>
 
                         <div className="relative flex flex-col items-center justify-between w-full text-white py-6">
-                          <div className="w-[70%] max-w-[1100px]">
-                            <div className="relative w-full rounded-xl h-auto p-7 bg-neutral-900 text-white shadow-md mb-5">
-                              <div>
-                                <textarea
-                                  onPaste={(e) => {
-                                    e.preventDefault();
-                                    return false;
-                                  }}
-                                  onCopy={(e) => {
-                                    e.preventDefault();
-                                    return false;
-                                  }}
-                                  value={transcript}
-                                  onChange={handleAnswerChange}
-                                  placeholder="your answer here..."
-                                  className="w-full h-32 bg-transparent border-2 border-gray-600 rounded-lg p-3 text-white"
-                                />
+                          {isSubmitBtnAvailable ? (
+                            <div className="w-full">
+                              <h1 className="text-2xl font-semibold text-center w-full pb-5">
+                                What is Your Answer?
+                              </h1>
+                              <div className="relative w-full rounded-xl h-auto bg-neutral-900 text-white shadow-md">
+                                <div>
+                                  <textarea
+                                    onPaste={(e) => {
+                                      e.preventDefault();
+                                      return false;
+                                    }}
+                                    onCopy={(e) => {
+                                      e.preventDefault();
+                                      return false;
+                                    }}
+                                    value={transcript}
+                                    onChange={handleAnswerChange}
+                                    placeholder="your answer here..."
+                                    className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
+                                  />
+                                </div>
+                                <div className="absolute bottom-2 right-2">
+                                  {isListening ? (
+                                    <button
+                                      onClick={stopListening}
+                                      className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-8 focus:outline-none"
+                                    >
+                                      <svg
+                                        className="w-5 h-5"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          fill="white"
+                                          d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                                        />
+                                      </svg>
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={startListening}
+                                      className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-8 focus:outline-none"
+                                    >
+                                      <svg
+                                        viewBox="0 0 256 256"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-5 h-5 text-white"
+                                      >
+                                        <path
+                                          fill="currentColor"
+                                          d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                                        />
+                                      </svg>
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex justify-center">
+                                {isSubmitBtnAvailable && (
+                                  <button
+                                    onClick={handleSubmit}
+                                    disabled={!transcript}
+                                    className="my-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+                                  >
+                                    Submit Answer
+                                  </button>
+                                )}
                               </div>
                             </div>
-
-                            <div className="flex justify-center">
-                              {isSubmitBtnAvailable && (
+                          ) : (
+                            <div className=" flex min-h-[300px] justify-center flex-col items-center h-full">
+                              <p className=" text-xl font-semibold">
+                                Your answer has been submitted.
+                              </p>
+                              <p className=" text-gray-500 text-xs">
+                                Analyzing your answer...
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {/* {isSubmitBtnAvailable ? (
+                        <div className="w-[70%]">
+                          <div className="rounded-lg w-full">
+                            <div className="flex items-center w-full">
+                              {isListening ? (
                                 <button
-                                  onClick={handleSubmit}
-                                  disabled={!transcript}
-                                  className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
+                                  onClick={stopListening}
+                                  className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
                                 >
-                                  Submit Answer
+                                  <svg
+                                    className="w-8 h-8"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fill="white"
+                                      d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                                    />
+                                  </svg>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={startListening}
+                                  className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
+                                >
+                                  <svg
+                                    viewBox="0 0 256 256"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-8 h-8 text-white"
+                                  >
+                                    <path
+                                      fill="currentColor"
+                                      d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                                    />
+                                  </svg>
                                 </button>
                               )}
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="w-[70%]">
-                        <h1 className="text-2xl font-semibold text-center w-full pb-5">
-                          What is Your Answer?
-                        </h1>
-                        <div className="rounded-lg w-full">
-                          <div className="flex items-center w-full">
-                            {isListening ? (
-                              <button
-                                onClick={stopListening}
-                                className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
-                              >
-                                <svg
-                                  className="w-8 h-8"
-                                  viewBox="0 0 24 24"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fill="white"
-                                    d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
-                                  />
-                                </svg>
-                              </button>
-                            ) : (
-                              <button
-                                onClick={startListening}
-                                className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
-                              >
-                                <svg
-                                  viewBox="0 0 256 256"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="w-8 h-8 text-white"
-                                >
-                                  <path
-                                    fill="currentColor"
-                                    d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
-                                  />
-                                </svg>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      ) : (
+                        <p className=" text-xl font-semibold">
+                          Your answer has been submitted.
+                        </p>
+                      )} */}
                     </div>
                   ) : (
                     <CodeEditor
@@ -770,11 +825,13 @@ const InterviewRoomPage = ({ params }) => {
             )}
           </>
         )} */}
-        {technicalStatus === "toBeConducted" && !isQuestionAvailabe && (<ResizableHandle withHandle />)}
+        {technicalStatus !== "toBeConducted" && isQuestionAvailabe && (
+          <ResizableHandle withHandle />
+        )}
         <ResizablePanel
           defaultSize={
             technicalStatus === "toBeConducted" && !isQuestionAvailabe
-              ? 250
+              ? 300
               : 100
           }
         >
@@ -783,7 +840,12 @@ const InterviewRoomPage = ({ params }) => {
               technicalStatus === "toBeConducted" ? "h-lvh" : "h-[300px]"
             }`}
           >
-            <VideoCall sessionId={sessionId} isCandidate={true} senderId={userId} role='CANDIDATE'/>
+            <VideoCall
+              sessionId={sessionId}
+              isCandidate={true}
+              senderId={userId}
+              role="CANDIDATE"
+            />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
