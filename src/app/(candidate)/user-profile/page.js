@@ -97,7 +97,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
+import { Info } from 'lucide-react';
 const UserProfile = () => {
   const [Tab, setTab] = useState("details");
   const { data: session, status } = useSession();
@@ -739,7 +739,20 @@ const UserProfile = () => {
               <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-8">
                 <div className=" w-full md:w-[70%] md:border-r-2 border-gray-500/20 md:pr-8">
                   <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
-                    <h1 className=" text-xl font-semibold">Experiences</h1>
+                  <div className="flex flex-row items-center space-x-1">
+                      <h1 className=" text-xl font-semibold">Experiences</h1>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-4 h-4 text-blue-500 hover:text-blue-700 cursor-pointer" />
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                            Add details about your professional experiences here.
+
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <div
                       className={` ${
                         isEdit ? "hidden" : "block"
@@ -762,7 +775,19 @@ const UserProfile = () => {
                     </div>
                   </div>
                   <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
-                    <h1 className=" text-xl font-semibold">Skill Highlights</h1>
+                  <div className="flex flex-row items-center space-x-1">
+                    <h1 className=" text-xl font-semibold">Skill Highlights</h1>          
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 text-yellow-800 hover:text-yellow-600 cursor-pointer" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                          Highlight your key skills and expertise here
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    </div>
                     <div
                       className={`${
                         isEdit ? "hidden" : "block"
