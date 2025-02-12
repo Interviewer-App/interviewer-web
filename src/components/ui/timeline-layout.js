@@ -46,7 +46,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
+import { Info } from 'lucide-react';
 export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews, isProfileCompleted }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -311,7 +311,23 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
           checked={showPastInterviews}
           onCheckedChange={setShowPastInterviews}
         />
-        <Label className="text-lg font-light">Show past Interviews</Label>
+        <div className="flex items-center space-x-1">
+          <Label className="text-lg font-light">Show past Interviews</Label>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-white hover:text-gray-200 cursor-pointer" />
+              </TooltipTrigger>
+              <TooltipContent
+                side="top"
+                align="center"
+                className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center"
+              >
+                Toggle to view your booked interviews from previous months
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
       {!isProfileCompleted && (
