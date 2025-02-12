@@ -119,29 +119,29 @@ const InterviewCategoryPage = () => {
         </header>
  
         <div className="px-9 py-4 w-full max-w-[1500px] bg-black mx-auto h-full">
-  <h1 className="text-3xl font-semibold">Insights</h1>
-  <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
-    <div className="flex items-center justify-between mb-5">
-    <div className="flex flex-row items-center space-x-2">
-      <h1 className="text-2xl font-semibold">Interview Insights</h1>
-      <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-4 h-4 text-white hover:text-gray-200 cursor-pointer" />
-            </TooltipTrigger>
-            <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
-            Explore the categories you&apos;re tested on during interviews and how each is evaluated.
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-    </div>
-      {/* Add Category Button */}
-      <button
-        onClick={() => setModalOpen(true)}
-        className="rounded-full bg-white text-black font-bold px-2 py-2"
-      >
-       <Plus/>
-      </button>
+          <div className="flex flex-row items-center space-x-2">
+            <h1 className="text-3xl font-semibold">Insights</h1>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-white hover:text-gray-200 cursor-pointer" />
+                </TooltipTrigger>
+                <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                  Explore the categories you&apos;re tested on during interviews and how each is evaluated.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+            <div className="flex items-center justify-between mb-5">
+              <h1 className="text-2xl font-semibold">Interview Insights</h1>
+              {/* Add Category Button */}
+              <button
+                onClick={() => setModalOpen(true)}
+                className="rounded-full bg-white text-black font-bold px-2 py-2"
+              >
+                <Plus />
+              </button>
     </div>
 
     <div>
