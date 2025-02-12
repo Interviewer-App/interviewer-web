@@ -425,12 +425,12 @@ const InterviewComparision = () => {
                             {comparisonResult.overall.score.c1.toFixed(2)}%
                           </span>
                         </div>
-                        <div>
+                        {/* <div>
                           <strong>Time Spent:</strong>{" "}
                           <span className=" text-gray-500">
                             {comparisonResult.overall.time.c1} mins
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                     )}
 
@@ -487,12 +487,12 @@ const InterviewComparision = () => {
                             {comparisonResult.overall.score.c2.toFixed(2) || 0}%
                           </span>
                         </div>
-                        <div>
+                        {/* <div>
                           <strong>Time Spent:</strong>{" "}
                           <span className=" text-gray-500">
                             {comparisonResult.overall.time.c2 || 0} mins
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                     )}
 
