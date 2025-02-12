@@ -287,29 +287,51 @@ export default function InterviewPreviewPage({ params }) {
     if (interviewId) fetchCandidatesData();
   }, [interviewId, page, limit, inviteModalOpen]);
 
+
+  const hexToRgba = (hex, opacity = 0.2) => {
+    // Remove the hash symbol if it exists
+    hex = hex.replace("#", "");
+
+    // Convert the hex string into RGB values
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    // Return the RGBA format
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+
+
   useEffect(() => {
-    const generateRandomColor = () => {
-      const r = Math.floor(Math.random() * 256);
-      const g = Math.floor(Math.random() * 256);
-      const b = Math.floor(Math.random() * 256);
-      return `rgba(${r}, ${g}, ${b}, 0.2)`;
-    };
-
-    const generateRandomBorderColor = (color) => color.replace("0.2", "1");
-
-    const backgroundColors = categoryList.map(() => generateRandomColor());
-    const borderColors = backgroundColors.map((color) =>
-      generateRandomBorderColor(color)
+    const totalPercentage = categoryList.reduce(
+      (acc, cat) => acc + parseFloat(cat.percentage),
+      0
     );
+    const remaining = 100 - totalPercentage;
 
+    // Use actual colors from subcategories
+    const backgroundColors = categoryList.map((cat) =>
+      hexToRgba(cat.color, 0.2)
+    );
+    const borderColors = categoryList.map((cat) => hexToRgba(cat.color, 1));
+    
     const dataset = {
       labels: categoryList.map((cat) => cat.catagory),
       datasets: [
         {
           label: "Percentage",
-          data: categoryList.map((cat) => parseFloat(cat.percentage)),
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
+          data: [
+            ...categoryList.map((cat) => parseFloat(cat.percentage)),
+            remaining,
+          ],
+          backgroundColor: [
+            ...backgroundColors,
+            "rgba(192, 192, 192,0.05)", // Remaining background color
+          ],
+          borderColor: [
+            ...borderColors,
+            "rgba(192, 192, 192,0.2)", // Remaining border color
+          ],
           borderWidth: 1,
         },
       ],
