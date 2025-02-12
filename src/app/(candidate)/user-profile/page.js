@@ -461,61 +461,6 @@ const UserProfile = () => {
       });
   };
 
-  // const handleDownload = async () => {
-  //   try {
-  //     setIsLoading(true);
-
-  //     // Get the current URL
-  //     const currentURL = window.location.href;
-
-  //     const data = {
-  //       url: currentURL,
-  //     }
-
-  //     // Make the API request
-  //     // const res = await generatePdfPage(data)
-  //     // debugger
-  //     // const response = res.data
-  //     const response = await fetch('http://localhost:3333/api/v1/ai/generate', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
-
-  //     debugger
-
-  //     if (!response) {
-  //       throw new Error('PDF generation failed');
-  //     }
-  //     // const arrayBuffer = await response.arrayBuffer();
-  //     const blob = await response.body.blob();
-
-  //     // Convert ArrayBuffer to Blob
-  //     // const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-
-  //     // Create download link
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'download.pdf';
-  //     document.body.appendChild(a);
-  //     a.click();
-
-  //     // Cleanup
-  //     window.URL.revokeObjectURL(url);
-  //     document.body.removeChild(a);
-
-  //   } catch (error) {
-  //     debugger
-  //     console.error('Download error:', error);
-  //     alert('Error downloading PDF');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   return (
     <>
       <SidebarInset>
@@ -728,7 +673,7 @@ const UserProfile = () => {
                         return (
                           <span
                             key={index}
-                            className="inline-block bg-white rounded-full px-3 py-1 text-sm text-black mr-2 mb-2"
+                            className="inline-block bg-gray-200/10 rounded-full px-3 py-1 text-sm text-gray-500 mr-2 mb-2"
                           >
                             {skils}
                           </span>
