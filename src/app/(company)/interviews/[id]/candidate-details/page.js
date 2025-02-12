@@ -251,7 +251,7 @@ function CandidateDetailsProfile() {
                                     {documentUrl?.education?.map((edu, index) => (
                                         <span
                                             key={index}
-                                            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                                            className="inline-block bg-gray-200/10 rounded-lg px-4 py-2 text-sm text-gray-500 mr-2 mb-2"
                                         >
                                             {edu}
                                         </span>))}
@@ -260,7 +260,7 @@ function CandidateDetailsProfile() {
                                     {documentUrl?.experience?.map((exp, index) => (
                                         <span
                                             key={index}
-                                            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                                            className="inline-block bg-gray-200/10 rounded-lg px-4 py-2 text-sm text-gray-500 mr-2 mb-2"
                                         >
                                             {exp}
                                         </span>))}
@@ -270,7 +270,7 @@ function CandidateDetailsProfile() {
                                     {documentUrl?.skills?.map((skill, index) => (
                                         <span
                                             key={index}
-                                            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                                            className="inline-block bg-gray-200/10 rounded-full px-3 py-1 text-sm text-gray-500 mr-2 mb-2"
                                         >
                                             {skill}
                                         </span>))}
