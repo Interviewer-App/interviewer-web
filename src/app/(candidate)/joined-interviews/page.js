@@ -25,7 +25,13 @@ import {
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Info } from 'lucide-react';
 const JoinedInterviews = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -111,7 +117,19 @@ const JoinedInterviews = () => {
         <h1 className="text-3xl font-semibold">Interviews</h1>
         <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
           <div>
+            <div className="flex flex-row items-center space-x-2">
             <h1 className=" text-2xl font-semibold">My Interview</h1>
+            <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="w-4 h-4 text-white hover:text-gray-200 cursor-pointer" />
+            </TooltipTrigger>
+            <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+            View the interviews you&apos;ve attended, along with your performance and scores.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        </div>
             <div className="flex mb-5 justify-end"></div>
             <div>
               {loading ? (
