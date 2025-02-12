@@ -30,6 +30,14 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
+import { Info } from 'lucide-react';
+          
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const InterviewsPage = () => {
   const { data: session, status } = useSession();
@@ -205,7 +213,20 @@ const InterviewsPage = () => {
 
         <div className=" px-9 py-4 w-full bg-black max-w-[1500px] mx-auto h-full">
           <div className=" flex items-start justify-between">
+            
+  <div className="flex flex-row items-center space-x-2">
             <h1 className=" text-4xl font-semibold mb-4">Interviews</h1>
+            <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="w-5 h-5 text-white hover:text-gray-200 cursor-pointer" />
+            </TooltipTrigger>
+            <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+            View the interviews you&apos;ve attended, along with your performance and scores.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        </div>
             {/* {(companyDetails?.companyDescription === null || companyDetails?.companyDescription === "<p><br></p>") && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
