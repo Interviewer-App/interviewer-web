@@ -567,7 +567,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
   };
   const handleOnChange = (content) => {
     setJobDescription(content);
-    setGenJobDescription(content);
   };
 
   const generateDescription = async (e) => {
@@ -581,6 +580,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
 
       if (response) {
         setGenJobDescription(response.data.description);
+        setJobDescription(response.data.description); 
         setIsLoading(false);
       }
     } catch (err) {
@@ -957,7 +957,6 @@ export default function CreateInterviewModal({ setModalOpen }) {
                     editorId={"jobDescription"}
                     placeholder="Job Description here..."
                     onChange={handleOnChange}
-                    jobDescription={genJobDescription}
                     value={jobDescription} //change this line to store the jobdescription when user go step forward and come back
                   />
                 </div>
