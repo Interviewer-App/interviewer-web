@@ -87,7 +87,7 @@ const adminItems = [
 
 const teams = [
   {
-    name: "JUDGEJET",
+    name: "Skillchecker",
     logo: SiEclipsejetty,
     plan: "Decisions at Jet Speed",
   },
