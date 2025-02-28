@@ -12,16 +12,33 @@ import spotify from "../assets/landing/spotify.png";
 import samsung from "../assets/landing/samsung.png";
 import dropbox from "../assets/landing/dropbox.png";
 import airbnb from "../assets/landing/airbnb.png";
-
+import logo from "../assets/landing_page/logo.png";
 import { BiLike } from "react-icons/bi";
 import { FaAward } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { FiArrowUpRight } from "react-icons/fi";
 
 import PremiuCard from "../components/home/premiumCard";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
-import { useRouter,useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Matter from 'matter-js';
+
+
+// Sample avatar data - you would replace this with your own avatar images
+const AVATARS = Array(40).fill().map((_, index) => ({
+  id: index + 1,
+  src: `/landing_page/avatars/avatar1.png`, // Replace with your avatar images
+  position: {
+    x: Math.random() * 80 + 10, // 10% to 90% of container width
+    y: Math.random() * 80 + 10, // 10% to 90% of container height
+  },
+  velocity: {
+    x: (Math.random() - 0.5) * 0.1,
+    y: (Math.random() - 0.5) * 0.1,
+  },
+}));
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -29,6 +46,88 @@ export default function Home() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
   const [duration, setDuration] = useState("MONTHLY");
+
+  const [avatars, setAvatars] = useState(AVATARS);
+  const [selectedAvatars, setSelectedAvatars] = useState([]);
+  const [hoveredAvatar, setHoveredAvatar] = useState(null);
+  const containerRef = useRef(null);
+  const animationRef = useRef(null);
+
+  // Handle avatar movement
+  useEffect(() => {
+    const moveAvatars = () => {
+      setAvatars(prevAvatars => {
+        return prevAvatars.map(avatar => {
+          // Skip if this avatar is already selected
+          if (selectedAvatars.some(selected => selected.id === avatar.id)) {
+            return avatar;
+          }
+
+          let newX = avatar.position.x + avatar.velocity.x;
+          let newY = avatar.position.y + avatar.velocity.y;
+
+          // Bounce off edges
+          if (newX <= 0 || newX >= 100) {
+            avatar.velocity.x *= -1;
+            newX = Math.max(0, Math.min(100, newX));
+          }
+          if (newY <= 0 || newY >= 100) {
+            avatar.velocity.y *= -1;
+            newY = Math.max(0, Math.min(100, newY));
+          }
+
+          // Occasionally change direction
+          if (Math.random() < 0.01) {
+            avatar.velocity.x = (Math.random() - 0.5) * 0.1;
+            avatar.velocity.y = (Math.random() - 0.5) * 0.1;
+          }
+
+          return {
+            ...avatar,
+            position: { x: newX, y: newY },
+          };
+        });
+      });
+
+      animationRef.current = requestAnimationFrame(moveAvatars);
+    };
+
+    animationRef.current = requestAnimationFrame(moveAvatars);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [selectedAvatars]);
+
+  // Handle avatar selection
+  const handleAvatarClick = (avatar) => {
+    // Add avatar to selection panel if not already selected
+    if (!selectedAvatars.some(selected => selected.id === avatar.id)) {
+      setSelectedAvatars(prev => {
+        const slots = [1, 2, 3]; // Total selection slots
+        const filledSlots = prev.map(a => a.slot);
+        const availableSlots = slots.filter(slot => !filledSlots.includes(slot));
+
+        if (availableSlots.length === 0) return prev; // All slots filled
+
+        const newAvatar = {
+          ...avatar,
+          slot: availableSlots[0]
+        };
+
+        return [...prev, newAvatar];
+      });
+    }
+  };
+
+  // Handle removing from selection panel
+  const handleRemoveSelection = (slotNumber) => {
+    setSelectedAvatars(prev => prev.filter(avatar => avatar.slot !== slotNumber));
+  };
+
+
   const premiumDetails = [
     {
       id: 1,
@@ -77,6 +176,25 @@ export default function Home() {
     },
   ];
 
+
+  const features = [
+    { title: "Streamlined Interviews", desc: "Simplify your hiring process from start to finish." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Data-Driven Decisions", desc: "Make every hire backed by real data and clear insights." },
+    { title: "Collaborative Feedback", desc: "Gather insights from your team." },
+    { title: "Faster Hiring Process", desc: "Speed up your hiring without sacrificing quality." },
+    { title: "AI-Powered Assessments", desc: "Smart assessments that see skills beyond the resume." },
+    { title: "Unbiased Insights", desc: "Fair, data-driven evaluations — no bias, just talent." },
+    { title: "Enhanced Experience", desc: "Streamlined communication." },
+  ];
+
+  const items = [
+    { icon: "🎓", title: "Candidates" },
+    { icon: "🏢", title: "Companies" },
+    { icon: "💼", title: "Entrepreneurs" },
+  ];
+
+
   const handleAuthentication = async () => {
     if (status === "authenticated") {
       const token = localStorage.getItem('accessToken');
@@ -86,9 +204,9 @@ export default function Home() {
         router.push('/interviews');
       } else if (userRole === 'CANDIDATE') {
         router.push('/my-interviews');
-      } else if (userRole === 'ADMIN')  {
+      } else if (userRole === 'ADMIN') {
         router.push('/users');
-      } else{
+      } else {
         router.push('/');
       }
 
@@ -97,16 +215,30 @@ export default function Home() {
 
   return (
     <div className=" w-full">
+
+
+
+
+
+
+
+
+
       {/* landing screen */}
-      <div className=" w-full text-white bg-[#785DFB]">
+      <div className=" w-full text-black bg-[#fff]">
         <header className=" w-full ">
-          <div className=" w-[90%] max-w-[1500px] flex items-center justify-between py-6 mx-auto">
+          <div className=" w-[90%] max-w-[1500px] flex items-center justify-between py-16 mx-auto">
             <div>
-              <h1 className=" text-base md:text-xl font-semibold ">
+              {/* <h1 className=" text-base md:text-xl font-semibold ">
                 INTERVIWER WEB
-              </h1>
+              </h1> */}
+              <Image
+                src={logo}
+                alt="logo"
+                width="422"
+                height="56" />
             </div>
-            <div>
+            {/* <div>
               <Link href="/login">
                 <button className=" bg-[#2e2850]/80 py-2 md:py-3 px-5 md:px-8 rounded-lg mr-1 md:mr-3 text-sm md:text-base font-medium">
                   Sign In
@@ -117,24 +249,118 @@ export default function Home() {
                   Sign Up
                 </button>
               </Link>
-            </div>
+            </div> */}
           </div>
         </header>
-        <div className=" flex flex-col lg:flex-row items-center justify-center w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
-          <div className=" w-[70%] flex flex-col justify-center items-center">
-            <h1 className=" text-center text-[42px] leading-[42px] md:text-[86px] md:leading-[86px] font-semibold">
-              Effortless hiring with smart interview tools.
+        <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto  gap-12">
+          <div className=" w-[50%] flex flex-col justify-start items-start border-black border-2 px-8 py-8">
+            <h1 className=" text-start text-[22px] leading-[12px] md:text-[45px] md:leading-[52px] font-jakarta font-bold">
+              Find the Right Talent <br/> Without the Runaround
             </h1>
-            <p className=" text-base w-[60%] mx-auto text-center pt-6 md:pt-9 md:text-[20px] md:leading-[30px]">
-              Providing solutions for every team, from small businesses to large
-              enterprises, to streamline operations effortlessly.
+            <p className=" text-base text-start pt-6 md:pt-9 md:text-[17px] md:leading-[24px]">
+              Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform <br />
+              evaluates real-world skills with precision, giving you fast, unbiased, and data-<br /> backed insights — so you can make confident hiring decisions every time
             </p>
-              <button onClick={handleAuthentication} className="bg-[#2e2850]/80 py-2 md:py-4 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium mt-5 lg:mt-10">
-                Get Started Now
+            <div className="flex gap-6">
+              <button onClick={handleAuthentication} className="bg-[#D41414] text-white py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
+                Request a Demo
               </button>
+              <button onClick={handleAuthentication} className="bg-[#000] text-white py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
+                Get Started
+              </button>
+            </div>
+          </div>
+
+          <div className=" w-[50%] flex flex-col justify-start items-start border-black border-2">
+
           </div>
         </div>
-        <div className=" w-[90%] max-w-[1500px] grid place-items-center place-content-center mx-auto lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 mt-10 pb-16">
+        <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
+          <div className=" w-[70%] flex flex-col justify-start items-start">
+            <h1 className=" text-start text-[42px] leading-[42px] md:text-[80px] md:leading-[86px] font-jakarta font-bold">
+              Find the <span className="text-[#D41414]">Right Talent</span> Without the Runaround
+            </h1>
+            <p className=" text-base text-start pt-6 md:pt-9 md:text-[24px] md:leading-[40px]">
+              Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform <br />
+              evaluates real-world skills with precision, giving you fast, unbiased, and data-<br /> backed insights — so you can make confident hiring decisions every time
+            </p>
+            <div className="flex gap-6">
+              <button onClick={handleAuthentication} className="bg-[#D41414] text-white py-2 md:py-4 px-5 md:px-8 rounded-full text-sm md:text-base font-medium mt-5 lg:mt-10">
+                Request a Demo
+              </button>
+              <button onClick={handleAuthentication} className="bg-[#000] text-white py-2 md:py-4 px-5 md:px-8 rounded-full text-sm md:text-base font-medium mt-5 lg:mt-10">
+                Get Started
+              </button>
+            </div>
+
+          </div>
+          <div className="w-[40rem] h-[30rem] bg-gray-100 relative overflow-hidden font-sans">
+            {/* Selection Panel */}
+            <div className="absolute top-5 left-5 flex gap-3 z-10">
+              {[1, 2, 3].map(slotNumber => {
+                const avatarInSlot = selectedAvatars.find(avatar => avatar.slot === slotNumber);
+
+                return (
+                  <div
+                    key={slotNumber}
+                    className="w-14 h-14 bg-white rounded-lg shadow-md flex items-center justify-center relative cursor-pointer transition-transform duration-200 hover:scale-105"
+                    onClick={() => avatarInSlot && handleRemoveSelection(slotNumber)}
+                  >
+                    <div className="absolute top-1 left-1 w-5 h-5 rounded-full bg-yellow-300 flex items-center justify-center font-bold text-xs">
+                      {slotNumber}
+                    </div>
+
+                    {avatarInSlot ? (
+                      <img
+                        src={avatarInSlot.src}
+                        alt={`Selected Avatar ${slotNumber}`}
+                        className="w-14 h-14 object-contain animate-[popIn_0.5s_ease-out]"
+                      />
+                    ) : (
+                      <div className="text-2xl text-gray-300">?</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Avatar Pool */}
+            <div className="w-full h-full relative" ref={containerRef}>
+              {avatars.map(avatar => {
+                // Skip rendering if already selected
+                if (selectedAvatars.some(selected => selected.id === avatar.id)) {
+                  return null;
+                }
+
+                return (
+                  <div
+                    key={avatar.id}
+                    className={`absolute w-12 h-12 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 cursor-pointer ${hoveredAvatar === avatar.id ? 'scale-130 z-10' : ''}`}
+                    style={{
+                      left: `${avatar.position.x}%`,
+                      top: `${avatar.position.y}%`,
+                    }}
+                    onClick={() => handleAvatarClick(avatar)}
+                    onMouseEnter={() => setHoveredAvatar(avatar.id)}
+                    onMouseLeave={() => setHoveredAvatar(null)}
+                  >
+                    <img
+                      src={avatar.src}
+                      alt={`Avatar ${avatar.id}`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* BF Badge */}
+            <div className="absolute top-5 right-5 w-10 h-10 bg-purple-400 text-white rounded-lg flex items-center justify-center font-bold">
+              BF
+            </div>
+          </div>
+        </div>
+        {/* <div className=" w-[90%] max-w-[1500px] grid place-items-center place-content-center mx-auto lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 mt-10 pb-16">
           <Image
             alt="Google logo"
             loading="lazy"
@@ -185,11 +411,34 @@ export default function Home() {
             src={airbnb}
             className=" mt-5 md:mt-0"
           />
-        </div> 
+        </div> */}
       </div>
 
+
+      <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
+        <div className=" w-[90%] max-w-[1500px] mx-auto">
+          <h1 className=" text-start text-black font-bold text-[36px] pb-5 md:py-8">
+            We got what you looking for
+          </h1>
+
+        </div>
+        <div className="w-[90%] max-w-[1500px] mx-auto flex flex-wrap gap-4 py-2">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="py-5 px-2 border border-gray-300 rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-red-50"
+            >
+              <h3 className="font-semibold text-lg text-black">{feature.title}</h3>
+              <p className="text-gray-600 mt-1">{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+
       {/* why this product */}
-      <div className=" w-full bg-cover relative text-white overflow-hidden">
+      {/* <div className=" w-full bg-cover relative text-white overflow-hidden">
         <div className=" absolute inset-0 bg-background -z-20"></div>
         <Image
           src={bgGrid}
@@ -242,10 +491,94 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div> */}
+
+      <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
+
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-black text-white">
+          <div className="max-w-5xl mx-auto flex flex-wrap md:flex-nowrap gap-6 items-center py-8 px-6">
+            {/* Icons Section */}
+            <div className="flex justify-center items-center gap-4">
+              <div
+              >
+                <Image
+                  src='/landing_page/icons/Student.png'
+                  alt="bg"
+                  width="115"
+                  height="115"
+                />
+              </div>
+              <div
+              >
+                <Image
+                  src='/landing_page/icons/Entrepreneures.png'
+                  alt="bg"
+                  width="115"
+                  height="115"
+                />
+              </div>
+
+              <div
+              >
+                <Image
+                  src='/landing_page/icons/Companies.png'
+                  alt="bg"
+                  width="115"
+                  height="115"
+                />
+              </div>
+
+              <div
+              >
+                <Image
+                  src='/landing_page/icons/Investors.png'
+                  alt="bg"
+                  width="115"
+                  height="115"
+                />
+              </div>
+              <div
+              >
+                <Image
+                  src='/landing_page/icons/Parents.png'
+                  alt="bg"
+                  width="115"
+                  height="115"
+                />
+              </div>
+              <div
+              >
+                <Image
+                  src='/landing_page/icons/Everyone.png'
+                  alt="bg"
+                  width="115"
+                  height="115"
+                />
+              </div>
+              {/* {items.map((item, index) => (
+        <div
+          key={index}
+          className="flex flex-col items-center justify-center border border-white p-4 rounded-md min-w-[100px] text-center hover:bg-white hover:text-black transition"
+        >
+          <span className="text-3xl">{item.icon}</span>
+          <p className="mt-2 text-sm font-medium">{item.title}</p>
+        </div>
+      ))} */}
+            </div>
+
+            {/* Description Section */}
+            {/* <div className="max-w-lg">
+      <h2 className="text-xl font-semibold">Skillchecker helps</h2>
+      <p className="text-gray-300 text-sm mt-2">
+        Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform evaluates real-world skills with precision, giving you fast, unbiased, and data-backed insights — so you can make confident hiring decisions every time.
+      </p>
+    </div> */}
+          </div>
+        </div>
       </div>
 
       {/* Pricing */}
-      <div className=" relative w-full text-white  overflow-hidden">
+      {/* <div className=" relative w-full text-white  overflow-hidden">
         <div className="absolute inset-0 bg-background -z-20"></div>
         <Image
           src={bgGrid}
@@ -272,17 +605,15 @@ export default function Home() {
           <div className=" flex items-center w-fit p-2 rounded-xl justify-center mx-auto bg-black mt-10">
             <button
               onClick={() => setDuration("MONTHLY")}
-              className={`${
-                duration === "MONTHLY" ? "bg-white/10" : ""
-              } py-3 px-8 rounded-xl text-base font-medium mr-2`}
+              className={`${duration === "MONTHLY" ? "bg-white/10" : ""
+                } py-3 px-8 rounded-xl text-base font-medium mr-2`}
             >
               Monthly
             </button>
             <button
               onClick={() => setDuration("ANNUALY")}
-              className={` ${
-                duration === "ANNUALY" ? "bg-white/10" : ""
-              } py-3 px-8 rounded-xl text-base font-medium`}
+              className={` ${duration === "ANNUALY" ? "bg-white/10" : ""
+                } py-3 px-8 rounded-xl text-base font-medium`}
             >
               Annual
             </button>
@@ -352,7 +683,62 @@ export default function Home() {
             </span>
           </div>
         </div>
+      </div> */}
+      <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
+
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-[#FFC400] text-black mt-20 mb-9">
+          <div className="flex justify-between py-10 px-8">
+            <div className="flex flex-col justify-center items-center">
+
+              <div className=" text-sm text-center w-full">
+                <Image
+                  src={logo}
+                  alt="logo"
+                  width="180"
+                  height="24" />
+              </div>
+              <span className=" text-xs text-center inline-block mt-2">
+                Terms and conditions{" "}
+                <FiArrowUpRight className=" inline-block mr-2" />
+                <span>
+                  Privacy <FiArrowUpRight className=" inline-block" />
+                </span>
+              </span>
+
+            </div>
+
+            <div className="flex gap-4">
+
+              <input type="text" className="min-w-[235px] bg-transparent text-black py-2 md:py-4 px-5 md:px-5 rounded-full text-sm  font-medium border-black border-2 focus:border-black active:border-black target:border-black before:border-black after:border-black" />
+
+              <button onClick={handleAuthentication} className="bg-black text-white py-2 md:py-4 px-5 md:px-5 rounded-full text-sm  font-medium">
+                Request a Demo
+              </button>
+
+            </div>
+
+
+          </div>
+
+        </div>
       </div>
+
+      {/* <div className=" w-full text-center">
+        <div className=" w-[80%] mx-auto mt-20 mb-9">
+          <hr className=" opacity-15 mb-5" />
+          <span className=" text-sm text-center w-full">
+            Design by <span className=" text-sm font-semibold">Coullax</span>
+          </span>
+          <br />
+          <span className=" text-xs text-center inline-block">
+            Terms and conditions{" "}
+            <FiArrowUpRight className=" inline-block mr-2" />
+            <span>
+              Privacy <FiArrowUpRight className=" inline-block" />
+            </span>
+          </span>
+        </div>
+      </div> */}
     </div>
   );
 }

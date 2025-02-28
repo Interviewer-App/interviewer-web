@@ -4,7 +4,13 @@ import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/ui/theme-provider"
 import { Suspense } from "react";
 import Loading from "./loading";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  variable: "--font-plus-jakarta-sans",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -14,21 +20,25 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet" />
+      </head>
       <body
-       
+
       >
         <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-        <AuthProvider>
-        <Suspense fallback={<Loading />}>
-        {children}
-        </Suspense>
-        </AuthProvider>
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <Suspense fallback={<Loading />}>
+              {children}
+            </Suspense>
+          </AuthProvider>
         </ThemeProvider>
         <Toaster />
       </body>

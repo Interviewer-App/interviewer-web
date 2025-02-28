@@ -669,7 +669,7 @@ const UserProfile = () => {
                       Skills
                     </h1>
                     <p className=" w-full text-left">
-                      {documentUrl.skills.map((skils, index) => {
+                      {documentUrl.skills?.map((skils, index) => {
                         return (
                           <span
                             key={index}
