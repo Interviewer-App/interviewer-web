@@ -154,7 +154,7 @@ export default function Home() {
         {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
         <div className=" grid grid-cols-1 md:grid-cols-2 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
           <div className=" flex flex-col justify-start items-start border-black border-2 px-8 py-8">
-            <h1 className=" text-start text-[22px] leading-[12px] md:text-[45px] md:leading-[52px] font-jakarta font-bold">
+            <h1 className=" font-bohemian-soul text-start text-[22px] leading-[12px] md:text-[45px] md:leading-[52px] font-jakarta font-bold">
               Find the Right Talent <br/> Without the Runaround
             </h1>
             <p className=" text-base text-start pt-6 md:pt-9 md:text-[17px] md:leading-[24px]">
