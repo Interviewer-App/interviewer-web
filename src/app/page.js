@@ -27,19 +27,6 @@ import Matter from 'matter-js';
 import MatterCircleStack from "@/components/MatterCircleStack";
 
 
-// Sample avatar data - you would replace this with your own avatar images
-const AVATARS = Array(40).fill().map((_, index) => ({
-  id: index + 1,
-  src: `/landing_page/avatars/avatar1.png`, // Replace with your avatar images
-  position: {
-    x: Math.random() * 80 + 10, // 10% to 90% of container width
-    y: Math.random() * 80 + 10, // 10% to 90% of container height
-  },
-  velocity: {
-    x: (Math.random() - 0.5) * 0.1,
-    y: (Math.random() - 0.5) * 0.1,
-  },
-}));
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -47,86 +34,6 @@ export default function Home() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
   const [duration, setDuration] = useState("MONTHLY");
-
-  const [avatars, setAvatars] = useState(AVATARS);
-  const [selectedAvatars, setSelectedAvatars] = useState([]);
-  const [hoveredAvatar, setHoveredAvatar] = useState(null);
-  const containerRef = useRef(null);
-  const animationRef = useRef(null);
-
-  // Handle avatar movement
-  useEffect(() => {
-    const moveAvatars = () => {
-      setAvatars(prevAvatars => {
-        return prevAvatars.map(avatar => {
-          // Skip if this avatar is already selected
-          if (selectedAvatars.some(selected => selected.id === avatar.id)) {
-            return avatar;
-          }
-
-          let newX = avatar.position.x + avatar.velocity.x;
-          let newY = avatar.position.y + avatar.velocity.y;
-
-          // Bounce off edges
-          if (newX <= 0 || newX >= 100) {
-            avatar.velocity.x *= -1;
-            newX = Math.max(0, Math.min(100, newX));
-          }
-          if (newY <= 0 || newY >= 100) {
-            avatar.velocity.y *= -1;
-            newY = Math.max(0, Math.min(100, newY));
-          }
-
-          // Occasionally change direction
-          if (Math.random() < 0.01) {
-            avatar.velocity.x = (Math.random() - 0.5) * 0.1;
-            avatar.velocity.y = (Math.random() - 0.5) * 0.1;
-          }
-
-          return {
-            ...avatar,
-            position: { x: newX, y: newY },
-          };
-        });
-      });
-
-      animationRef.current = requestAnimationFrame(moveAvatars);
-    };
-
-    animationRef.current = requestAnimationFrame(moveAvatars);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [selectedAvatars]);
-
-  // Handle avatar selection
-  const handleAvatarClick = (avatar) => {
-    // Add avatar to selection panel if not already selected
-    if (!selectedAvatars.some(selected => selected.id === avatar.id)) {
-      setSelectedAvatars(prev => {
-        const slots = [1, 2, 3]; // Total selection slots
-        const filledSlots = prev.map(a => a.slot);
-        const availableSlots = slots.filter(slot => !filledSlots.includes(slot));
-
-        if (availableSlots.length === 0) return prev; // All slots filled
-
-        const newAvatar = {
-          ...avatar,
-          slot: availableSlots[0]
-        };
-
-        return [...prev, newAvatar];
-      });
-    }
-  };
-
-  // Handle removing from selection panel
-  const handleRemoveSelection = (slotNumber) => {
-    setSelectedAvatars(prev => prev.filter(avatar => avatar.slot !== slotNumber));
-  };
 
 
   const premiumDetails = [
@@ -216,15 +123,6 @@ export default function Home() {
 
   return (
     <div className=" w-full">
-
-
-
-
-
-
-
-
-
       {/* landing screen */}
       <div className=" w-full text-black bg-[#fff]">
         <header className=" w-full ">
@@ -264,7 +162,7 @@ export default function Home() {
               evaluates real-world skills with precision, giving you fast, unbiased, and data-<br /> backed insights — so you can make confident hiring decisions every time
             </p>
             <div className="flex gap-6">
-              <button onClick={handleAuthentication} className="bg-[#D41414] text-white py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
+              <button onClick={handleAuthentication} className="bg-[#63F79E] text-black border-black border-2 py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
                 Request a Demo
               </button>
               <button onClick={handleAuthentication} className="bg-[#000] text-white py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
@@ -277,7 +175,7 @@ export default function Home() {
             <MatterCircleStack />
           </div>
         </div>
-        <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
+        {/* <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
           <div className=" w-[70%] flex flex-col justify-start items-start">
             <h1 className=" text-start text-[42px] leading-[42px] md:text-[80px] md:leading-[86px] font-jakarta font-bold">
               Find the <span className="text-[#D41414]">Right Talent</span> Without the Runaround
@@ -296,72 +194,8 @@ export default function Home() {
             </div>
 
           </div>
-          <div className="w-[40rem] h-[30rem] bg-gray-100 relative overflow-hidden font-sans">
-            {/* Selection Panel */}
-            <div className="absolute top-5 left-5 flex gap-3 z-10">
-              {[1, 2, 3].map(slotNumber => {
-                const avatarInSlot = selectedAvatars.find(avatar => avatar.slot === slotNumber);
-
-                return (
-                  <div
-                    key={slotNumber}
-                    className="w-14 h-14 bg-white rounded-lg shadow-md flex items-center justify-center relative cursor-pointer transition-transform duration-200 hover:scale-105"
-                    onClick={() => avatarInSlot && handleRemoveSelection(slotNumber)}
-                  >
-                    <div className="absolute top-1 left-1 w-5 h-5 rounded-full bg-yellow-300 flex items-center justify-center font-bold text-xs">
-                      {slotNumber}
-                    </div>
-
-                    {avatarInSlot ? (
-                      <img
-                        src={avatarInSlot.src}
-                        alt={`Selected Avatar ${slotNumber}`}
-                        className="w-14 h-14 object-contain animate-[popIn_0.5s_ease-out]"
-                      />
-                    ) : (
-                      <div className="text-2xl text-gray-300">?</div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Avatar Pool */}
-            <div className="w-full h-full relative" ref={containerRef}>
-              {avatars.map(avatar => {
-                // Skip rendering if already selected
-                if (selectedAvatars.some(selected => selected.id === avatar.id)) {
-                  return null;
-                }
-
-                return (
-                  <div
-                    key={avatar.id}
-                    className={`absolute w-12 h-12 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 cursor-pointer ${hoveredAvatar === avatar.id ? 'scale-130 z-10' : ''}`}
-                    style={{
-                      left: `${avatar.position.x}%`,
-                      top: `${avatar.position.y}%`,
-                    }}
-                    onClick={() => handleAvatarClick(avatar)}
-                    onMouseEnter={() => setHoveredAvatar(avatar.id)}
-                    onMouseLeave={() => setHoveredAvatar(null)}
-                  >
-                    <img
-                      src={avatar.src}
-                      alt={`Avatar ${avatar.id}`}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* BF Badge */}
-            <div className="absolute top-5 right-5 w-10 h-10 bg-purple-400 text-white rounded-lg flex items-center justify-center font-bold">
-              BF
-            </div>
-          </div>
-        </div>
+          
+        </div> */}
         {/* <div className=" w-[90%] max-w-[1500px] grid place-items-center place-content-center mx-auto lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 mt-10 pb-16">
           <Image
             alt="Google logo"
