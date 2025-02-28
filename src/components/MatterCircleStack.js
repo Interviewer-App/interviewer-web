@@ -241,8 +241,8 @@ const MatterCircleStack = () => {
     const floatingInterval = setInterval(() => {
       imageBodies.forEach((body) => {
         Matter.Body.applyForce(body, body.position, {
-          x: (Math.random() - 0.5) * 0.00013,
-          y: (Math.random() - 0.5) * 0.00013,
+          x: (Math.random() - 0.5) * 0.003,
+          y: (Math.random() - 0.5) * 0.003,
         });
       });
     }, 50);
