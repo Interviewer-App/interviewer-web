@@ -24,6 +24,7 @@ import { getSession, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Matter from 'matter-js';
+import MatterCircleStack from "@/components/MatterCircleStack";
 
 
 // Sample avatar data - you would replace this with your own avatar images
@@ -252,8 +253,9 @@ export default function Home() {
             </div> */}
           </div>
         </header>
-        <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto  gap-12">
-          <div className=" w-[50%] flex flex-col justify-start items-start border-black border-2 px-8 py-8">
+        {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
+        <div className=" grid grid-cols-1 md:grid-cols-2 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
+          <div className=" flex flex-col justify-start items-start border-black border-2 px-8 py-8">
             <h1 className=" text-start text-[22px] leading-[12px] md:text-[45px] md:leading-[52px] font-jakarta font-bold">
               Find the Right Talent <br/> Without the Runaround
             </h1>
@@ -271,8 +273,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className=" w-[50%] flex flex-col justify-start items-start border-black border-2">
-
+          <div className=" flex min-h-[400px] flex-col justify-start items-start border-black border-2">
+            <MatterCircleStack />
           </div>
         </div>
         <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
