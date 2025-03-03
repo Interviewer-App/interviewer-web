@@ -123,50 +123,41 @@ export default function Home() {
 
   return (
     <div className=" w-full">
-      {/* landing screen */}
       <div className=" w-full text-black bg-[#fff]">
+
         <header className=" w-full ">
-          <div className=" w-[90%] max-w-[1500px] flex items-center justify-between py-16 mx-auto">
+          <div className=" w-[90%] max-w-[1500px] flex items-center justify-between py-[3rem] mx-auto">
             <div>
-              {/* <h1 className=" text-base md:text-xl font-semibold ">
-                INTERVIWER WEB
-              </h1> */}
               <Image
-                src={logo}
+                src='/landing_page/logo.png'
                 alt="logo"
                 width="422"
                 height="56" />
             </div>
-            {/* <div>
-              <Link href="/login">
-                <button className=" bg-[#2e2850]/80 py-2 md:py-3 px-5 md:px-8 rounded-lg mr-1 md:mr-3 text-sm md:text-base font-medium">
-                  Sign In
-                </button>
-              </Link>
-              <Link href="/register">
-                <button className=" bg-[#2e2850]/80 py-2 md:py-3 px-5 md:px-8 rounded-lg text-sm md:text-base font-medium">
-                  Sign Up
-                </button>
-              </Link>
-            </div> */}
           </div>
         </header>
+
+
         {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
         <div className=" grid grid-cols-1 md:grid-cols-2 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
-          <div className=" flex flex-col justify-start items-start border-black border-2 px-8 py-8">
-            <h1 className=" font-bohemian-soul text-start text-[22px] leading-[12px] md:text-[45px] md:leading-[52px] font-jakarta font-bold">
-              Find the Right Talent <br/> Without the Runaround
+          <div className=" flex flex-col justify-start items-start border-black border-2 px-[3rem] py-[3rem] bg-black">
+            <h1 className="font-bohemian-soul text-start leading-[52px] text-[45px] md:leading-[52px] font-bold text-white">
+              Find the Right Talent <br /> Without the Runaround
             </h1>
-            <p className=" text-base text-start pt-6 md:pt-9 md:text-[17px] md:leading-[24px]">
-              Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform <br />
-              evaluates real-world skills with precision, giving you fast, unbiased, and data-<br /> backed insights — so you can make confident hiring decisions every time
+            <p className="text-base text-start pt-6 md:pt-9 text-[17px] leading-[23px] text-white font-puls">
+              Skillchecker takes the guesswork out of hiring. Our AI-driven <br />
+              interview platform evaluates real-world skills with precision, <br />
+              giving you fast, unbiased, and data-backed insights — so you <br />
+              can make confident hiring decisions every time
             </p>
             <div className="flex gap-6">
-              <button onClick={handleAuthentication} className="bg-[#63F79E] text-black border-black border-2 py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
+              <button onClick={handleAuthentication} className="bg-[#FFC400] text-black py-[20px] px-[20px] text-[14px]  mt-[52px] font-bold">
                 Request a Demo
               </button>
-              <button onClick={handleAuthentication} className="bg-[#000] text-white py-2 md:py-4 px-5 md:px-8 text-sm md:text-base font-medium mt-5 lg:mt-10">
-                Get Started
+              <button onClick={handleAuthentication} className="bg-[#000] relative text-white py-[20px] px-[20px] text-[14px] font-bold mt-[52px] border-2 border-white ">
+                Contact us now
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
               </button>
             </div>
           </div>
@@ -175,6 +166,8 @@ export default function Home() {
             <MatterCircleStack />
           </div>
         </div>
+
+
         {/* <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
           <div className=" w-[70%] flex flex-col justify-start items-start">
             <h1 className=" text-start text-[42px] leading-[42px] md:text-[80px] md:leading-[86px] font-jakarta font-bold">
@@ -194,7 +187,7 @@ export default function Home() {
             </div>
 
           </div>
-          
+
         </div> */}
         {/* <div className=" w-[90%] max-w-[1500px] grid place-items-center place-content-center mx-auto lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 mt-10 pb-16">
           <Image
@@ -252,8 +245,8 @@ export default function Home() {
 
 
       <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
-        <div className=" w-[90%] max-w-[1500px] mx-auto">
-          <h1 className=" text-start text-black font-bold text-[36px] pb-5 md:py-8">
+        <div className=" w-[90%] max-w-[1500px] mx-auto mt-[3rem]">
+          <h1 className=" text-start text-black font-bold text-[36px] pb-5 ">
             We got what you looking for
           </h1>
 
@@ -262,7 +255,7 @@ export default function Home() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="py-5 px-2 border border-gray-300 rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-red-50"
+              className="py-5 px-2 border-2 border-black rounded-lg "
             >
               <h3 className="font-semibold text-lg text-black">{feature.title}</h3>
               <p className="text-gray-600 mt-1">{feature.desc}</p>
@@ -331,8 +324,8 @@ export default function Home() {
 
       <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
 
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-black text-white">
-          <div className="max-w-5xl mx-auto flex flex-wrap md:flex-nowrap gap-6 items-center py-8 px-6">
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-black text-white mt-[53px]">
+          <div className="w-full flex flex-wrap md:flex-nowrap items-center py-8 px-6 justify-evenly">
             {/* Icons Section */}
             <div className="flex justify-center items-center gap-4">
               <div
@@ -391,24 +384,15 @@ export default function Home() {
                   height="115"
                 />
               </div>
-              {/* {items.map((item, index) => (
-        <div
-          key={index}
-          className="flex flex-col items-center justify-center border border-white p-4 rounded-md min-w-[100px] text-center hover:bg-white hover:text-black transition"
-        >
-          <span className="text-3xl">{item.icon}</span>
-          <p className="mt-2 text-sm font-medium">{item.title}</p>
-        </div>
-      ))} */}
             </div>
 
             {/* Description Section */}
-            {/* <div className="max-w-lg">
-      <h2 className="text-xl font-semibold">Skillchecker helps</h2>
-      <p className="text-gray-300 text-sm mt-2">
-        Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform evaluates real-world skills with precision, giving you fast, unbiased, and data-backed insights — so you can make confident hiring decisions every time.
-      </p>
-    </div> */}
+            <div className="max-w-lg">
+              <h2 className="text-xl font-semibold">Skillchecker helps</h2>
+              <p className="text-gray-300 text-sm mt-2">
+                Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform evaluates real-world skills with precision, giving you fast, unbiased, and data-backed insights — so you can make confident hiring decisions every time.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -522,8 +506,8 @@ export default function Home() {
       </div> */}
       <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
 
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-[#FFC400] text-black mt-20 mb-9">
-          <div className="flex justify-between py-10 px-8">
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-[#FFC400] text-black mt-[53px] mb-9">
+          <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap">
             <div className="flex flex-col justify-center items-center">
 
               <div className=" text-sm text-center w-full">
@@ -533,7 +517,7 @@ export default function Home() {
                   width="180"
                   height="24" />
               </div>
-              <span className=" text-xs text-center inline-block mt-2">
+              <span className="text-xs text-center inline-block mt-2">
                 Terms and conditions{" "}
                 <FiArrowUpRight className=" inline-block mr-2" />
                 <span>
@@ -543,11 +527,11 @@ export default function Home() {
 
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3 mt-3 md:mt-0">
 
-              <input type="text" className="min-w-[235px] bg-transparent text-black py-2 md:py-4 px-5 md:px-5 rounded-full text-sm  font-medium border-black border-2 focus:border-black active:border-black target:border-black before:border-black after:border-black" />
+              <input type="text" className="w-full md:min-w-[235px] h-[50px] bg-transparent text-black py-2 md:py-4 px-5 md:px-5 rounded-full text-sm  font-medium border-black border-2 focus:border-black active:border-black target:border-black before:border-black after:border-black" />
 
-              <button onClick={handleAuthentication} className="bg-black text-white py-2 md:py-4 px-5 md:px-5 rounded-full text-sm  font-medium">
+              <button onClick={handleAuthentication} className="bg-black text-white py-2 md:py-4 px-5 md:px-5 rounded-full text-sm  font-medium w-full md:min-w-[135px]">
                 Request a Demo
               </button>
 
