@@ -251,6 +251,41 @@ body {
   scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
+.text-stroke {
+  -webkit-text-stroke: 1px black; /* For Webkit browsers */
+  text-stroke: 1px black; /* Standard */
+}
+
+@keyframes swipe-out {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes swipe-in {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-swipe-out {
+  animation: swipe-out 0.5s ease-in-out forwards;
+}
+
+.animate-swipe-in {
+  animation: swipe-in 0.5s ease-in-out forwards;
+}
+
 
 
 
