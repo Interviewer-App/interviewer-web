@@ -2,55 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import { LuPaintbrush } from "react-icons/lu";
+import { imageUrls } from "@/constants";
 
-const imageUrls = [
-  "/icons/emoji1.png",
-  "/icons/emoji2.png",
-  "/icons/emoji3.png",
-  "/icons/emoji4.png",
-  "/icons/emoji5.png",
-  "/icons/emoji6.png",
-  "/icons/emoji7.png",
-  "/icons/emoji8.png",
-  "/icons/emoji9.png",
-  "/icons/emoji10.png",
-  "/icons/emoji11.png",
-  "/icons/emoji12.png",
-  "/icons/emoji13.png",
-  "/icons/emoji14.png",
-  "/icons/emoji15.png",
-  "/icons/emoji16.png",
-  "/icons/emoji17.png",
-  "/icons/emoji18.png",
-  "/icons/emoji19.png",
-  "/icons/emoji20.png",
-  "/icons/emoji21.png",
-  "/icons/emoji22.png",
-  "/icons/emoji23.png",
-  "/icons/emoji24.png",
-  "/icons/emoji25.png",
-  "/icons/emoji26.png",
-  "/icons/emoji27.png",
-  "/icons/emoji28.png",
-  "/icons/emoji29.png",
-  "/icons/emoji30.png",
-  "/icons/emoji31.png",
-  "/icons/emoji32.png",
-  "/icons/emoji33.png",
-  "/icons/emoji34.png",
-  "/icons/emoji35.png",
-  "/icons/emoji36.png",
-  "/icons/emoji37.png",
-  "/icons/emoji38.png",
-  "/icons/emoji39.png",
-  "/icons/emoji40.png",
-  "/icons/emoji41.png",
-  "/icons/emoji42.png",
-  "/icons/emoji43.png",
-  "/icons/emoji44.png",
-];
-
-// Move getRandomLightColor outside the component
 const getRandomLightColor = () => {
   const r = Math.random();
   const g = Math.random();
@@ -77,56 +30,90 @@ const MatterCircleStack = () => {
   const [firstPlace, setFirstPlace] = useState("?");
   const [secondPlace, setSecondPlace] = useState("?");
   const [thirdPlace, setThirdPlace] = useState("?");
-  const [clickCount, setClickCount] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState([]);
   const [showResult, setShowResult] = useState(false);
   const [buttonColor, setButtonColor] = useState("#FFFFFF");
+  const [selectedSkillLevel, setSelectedSkillLevel] = useState(50);
+  const [selectedTechnicalLevel, setSelectedTechnicalLevel] = useState(80);
+  const [selectedBehavioralLevel, setSelectedBehavioralLevel] = useState(20);
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [isEmojiClicked, setIsEmojiClicked] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
   const engineRef = useRef(null);
   const worldRef = useRef(null);
   const renderRef = useRef(null);
   const imageBodiesRef = useRef([]);
-  const shuffleIntervalRef = useRef(null);
 
-  // Update dimensions on window resize
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect();
         setDimensions({ width, height });
-        
+
         // Update renderer if it exists
         if (renderRef.current) {
-          Matter.Render.setPixelRatio(renderRef.current, window.devicePixelRatio);
+          Matter.Render.setPixelRatio(
+            renderRef.current,
+            window.devicePixelRatio
+          );
           Matter.Render.setSize(renderRef.current, width, height);
-          
+
           // Update boundary walls
           if (worldRef.current) {
             // Remove old walls
             const bodies = Matter.Composite.allBodies(worldRef.current);
-            const walls = bodies.filter(body => body.isStatic);
+            const walls = bodies.filter((body) => body.isStatic);
             Matter.World.remove(worldRef.current, walls);
-            
+
             // Add new walls
-            const ground = Matter.Bodies.rectangle(width / 2, height + 50, width * 2, 100, {
-              isStatic: true,
-              render: { visible: false },
-            });
-            const leftWall = Matter.Bodies.rectangle(-50, height / 2, 100, height * 2, {
-              isStatic: true,
-              render: { visible: false },
-            });
-            const rightWall = Matter.Bodies.rectangle(width + 50, height / 2, 100, height * 2, {
-              isStatic: true,
-              render: { visible: false },
-            });
-            const topWall = Matter.Bodies.rectangle(width / 2, -50, width * 2, 100, {
-              isStatic: true,
-              render: { visible: false },
-            });
-            
-            Matter.World.add(worldRef.current, [ground, leftWall, rightWall, topWall]);
+            const ground = Matter.Bodies.rectangle(
+              width / 2,
+              height + 50,
+              width * 2,
+              100,
+              {
+                isStatic: true,
+                render: { visible: false },
+              }
+            );
+            const leftWall = Matter.Bodies.rectangle(
+              -50,
+              height / 2,
+              100,
+              height * 2,
+              {
+                isStatic: true,
+                render: { visible: false },
+              }
+            );
+            const rightWall = Matter.Bodies.rectangle(
+              width + 50,
+              height / 2,
+              100,
+              height * 2,
+              {
+                isStatic: true,
+                render: { visible: false },
+              }
+            );
+            const topWall = Matter.Bodies.rectangle(
+              width / 2,
+              -50,
+              width * 2,
+              100,
+              {
+                isStatic: true,
+                render: { visible: false },
+              }
+            );
+
+            Matter.World.add(worldRef.current, [
+              ground,
+              leftWall,
+              rightWall,
+              topWall,
+            ]);
           }
         }
       }
@@ -136,12 +123,12 @@ const MatterCircleStack = () => {
       updateDimensions();
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     // Initial setup
     updateDimensions();
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -149,12 +136,13 @@ const MatterCircleStack = () => {
     const { bgColor, buttonColor } = getRandomLightColor();
     setBgColor(bgColor);
     setButtonColor(buttonColor);
-  }, []);
+  }, []); // Empty dependency array to run only once
 
   useEffect(() => {
     if (!dimensions.width || !dimensions.height) return;
 
-    const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint } = Matter;
+    const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint } =
+      Matter;
 
     const engine = Engine.create();
     engineRef.current = engine;
@@ -172,56 +160,78 @@ const MatterCircleStack = () => {
         height: dimensions.height,
         wireframes: false,
         background: "transparent",
-        pixelRatio: window.devicePixelRatio
+        pixelRatio: window.devicePixelRatio,
       },
     });
     renderRef.current = render;
 
     const createImageCircle = (x, y) => {
-      const imageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+      const emoji = imageUrls[Math.floor(Math.random() * imageUrls.length)];
       return Bodies.circle(x, y, 15, {
         restitution: 0.8,
         frictionAir: 0.05,
         render: {
           sprite: {
-            texture: imageUrl,
-            xScale: 0.15,
-            yScale: 0.15,
+            texture: emoji.url,
+            xScale: 0.18,
+            yScale: 0.18,
           },
         },
       });
     };
 
-    // Create random positioned image circles - adjusted for screen size
+    // Create random positioned image circles
     const imageBodies = [];
-    const particleCount = Math.min(Math.max(30, Math.floor((dimensions.width * dimensions.height) / 4800)), 150);
-    
-    for (let i = 0; i < particleCount; i++) {
-      const x = Math.random() * dimensions.width;
-      const y = Math.random() * dimensions.height;
-      imageBodies.push(createImageCircle(x, y));
+    for (let i = 0; i < 100; i++) {
+      const x = Math.random() * 800;
+      const y = Math.random() * 600;
+      const body = createImageCircle(x, y);
+      imageBodies.push(body);
     }
 
     imageBodiesRef.current = imageBodies;
     World.add(world, imageBodies);
 
-    // Create boundary walls
-    const ground = Bodies.rectangle(dimensions.width / 2, dimensions.height + 50, dimensions.width * 2, 100, {
-      isStatic: true,
-      render: { visible: false },
-    });
-    const leftWall = Bodies.rectangle(-50, dimensions.height / 2, 100, dimensions.height * 2, {
-      isStatic: true,
-      render: { visible: false },
-    });
-    const rightWall = Bodies.rectangle(dimensions.width + 50, dimensions.height / 2, 100, dimensions.height * 2, {
-      isStatic: true,
-      render: { visible: false },
-    });
-    const topWall = Bodies.rectangle(dimensions.width / 2, -50, dimensions.width * 2, 100, {
-      isStatic: true,
-      render: { visible: false },
-    });
+    const ground = Bodies.rectangle(
+      dimensions.width / 2,
+      dimensions.height + 50,
+      dimensions.width * 2,
+      100,
+      {
+        isStatic: true,
+        render: { visible: false },
+      }
+    );
+    const leftWall = Bodies.rectangle(
+      -50,
+      dimensions.height / 2,
+      100,
+      dimensions.height * 2,
+      {
+        isStatic: true,
+        render: { visible: false },
+      }
+    );
+    const rightWall = Bodies.rectangle(
+      dimensions.width + 50,
+      dimensions.height / 2,
+      100,
+      dimensions.height * 2,
+      {
+        isStatic: true,
+        render: { visible: false },
+      }
+    );
+    const topWall = Bodies.rectangle(
+      dimensions.width / 2,
+      -50,
+      dimensions.width * 2,
+      100,
+      {
+        isStatic: true,
+        render: { visible: false },
+      }
+    );
 
     World.add(world, [ground, leftWall, rightWall, topWall]);
 
@@ -234,24 +244,52 @@ const MatterCircleStack = () => {
 
     World.add(world, mouseConstraint);
 
+    Matter.Events.on(mouseConstraint, "mousemove", (event) => {
+      const mousePosition = event.mouse.position;
+
+      // Find the body at the mouse position
+      const hoveredBodies = Matter.Query.point(imageBodies, mousePosition);
+
+      if (hoveredBodies.length > 0) {
+        document.body.style.cursor = "pointer";
+      } else {
+        document.body.style.cursor = "default";
+      }
+    });
+
+    Matter.Events.on(mouseConstraint, "mousedown", (event) => {
+      const { body } = event.source;
+
+      if (imageBodies.includes(body)) {
+        const clickedEmoji = imageUrls.find(
+          (emoji) => emoji.url === body.render.sprite.texture
+        );
+        if (clickedEmoji) {
+          setIsEmojiClicked(true);
+          setSelectedSkillLevel(clickedEmoji.skillLevel);
+          setSelectedTechnicalLevel(clickedEmoji.technicalLevel);
+          setSelectedBehavioralLevel(clickedEmoji.behevioralLevel);
+          setSelectedEmoji(clickedEmoji.url);
+        }
+      }
+    });
+
     Render.run(render);
     const runner = Runner.create();
     Runner.run(runner, engine);
 
+    // Floating animation: continuously apply small random forces
     const floatingInterval = setInterval(() => {
       imageBodies.forEach((body) => {
         Matter.Body.applyForce(body, body.position, {
-          x: (Math.random() - 0.5) * 0.003,
-          y: (Math.random() - 0.5) * 0.003,
+          x: (Math.random() - 0.5) * 0.0002,
+          y: (Math.random() - 0.5) * 0.0002,
         });
       });
     }, 50);
 
     return () => {
       clearInterval(floatingInterval);
-      if (shuffleIntervalRef.current) {
-        clearInterval(shuffleIntervalRef.current);
-      }
       Render.stop(render);
       World.clear(world, false);
       Engine.clear(engine);
@@ -259,9 +297,8 @@ const MatterCircleStack = () => {
       render.canvas = null;
       render.context = null;
       render.textures = {};
-      renderRef.current = null;
     };
-  }, [dimensions]);
+  }, [isEmojiClicked, dimensions]);
 
   const changeBackgroundColor = () => {
     const { bgColor, buttonColor } = getRandomLightColor();
@@ -270,59 +307,190 @@ const MatterCircleStack = () => {
   };
 
   const handleSearchClick = () => {
-    if (!imageBodiesRef.current || imageBodiesRef.current.length === 0) return;
+    // Randomly select 6 unique emojis from the imageUrls array
+    const selectedEmojis = [];
+    while (selectedEmojis.length < 6) {
+      const randomIndex = Math.floor(Math.random() * imageUrls.length);
+      const selectedEmoji = imageUrls[randomIndex];
+      if (!selectedEmojis.includes(selectedEmoji)) {
+        selectedEmojis.push(selectedEmoji);
+      }
+    }
 
-    // Apply random forces for continuous shuffling
-    shuffleIntervalRef.current = setInterval(() => {
-      imageBodiesRef.current.forEach((body) => {
-        Matter.Body.applyForce(body, body.position, {
-          x: (Math.random() - 0.5) * 0.2,
-          y: (Math.random() - 0.5) * 0.2,
-        });
-      });
-    }, 100);
+    const sortEmolis = selectedEmojis.sort((a, b) => {
+      return b.skillLevel - a.skillLevel;
+    });
 
-    // Stop shuffling after 3 seconds
+    // Set the selected emojis to the selectedImage state
+    setSelectedImage(sortEmolis);
+    setFirstPlace(sortEmolis[0].url);
+    setSecondPlace(sortEmolis[1].url);
+    setThirdPlace(sortEmolis[2].url);
+    setShowResult(true);
+  };
+
+  const buttons = [
+    {
+      text: "<Programmer>",
+      bgColor: "bg-black",
+      textColor: "text-white",
+      font: "font-kode_mono",
+    },
+    {
+      text: "Accountant",
+      bgColor: "bg-[#4666F6]",
+      textColor: "text-white",
+      font: "font-jakarta",
+    },
+    {
+      text: "Designer",
+      bgColor: "bg-[#F6B546]",
+      textColor: "text-black",
+      font: "font-pacifico",
+    },
+    {
+      text: "Musician",
+      bgColor: "bg-[#C10505]",
+      textColor: "text-white",
+      font: "font-playfair",
+    },
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsAnimating(true);
+
     setTimeout(() => {
-      clearInterval(shuffleIntervalRef.current);
-      const newImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
-      setSelectedImage(newImageUrl);
-      setShowResult(true);
-
-      setClickCount((prev) => {
-        if (prev % 3 === 0) {
-          setFirstPlace(newImageUrl);
-        } else if (prev % 3 === 1) {
-          setSecondPlace(newImageUrl);
-        } else {
-          setThirdPlace(newImageUrl);
-        }
-        return prev + 1;
-      });
-    }, 3000);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % buttons.length);
+      setIsAnimating(false);
+    }, 500);
   };
 
   return (
-    <div 
-      ref={containerRef} 
-      className="relative w-full h-full" 
+    <div
+      className="relative w-full h-full"
+      ref={containerRef}
       style={{ backgroundColor: bgColor }}
     >
       <div ref={sceneRef} className="absolute inset-0" />
-      
       {showResult && (
-        <div className="absolute inset-0 bg-black/90 text-8xl flex flex-col justify-center items-center">
-          <img
-            src={selectedImage}
-            alt="Selected Image"
-            className="drop-shadow-[0_0_80px_rgba(255,215,0,0.8)] w-32 h-32"
-          />
-          <button
-            onClick={() => setShowResult(false)}
-            className="hover:bg-white text-white hover:text-black hover:border-black text-sm border-2 border-white rounded-lg px-4 py-1 mt-5"
-          >
-            Continue
-          </button>
+        <div
+          onClick={() => setShowResult(false)}
+          className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center"
+        >
+          <div className=" grid w-[60%] grid-cols-3 gap-3 ml-[10%]">
+            {selectedImage.map((emoji, index) => (
+              <div
+                key={index}
+                className=" relative w-full bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 flex flex-col items-center"
+              >
+                <div
+                  className={` ${
+                    index === 0
+                      ? " text-[#FBC225]"
+                      : index === 1
+                      ? "text-[#B5B5B5]"
+                      : index === 2
+                      ? "text-[#CD8648]"
+                      : " text-white"
+                  } absolute top-3 left-3 text-xl font-bold`}
+                >
+                  {index + 1}
+                  <span className=" align-super -top-1 relative text-sm">
+                    {index === 0
+                      ? "st"
+                      : index === 1
+                      ? "nd"
+                      : index === 2
+                      ? "rd"
+                      : index === 3
+                      ? "th"
+                      : "th"}
+                  </span>
+                </div>
+                <img
+                  src={emoji.url}
+                  alt="Selected Image"
+                  className=" mx-auto h-14 w-14 mt-4"
+                />
+                <div className=" w-full flex justify-between items-center">
+                  <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${emoji.technicalLevel}%`,
+                        background: `black`,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${emoji.behevioralLevel}%`,
+                        background: `black`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="w-full h-2 bg-gray-200 border border-white rounded-full mt-2 mb-2 overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${emoji.skillLevel}%`,
+                      background: `linear-gradient(to right, red, yellow, green)`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isEmojiClicked && (
+        <div
+          onClick={() => setIsEmojiClicked(false)}
+          className="absolute top-0 h-full w-full bg-black/95 text-8xl flex flex-col justify-center items-center"
+        >
+          <div className=" w-[40%] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-5 flex flex-col items-center">
+            <img
+              src={selectedEmoji}
+              alt="Selected Image"
+              className=" mx-auto w-32 h-32"
+            />
+            <div className=" w-full flex justify-between items-center">
+              <div className="w-[48%] h-4  bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${selectedBehavioralLevel}%`,
+                    background: `black`,
+                  }}
+                ></div>
+              </div>
+              <div className="w-[48%] h-4 bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${selectedTechnicalLevel}%`,
+                    background: `black`,
+                  }}
+                ></div>
+              </div>
+            </div>
+            <div className="w-full h-4 bg-gray-200 border border-white rounded-full mt-5 mb-5 overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${selectedSkillLevel}%`,
+                  background: `linear-gradient(to right, red, yellow, green)`,
+                }}
+              ></div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -333,64 +501,82 @@ const MatterCircleStack = () => {
       >
         <LuPaintbrush size={24} color="#FFFFFF" />
       </button>
-      
-      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2">
-        <button
-          onClick={handleSearchClick}
-          className="py-3 px-10 bg-black text-white rounded-full shadow-lg hover:bg-gray-900 transition"
-        >
-          Examine
-        </button>
-      </div>
 
-      <div className="absolute top-5 left-5">
-        <div className="mb-1 flex flex-row justify-start bg-white gap-5 items-center border-2 border-black rounded-full">
-          <div className="rounded-full bg-amber-500 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
-            1
-          </div>
-          {firstPlace !== "?" ? (
-            <img
-              src={firstPlace}
-              alt="First Place"
-              className="w-[28px] h-[28px] object-cover rounded-full"
-            />
-          ) : (
-            <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
-              ?
-            </div>
-          )}
+      {!(isEmojiClicked || showResult) && (
+        <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-fit">
+          <button
+            onClick={handleButtonClick}
+            className={`py-2 px-10 mx-auto rounded-full text-xl font-semibold shadow-lg border-4 border-black transition-all ${
+              buttons[currentIndex].bgColor
+            } ${buttons[currentIndex].textColor} ${
+              buttons[currentIndex].font || ""
+            } ${isAnimating ? "animate-swipe-out" : "animate-swipe-in"}`}
+          >
+            {buttons[currentIndex].text}
+          </button>
         </div>
-        <div className="mb-1 flex flex-row justify-start bg-white gap-5 items-center border-2 border-black rounded-full">
-          <div className="rounded-full bg-gray-400 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
-            2
+      )}
+
+      <div className="absolute top-5 left-5 bg-[#ffffffc0] p-2 flex flex-col justify-center items-center rounded-lg">
+        <div className=" mb-1 relative h-10 flex justify-center items-center">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#FBC225] text-stroke border-2 border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+            1<span className=" align-super -top-1 relative text-xs">st</span>
           </div>
-          {secondPlace !== "?" ? (
-            <img
-              src={secondPlace}
-              alt="Second Place"
-              className="w-[28px] h-[28px] object-cover rounded-full"
-            />
-          ) : (
-            <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
-              ?
-            </div>
-          )}
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
+            {firstPlace !== "?" ? (
+              <img
+                src={firstPlace}
+                alt="First Place"
+                className="w-14 h-14 absolute -top-2 right-6"
+              />
+            ) : (
+              <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
+                ?
+              </div>
+            )}
+          </div>
         </div>
-        <div className="mb-2 flex flex-row justify-start bg-white gap-5 items-center border-2 border-black rounded-full">
-          <div className="rounded-full bg-amber-800 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
-            3
+        <div className=" mb-1 relative h-10 flex justify-center items-center">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#A6A6A6] text-stroke border-2 border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+            2<span className=" align-super -top-1 relative text-xs">nd</span>
           </div>
-          {thirdPlace !== "?" ? (
-            <img
-              src={thirdPlace}
-              alt="Third Place"
-              className="w-[28px] h-[28px] mr-5 object-cover rounded-full"
-            />
-          ) : (
-            <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
-              ?
-            </div>
-          )}
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
+            {secondPlace !== "?" ? (
+              <img
+                src={secondPlace}
+                alt="First Place"
+                className="w-14 h-14 absolute -top-2 right-6"
+              />
+            ) : (
+              <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
+                ?
+              </div>
+            )}
+          </div>
+        </div>
+        <div className=" mb-1 relative h-10 flex justify-center items-center">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#BC712F] text-stroke border-2 border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+            3<span className=" align-super -top-1 relative text-xs">rd</span>
+          </div>
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
+            {thirdPlace !== "?" ? (
+              <img
+                src={thirdPlace}
+                alt="First Place"
+                className="w-14 h-14 absolute -top-2 right-6"
+              />
+            ) : (
+              <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
+                ?
+              </div>
+            )}
+          </div>
+        </div>
+        <div
+          onClick={handleSearchClick}
+          className=" bg-black rounded-lg text-white text-center text-sm w-[105px] h-9 flex justify-center items-center"
+        >
+          Rank
         </div>
       </div>
     </div>
