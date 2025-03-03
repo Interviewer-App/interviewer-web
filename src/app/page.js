@@ -25,8 +25,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Matter from 'matter-js';
 import MatterCircleStack from "@/components/MatterCircleStack";
+import { motion } from "framer-motion";
 
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -34,6 +37,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
   const [duration, setDuration] = useState("MONTHLY");
+  const [clicked, setClicked] = useState(false);
 
 
   const premiumDetails = [
@@ -167,6 +171,23 @@ export default function Home() {
           </div>
         </div>
 
+        {/* <div className="flex items-center justify-center h-screen bg-gray-900">
+      <motion.div
+        className="text-4xl cursor-pointer"
+        onClick={() => setClicked(!clicked)}
+        animate={{
+          x: clicked ? [0, 80, -50, 120, 200] : [200, 120, -50, 80, 0],
+          y: clicked ? [0, -40, 30, -20, 0] : [0, -20, 30, -40, 0],
+          rotate: clicked ? [0, 15, -15, 10, 0] : [0, -10, 15, -15, 0],
+        }}
+        transition={{
+          duration: 1.8,
+          ease: [0.33, 1, 0.68, 1], // Smooth bezier curve easing
+        }}
+      >
+        🌟
+      </motion.div>
+    </div> */}
 
         {/* <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
           <div className=" w-[70%] flex flex-col justify-start items-start">
@@ -244,7 +265,7 @@ export default function Home() {
       </div>
 
 
-      <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
+      {/* <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
         <div className=" w-[90%] max-w-[1500px] mx-auto mt-[3rem]">
           <h1 className=" text-start text-black font-bold text-[25px] pb-5 ">
             We got what you looking for
@@ -263,6 +284,173 @@ export default function Home() {
           ))}
         </div>
 
+      </div> */}
+
+
+      <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
+        <div className=" w-[90%] max-w-[1500px] mx-auto mt-[3rem]">
+          <h1 className=" text-start text-black font-bold text-[25px] pb-5 ">
+            We got what you looking for
+          </h1>
+
+        </div>
+        <div className="w-[90%] max-w-[1500px] mx-auto flex flex-wrap gap-4 py-2">
+          <div className="slider">
+            <div className="slide-track flex gap-6">
+              <div className="slide">
+                <div className="py-5 px-2 border-2 border-black rounded-lg ">
+                  <h3 className="font-semibold text-lg text-black">Streamlined Interviews</h3>
+                  <p className="text-gray-600 mt-1">Simplify your hiring process from start to finish.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div className="py-5 px-2 border-2 border-black rounded-lg ">
+                  <h3 className="font-semibold text-lg text-black">Real-World Scenarios </h3>
+                  <p className="text-gray-600 mt-1">Test skills in action, not just on paper.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div className="py-5 px-2 border-2 border-black rounded-lg ">
+                  <h3 className="font-semibold text-lg text-black">Data-Driven Decisions</h3>
+                  <p className="text-gray-600 mt-1">Make every hire backed by real data and clear insights.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div className="py-5 px-2 border-2 border-black rounded-lg ">
+                  <h3 className="font-semibold text-lg text-black">Collaborative Feedback
+                  </h3>
+                  <p className="text-gray-600 mt-1">Gather insights from your team.</p>
+                </div>
+              </div>
+
+              <div className="slide">
+                <div className="py-5 px-2 border-2 border-black rounded-lg ">
+                  <h3 className="font-semibold text-lg text-black">Streamlined Interviews</h3>
+                  <p className="text-gray-600 mt-1">Simplify your hiring process from start to finish.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Real-World Scenarios </h3>
+                  <p className="text-gray-600 mt-1">Test skills in action, not just on paper.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Data-Driven Decisions</h3>
+                  <p className="text-gray-600 mt-1">Make every hire backed by real data and clear insights.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Collaborative Feedback
+                  </h3>
+                  <p className="text-gray-600 mt-1">Gather insights from your team.</p>
+                </div>
+              </div>
+
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Streamlined Interviews</h3>
+                  <p className="text-gray-600 mt-1">Simplify your hiring process from start to finish.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div className="slider">
+            <div className="slide-track flex gap-6">
+              <div className="slide">
+
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Faster Hiring Process </h3>
+                  <p className="text-gray-600 mt-1">Speed up your hiring without sacrificing quality.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">AI-Powered Assessments
+                  </h3>
+                  <p className="text-gray-600 mt-1">Smart assessments that see skills beyond the resume.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Unbiased Insights</h3>
+                  <p className="text-gray-600 mt-1">Fair, data-driven evaluations — no bias, just talent.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Enhanced Experience
+                  </h3>
+                  <p className="text-gray-600 mt-1">Streamlined communication.</p>
+                </div>
+              </div>
+
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Faster Hiring Process </h3>
+                  <p className="text-gray-600 mt-1">Speed up your hiring without sacrificing quality.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">AI-Powered Assessments
+                  </h3>
+                  <p className="text-gray-600 mt-1">Smart assessments that see skills beyond the resume.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Unbiased Insights                  </h3>
+                  <p className="text-gray-600 mt-1">Fair, data-driven evaluations — no bias, just talent.</p>
+                </div>
+              </div>
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Enhanced Experience
+                  </h3>
+                  <p className="text-gray-600 mt-1">Streamlined communication.</p>
+                </div>
+              </div>
+
+              <div className="slide">
+                <div
+                  className="py-5 px-2 border-2 border-black rounded-lg "
+                >
+                  <h3 className="font-semibold text-lg text-black">Faster Hiring Process </h3>
+                  <p className="text-gray-600 mt-1">Speed up your hiring without sacrificing quality.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
 
@@ -274,7 +462,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 px-[30px] pb-[30px]">
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -287,7 +475,7 @@ export default function Home() {
             </div>
 
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -300,20 +488,7 @@ export default function Home() {
             </div>
 
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                 width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -326,7 +501,7 @@ export default function Home() {
             </div>
 
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -339,7 +514,7 @@ export default function Home() {
             </div>
 
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -351,9 +526,22 @@ export default function Home() {
               </div>
             </div>
 
-            
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -367,7 +555,7 @@ export default function Home() {
 
 
             <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
                   src='/landing_page/grid/image1.png'
                   alt="bg"
@@ -445,18 +633,10 @@ export default function Home() {
       <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
 
         <div className=" w-[90%] max-w-[1500px] mx-auto bg-black text-white mt-[53px]">
-          <div className="w-full flex flex-wrap md:flex-nowrap items-center py-8 px-6 justify-evenly">
+          <div className="w-full flex flex-wrap md:flex-nowrap items-center py-[68px] px-6 justify-evenly gap-2">
             {/* Icons Section */}
             <div className="flex justify-center items-center gap-4">
-              <div
-              >
-                <Image
-                  src='/landing_page/icons/Student.png'
-                  alt="bg"
-                  width="115"
-                  height="115"
-                />
-              </div>
+
               <div
               >
                 <Image
@@ -626,7 +806,7 @@ export default function Home() {
       </div> */}
       <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
 
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-[#FFC400] text-black mt-[53px] mb-9">
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-[#FFC400] text-black mt-[53px] mb-4">
           <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap">
             <div className="flex flex-col justify-center items-center">
 
@@ -659,6 +839,16 @@ export default function Home() {
 
 
           </div>
+
+
+
+        </div>
+
+        <div className=" w-[80%] mx-auto mt-2 mb-9">
+          <hr className=" opacity-15 mb-5" />
+          <span className="flex justify-center items-center text-sm text-center w-full text-black">
+            &#169;2025 &nbsp; Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved
+          </span>
 
         </div>
       </div>
