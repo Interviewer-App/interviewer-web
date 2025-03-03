@@ -246,7 +246,7 @@ export default function Home() {
 
       <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
         <div className=" w-[90%] max-w-[1500px] mx-auto mt-[3rem]">
-          <h1 className=" text-start text-black font-bold text-[36px] pb-5 ">
+          <h1 className=" text-start text-black font-bold text-[25px] pb-5 ">
             We got what you looking for
           </h1>
 
@@ -265,6 +265,126 @@ export default function Home() {
 
       </div>
 
+
+      <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
+        <div className=" w-[90%] max-w-[1500px] mx-auto mt-[53px] border-black border-2">
+          <h1 className=" text-start text-black font-bold text-[25px] py-[30px] px-[30px] ">
+            We got what you looking for
+          </h1>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 px-[30px] pb-[30px]">
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                 width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+            
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+
+            <div className="bg-[#f3f3f3] ">
+              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center flex-col">
+                <Image
+                  src='/landing_page/grid/image1.png'
+                  alt="bg"
+                  width="300"
+                  height="275"
+                />
+                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
+                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
 
       {/* why this product */}
       {/* <div className=" w-full bg-cover relative text-white overflow-hidden">
