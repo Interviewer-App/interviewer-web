@@ -10,7 +10,7 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				jakarta: ["var(--font-plus-jakarta-sans)", "sans-serif"],
+				
 			},
 			colors: {
 				background: 'var(--background)',
@@ -56,7 +56,11 @@ module.exports = {
 				'accordion-up': 'accordion-up 0.2s ease-out'
 			},
 			fontFamily:{
-				'bohemian-soul': ['var(--font-bohemian-soul)', 'sans-serif']
+				pacifico: ["var(--font-pacifico)", "sans-serif"],
+				'bohemian-soul': ['var(--font-bohemian-soul)', 'sans-serif'],
+				jakarta: ["var(--font-plus-jakarta-sans)", "sans-serif"],
+				playfair: ["var(--font-playfair_display)", "serif"],
+				'kode_mono': ['var(--font-kode_mono)', 'monospace']
 			}
 		
 		}
