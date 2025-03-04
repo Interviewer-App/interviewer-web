@@ -306,10 +306,8 @@ body {
   }
 }
 
-.slider {
-  background: white;
-  /* box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125); */
-  height: 100px;
+.slider {  /* box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125); */
+  /* height: 100px; */
   margin: auto;
   overflow: hidden;
   position: relative;
@@ -318,9 +316,8 @@ body {
 
 .slider::before,
 .slider::after {
-  background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
   content: "";
-  height: 100px;
+  /* height: 100px; */
   position: absolute;
   width: 10px;
   z-index: 2;
