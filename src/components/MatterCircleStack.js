@@ -5,7 +5,6 @@ import { LuPaintbrush } from "react-icons/lu";
 import { imageUrls } from "@/constants";
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
-import { set } from "zod";
 
 const getRandomLightColor = () => {
   const r = Math.random();
@@ -102,7 +101,7 @@ const MatterCircleStack = () => {
       const rect = thridPlaceDivRef.current.getBoundingClientRect();
       setThridBoxPosition({ x: rect.x, y: rect.y });
     }
-  }, []);
+  }, [firstPlace, dimensions]);
 
   useEffect(() => {
     const updatedPositions = emojiRefs.current.map((emoji) => {
@@ -377,7 +376,6 @@ const MatterCircleStack = () => {
     setFirstPlace("?");
     setSecondPlace("?");
     setThirdPlace("?");
-    setAnimateRanking(false);
 
     setTimeout(() => {
       setAnalizing(false);
@@ -414,9 +412,12 @@ const MatterCircleStack = () => {
     }, 5000);
   };
 
+  const [isAnimatingButton, setIsAnimatingButton] = useState(false);
   const handleButtonClick = () => {
+    setIsAnimatingButton(true);
     setTimeout(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % buttons.length);
+      setIsAnimatingButton(false);
     }, 500);
   };
 
@@ -440,7 +441,7 @@ const MatterCircleStack = () => {
           className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center"
         >
           {!analizing ? (
-            <div className=" grid w-[60%] grid-cols-3 gap-3 ml-[10%]">
+            <div className=" grid w-[60%] z-50 grid-cols-3 gap-3 ml-[10%]">
               {selectedImage.map((emoji, index) => (
                 <motion.div
                   key={index}
@@ -499,7 +500,7 @@ const MatterCircleStack = () => {
                       ref={(el) => (emojiRefs.current[index] = el)}
                       src={emoji.url}
                       alt="Selected Image"
-                      className="mx-auto h-14 w-14 mt-4 z-[1000]"
+                      className="mx-auto h-14 w-14 mt-4 !z-50"
                       animate={{
                         x:
                           animateRanking && index === 0
@@ -518,9 +519,10 @@ const MatterCircleStack = () => {
                             ? thridBoxPosition.y - positions[2]?.y
                             : 0,
                         scale:
-                          animateRanking && index < 3 ? [1, 0.8, 1.2, 1] : 1,
+                          animateRanking && index < 3 ? [1, 1.2, 0.8, 1] : 1,
                         opacity:
                           animateRanking && index < 3 ? [1, 1, 0.9, 0] : 1,
+                        zIndex: 1000,
                         filter:
                           animateRanking && index < 3
                             ? [
@@ -645,31 +647,40 @@ const MatterCircleStack = () => {
 
       <button
         onClick={changeBackgroundColor}
-        className="p-3 absolute top-5 right-5 rounded-full shadow-lg hover:bg-gray-100 transition"
+        className="p-3 absolute top-3 right-3 rounded-full shadow-lg hover:bg-gray-100 transition"
         style={{ backgroundColor: buttonColor }}
       >
         <LuPaintbrush size={24} color="#FFFFFF" />
       </button>
 
       {!(isEmojiClicked || showResult) && (
-        <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-fit">
-          <button
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-fit">
+          <motion.button
             onClick={handleButtonClick}
-            className={`py-2 px-10 mx-auto rounded-full cursor-pointer text-xl font-semibold shadow-lg border-4 border-black transition-all ${
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{
+              opacity: isAnimatingButton ? 0 : 1,
+              scale: isAnimatingButton ? 0.1 : 1,
+            }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className={` h-14 px-10 mx-auto rounded-full cursor-pointer text-xl font-semibold shadow-lg border-4 border-black transition-all ${
               buttons[currentIndex].bgColor
             } ${buttons[currentIndex].textColor} ${
               buttons[currentIndex].font || ""
             }`}
           >
             {buttons[currentIndex].text}
-          </button>
+          </motion.button>
         </div>
       )}
 
-      <div className="absolute top-5 left-5 bg-[#ffffffc0] p-2 flex flex-col justify-center items-center rounded-lg">
+      <div
+        className="absolute top-3 left-3 p-2 flex flex-col justify-center !z-10 items-center rounded-lg"
+        style={{ backgroundColor: buttonColor }}
+      >
         <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#FBC225] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
-            1<span className=" align-super -top-1 font-normal relative text-xs">st</span>
+          <div className="rounded-full z-50 absolute top-0 left-0 font-extrabold bg-[#FBC225] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+            1<span className=" align-super -top-1 relative text-xs">st</span>
           </div>
           <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
             {firstPlace !== "?" ? (
@@ -690,10 +701,10 @@ const MatterCircleStack = () => {
           </div>
         </div>
         <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#A6A6A6] text-stroke border-2 border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-extrabold bg-[#A6A6A6] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
             2<span className=" align-super -top-1 relative text-xs">nd</span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
             {secondPlace !== "?" ? (
               <img
                 ref={secondPlaceDivRef}
@@ -712,10 +723,10 @@ const MatterCircleStack = () => {
           </div>
         </div>
         <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#BC712F] text-stroke border-2 border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-extrabold bg-[#BC712F] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
             3<span className=" align-super -top-1 relative text-xs">rd</span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
             {thirdPlace !== "?" ? (
               <img
                 ref={thridPlaceDivRef}
@@ -736,7 +747,7 @@ const MatterCircleStack = () => {
         {!animateRanking && (
           <div
             onClick={handleSearchClick}
-            className=" bg-black rounded-lg text-white text-center text-sm w-[105px] cursor-pointer h-9 flex justify-center items-center"
+            className=" bg-black rounded-lg font-semibold text-white text-center text-sm w-[105px] cursor-pointer h-9 flex justify-center items-center"
           >
             {loading ? <LoaderCircle className="animate-spin" /> : "Rank"}
           </div>
