@@ -79,6 +79,30 @@ export default function Home() {
       "/landing_page/icons/Parents.png",
     ],
   ];
+
+  const initialImagesMobile = [
+    [
+      "/landing_page/icons/Investors.png",
+      "/landing_page/icons/Entrepreneures.png",
+      "/landing_page/icons/Everyone.png",
+      "/landing_page/icons/Parents.png",
+      "/landing_page/icons/Companies.png",
+    ],
+    [
+      "/landing_page/icons/Entrepreneures.png",
+      "/landing_page/icons/Everyone.png",
+      "/landing_page/icons/Parents.png",
+      "/landing_page/icons/Companies.png",
+      "/landing_page/icons/Investors.png",
+    ],
+    [
+      "/landing_page/icons/Everyone.png",
+      "/landing_page/icons/Parents.png",
+      "/landing_page/icons/Companies.png",
+      "/landing_page/icons/Investors.png",
+      "/landing_page/icons/Entrepreneures.png",
+    ]
+  ];
   const [imageQueues, setImageQueues] = useState(initialImages);
 
   // Toggle between light and dark mode
@@ -135,122 +159,43 @@ export default function Home() {
   ];
 
   const featuresOne = [
-    {
-      title: "Streamlined Interviews",
-      desc: "Simplify your hiring process from start to finish.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Data-Driven Decisions",
-      desc: "Make every hire backed by real data and clear insights.",
-    },
-    {
-      title: "Collaborative Feedback",
-      desc: "Gather insights from your team.",
-    },
-    {
-      title: "OnBoading Made Easy",
-      desc: "Seamless integration of new hires into your team",
-    },
-    {
-      title: "Countinous Learning",
-      desc: "Foster a culture of growth with ongoing traning",
-    },
-    {
-      title: "Streamlined Interviews",
-      desc: "Simplify your hiring process from start to finish.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Data-Driven Decisions",
-      desc: "Make every hire backed by real data and clear insights.",
-    },
-    {
-      title: "Collaborative Feedback",
-      desc: "Gather insights from your team.",
-    },
-    {
-      title: "OnBoading Made Easy",
-      desc: "Seamless integration of new hires into your team",
-    },
-  ];
+    { title: "Streamlined Interviews", desc: "Simplify your hiring process from start to finish." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Data-Driven Decisions", desc: "Make every hire backed by real data and clear insights." },
+    { title: "Collaborative Feedback", desc: "Gather insights from your team." },
+    { title: "OnBoading Made Easy", desc: "Seamless integration of new hires into your team" },
+    { title: "Countinous Learning", desc: "Foster a culture of growth with ongoing traning" },
+    { title: "Streamlined Interviews", desc: "Simplify your hiring process from start to finish." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Data-Driven Decisions", desc: "Make every hire backed by real data and clear insights." },
+    { title: "Collaborative Feedback", desc: "Gather insights from your team." },
+    { title: "OnBoading Made Easy", desc: "Seamless integration of new hires into your team" },
+    { title: "Collaborative Feedback", desc: "Gather insights from your team." },
+    ];
 
   const featuresTwo = [
-    {
-      title: "Faster Hiring Process",
-      desc: "Speed up your hiring without sacrificing quality.",
-    },
-    {
-      title: "AI-Powered Assessments",
-      desc: "Smart assessments that see skills beyond the resume.",
-    },
-    {
-      title: "Unbiased Insights",
-      desc: "Fair, data-driven evaluations — no bias, just talent.",
-    },
+    { title: "Faster Hiring Process", desc: "Speed up your hiring without sacrificing quality." },
+    { title: "AI-Powered Assessments", desc: "Smart assessments that see skills beyond the resume." },
+    { title: "Unbiased Insights", desc: "Fair, data-driven evaluations — no bias, just talent." },
     { title: "Enhanced Experience", desc: "Streamlined communication." },
-    {
-      title: "Automated Scheduling",
-      desc: "Eliminate back-and-forth with smart interview scheduling.",
-    },
-    {
-      title: "Comprehensive Analytics",
-      desc: "Deep insights into hiring trends and candidate performance.",
-    },
-    {
-      title: "Faster Hiring Process",
-      desc: "Speed up your hiring without sacrificing quality.",
-    },
-    {
-      title: "AI-Powered Assessments",
-      desc: "Smart assessments that see skills beyond the resume.",
-    },
-    {
-      title: "Unbiased Insights",
-      desc: "Fair, data-driven evaluations — no bias, just talent.",
-    },
+    { title: "Automated Scheduling", desc: "Eliminate back-and-forth with smart interview scheduling." },
+    { title: "Comprehensive Analytics", desc: "Deep insights into hiring trends and candidate performance." },
+    { title: "Faster Hiring Process", desc: "Speed up your hiring without sacrificing quality." },
+    { title: "AI-Powered Assessments", desc: "Smart assessments that see skills beyond the resume." },
+    { title: "Unbiased Insights", desc: "Fair, data-driven evaluations — no bias, just talent." },
+    { title: "Enhanced Experience", desc: "Streamlined communication." },
     { title: "Enhanced Experience", desc: "Streamlined communication." },
   ];
 
   const superPower = [
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
-    {
-      title: "Real-World Scenarios",
-      desc: "Test skills in action, not just on paper.",
-    },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
+    { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
   ];
 
   const items = [
@@ -329,6 +274,10 @@ export default function Home() {
     }
   };
 
+  const requestDemo = async () => {
+    router.push("https://tally.so/r/316PXl");
+  };
+
   return (
     <div className=" w-full">
       <div className=" w-full text-black bg-[#fff] dark:bg-black dark:text-white">
@@ -401,27 +350,20 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-2 px-4 py-11 md:px-11  md:py-12 bg-black dark:bg-white dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-2xl md:text-4xl md:leading-[52px] font-bold text-white dark:text-black">
-              <span>Find the Right Talent</span>
-              <br />
+              <span>Find the Right Talent</span><br />
               <span>Without the Runaround</span>
             </h1>
             <p className="max-w-[368px] md:max-w-[500px] text-xs md:text-base text-center md:text-start pt-[15px] md:pt-[18px] leading-[23px] text-white dark:text-black font-puls">
               Skillchecker takes the guesswork out of hiring. Our AI-driven
               interview platform evaluates real-world skills with precision,
-              giving you fast, unbiased, and data-backed insights — so you can
-              make confident hiring decisions every time
+              giving you fast, unbiased, and data-backed insights — so you
+              can make confident hiring decisions every time
             </p>
             <div className="flex gap-6 pt-[15px] md:pt-14">
-              <button
-                onClick={handleAuthentication}
-                className="bg-[#009bac] text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold"
-              >
+              <button onClick={requestDemo} className="bg-[#009bac] text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold">
                 Request a Demo
               </button>
-              <button
-                onClick={handleAuthentication}
-                className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black "
-              >
+              <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
                 Contact us now
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
@@ -559,15 +501,11 @@ export default function Home() {
             <div className="slide-track flex gap-6">
               {featuresOne.map((feature, index) => (
                 <div className="slide" key={index}>
-                  <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
-                    <h3 className="font-bold text-xs text-black dark:text-white leading-6">
-                      {feature.title}
-                    </h3>
-                    <p className="text-black dark:text-white text-xs leading-7">
-                      {feature.desc}
-                    </p>
-                  </div>
+                <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
+                  <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
+                  <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
                 </div>
+              </div>
               ))}
             </div>
           </div>
@@ -576,15 +514,11 @@ export default function Home() {
             <div className="slide-track flex gap-6">
               {featuresTwo.map((feature, index) => (
                 <div className="slide" key={index}>
-                  <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
-                    <h3 className="font-bold text-xs text-black dark:text-white leading-6">
-                      {feature.title}
-                    </h3>
-                    <p className="text-black dark:text-white text-xs leading-7">
-                      {feature.desc}
-                    </p>
-                  </div>
+                <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
+                  <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
+                  <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
                 </div>
+              </div>
               ))}
             </div>
           </div>
@@ -598,23 +532,21 @@ export default function Home() {
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:mt-[11px] mt-[20px]">
-            {superPower.map((feature, index) => (
-              <div className="bg-[#f3f3f3] dark:bg-[#181818]" key={index}>
-                <div className="px-[1.175rem] py-[1.175rem] flex justify-center items-center md:justify-start md:items-start flex-col">
-                  <Image
-                    src="/landing_page/grid/image1.png"
-                    alt="bg"
-                    width="300"
-                    height="275"
-                  />
-                  <h3 className="font-bold text-sm text-black dark:text-white mt-[18px] leading-8 text-start">
-                    {feature.title}
-                  </h3>
-                  <p className="text-black dark:text-white text-sm leading-6">
-                    {feature.desc}
-                  </p>
-                </div>
-              </div>
+
+
+          {superPower.map((feature, index) => (
+            <div className="bg-[#f3f3f3] dark:bg-[#181818]" key={index}>
+            <div className="px-[1.175rem] py-[1.175rem] flex justify-center items-center md:justify-start md:items-start flex-col">
+              <Image
+                src='/landing_page/grid/image1.png'
+                alt="bg"
+                width="300"
+                height="275"
+              />
+              <h3 className="font-bold text-sm text-black dark:text-white mt-[18px] leading-8 text-start">{feature.title}</h3>
+              <p className="text-black dark:text-white text-sm leading-6">{feature.desc}</p>
+            </div>
+          </div>
             ))}
 
             {/* <div className="bg-[#f3f3f3] dark:bg-[#181818]">
@@ -783,7 +715,8 @@ export default function Home() {
       </div> */}
 
       <div className=" w-full bg-[#fff] dark:bg-black relative overflow-hidden">
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-black dark:bg-white dark:text-black text-white mt-[30px] md:mt-10 ">
+
+        <div className="  bg-black dark:bg-white dark:text-black text-white mt-[30px] md:mt-10 ">
           <div className="w-full flex flex-wrap md:flex-nowrap items-center py-6 md:py-10 px-6 justify-evenly gap-2 flex-col-reverse md:flex-row">
             {/* Icons Section */}
             <div className="flex justify-center items-center gap-4 py-7">
@@ -934,8 +867,9 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fff] dark:bg-black relative overflow-hidden">
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-[#009bac] text-black mt-[30px] md:mt-10 mb-4">
-          <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
+
+        <div className="  bg-[#009bac] text-black mb-4">
+          <div className="w-[90%] max-w-[1500px] mx-auto flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full">
                 <Image src={logo} alt="logo" width="180" height="24" />
@@ -965,13 +899,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className=" w-[80%] mx-auto mt-2 mb-9">
-          <hr className=" opacity-15 mb-5" />
+        <div className=" w-[80%] mx-auto mt-5 mb-5">
+          {/* <hr className=" opacity-15 mb-5" /> */}
           <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
-            &#169;2025 &nbsp;
-            Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights
-            reserved
+            &#169;2025 &nbsp; Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved
           </span>
+
         </div>
       </div>
 
