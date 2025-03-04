@@ -44,10 +44,22 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
+    // Check if a theme is already saved in localStorage
     const savedTheme = localStorage.getItem('theme');
+
     if (savedTheme === 'dark') {
+      // If "dark" is saved, enable dark mode
       setIsDarkMode(true);
       document.documentElement.classList.add('dark');
+    } else if (savedTheme === 'light') {
+      // If "light" is saved, enable light mode
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    } else {
+      // If no theme is saved, use the system's preferred theme
+      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDarkMode(prefersDarkMode);
+      document.documentElement.classList.toggle('dark', prefersDarkMode);
     }
   }, []);
 
