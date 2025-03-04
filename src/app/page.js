@@ -23,7 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Matter from 'matter-js';
+import Matter from "matter-js";
 import MatterCircleStack from "@/components/MatterCircleStack";
 import { motion } from "framer-motion";
 
@@ -40,6 +40,14 @@ export default function Home() {
   const redirectUrl = searchParams.get("redirect");
   const [duration, setDuration] = useState("MONTHLY");
   const [clicked, setClicked] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const initialImages = [
+    "/landing_page/icons/Companies.png",
+    "/landing_page/icons/Investors.png",
+    "/landing_page/icons/Parents.png",
+    "/landing_page/icons/Everyone.png",
+  ];
+  const [imageQueue, setImageQueue] = useState(initialImages);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -170,24 +178,41 @@ export default function Home() {
     { icon: "💼", title: "Entrepreneurs" },
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isAnimating) {
+        setIsAnimating(true);
+      }
+    }, 5000);
 
+    return () => clearInterval(interval);
+  }, [isAnimating]);
+
+  const handleAnimationComplete = () => {
+    setImageQueue((prevQueue) => {
+      const newQueue = [...prevQueue];
+      const firstImage = newQueue.shift();
+      if (firstImage) newQueue.push(firstImage);
+      return newQueue;
+    });
+    setIsAnimating(false);
+  };
   const handleAuthentication = async () => {
     if (status === "authenticated") {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       const session = await getSession();
       const userRole = session?.user?.role;
-      if (userRole === 'COMPANY') {
-        router.push('/interviews');
-      } else if (userRole === 'CANDIDATE') {
-        router.push('/my-interviews');
-      } else if (userRole === 'ADMIN') {
-        router.push('/users');
+      if (userRole === "COMPANY") {
+        router.push("/interviews");
+      } else if (userRole === "CANDIDATE") {
+        router.push("/my-interviews");
+      } else if (userRole === "ADMIN") {
+        router.push("/users");
       } else {
-        router.push('/');
+        router.push("/");
       }
-
     }
-  }
+  };
 
   return (
     <div className=" w-full">
@@ -258,7 +283,6 @@ export default function Home() {
             </div>
           </div>
         </header>
-
 
         {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
         <div className="grid grid-cols-1 md:grid-cols-2 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
@@ -411,6 +435,7 @@ export default function Home() {
           <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[56px] md:leading-[60px] pb-3 ">
             We got what you looking for
           </h1>
+
         </div>
         <div className="w-[90%] max-w-[1500px] mx-auto flex flex-wrap gap-4 py-2">
           <div className="slider">
@@ -469,7 +494,7 @@ export default function Home() {
             {/* <div className="bg-[#f3f3f3] dark:bg-[#181818]">
               <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
                 <Image
-                  src='/landing_page/grid/image1.png'
+                  src="/landing_page/grid/image1.png"
                   alt="bg"
                   width="300"
                   height="275"
@@ -680,14 +705,24 @@ export default function Home() {
                   height="115"
                 />
               </div>
-              <div
-              >
-                <Image
-                  src='/landing_page/icons/Everyone.png'
-                  alt="bg"
-                  width="115"
-                  height="115"
-                />
+              <div className="overflow-hidden h-[115px] relative w-[115px]">
+                <motion.div
+                  key={imageQueue[0]}
+                  initial={{ y: 0, opacity: 1 }}
+                  animate={isAnimating ? { y: -133, opacity: 0.5 } : {}}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  onAnimationComplete={handleAnimationComplete}
+                  className="flex flex-col"
+                >
+                  {imageQueue.map((image, i) => (
+                    <motion.div
+                      key={i}
+                      className="mb-2"
+                    >
+                      <Image src={image} alt="bg" width={115} height={115} />
+                    </motion.div>
+                  ))}
+                </motion.div>
               </div>
             </div>
 
