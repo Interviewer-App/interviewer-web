@@ -123,12 +123,13 @@ const MatterCircleStack = () => {
 
         // Update renderer if it exists
         if (renderRef.current) {
-          Matter.Render.setPixelRatio(
-            renderRef.current,
-            window.devicePixelRatio
-          );
-          Matter.Render.setSize(renderRef.current, width, height);
-
+          if (renderRef.current.canvas) {
+            Matter.Render.setPixelRatio(
+              renderRef.current,
+              window.devicePixelRatio
+            );
+            Matter.Render.setSize(renderRef.current, width, height);
+          }
           // Update boundary walls
           if (worldRef.current) {
             // Remove old walls
