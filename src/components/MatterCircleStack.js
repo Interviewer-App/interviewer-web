@@ -3,6 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import { LuPaintbrush } from "react-icons/lu";
 import { imageUrls } from "@/constants";
+import { motion } from "framer-motion";
+import { LoaderCircle } from "lucide-react";
+import { set } from "zod";
 
 const getRandomLightColor = () => {
   const r = Math.random();
@@ -26,6 +29,15 @@ const getRandomLightColor = () => {
 const MatterCircleStack = () => {
   const sceneRef = useRef(null);
   const containerRef = useRef(null);
+  const engineRef = useRef(null);
+  const worldRef = useRef(null);
+  const renderRef = useRef(null);
+  const imageBodiesRef = useRef([]);
+  const firstPlaceDivRef = useRef(null);
+  const secondPlaceDivRef = useRef(null);
+  const thridPlaceDivRef = useRef(null);
+  const emojiRefs = useRef([]);
+
   const [bgColor, setBgColor] = useState("rgb(255, 255, 255)");
   const [firstPlace, setFirstPlace] = useState("?");
   const [secondPlace, setSecondPlace] = useState("?");
@@ -39,11 +51,70 @@ const MatterCircleStack = () => {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isEmojiClicked, setIsEmojiClicked] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [animateRanking, setAnimateRanking] = useState(false);
+  const [firstBoxPosition, setFirstBoxPosition] = useState({ x: 0, y: 0 });
+  const [secondBoxPosition, setSecondBoxPosition] = useState({ x: 0, y: 0 });
+  const [thridBoxPosition, setThridBoxPosition] = useState({ x: 0, y: 0 });
+  const [positions, setPositions] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isRankFinished, setIsRankFinished] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [analizing, setAnalizing] = useState(false);
+  const buttons = [
+    {
+      text: "<Programmer>",
+      bgColor: "bg-black",
+      textColor: "text-white",
+      font: "font-kode_mono",
+    },
+    {
+      text: "Accountant",
+      bgColor: "bg-[#4666F6]",
+      textColor: "text-white",
+      font: "font-jakarta",
+    },
+    {
+      text: "Designer",
+      bgColor: "bg-[#F6B546]",
+      textColor: "text-black",
+      font: "font-pacifico",
+    },
+    {
+      text: "Musician",
+      bgColor: "bg-[#C10505]",
+      textColor: "text-white",
+      font: "font-playfair",
+    },
+  ];
 
-  const engineRef = useRef(null);
-  const worldRef = useRef(null);
-  const renderRef = useRef(null);
-  const imageBodiesRef = useRef([]);
+  useEffect(() => {
+    if (firstPlaceDivRef.current) {
+      const rect = firstPlaceDivRef.current.getBoundingClientRect();
+      setFirstBoxPosition({ x: rect.x, y: rect.y });
+    }
+
+    if (secondPlaceDivRef.current) {
+      const rect = secondPlaceDivRef.current.getBoundingClientRect();
+      setSecondBoxPosition({ x: rect.x, y: rect.y });
+    }
+
+    if (thridPlaceDivRef.current) {
+      const rect = thridPlaceDivRef.current.getBoundingClientRect();
+      setThridBoxPosition({ x: rect.x, y: rect.y });
+    }
+  }, []);
+
+  useEffect(() => {
+    const updatedPositions = emojiRefs.current.map((emoji) => {
+      if (emoji) {
+        const rect = emoji.getBoundingClientRect();
+        return { x: rect.left, y: rect.top };
+      }
+      return { x: 0, y: 0 };
+    });
+
+    setPositions(updatedPositions);
+  }, [selectedImage, animateRanking]);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -136,7 +207,7 @@ const MatterCircleStack = () => {
     const { bgColor, buttonColor } = getRandomLightColor();
     setBgColor(bgColor);
     setButtonColor(buttonColor);
-  }, []); // Empty dependency array to run only once
+  }, []);
 
   useEffect(() => {
     if (!dimensions.width || !dimensions.height) return;
@@ -160,7 +231,6 @@ const MatterCircleStack = () => {
         height: dimensions.height,
         wireframes: false,
         background: "transparent",
-        pixelRatio: window.devicePixelRatio,
       },
     });
     renderRef.current = render;
@@ -180,11 +250,10 @@ const MatterCircleStack = () => {
       });
     };
 
-    // Create random positioned image circles
     const imageBodies = [];
     for (let i = 0; i < 100; i++) {
-      const x = Math.random() * 800;
-      const y = Math.random() * 600;
+      const x = Math.random() * dimensions.width;
+      const y = Math.random() * dimensions.height;
       const body = createImageCircle(x, y);
       imageBodies.push(body);
     }
@@ -192,7 +261,7 @@ const MatterCircleStack = () => {
     imageBodiesRef.current = imageBodies;
     World.add(world, imageBodies);
 
-    const ground = Bodies.rectangle(
+    const ground = Matter.Bodies.rectangle(
       dimensions.width / 2,
       dimensions.height + 50,
       dimensions.width * 2,
@@ -202,7 +271,7 @@ const MatterCircleStack = () => {
         render: { visible: false },
       }
     );
-    const leftWall = Bodies.rectangle(
+    const leftWall = Matter.Bodies.rectangle(
       -50,
       dimensions.height / 2,
       100,
@@ -212,7 +281,7 @@ const MatterCircleStack = () => {
         render: { visible: false },
       }
     );
-    const rightWall = Bodies.rectangle(
+    const rightWall = Matter.Bodies.rectangle(
       dimensions.width + 50,
       dimensions.height / 2,
       100,
@@ -222,7 +291,7 @@ const MatterCircleStack = () => {
         render: { visible: false },
       }
     );
-    const topWall = Bodies.rectangle(
+    const topWall = Matter.Bodies.rectangle(
       dimensions.width / 2,
       -50,
       dimensions.width * 2,
@@ -235,7 +304,6 @@ const MatterCircleStack = () => {
 
     World.add(world, [ground, leftWall, rightWall, topWall]);
 
-    // Mouse control
     const mouse = Mouse.create(render.canvas);
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
@@ -246,8 +314,6 @@ const MatterCircleStack = () => {
 
     Matter.Events.on(mouseConstraint, "mousemove", (event) => {
       const mousePosition = event.mouse.position;
-
-      // Find the body at the mouse position
       const hoveredBodies = Matter.Query.point(imageBodies, mousePosition);
 
       if (hoveredBodies.length > 0) {
@@ -278,7 +344,6 @@ const MatterCircleStack = () => {
     const runner = Runner.create();
     Runner.run(runner, engine);
 
-    // Floating animation: continuously apply small random forces
     const floatingInterval = setInterval(() => {
       imageBodies.forEach((body) => {
         Matter.Body.applyForce(body, body.position, {
@@ -307,7 +372,17 @@ const MatterCircleStack = () => {
   };
 
   const handleSearchClick = () => {
-    // Randomly select 6 unique emojis from the imageUrls array
+    setLoading(true);
+    setAnalizing(true);
+    setFirstPlace("?");
+    setSecondPlace("?");
+    setThirdPlace("?");
+    setAnimateRanking(false);
+
+    setTimeout(() => {
+      setAnalizing(false);
+    }, 2000);
+
     const selectedEmojis = [];
     while (selectedEmojis.length < 6) {
       const randomIndex = Math.floor(Math.random() * imageUrls.length);
@@ -321,51 +396,35 @@ const MatterCircleStack = () => {
       return b.skillLevel - a.skillLevel;
     });
 
-    // Set the selected emojis to the selectedImage state
     setSelectedImage(sortEmolis);
-    setFirstPlace(sortEmolis[0].url);
-    setSecondPlace(sortEmolis[1].url);
-    setThirdPlace(sortEmolis[2].url);
     setShowResult(true);
-  };
-
-  const buttons = [
-    {
-      text: "<Programmer>",
-      bgColor: "bg-black",
-      textColor: "text-white",
-      font: "font-kode_mono",
-    },
-    {
-      text: "Accountant",
-      bgColor: "bg-[#4666F6]",
-      textColor: "text-white",
-      font: "font-jakarta",
-    },
-    {
-      text: "Designer",
-      bgColor: "bg-[#F6B546]",
-      textColor: "text-black",
-      font: "font-pacifico",
-    },
-    {
-      text: "Musician",
-      bgColor: "bg-[#C10505]",
-      textColor: "text-white",
-      font: "font-playfair",
-    },
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const handleButtonClick = () => {
-    setIsAnimating(true);
 
     setTimeout(() => {
+      setAnimateRanking(true);
+    }, 3000);
+
+    setTimeout(() => {
+      setFirstPlace(sortEmolis[0].url);
+      setSecondPlace(sortEmolis[1].url);
+      setThirdPlace(sortEmolis[2].url);
+    }, 4300);
+
+    setTimeout(() => {
+      setIsRankFinished(true);
+    }, 5000);
+  };
+
+  const handleButtonClick = () => {
+    setTimeout(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % buttons.length);
-      setIsAnimating(false);
     }, 500);
+  };
+
+  const handleCloseRankWindow = () => {
+    setShowResult(false);
+    setAnimateRanking(false);
+    setIsRankFinished(false);
+    setLoading(false);
   };
 
   return (
@@ -377,76 +436,155 @@ const MatterCircleStack = () => {
       <div ref={sceneRef} className="absolute inset-0" />
       {showResult && (
         <div
-          onClick={() => setShowResult(false)}
+          onClick={handleCloseRankWindow}
           className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center"
         >
-          <div className=" grid w-[60%] grid-cols-3 gap-3 ml-[10%]">
-            {selectedImage.map((emoji, index) => (
-              <div
-                key={index}
-                className=" relative w-full bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 flex flex-col items-center"
-              >
-                <div
-                  className={` ${
-                    index === 0
-                      ? " text-[#FBC225]"
-                      : index === 1
-                      ? "text-[#B5B5B5]"
-                      : index === 2
-                      ? "text-[#CD8648]"
-                      : " text-white"
-                  } absolute top-3 left-3 text-xl font-bold`}
+          {!analizing ? (
+            <div className=" grid w-[60%] grid-cols-3 gap-3 ml-[10%]">
+              {selectedImage.map((emoji, index) => (
+                <motion.div
+                  key={index}
+                  className=" w-full"
+                  animate={{
+                    opacity: [0, 1],
+                    scale: [0.5, 1],
+                    rotateX: [90, 0],
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    ease: "easeInOut",
+                  }}
                 >
-                  {index + 1}
-                  <span className=" align-super -top-1 relative text-sm">
-                    {index === 0
-                      ? "st"
-                      : index === 1
-                      ? "nd"
-                      : index === 2
-                      ? "rd"
-                      : index === 3
-                      ? "th"
-                      : "th"}
-                  </span>
-                </div>
-                <img
-                  src={emoji.url}
-                  alt="Selected Image"
-                  className=" mx-auto h-14 w-14 mt-4"
-                />
-                <div className=" w-full flex justify-between items-center">
-                  <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${emoji.technicalLevel}%`,
-                        background: `black`,
-                      }}
-                    ></div>
-                  </div>
-                  <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${emoji.behevioralLevel}%`,
-                        background: `black`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="w-full h-2 bg-gray-200 border border-white rounded-full mt-2 mb-2 overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${emoji.skillLevel}%`,
-                      background: `linear-gradient(to right, red, yellow, green)`,
+                  <motion.div
+                    className=" relative w-full bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 flex flex-col items-center"
+                    animate={{
+                      rotateY: isRankFinished && index < 3 ? [0, 360] : 0,
+                      opacity: isRankFinished && index < 3 ? [1, 1, 0.9, 0] : 1,
+                      display:
+                        isRankFinished && index < 3
+                          ? ["block", "block", "block", "none"]
+                          : "block",
                     }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
+                    transition={{
+                      duration: 1,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <div
+                      className={` ${
+                        index === 0
+                          ? " text-[#FBC225]"
+                          : index === 1
+                          ? "text-[#B5B5B5]"
+                          : index === 2
+                          ? "text-[#CD8648]"
+                          : " text-white"
+                      } absolute top-3 left-3 text-xl font-bold`}
+                    >
+                      {index + 1}
+                      <span className=" align-super -top-1 relative text-sm">
+                        {index === 0
+                          ? "st"
+                          : index === 1
+                          ? "nd"
+                          : index === 2
+                          ? "rd"
+                          : index === 3
+                          ? "th"
+                          : "th"}
+                      </span>
+                    </div>
+
+                    <motion.img
+                      ref={(el) => (emojiRefs.current[index] = el)}
+                      src={emoji.url}
+                      alt="Selected Image"
+                      className="mx-auto h-14 w-14 mt-4 z-[1000]"
+                      animate={{
+                        x:
+                          animateRanking && index === 0
+                            ? firstBoxPosition.x - positions[0]?.x
+                            : animateRanking && index === 1
+                            ? secondBoxPosition.x - positions[1]?.x
+                            : animateRanking && index === 2
+                            ? thridBoxPosition.x - positions[2]?.x
+                            : 0,
+                        y:
+                          animateRanking && index === 0
+                            ? firstBoxPosition.y - positions[0]?.y
+                            : animateRanking && index === 1
+                            ? secondBoxPosition.y - positions[1]?.y
+                            : animateRanking && index === 2
+                            ? thridBoxPosition.y - positions[2]?.y
+                            : 0,
+                        scale:
+                          animateRanking && index < 3 ? [1, 0.8, 1.2, 1] : 1,
+                        opacity:
+                          animateRanking && index < 3 ? [1, 1, 0.9, 0] : 1,
+                        filter:
+                          animateRanking && index < 3
+                            ? [
+                                "drop-shadow(0px 0px 0px gold)",
+                                "drop-shadow(0px 0px 10px gold)",
+                                "drop-shadow(0px 0px 20px gold)",
+                                "drop-shadow(0px 0px 0px gold)",
+                              ]
+                            : "none",
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        ease: "easeInOut",
+                      }}
+                    />
+
+                    <div className=" w-full flex justify-between items-center">
+                      <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${emoji.technicalLevel}%`,
+                            background: `black`,
+                          }}
+                        ></div>
+                      </div>
+                      <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${emoji.behevioralLevel}%`,
+                            background: `black`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 border border-white rounded-full mt-2 mb-2 overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${emoji.skillLevel}%`,
+                          background: `linear-gradient(to right, red, yellow, green)`,
+                        }}
+                      ></div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              className=" text-white"
+              animate={{
+                opacity: [1, 0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                ease: "easeInOut",
+                repeat: Infinity,
+              }}
+            >
+              Analyzing...
+            </motion.div>
+          )}
         </div>
       )}
 
@@ -455,7 +593,18 @@ const MatterCircleStack = () => {
           onClick={() => setIsEmojiClicked(false)}
           className="absolute top-0 h-full w-full bg-black/95 text-8xl flex flex-col justify-center items-center"
         >
-          <div className=" w-[40%] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-5 flex flex-col items-center">
+          <motion.div
+            className=" w-[40%] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-5 flex flex-col items-center "
+            animate={{
+              opacity: [0, 1],
+              scale: [0.5, 1],
+              rotateX: [90, 0],
+            }}
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut",
+            }}
+          >
             <img
               src={selectedEmoji}
               alt="Selected Image"
@@ -490,7 +639,7 @@ const MatterCircleStack = () => {
                 }}
               ></div>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
@@ -506,11 +655,11 @@ const MatterCircleStack = () => {
         <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 w-fit">
           <button
             onClick={handleButtonClick}
-            className={`py-2 px-10 mx-auto rounded-full text-xl font-semibold shadow-lg border-4 border-black transition-all ${
+            className={`py-2 px-10 mx-auto rounded-full cursor-pointer text-xl font-semibold shadow-lg border-4 border-black transition-all ${
               buttons[currentIndex].bgColor
             } ${buttons[currentIndex].textColor} ${
               buttons[currentIndex].font || ""
-            } ${isAnimating ? "animate-swipe-out" : "animate-swipe-in"}`}
+            }`}
           >
             {buttons[currentIndex].text}
           </button>
@@ -519,18 +668,22 @@ const MatterCircleStack = () => {
 
       <div className="absolute top-5 left-5 bg-[#ffffffc0] p-2 flex flex-col justify-center items-center rounded-lg">
         <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#FBC225] text-stroke border-2 border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
-            1<span className=" align-super -top-1 relative text-xs">st</span>
+          <div className="rounded-full z-50 absolute top-0 left-0 font-bold bg-[#FBC225] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
+            1<span className=" align-super -top-1 font-normal relative text-xs">st</span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
             {firstPlace !== "?" ? (
               <img
+                ref={firstPlaceDivRef}
                 src={firstPlace}
                 alt="First Place"
                 className="w-14 h-14 absolute -top-2 right-6"
               />
             ) : (
-              <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
+              <div
+                ref={firstPlaceDivRef}
+                className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
+              >
                 ?
               </div>
             )}
@@ -543,12 +696,16 @@ const MatterCircleStack = () => {
           <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
             {secondPlace !== "?" ? (
               <img
+                ref={secondPlaceDivRef}
                 src={secondPlace}
                 alt="First Place"
                 className="w-14 h-14 absolute -top-2 right-6"
               />
             ) : (
-              <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
+              <div
+                ref={secondPlaceDivRef}
+                className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
+              >
                 ?
               </div>
             )}
@@ -561,23 +718,29 @@ const MatterCircleStack = () => {
           <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-2 border-black rounded-lg">
             {thirdPlace !== "?" ? (
               <img
+                ref={thridPlaceDivRef}
                 src={thirdPlace}
                 alt="First Place"
                 className="w-14 h-14 absolute -top-2 right-6"
               />
             ) : (
-              <div className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square">
+              <div
+                ref={thridPlaceDivRef}
+                className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
+              >
                 ?
               </div>
             )}
           </div>
         </div>
-        <div
-          onClick={handleSearchClick}
-          className=" bg-black rounded-lg text-white text-center text-sm w-[105px] h-9 flex justify-center items-center"
-        >
-          Rank
-        </div>
+        {!animateRanking && (
+          <div
+            onClick={handleSearchClick}
+            className=" bg-black rounded-lg text-white text-center text-sm w-[105px] cursor-pointer h-9 flex justify-center items-center"
+          >
+            {loading ? <LoaderCircle className="animate-spin" /> : "Rank"}
+          </div>
+        )}
       </div>
     </div>
   );
