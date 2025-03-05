@@ -104,6 +104,7 @@ export default function Home() {
     ]
   ];
   const [imageQueues, setImageQueues] = useState(initialImages);
+  const [imageQueuesMobile, setImageQueuesMobile] = useState(initialImagesMobile);
 
   // Toggle between light and dark mode
   // const toggleTheme = () => {
@@ -238,6 +239,18 @@ export default function Home() {
 
   const handleAnimationComplete = (index) => {
     setImageQueues((prevQueues) => {
+      const newQueues = [...prevQueues];
+      const newQueue = [...newQueues[index]];
+      const firstImage = newQueue.shift();
+      if (firstImage) newQueue.push(firstImage);
+      newQueues[index] = newQueue;
+      return newQueues;
+    });
+    setIsAnimating(false);
+  };
+
+  const handleAnimationCompleteMobile = (index) => {
+    setImageQueuesMobile((prevQueues) => {
       const newQueues = [...prevQueues];
       const newQueue = [...newQueues[index]];
       const firstImage = newQueue.shift();
@@ -719,7 +732,7 @@ export default function Home() {
         <div className="  bg-black dark:bg-white dark:text-black text-white mt-[30px] md:mt-10 ">
           <div className="w-full flex flex-wrap md:flex-nowrap items-center py-6 md:py-10 px-6 justify-evenly gap-2 flex-col-reverse md:flex-row">
             {/* Icons Section */}
-            <div className="flex justify-center items-center gap-4 py-7">
+            <div className="hidden md:flex justify-center items-center gap-4 py-7 ">
               {imageQueues.map((imageQueue, index) => (
                 <div
                   key={index}
@@ -731,6 +744,30 @@ export default function Home() {
                     animate={isAnimating ? { y: -133, opacity: 0.5 } : {}}
                     transition={{ duration: 0.8, ease: "easeInOut" }}
                     onAnimationComplete={() => handleAnimationComplete(index)}
+                    className="flex flex-col"
+                  >
+                    {imageQueue.map((image, i) => (
+                      <motion.div key={i} className="mb-2">
+                        <Image src={image} alt="bg" width={115} height={115} />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex md:hidden justify-center items-center gap-4 py-7">
+              {imageQueuesMobile.map((imageQueue, index) => (
+                <div
+                  key={index}
+                  className="overflow-hidden h-[115px] relative w-[115px]"
+                >
+                  <motion.div
+                    key={imageQueue[0]}
+                    initial={{ y: 0, opacity: 1 }}
+                    animate={isAnimating ? { y: -133, opacity: 0.5 } : {}}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    onAnimationComplete={() => handleAnimationCompleteMobile(index)}
                     className="flex flex-col"
                   >
                     {imageQueue.map((image, i) => (
