@@ -42,6 +42,8 @@ export default function Home() {
   const [clicked, setClicked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [theme, setTheme] = useState('default');
+
   const initialImages = [
     [
       "/landing_page/icons/Investors.png",
@@ -172,7 +174,7 @@ export default function Home() {
     { title: "Collaborative Feedback", desc: "Gather insights from your team." },
     { title: "OnBoading Made Easy", desc: "Seamless integration of new hires into your team" },
     { title: "Collaborative Feedback", desc: "Gather insights from your team." },
-    ];
+  ];
 
   const featuresTwo = [
     { title: "Faster Hiring Process", desc: "Speed up your hiring without sacrificing quality." },
@@ -206,25 +208,29 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    // Check if a theme is already saved in localStorage
-    const savedTheme = localStorage.getItem("theme");
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    setTheme(savedTheme);
 
-    if (savedTheme === "dark") {
-      // If "dark" is saved, enable dark mode
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else if (savedTheme === "light") {
-      // If "light" is saved, enable light mode
-      setIsDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    } else {
-      // If no theme is saved, use the system's preferred theme
-      const prefersDarkMode = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      setIsDarkMode(prefersDarkMode);
-      document.documentElement.classList.toggle("dark", prefersDarkMode);
-    }
+    // Check if a theme is already saved in localStorage
+    // const savedTheme = localStorage.getItem("theme");
+
+    // if (savedTheme === "dark") {
+    //   // If "dark" is saved, enable dark mode
+    //   setIsDarkMode(true);
+    //   document.documentElement.classList.add("dark");
+    // } else if (savedTheme === "light") {
+    //   // If "light" is saved, enable light mode
+    //   setIsDarkMode(false);
+    //   document.documentElement.classList.remove("dark");
+    // } else {
+    //   // If no theme is saved, use the system's preferred theme
+    //   const prefersDarkMode = window.matchMedia(
+    //     "(prefers-color-scheme: dark)"
+    //   ).matches;
+    //   setIsDarkMode(prefersDarkMode);
+    //   document.documentElement.classList.toggle("dark", prefersDarkMode);
+    // }
   }, []);
 
   useEffect(() => {
@@ -262,12 +268,27 @@ export default function Home() {
   };
 
   const toggleTheme = () => {
-    setIsDarkMode((prev) => {
-      const newTheme = !prev;
-      document.documentElement.classList.toggle("dark");
-      localStorage.setItem("theme", newTheme ? "dark" : "light");
-      return newTheme;
-    });
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    setTheme(newTheme);
+    // setIsDarkMode((prev) => {
+    //   const newTheme = !prev;
+    //   document.documentElement.classList.toggle("dark");
+    //   localStorage.setItem("theme", newTheme ? "dark" : "light");
+    //   return newTheme;
+    // });
+  };
+
+  const handleThemeChange = (newTheme) => {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    if(newTheme === 'dark') {
+      setIsDarkMode(true);
+    }else{
+      setIsDarkMode(false);
+    }
+    
+    setTheme(newTheme);
   };
 
   const handleAuthentication = async () => {
@@ -288,12 +309,12 @@ export default function Home() {
   };
 
   const requestDemo = async () => {
-    router.push("https://tally.so/r/316PXl");
+    router.push("https://tally.so/r/wQko91");
   };
 
   return (
     <div className=" w-full">
-      <div className=" w-full text-black bg-[#fff] dark:bg-black dark:text-white">
+      <div className=" w-full text-black bg-background dark:text-white">
         <header className=" w-full ">
           <div className=" w-[90%] max-w-[1500px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-12 mx-auto">
             <div>
@@ -315,28 +336,57 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Mobile Version */}
               <div className="block md:hidden">
                 {isDarkMode ? (
                   <Image
                     src="/landing_page/logo_mobile_dark.png"
                     alt="logo"
-                    width={200} // Adjust width for mobile
-                    height={50} // Adjust height for mobile
+                    width={200} 
+                    height={50} 
                   />
                 ) : (
                   <Image
                     src="/landing_page/logo_mobile_light.png"
                     alt="logo"
-                    width={200} // Adjust width for mobile
-                    height={50} // Adjust height for mobile
+                    width={200} 
+                    height={50} 
                   />
                 )}
               </div>
             </div>
 
             <div className="flex justify-center items-center">
-              <button
+              <div className="flex justify-center items-center gap-4 mt-4">
+                <button
+                  onClick={() => handleThemeChange('default')}
+                  className="w-8 h-8 rounded-full bg-[#fff]"
+                ></button>
+                <button
+                  onClick={() => handleThemeChange('theme1')}
+                  className="w-8 h-8 rounded-full bg-[#DDDDDD]"
+                ></button>
+                <button
+                  onClick={() => handleThemeChange('theme2')}
+                  className="w-8 h-8 rounded-full bg-[#D1F8FF]"
+                ></button>
+                <button
+                  onClick={() => handleThemeChange('theme3')}
+                  className="w-8 h-8 rounded-full bg-[#DDFFD1]"
+                ></button>
+                <button
+                  onClick={() => handleThemeChange('theme4')}
+                  className="w-8 h-8 rounded-full bg-[#FFF8D1]"
+                ></button>
+                <button
+                  onClick={() => handleThemeChange('theme5')}
+                  className="w-8 h-8 rounded-full bg-[#FEDBDB]"
+                ></button>
+                <button
+                  onClick={() => handleThemeChange('dark')}
+                  className="w-8 h-8 rounded-full bg-[#000]"
+                ></button>
+              </div>
+              {/* <button
                 onClick={toggleTheme}
                 className="bg-black dark:bg-white w-11 h-11 md:w-16 md:h-16 rounded-full flex justify-center items-center transition-all duration-300"
               >
@@ -354,37 +404,57 @@ export default function Home() {
                     <LuMoon size={24} color="#fff" />
                   )}
                 </div>
-              </button>
+              </button> */}
             </div>
           </div>
         </header>
 
+        {/* <div className="min-h-screen bg-background text-secondary">
+          <header className="p-4 bg-primary text-white">
+            <h1 className="text-2xl font-bold">Dynamic Theme Example</h1>
+          </header>
+          <main className="p-4">
+            <p className="text-accent">This text changes color based on the theme.</p>
+          </main>
+          <footer className="p-4 bg-secondary text-primary">
+            <p>Footer Content</p>
+          </footer>
+        </div> */}
+
         {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
-          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-2 px-4 py-11 md:px-11  md:py-12 bg-black dark:bg-white dark:text-black">
-            <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-2xl md:text-4xl md:leading-[52px] font-bold text-white dark:text-black">
+          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-11  md:py-12 bg-[#FFE582] dark:bg-[#FFE582] dark:text-black">
+            <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-2xl md:text-4xl md:leading-[52px] font-bold text-black dark:text-black">
               <span>Find the Right Talent</span><br />
               <span>Without the Runaround</span>
             </h1>
-            <p className="max-w-[368px] md:max-w-[500px] text-xs md:text-base text-center md:text-start pt-[15px] md:pt-[18px] leading-[23px] text-white dark:text-black font-puls">
+            <p className="max-w-[368px] md:max-w-[500px] text-xs md:text-base text-center md:text-start pt-[15px] md:pt-[18px] leading-[23px] text-black dark:text-black font-puls">
               Skillchecker takes the guesswork out of hiring. Our AI-driven
               interview platform evaluates real-world skills with precision,
               giving you fast, unbiased, and data-backed insights — so you
               can make confident hiring decisions every time
             </p>
             <div className="flex gap-6 pt-[15px] md:pt-14">
-              <button onClick={requestDemo} className="bg-[#009bac] text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold">
+              <button onClick={requestDemo} className="bg-purple-200 text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
-              <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
+              {/* <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
                 Contact us now
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-              </button>
+              </button> */}
+              <a
+                href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
+                className="  relative  dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black bg-yellow-200 text-black shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+              >
+                Contact us now
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+              </a>
             </div>
           </div>
 
-          <div className=" lg:col-span-2 flex min-h-[400px] flex-col justify-start items-start border-black border-2">
+          <div className=" lg:col-span-2 flex min-h-[400px] flex-col justify-start items-start border-black border-2 rounded-[10px]">
             <MatterCircleStack />
           </div>
         </div>
@@ -503,7 +573,7 @@ export default function Home() {
 
       </div> */}
 
-      <div className=" w-full bg-[#fff] dark:bg-black relative text-white dark:text-black overflow-hidden ">
+      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden ">
         <div className=" w-[90%] max-w-[1500px] mx-auto pt-3 md:pt-10">
           <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[56px] md:leading-[60px] pb-3 ">
             We got what you looking for
@@ -514,11 +584,11 @@ export default function Home() {
             <div className="slide-track flex gap-6">
               {featuresOne.map((feature, index) => (
                 <div className="slide" key={index}>
-                <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
-                  <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
-                  <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
+                  <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
+                    <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
+                    <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
+                  </div>
                 </div>
-              </div>
               ))}
             </div>
           </div>
@@ -527,18 +597,18 @@ export default function Home() {
             <div className="slide-track flex gap-6">
               {featuresTwo.map((feature, index) => (
                 <div className="slide" key={index}>
-                <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
-                  <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
-                  <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
+                  <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
+                    <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
+                    <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
+                  </div>
                 </div>
-              </div>
               ))}
             </div>
           </div>
         </div>
       </div>
 
-      <div className=" w-full bg-[#fff] dark:bg-black relative overflow-hidden">
+      <div className=" w-full bg-background relative overflow-hidden">
         <div className=" w-[90%] max-w-[1500px] mx-auto border-0 md:border-black dark:md:border-[#282828] md:border-2 md:mt-10 mt-[30px] py-[0px] md:py-[30px] md:px-[30px] px-[26px]">
           <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl  leading-[24px] md:leading-[60px] ">
             We got what you looking for
@@ -547,19 +617,19 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:mt-[11px] mt-[20px]">
 
 
-          {superPower.map((feature, index) => (
-            <div className="bg-[#f3f3f3] dark:bg-[#181818]" key={index}>
-            <div className="px-[1.175rem] py-[1.175rem] flex justify-center items-center md:justify-start md:items-start flex-col">
-              <Image
-                src='/landing_page/grid/image1.png'
-                alt="bg"
-                width="300"
-                height="275"
-              />
-              <h3 className="font-bold text-sm text-black dark:text-white mt-[18px] leading-8 text-start">{feature.title}</h3>
-              <p className="text-black dark:text-white text-sm leading-6">{feature.desc}</p>
-            </div>
-          </div>
+            {superPower.map((feature, index) => (
+              <div className="bg-[#f3f3f3] dark:bg-[#181818]" key={index}>
+                <div className="px-[1.175rem] py-[1.175rem] flex justify-center items-center md:justify-start md:items-start flex-col">
+                  <Image
+                    src='/landing_page/grid/image1.png'
+                    alt="bg"
+                    width="300"
+                    height="275"
+                  />
+                  <h3 className="font-bold text-sm text-black dark:text-white mt-[18px] leading-8 text-start">{feature.title}</h3>
+                  <p className="text-black dark:text-white text-sm leading-6">{feature.desc}</p>
+                </div>
+              </div>
             ))}
 
             {/* <div className="bg-[#f3f3f3] dark:bg-[#181818]">
@@ -727,7 +797,7 @@ export default function Home() {
         </div>
       </div> */}
 
-      <div className=" w-full bg-[#fff] dark:bg-black relative overflow-hidden">
+      <div className=" w-full bg-background relative overflow-hidden">
 
         <div className="  bg-black dark:bg-white dark:text-black text-white mt-[30px] md:mt-10 ">
           <div className="w-full flex flex-wrap md:flex-nowrap items-center py-6 md:py-10 px-6 justify-evenly gap-2 flex-col-reverse md:flex-row">
@@ -903,7 +973,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className=" w-full bg-[#fff] dark:bg-black relative overflow-hidden">
+      <div className=" w-full bg-background relative overflow-hidden">
 
         <div className="  bg-[#009bac] text-black mb-4">
           <div className="w-[90%] max-w-[1500px] mx-auto flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
@@ -936,7 +1006,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className=" w-[80%] mx-auto mt-5 mb-5">
+        <div className=" w-[80%] mx-auto mt-5 mb-5 ">
           {/* <hr className=" opacity-15 mb-5" /> */}
           <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
             &#169;2025 &nbsp; Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved

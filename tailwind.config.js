@@ -13,10 +13,10 @@ module.exports = {
 				
 			},
 			colors: {
-				background: 'var(--background)',
-				foreground: 'var(--foreground)',
-				lightred: 'var(--lightred)',
-				darkred: 'var(--darkred)',
+				primary: 'var(--primary-color)',
+				secondary: 'var(--secondary-color)',
+				accent: 'var(--accent-color)',
+				background: 'var(--background-color)',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

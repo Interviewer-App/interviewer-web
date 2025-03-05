@@ -672,7 +672,7 @@ const MatterCircleStack = () => {
 
   return (
     <div
-      className="relative w-full h-full"
+      className="relative w-full h-full rounded-[10px]"
       ref={containerRef}
       style={{ backgroundColor: bgColor }}
     >
