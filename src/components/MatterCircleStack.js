@@ -88,20 +88,34 @@ const MatterCircleStack = () => {
   ];
 
   useEffect(() => {
-    if (firstPlaceDivRef.current) {
-      const rect = firstPlaceDivRef.current.getBoundingClientRect();
-      setFirstBoxPosition({ x: rect.x, y: rect.y });
-    }
+    const updatePositions = () => {
+      if (firstPlaceDivRef.current) {
+        const rect = firstPlaceDivRef.current.getBoundingClientRect();
+        setFirstBoxPosition({ x: rect.x, y: rect.y });
+      }
 
-    if (secondPlaceDivRef.current) {
-      const rect = secondPlaceDivRef.current.getBoundingClientRect();
-      setSecondBoxPosition({ x: rect.x, y: rect.y });
-    }
+      if (secondPlaceDivRef.current) {
+        const rect = secondPlaceDivRef.current.getBoundingClientRect();
+        setSecondBoxPosition({ x: rect.x, y: rect.y });
+      }
 
-    if (thridPlaceDivRef.current) {
-      const rect = thridPlaceDivRef.current.getBoundingClientRect();
-      setThridBoxPosition({ x: rect.x, y: rect.y });
-    }
+      if (thridPlaceDivRef.current) {
+        const rect = thridPlaceDivRef.current.getBoundingClientRect();
+        setThridBoxPosition({ x: rect.x, y: rect.y });
+      }
+    };
+
+    updatePositions();
+
+    window.addEventListener("resize", updatePositions);
+
+    const observer = new MutationObserver(updatePositions);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener("resize", updatePositions);
+      observer.disconnect();
+    };
   }, [firstPlace, dimensions]);
 
   useEffect(() => {
@@ -122,7 +136,6 @@ const MatterCircleStack = () => {
         const { width, height } = containerRef.current.getBoundingClientRect();
         setDimensions({ width, height });
 
-        // Update renderer if it exists
         if (renderRef.current) {
           if (renderRef.current.canvas) {
             Matter.Render.setPixelRatio(
@@ -131,7 +144,7 @@ const MatterCircleStack = () => {
             );
             Matter.Render.setSize(renderRef.current, width, height);
           }
-          // Update boundary walls
+
           if (worldRef.current) {
             // Remove old walls
             const bodies = Matter.Composite.allBodies(worldRef.current);
@@ -598,7 +611,7 @@ const MatterCircleStack = () => {
           className="absolute top-0 h-full w-full bg-black/95 text-8xl flex flex-col justify-center items-center"
         >
           <motion.div
-            className=" w-[40%] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-5 flex flex-col items-center "
+            className=" w-[45%] lg:w-[40%] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 lg:p-5 flex flex-col items-center "
             animate={{
               opacity: [0, 1],
               scale: [0.5, 1],
@@ -612,10 +625,10 @@ const MatterCircleStack = () => {
             <img
               src={selectedEmoji}
               alt="Selected Image"
-              className=" mx-auto w-32 h-32"
+              className=" mx-auto w-16 h-16 lg:w-32 lg:h-32"
             />
             <div className=" w-full flex justify-between items-center">
-              <div className="w-[48%] h-4  bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
+              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-4 bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -624,7 +637,7 @@ const MatterCircleStack = () => {
                   }}
                 ></div>
               </div>
-              <div className="w-[48%] h-4 bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
+              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-4 bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -634,7 +647,7 @@ const MatterCircleStack = () => {
                 ></div>
               </div>
             </div>
-            <div className="w-full h-4 bg-gray-200 border border-white rounded-full mt-5 mb-5 overflow-hidden">
+            <div className="w-full h-3 lg:h-4 bg-gray-200 border border-white rounded-full mt-3 lg:mt-5 mb-3 lg:mb-5 overflow-hidden">
               <div
                 className="h-full rounded-full"
                 style={{
