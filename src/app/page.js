@@ -360,7 +360,7 @@ export default function Home() {
         </header>
 
         {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
-        <div className="grid grid-cols-1 md:grid-cols-2 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-2 px-4 py-11 md:px-11  md:py-12 bg-black dark:bg-white dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-2xl md:text-4xl md:leading-[52px] font-bold text-white dark:text-black">
               <span>Find the Right Talent</span><br />
@@ -384,7 +384,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className=" flex min-h-[400px] flex-col justify-start items-start border-black border-2">
+          <div className=" lg:col-span-2 flex min-h-[400px] flex-col justify-start items-start border-black border-2">
             <MatterCircleStack />
           </div>
         </div>
