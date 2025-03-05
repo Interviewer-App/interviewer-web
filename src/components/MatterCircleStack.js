@@ -60,8 +60,8 @@ const MatterCircleStack = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRankFinished, setIsRankFinished] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [cornerWidth, setCornerWidth] = useState(150);
-  const [cornerHeight, setCornerHeight] = useState(200);
+  const [cornerWidth, setCornerWidth] = useState(20);
+  const [cornerHeight, setCornerHeight] = useState(20);
   const [bottomWidth, setBottomWidth] = useState(260);
   const [bottomHeight, setBottomHeight] = useState(80);
   const [topRightWidth, setTopRightWidth] = useState(70);
@@ -463,7 +463,7 @@ const MatterCircleStack = () => {
       render.context = null;
       render.textures = {};
     };
-  }, [isEmojiClicked, dimensions]);
+  }, [isEmojiClicked, dimensions, topRightHeight]);
 
   // useEffect(() => {
   //   if (!dimensions.width || !dimensions.height) return;

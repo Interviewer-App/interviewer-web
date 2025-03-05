@@ -287,7 +287,7 @@ export default function Home() {
     }else{
       setIsDarkMode(false);
     }
-    
+
     setTheme(newTheme);
   };
 
@@ -341,15 +341,15 @@ export default function Home() {
                   <Image
                     src="/landing_page/logo_mobile_dark.png"
                     alt="logo"
-                    width={200} 
-                    height={50} 
+                    width={200}
+                    height={50}
                   />
                 ) : (
                   <Image
                     src="/landing_page/logo_mobile_light.png"
                     alt="logo"
-                    width={200} 
-                    height={50} 
+                    width={200}
+                    height={50}
                   />
                 )}
               </div>
@@ -454,7 +454,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className=" lg:col-span-2 flex min-h-[400px] flex-col justify-start items-start border-black border-2 rounded-[10px]">
+          <div className=" lg:col-span-2 flex min-h-[450px] flex-col justify-start items-start border-black border-2 rounded-[10px]">
             <MatterCircleStack />
           </div>
         </div>
