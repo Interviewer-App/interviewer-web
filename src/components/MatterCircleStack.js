@@ -60,6 +60,15 @@ const MatterCircleStack = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRankFinished, setIsRankFinished] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [cornerWidth, setCornerWidth] = useState(150);
+  const [cornerHeight, setCornerHeight] = useState(200);
+  const [bottomWidth, setBottomWidth] = useState(260);
+  const [bottomHeight, setBottomHeight] = useState(80);
+  const [topRightWidth, setTopRightWidth] = useState(70);
+  const [topRightHeight, setTopRightHeight] = useState(70);
+  const [emojiScale, setEmojiScale] = useState(0.18);
+  const [emojiForce, setEmojiForce] = useState(0.01);
+  const [emojiOralScale, setEmojiOralScale] = useState(40);
   const [analizing, setAnalizing] = useState(false);
   const buttons = [
     {
@@ -105,8 +114,28 @@ const MatterCircleStack = () => {
         setThridBoxPosition({ x: rect.x, y: rect.y });
       }
 
-      const emojiCount = window.innerWidth > 768 ? 200 : 100;
+      const emojiCount = window.innerWidth > 768 ? 60 : 25;
+      const emojiScale = window.innerWidth > 768 ? 0.18 : 0.13;
+      const emojiOralScale = window.innerWidth > 768 ? 40 : 25;
+      const emojiForce = window.innerWidth > 768 ? 0.01 : 0.003;
       setEmojiCount(emojiCount);
+      setEmojiScale(emojiScale);
+      setEmojiOralScale(emojiOralScale);
+      setEmojiForce(emojiForce);
+
+      const cornerWidth = window.innerWidth > 768 ? 150 : 300;
+      const cornerHeight = window.innerWidth > 768 ? 200 : 50;
+      const bottomWidth = window.innerWidth > 768 ? 260 : 150;
+      const bottomHeight = window.innerWidth > 768 ? 80 : 50;
+      const topRightWidth = window.innerWidth > 768 ? 70 : 50;
+      const topRightHeight = window.innerWidth > 768 ? 70 : 100;
+
+      setCornerWidth(cornerWidth);
+      setCornerHeight(cornerHeight);
+      setBottomWidth(bottomWidth);
+      setBottomHeight(bottomHeight);
+      setTopRightWidth(topRightWidth);
+      setTopRightHeight(topRightHeight);
     };
 
     updatePositions();
@@ -255,14 +284,14 @@ const MatterCircleStack = () => {
 
     const createImageCircle = (x, y) => {
       const emoji = imageUrls[Math.floor(Math.random() * imageUrls.length)];
-      return Bodies.circle(x, y, 15, {
+      return Bodies.circle(x, y, emojiOralScale, {
         restitution: 0.8,
         frictionAir: 0.05,
         render: {
           sprite: {
             texture: emoji.url,
-            xScale: 0.18,
-            yScale: 0.18,
+            xScale: emojiScale,
+            yScale: emojiScale,
           },
         },
       });
@@ -270,14 +299,67 @@ const MatterCircleStack = () => {
 
     const imageBodies = [];
     for (let i = 0; i < emojiCount; i++) {
-      const x = Math.random() * dimensions.width;
-      const y = Math.random() * dimensions.height;
+      let x, y;
+      let isValidPosition = false;
+
+      while (!isValidPosition) {
+        x = Math.random() * dimensions.width;
+        y = Math.random() * dimensions.height;
+
+        // Check if position is inside the restricted areas
+        const isInTopLeft = x < cornerWidth && y < cornerHeight;
+        const isInTopRight =
+          x > dimensions.width - topRightWidth && y < topRightHeight;
+        const isInBottomCenter =
+          x > dimensions.width / 2 - bottomWidth / 2 &&
+          x < dimensions.width / 2 + bottomWidth / 2 &&
+          y > dimensions.height - bottomHeight;
+
+        if (!isInTopLeft && !isInBottomCenter && !isInTopRight) {
+          isValidPosition = true;
+        }
+      }
+
       const body = createImageCircle(x, y);
       imageBodies.push(body);
     }
 
+    // const imageBodies = [];
+    // for (let i = 0; i < emojiCount; i++) {
+    //   const x = Math.random() * dimensions.width;
+    //   const y = Math.random() * dimensions.height;
+    //   const body = createImageCircle(x, y);
+    //   imageBodies.push(body);
+    // }
+
     imageBodiesRef.current = imageBodies;
     World.add(world, imageBodies);
+
+    const topLeftBoundary = Bodies.rectangle(
+      cornerWidth / 2,
+      cornerHeight / 2,
+      cornerWidth,
+      cornerHeight,
+      { isStatic: true, render: { visible: false } }
+    );
+
+    const topRightBoundary = Bodies.rectangle(
+      dimensions.width - topRightWidth / 2,
+      topRightHeight / 2,
+      topRightWidth,
+      topRightHeight,
+      { isStatic: true, render: { visible: false } }
+    );
+
+    const bottomCenterBoundary = Bodies.rectangle(
+      dimensions.width / 2,
+      dimensions.height - bottomHeight / 2,
+      bottomWidth,
+      bottomHeight,
+      { isStatic: true, render: { visible: false } }
+    );
+
+    World.add(world, [topLeftBoundary, bottomCenterBoundary, topRightBoundary]);
 
     const ground = Matter.Bodies.rectangle(
       dimensions.width / 2,
@@ -365,8 +447,8 @@ const MatterCircleStack = () => {
     const floatingInterval = setInterval(() => {
       imageBodies.forEach((body) => {
         Matter.Body.applyForce(body, body.position, {
-          x: (Math.random() - 0.5) * 0.0002,
-          y: (Math.random() - 0.5) * 0.0002,
+          x: (Math.random() - 0.5) * emojiForce,
+          y: (Math.random() - 0.5) * emojiForce,
         });
       });
     }, 50);
@@ -382,6 +464,147 @@ const MatterCircleStack = () => {
       render.textures = {};
     };
   }, [isEmojiClicked, dimensions]);
+
+  // useEffect(() => {
+  //   if (!dimensions.width || !dimensions.height) return;
+
+  //   const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint } = Matter;
+
+  //   const engine = Engine.create();
+  //   engineRef.current = engine;
+  //   const { world } = engine;
+  //   worldRef.current = world;
+
+  //   engine.world.gravity.y = 0;
+  //   engine.world.gravity.x = 0;
+
+  //   const render = Render.create({
+  //     element: sceneRef.current,
+  //     engine: engine,
+  //     options: {
+  //       width: dimensions.width,
+  //       height: dimensions.height,
+  //       wireframes: false,
+  //       background: "transparent",
+  //     },
+  //   });
+  //   renderRef.current = render;
+
+  //   const createImageCircle = (x, y) => {
+  //     const emoji = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+  //     return Bodies.circle(x, y, 30, {
+  //       restitution: 0.8,
+  //       frictionAir: 0.05,
+  //       render: {
+  //         sprite: {
+  //           texture: emoji.url,
+  //           xScale: 0.18,
+  //           yScale: 0.18,
+  //         },
+  //       },
+  //     });
+  //   };
+
+  //   const imageBodies = [];
+  //   const cornerWidth = 150;  // Top-left restricted area width
+  //   const cornerHeight = 200; // Top-left restricted area height
+  //   const bottomWidth = 280;  // Bottom-center restricted width
+  //   const bottomHeight = 80; // Bottom-center restricted height
+
+  //   for (let i = 0; i < emojiCount; i++) {
+  //     let x, y;
+  //     let isValidPosition = false;
+
+  //     while (!isValidPosition) {
+  //       x = Math.random() * dimensions.width;
+  //       y = Math.random() * dimensions.height;
+
+  //       // Check if position is inside the restricted areas
+  //       const isInTopLeft = x < cornerWidth && y < cornerHeight;
+  //       const isInBottomCenter = x > (dimensions.width / 2 - bottomWidth / 2) &&
+  //                                x < (dimensions.width / 2 + bottomWidth / 2) &&
+  //                                y > (dimensions.height - bottomHeight);
+
+  //       if (!isInTopLeft && !isInBottomCenter) {
+  //         isValidPosition = true;
+  //       }
+  //     }
+
+  //     const body = createImageCircle(x, y);
+  //     imageBodies.push(body);
+  //   }
+
+  //   imageBodiesRef.current = imageBodies;
+  //   World.add(world, imageBodies);
+
+  //   // Create a static boundary for the top-left corner
+  //   const topLeftBoundary = Bodies.rectangle(
+  //     cornerWidth / 2, cornerHeight / 2, cornerWidth, cornerHeight,
+  //     { isStatic: true, render: { visible: false } }
+  //   );
+
+  //   // Create a static boundary for the bottom-center area
+  //   const bottomCenterBoundary = Bodies.rectangle(
+  //     dimensions.width / 2, dimensions.height - bottomHeight / 2,
+  //     bottomWidth, bottomHeight,
+  //     { isStatic: true, render: { visible: false } }
+  //   );
+
+  //   // Add both restricted areas to the world
+  //   World.add(world, [topLeftBoundary, bottomCenterBoundary]);
+
+  //   const mouse = Mouse.create(render.canvas);
+  //   const mouseConstraint = MouseConstraint.create(engine, {
+  //     mouse: mouse,
+  //     constraint: { stiffness: 0.5, render: { visible: false } },
+  //   });
+
+  //   World.add(world, mouseConstraint);
+
+  //   Matter.Events.on(mouseConstraint, "mousemove", (event) => {
+  //     const mousePosition = event.mouse.position;
+  //     const hoveredBodies = Matter.Query.point(imageBodies, mousePosition);
+  //     document.body.style.cursor = hoveredBodies.length > 0 ? "pointer" : "default";
+  //   });
+
+  //   Matter.Events.on(mouseConstraint, "mousedown", (event) => {
+  //     const { body } = event.source;
+  //     if (imageBodies.includes(body)) {
+  //       const clickedEmoji = imageUrls.find(emoji => emoji.url === body.render.sprite.texture);
+  //       if (clickedEmoji) {
+  //         setIsEmojiClicked(true);
+  //         setSelectedSkillLevel(clickedEmoji.skillLevel);
+  //         setSelectedTechnicalLevel(clickedEmoji.technicalLevel);
+  //         setSelectedBehavioralLevel(clickedEmoji.behavioralLevel);
+  //         setSelectedEmoji(clickedEmoji.url);
+  //       }
+  //     }
+  //   });
+
+  //   Render.run(render);
+  //   const runner = Runner.create();
+  //   Runner.run(runner, engine);
+
+  //   const floatingInterval = setInterval(() => {
+  //     imageBodies.forEach(body => {
+  //       Matter.Body.applyForce(body, body.position, {
+  //         x: (Math.random() - 0.5) * 0.004,
+  //         y: (Math.random() - 0.5) * 0.004,
+  //       });
+  //     });
+  //   }, 50);
+
+  //   return () => {
+  //     clearInterval(floatingInterval);
+  //     Render.stop(render);
+  //     World.clear(world, false);
+  //     Engine.clear(engine);
+  //     render.canvas.remove();
+  //     render.canvas = null;
+  //     render.context = null;
+  //     render.textures = {};
+  //   };
+  // }, [isEmojiClicked, dimensions]);
 
   const changeBackgroundColor = () => {
     const { bgColor, buttonColor } = getRandomLightColor();
@@ -709,17 +932,17 @@ const MatterCircleStack = () => {
       )}
 
       <div
-        className="absolute top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg"
-        style={{ backgroundColor: buttonColor }}
+        className="absolute bg-white top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg"
+        // style={{ backgroundColor: buttonColor }}
       >
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full text-stroke z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             1
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
               st
             </span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-7 md:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
+          <div className=" mx-2 pl-8  flex  flex-row justify-center h-7 md:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
             {firstPlace !== "?" ? (
               <img
                 ref={firstPlaceDivRef}
@@ -738,7 +961,7 @@ const MatterCircleStack = () => {
           </div>
         </div>
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#A6A6A6] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full z-50 text-stroke absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#A6A6A6] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             2
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
               nd
@@ -763,7 +986,7 @@ const MatterCircleStack = () => {
           </div>
         </div>
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full text-stroke z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             3
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
               rd
