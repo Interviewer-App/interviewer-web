@@ -662,7 +662,7 @@ const MatterCircleStack = () => {
             style={{ backgroundColor: buttonColor }}
           >
             {loading ? (
-              <LoaderCircle className="animate-spin" />
+              <LoaderCircle className="animate-spin text-white" />
             ) : (
               <PiRankingBold size={22} color="#FFFFFF" />
             )}
