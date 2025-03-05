@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import { LuPaintbrush } from "react-icons/lu";
+import { PiRankingBold } from "react-icons/pi";
 import { imageUrls } from "@/constants";
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
@@ -442,7 +443,7 @@ const MatterCircleStack = () => {
           className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center"
         >
           {!analizing ? (
-            <div className=" grid w-[60%] z-50 grid-cols-3 gap-3 ml-[10%]">
+            <div className=" grid w-[90%] lg:w-[60%] z-50 grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
                 <motion.div
                   key={index}
@@ -481,10 +482,10 @@ const MatterCircleStack = () => {
                           : index === 2
                           ? "text-[#CD8648]"
                           : " text-white"
-                      } absolute top-3 left-3 text-xl font-bold`}
+                      } absolute top-3 left-3 text-sm lg:text-xl font-semibold lg:font-bold`}
                     >
                       {index + 1}
-                      <span className=" align-super -top-1 relative text-sm">
+                      <span className=" align-super -top-1 relative text-[12px] lg:text-sm">
                         {index === 0
                           ? "st"
                           : index === 1
@@ -501,7 +502,7 @@ const MatterCircleStack = () => {
                       ref={(el) => (emojiRefs.current[index] = el)}
                       src={emoji.url}
                       alt="Selected Image"
-                      className="mx-auto h-14 w-14 mt-4 !z-50"
+                      className="mx-auto h-12 w-12 lg:h-14 lg:w-14 mt-4 !z-50"
                       animate={{
                         x:
                           animateRanking && index === 0
@@ -646,16 +647,31 @@ const MatterCircleStack = () => {
         </div>
       )}
 
-      <button
-        onClick={changeBackgroundColor}
-        className="p-3 absolute top-3 right-3 rounded-full shadow-lg hover:bg-gray-100 transition"
-        style={{ backgroundColor: buttonColor }}
-      >
-        <LuPaintbrush size={24} color="#FFFFFF" />
-      </button>
+      <div className="absolute top-1 right-1 lg:top-3 lg:right-3 flex flex-col justify-start items-center">
+        <button
+          onClick={changeBackgroundColor}
+          className="p-3 rounded-full shadow-lg hover:bg-gray-100 transition"
+          style={{ backgroundColor: buttonColor }}
+        >
+          <LuPaintbrush size={22} color="#FFFFFF" />
+        </button>
+        {!animateRanking && (
+          <button
+            onClick={handleSearchClick}
+            className=" block lg:hidden p-3 rounded-full shadow-lg mt-1 hover:bg-gray-100 transition"
+            style={{ backgroundColor: buttonColor }}
+          >
+            {loading ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
+              <PiRankingBold size={22} color="#FFFFFF" />
+            )}
+          </button>
+        )}
+      </div>
 
       {!(isEmojiClicked || showResult) && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-fit">
+        <div className="absolute bottom-2 lg:bottom-4 left-1/2 transform -translate-x-1/2 w-fit">
           <motion.button
             onClick={handleButtonClick}
             initial={{ opacity: 1, scale: 1 }}
@@ -664,7 +680,7 @@ const MatterCircleStack = () => {
               scale: isAnimatingButton ? 0.1 : 1,
             }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className={` h-14 px-10 mx-auto rounded-full cursor-pointer text-xl font-semibold shadow-lg border-4 border-black transition-all ${
+            className={` h-11 lg:h-14 px-5 lg:px-10 mx-auto rounded-full cursor-pointer text-base lg:text-xl font-semibold shadow-lg border-4 border-black transition-all ${
               buttons[currentIndex].bgColor
             } ${buttons[currentIndex].textColor} ${
               buttons[currentIndex].font || ""
@@ -676,20 +692,23 @@ const MatterCircleStack = () => {
       )}
 
       <div
-        className="absolute top-3 left-3 p-2 flex flex-col justify-center !z-10 items-center rounded-lg"
+        className="absolute top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg"
         style={{ backgroundColor: buttonColor }}
       >
-        <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-extrabold bg-[#FBC225] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
-            1<span className=" align-super -top-1 relative text-xs">st</span>
+        <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+            1
+            <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
+              st
+            </span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
+          <div className=" mx-2 pl-8  flex flex-row justify-center h-7 md:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
             {firstPlace !== "?" ? (
               <img
                 ref={firstPlaceDivRef}
                 src={firstPlace}
                 alt="First Place"
-                className="w-14 h-14 absolute -top-2 right-6"
+                className="lg:w-14 lg:h-14 h-12 w-12 absolute -top-2 right-2 lg:right-6"
               />
             ) : (
               <div
@@ -701,17 +720,20 @@ const MatterCircleStack = () => {
             )}
           </div>
         </div>
-        <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-extrabold bg-[#A6A6A6] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
-            2<span className=" align-super -top-1 relative text-xs">nd</span>
+        <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#A6A6A6] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+            2
+            <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
+              nd
+            </span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
+          <div className=" mx-2 pl-8 flex flex-row justify-center h-7 lg:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
             {secondPlace !== "?" ? (
               <img
                 ref={secondPlaceDivRef}
                 src={secondPlace}
                 alt="First Place"
-                className="w-14 h-14 absolute -top-2 right-6"
+                className="lg:w-14 lg:h-14 h-12 w-12 absolute -top-2 right-2 lg:right-6"
               />
             ) : (
               <div
@@ -723,17 +745,20 @@ const MatterCircleStack = () => {
             )}
           </div>
         </div>
-        <div className=" mb-1 relative h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 absolute top-0 left-0 font-extrabold bg-[#BC712F] border-[3px] border-black text-white text-center text-lg flex justify-center items-center h-full aspect-square">
-            3<span className=" align-super -top-1 relative text-xs">rd</span>
+        <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+            3
+            <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
+              rd
+            </span>
           </div>
-          <div className=" mx-2 pl-8  flex flex-row justify-center h-9 w-[100px] bg-white items-center border-[3px] border-black rounded-lg">
+          <div className=" ml-2 mr-1 lg:mx-2 pl-8 flex flex-row justify-center h-7 lg:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
             {thirdPlace !== "?" ? (
               <img
                 ref={thridPlaceDivRef}
                 src={thirdPlace}
                 alt="First Place"
-                className="w-14 h-14 absolute -top-2 right-6"
+                className="lg:w-14 lg:h-14 h-12 w-12 absolute -top-2 right-2 lg:right-6"
               />
             ) : (
               <div
@@ -748,7 +773,7 @@ const MatterCircleStack = () => {
         {!animateRanking && (
           <div
             onClick={handleSearchClick}
-            className=" bg-black rounded-lg font-semibold text-white text-center text-sm w-[105px] cursor-pointer h-9 flex justify-center items-center"
+            className=" hidden bg-black rounded-lg font-semibold text-white text-center text-sm w-[105px] cursor-pointer h-9 lg:flex justify-center items-center"
           >
             {loading ? <LoaderCircle className="animate-spin" /> : "Rank"}
           </div>
