@@ -46,6 +46,7 @@ const MatterCircleStack = () => {
   const [showResult, setShowResult] = useState(false);
   const [buttonColor, setButtonColor] = useState("#FFFFFF");
   const [selectedSkillLevel, setSelectedSkillLevel] = useState(50);
+  const [emojiCount, setEmojiCount] = useState(200);
   const [selectedTechnicalLevel, setSelectedTechnicalLevel] = useState(80);
   const [selectedBehavioralLevel, setSelectedBehavioralLevel] = useState(20);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -103,6 +104,9 @@ const MatterCircleStack = () => {
         const rect = thridPlaceDivRef.current.getBoundingClientRect();
         setThridBoxPosition({ x: rect.x, y: rect.y });
       }
+
+      const emojiCount = window.innerWidth > 768 ? 200 : 100;
+      setEmojiCount(emojiCount);
     };
 
     updatePositions();
@@ -265,7 +269,7 @@ const MatterCircleStack = () => {
     };
 
     const imageBodies = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < emojiCount; i++) {
       const x = Math.random() * dimensions.width;
       const y = Math.random() * dimensions.height;
       const body = createImageCircle(x, y);
@@ -555,7 +559,7 @@ const MatterCircleStack = () => {
                     />
 
                     <div className=" w-full flex justify-between items-center">
-                      <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
+                      <div className="w-[48%] h-3 lg:h-[14px] bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
                         <div
                           className="h-full rounded-full"
                           style={{
@@ -564,7 +568,7 @@ const MatterCircleStack = () => {
                           }}
                         ></div>
                       </div>
-                      <div className="w-[48%] h-2 bg-gray-200 border border-white rounded-full mt-2 overflow-hidden">
+                      <div className="w-[48%] h-3 lg:h-[14px] bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
                         <div
                           className="h-full rounded-full"
                           style={{
@@ -574,7 +578,7 @@ const MatterCircleStack = () => {
                         ></div>
                       </div>
                     </div>
-                    <div className="w-full h-2 bg-gray-200 border border-white rounded-full mt-2 mb-2 overflow-hidden">
+                    <div className="w-full h-3 lg:h-[14px] bg-gray-200 border border-white rounded-full mt-3 lg:mt-3 mb-3 lg:mb-4 overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -611,7 +615,7 @@ const MatterCircleStack = () => {
           className="absolute top-0 h-full w-full bg-black/95 text-8xl flex flex-col justify-center items-center"
         >
           <motion.div
-            className=" w-[45%] lg:w-[40%] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 lg:p-5 flex flex-col items-center "
+            className=" w-[45%] lg:w-[40%] max-w-[200px] lg:max-w-[300px] bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 lg:p-5 flex flex-col items-center "
             animate={{
               opacity: [0, 1],
               scale: [0.5, 1],
@@ -628,7 +632,7 @@ const MatterCircleStack = () => {
               className=" mx-auto w-16 h-16 lg:w-32 lg:h-32"
             />
             <div className=" w-full flex justify-between items-center">
-              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-4 bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
+              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-[14px] bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -637,7 +641,7 @@ const MatterCircleStack = () => {
                   }}
                 ></div>
               </div>
-              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-4 bg-gray-200 border border-white rounded-full mt-5 overflow-hidden">
+              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-[14px] bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -647,7 +651,7 @@ const MatterCircleStack = () => {
                 ></div>
               </div>
             </div>
-            <div className="w-full h-3 lg:h-4 bg-gray-200 border border-white rounded-full mt-3 lg:mt-5 mb-3 lg:mb-5 overflow-hidden">
+            <div className="w-full h-3 lg:h-[14px] bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 mb-3 lg:mb-5 overflow-hidden">
               <div
                 className="h-full rounded-full"
                 style={{
