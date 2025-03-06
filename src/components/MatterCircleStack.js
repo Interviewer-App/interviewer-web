@@ -70,6 +70,7 @@ const MatterCircleStack = () => {
   const [emojiForce, setEmojiForce] = useState(0.01);
   const [emojiOralScale, setEmojiOralScale] = useState(40);
   const [analizing, setAnalizing] = useState(false);
+  // const [dragPosition, setDragPosition] = useState(null);
   const buttons = [
     {
       text: "<Programmer>",
@@ -114,21 +115,22 @@ const MatterCircleStack = () => {
         setThridBoxPosition({ x: rect.x, y: rect.y });
       }
 
-      const emojiCount = window.innerWidth > 768 ? 60 : 25;
-      const emojiScale = window.innerWidth > 768 ? 0.18 : 0.13;
-      const emojiOralScale = window.innerWidth > 768 ? 40 : 25;
-      const emojiForce = window.innerWidth > 768 ? 0.01 : 0.003;
+      const emojiCount =
+        window.innerWidth > 1024 ? 60 : window.innerWidth > 768 ? 40 : 25;
+      const emojiScale = window.innerWidth > 1024 ? 0.18 : 0.13;
+      const emojiOralScale = window.innerWidth > 1024 ? 40 : 25;
+      const emojiForce = window.innerWidth > 1024 ? 0.01 : 0.003;
       setEmojiCount(emojiCount);
       setEmojiScale(emojiScale);
       setEmojiOralScale(emojiOralScale);
       setEmojiForce(emojiForce);
 
-      const cornerWidth = window.innerWidth > 768 ? 150 : 300;
-      const cornerHeight = window.innerWidth > 768 ? 200 : 50;
-      const bottomWidth = window.innerWidth > 768 ? 260 : 150;
-      const bottomHeight = window.innerWidth > 768 ? 80 : 50;
-      const topRightWidth = window.innerWidth > 768 ? 70 : 50;
-      const topRightHeight = window.innerWidth > 768 ? 70 : 100;
+      const cornerWidth = window.innerWidth > 1024 ? 150 : 300;
+      const cornerHeight = window.innerWidth > 1024 ? 200 : 50;
+      const bottomWidth = window.innerWidth > 1024 ? 260 : 150;
+      const bottomHeight = window.innerWidth > 1024 ? 80 : 50;
+      const topRightWidth = window.innerWidth > 1024 ? 70 : 50;
+      const topRightHeight = window.innerWidth > 1024 ? 70 : 100;
 
       setCornerWidth(cornerWidth);
       setCornerHeight(cornerHeight);
@@ -423,18 +425,86 @@ const MatterCircleStack = () => {
       }
     });
 
-    Matter.Events.on(mouseConstraint, "mousedown", (event) => {
-      const { body } = event.source;
+    // Matter.Events.on(mouseConstraint, "startdrag", (event) => {
+    //   const dragPosition = event.body.position;
+    //   setDragPosition(dragPosition);
+    // });
 
-      if (imageBodies.includes(body)) {
+    // let dragDistance = null;
+
+    // Matter.Events.on(mouseConstraint, "enddrag", (event) => {
+    //   const dropPosition = event.body.position;
+
+    //   console.log("Drag started at:", dragPosition);
+    //   console.log("Drag ended at", dropPosition);
+
+    //   const xDistance = Math.abs(Math.abs(dropPosition.x) - Math.abs(dragPosition.x));
+    //   console.log("xDistance:", xDistance);
+    //   const yDistance = Math.abs(Math.abs(dropPosition.y) - Math.abs(dragPosition.y)); 
+    //   console.log("yDistance:", yDistance);
+    //   dragDistance = Math.sqrt(xDistance * xDistance + yDistance * yDistance); 
+    //   console.log("Total drag distance:", dragDistance);
+    // });
+
+    // Matter.Events.on(mouseConstraint, "mouseup", (event) => {
+    //   const bodiesUnderMouse = Matter.Query.point(
+    //     imageBodies,
+    //     event.mouse.position
+    //   );
+
+    //   console.log("dragDistance:", dragDistance);
+    //   if (dragDistance > 180) {
+    //     if (bodiesUnderMouse.length > 0) {
+    //       const clickedBody = bodiesUnderMouse[0];
+    //       const clickedEmoji = imageUrls.find(
+    //         (emoji) => emoji.url === clickedBody.render.sprite.texture
+    //       );
+    //       if (clickedEmoji) {
+    //         setIsEmojiClicked(true);
+    //         setSelectedSkillLevel(clickedEmoji.skillLevel);
+    //         setSelectedTechnicalLevel(clickedEmoji.technicalLevel);
+    //         setSelectedBehavioralLevel(clickedEmoji.behevioralLevel);
+    //         setSelectedEmoji(clickedEmoji.url);
+    //       }
+    //     }
+    //   }
+    // });
+
+    // Matter.Events.on(mouseConstraint, "mouseup", (event) => {
+    //   const { body } = event.source;
+
+    //   if (imageBodies.includes(body)) {
+    //     const clickedEmoji = imageUrls.find(
+    //       (emoji) => emoji.url === body.render.sprite.texture
+    //     );
+    //     if (clickedEmoji) {
+    //       setIsEmojiClicked(true);
+    //       setSelectedSkillLevel(clickedEmoji.skillLevel);
+    //       setSelectedTechnicalLevel(clickedEmoji.technicalLevel);
+    //       setSelectedBehavioralLevel(clickedEmoji.behevioralLevel);
+    //       setSelectedEmoji(clickedEmoji.url);
+    //     }
+    //   }
+    // });
+
+    Matter.Events.on(mouseConstraint, "mouseup", (event) => {
+      console.log("Mouseup event triggered", event); // Debugging
+      console.log("Mouse position:", event.mouse.position); // Debugging
+      console.log("Source body:", event.source.body); // Debugging
+
+      const bodiesUnderMouse = Matter.Query.point(imageBodies, event.mouse.position);
+      console.log("Bodies under mouse:", bodiesUnderMouse); // Debugging
+
+      if (bodiesUnderMouse.length > 0) {
+        const clickedBody = bodiesUnderMouse[0]; // Use the first body under the mouse
         const clickedEmoji = imageUrls.find(
-          (emoji) => emoji.url === body.render.sprite.texture
+          (emoji) => emoji.url === clickedBody.render.sprite.texture
         );
         if (clickedEmoji) {
           setIsEmojiClicked(true);
           setSelectedSkillLevel(clickedEmoji.skillLevel);
           setSelectedTechnicalLevel(clickedEmoji.technicalLevel);
-          setSelectedBehavioralLevel(clickedEmoji.behevioralLevel);
+          setSelectedBehavioralLevel(clickedEmoji.behevioralLevel); // Fixed typo: behevioralLevel -> behavioralLevel
           setSelectedEmoji(clickedEmoji.url);
         }
       }
@@ -942,7 +1012,7 @@ const MatterCircleStack = () => {
               st
             </span>
           </div>
-          <div className=" mx-2 pl-8  flex  flex-row justify-center h-7 md:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
+          <div className=" mx-2 pl-8 flex flex-row justify-center h-7 lg:h-9 w-[70px] lg:w-[100px] bg-white items-center border-2 lg:border-[3px] border-black lg:rounded-lg rounded-sm">
             {firstPlace !== "?" ? (
               <img
                 ref={firstPlaceDivRef}
