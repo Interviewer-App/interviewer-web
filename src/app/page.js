@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Matter from "matter-js";
 import MatterCircleStack from "@/components/MatterCircleStack";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -43,6 +43,7 @@ export default function Home() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [theme, setTheme] = useState('default');
+  const [expandedSections, setExpandedSections] = useState({});
 
   const initialImages = [
     [
@@ -161,6 +162,56 @@ export default function Home() {
     },
   ];
 
+  const object = [
+    {
+      titleHead: "Unlocking Certainty & Smart Decision-Making",
+      color: "bg-[#f1ffe6]",
+      features: [
+        { title: "💪  Hiring with Confidence", desc: "Hiring with Confidence – No more guessing if a candidate is truly qualified." },
+        { title: "💰 Investing Wisely", desc: "Know if a startup’s technical team actually has the expertise." },
+        { title: "🤝  Partnering Smartly", desc: "Verify collaborators’ skills before committing to projects." },
+        { title: "🚀 Scaling with Trust", desc: "Ensure the right talent fuels your business growth." },
+        { title: "🚀 Scaling with Trust", desc: "Recruit the best talent even outside your domain." }
+
+      ]
+    },
+    {
+      titleHead: "Expanding Collaboration Across Industries",
+      color: "bg-[#e6f6ff]",
+      features: [
+        { title: "🔬 Cross-Industry Innovation", desc: "Work across disciplines without fear of knowledge gaps." },
+        { title: "💪  Seamless Outsourcing", desc: "Hire specialists globally without needing to vet them yourself." },
+        { title: "🙋‍♂️  Bridging Skill Gaps", desc: "Find experts even in fields you know nothing about." },
+        { title: "⚡ Better Vendor Selection", desc: "Confirm service providers actually deliver on their promises." },
+        { title: "⚛︎  Unlocking Multi-Disciplinary Projects", desc: "Bring together professionals from different domains with certainty." }
+
+      ]
+    },
+    {
+      titleHead: "Enabling Bold Moves & Limitless Possibilities",
+      color: "bg-[#f4e6ff]",
+      features: [
+        { title: "🌍 Entering New Markets", desc: "Expand without needing to master every skill yourself." },
+        { title: "✪ Breaking Industry Barriers", desc: "Collaborate across fields with verified expertise." },
+        { title: "💫  Launching Big Ideas Faster", desc: "Build projects with the right team from day one." },
+        { title: "🌟 Democratizing Opportunity", desc: "Give under-the-radar talent a fair shot based on real skills." },
+        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the right team backing you." }
+
+      ]
+    },
+    {
+      titleHead: "Reducing Risk & Ensuring Quality",
+      color: "bg-[#fedbdb]",
+      features: [
+        { title: "🥊 Avoiding Costly Mistakes", desc: "Stop hiring or investing based on inflated resumes." },
+        { title: "⚖️  Minimizing Bias in Hiring", desc: "Focus on proven skills, not just credentials." },
+        { title: "🎯 Ensuring Skill-Based Excellence", desc: "No more “experts” who can’t actually do the job." },
+        { title: "📊  Making Data-Driven Decisions", desc: "Trust verified skills over flashy presentations." },
+        { title: "📊  🥸 Eliminating Skill Fraud", desc: "Weed out imposters who talk big but can’t deliver." }
+      ]
+    }
+  ];
+
   const featuresOne = [
     { title: "Streamlined Interviews", desc: "Simplify your hiring process from start to finish." },
     { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
@@ -205,6 +256,142 @@ export default function Home() {
     { icon: "🎓", title: "Candidates" },
     { icon: "🏢", title: "Companies" },
     { icon: "💼", title: "Entrepreneurs" },
+  ];
+
+  const videos = [
+    {
+      id: 1,
+      url: "/videos/scenario1.mp4", // Replace with your actual video path
+      title: "Real-World Scenarios",
+      description: "Test skills in action, not just on paper."
+    },
+    {
+      id: 2,
+      url: "/videos/scenario2.mp4",
+      title: "Real-World Scenarios",
+      description: "Test skills in action, not just on paper."
+    },
+    {
+      id: 3,
+      url: "/videos/scenario3.mp4",
+      title: "Real-World Scenarios",
+      description: "Test skills in action, not just on paper."
+    },
+    {
+      id: 4,
+      url: "/videos/scenario4.mp4",
+      title: "Real-World Scenarios",
+      description: "Test skills in action, not just on paper."
+    },
+    {
+      id: 5,
+      url: "/videos/scenario5.mp4",
+      title: "Real-World Scenarios",
+      description: "Test skills in action, not just on paper."
+    }
+  ];
+
+  const beneficiaryGroups = [
+    {
+      title: "💼 For Business Leaders & Hiring Managers",
+      color: "bg-[#ffffff]",
+      benefits: [
+        {
+          title: "Recruiters & HR Teams",
+          description: "Verify candidate skills before hiring."
+        },
+        {
+          title: "Startup Founders & CEOs",
+          description: "Build the perfect team, even outside your expertise."
+        },
+        {
+          title: "Small Business Owners",
+          description: "Find specialists without needing deep knowledge of their field."
+        }
+      ]
+    },
+    {
+      title: "💰 For Investors & Decision-Makers",
+      color: "bg-[#F1FFE6]",
+      benefits: [
+        {
+          title: "Venture Capitalists & Angel Investors",
+          description: "Validate startup teams before investing."
+        },
+        {
+          title: "Private Equity & Corporate Buyers",
+          description: "Assess expertise in acquisitions & mergers."
+        },
+        {
+          title: "Government & Enterprise Leaders",
+          description: "Ensure large-scale hiring meets real skill requirements."
+        }
+      ]
+    },
+    {
+      title: "🤝 For Partners & Collaborators",
+      color: "bg-[#E6F6FF]",
+      benefits: [
+        {
+          title: "Agencies & Freelancers",
+          description: "Verify vendor & contractor expertise."
+        },
+        {
+          title: "Entrepreneurs & Innovators",
+          description: "Work with specialists across industries."
+        },
+        {
+          title: "Creative & Tech Consultants",
+          description: "Test partners before collaboration."
+        }
+      ]
+    },
+    {
+      title: "🎓 For Educators & Skill Seekers",
+      color: "bg-[#F4E6FF]",
+      benefits: [
+        {
+          title: "Students & Job Seekers",
+          description: "Prove your real skills with AI validation."
+        },
+        {
+          title: "Coaches & Trainers",
+          description: "Evaluate knowledge gaps you've trained."
+        },
+        {
+          title: "Parents & Individuals",
+          description: "Verify skills of teachers, instructors, and personal service providers."
+        }
+      ]
+    }
+  ];
+
+  const widerAudiences = [
+    {
+      title: "🌐 For Everyone (Because The Possibilities Are Endless!)",
+      icon: "🌐",
+      isWide: true,
+    },
+    {
+      title: "🤔 Curious minds – Ever wonder if someone really knows their craft? Find out",
+      icon: "🤔",
+      isWide: true,
+    },
+    {
+      title: "🔍 Tinkerers & Explorers – Hire, invest, or collaborate in fields beyond your own",
+      icon: "🔍",
+      isWide: true,
+    },
+    {
+      title: "🚀 Cross-industry pioneers – Break barriers and work with experts in any discipline",
+      icon: "🚀",
+      isWide: true,
+    },
+    {
+      title: "✨ Anyone who wants to make smarter choices – If skills matter, The Skillchecker is for you",
+      icon: "✨",
+      isFullWidth: true,
+    }
   ];
 
   useEffect(() => {
@@ -282,13 +469,22 @@ export default function Home() {
   const handleThemeChange = (newTheme) => {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
-    if(newTheme === 'dark') {
+    if (newTheme === 'dark') {
       setIsDarkMode(true);
-    }else{
+    } else {
       setIsDarkMode(false);
     }
 
     setTheme(newTheme);
+  };
+
+
+  // Toggle visibility of a section
+  const toggleSection = (index) => {
+    setExpandedSections((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }));
   };
 
   const handleAuthentication = async () => {
@@ -409,32 +605,18 @@ export default function Home() {
           </div>
         </header>
 
-        {/* <div className="min-h-screen bg-background text-secondary">
-          <header className="p-4 bg-primary text-white">
-            <h1 className="text-2xl font-bold">Dynamic Theme Example</h1>
-          </header>
-          <main className="p-4">
-            <p className="text-accent">This text changes color based on the theme.</p>
-          </main>
-          <footer className="p-4 bg-secondary text-primary">
-            <p>Footer Content</p>
-          </footer>
-        </div> */}
-
-        {/* <div className=" flex flex-col lg:flex-row items-start justify-between w-full md:w-[90%] max-w-[1500px] mx-auto gap-12"> */}
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-12">
-          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-11  md:py-12 bg-[#FFE582] dark:bg-[#FFE582] dark:text-black">
-            <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-2xl md:text-4xl md:leading-[52px] font-bold text-black dark:text-black">
-              <span>Find the Right Talent</span><br />
-              <span>Without the Runaround</span>
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
+          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-[#FFE582] dark:bg-[#FFE582] dark:text-black">
+            <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
+              <span>Need to assess skills in a</span><br />
+              <span>field you don’t understand?</span><br />
+              <span>We’ve got you</span>
             </h1>
-            <p className="max-w-[368px] md:max-w-[500px] text-xs md:text-base text-center md:text-start pt-[15px] md:pt-[18px] leading-[23px] text-black dark:text-black font-puls">
-              Skillchecker takes the guesswork out of hiring. Our AI-driven
-              interview platform evaluates real-world skills with precision,
-              giving you fast, unbiased, and data-backed insights — so you
-              can make confident hiring decisions every time
+            <p className="max-w-[368px] md:max-w-[358px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[20px] leading-[18px] text-black dark:text-black font-puls">
+              The Skillchecker is an AI-powered tool that helps you evaluate skills in fields you’re unfamiliar with.
+              Expanding your possibilities beyond your expertise. It opens doors to opportunities you never thought possible, empowering you to make decisions with confidence, no matter the industry.
             </p>
-            <div className="flex gap-6 pt-[15px] md:pt-14">
+            <div className="flex gap-6 pt-[15px] md:pt-[90px]">
               <button onClick={requestDemo} className="bg-purple-200 text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
@@ -454,354 +636,163 @@ export default function Home() {
             </div>
           </div>
 
-          <div className=" lg:col-span-2 flex min-h-[450px] flex-col justify-start items-start border-black border-2 rounded-[10px]">
+          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black border-2 rounded-[10px]">
             <MatterCircleStack />
           </div>
         </div>
-
-        {/* <div className="flex items-center justify-center h-screen bg-gray-900">
-      <motion.div
-        className="text-4xl cursor-pointer"
-        onClick={() => setClicked(!clicked)}
-        animate={{
-          x: clicked ? [0, 80, -50, 120, 200] : [200, 120, -50, 80, 0],
-          y: clicked ? [0, -40, 30, -20, 0] : [0, -20, 30, -40, 0],
-          rotate: clicked ? [0, 15, -15, 10, 0] : [0, -10, 15, -15, 0],
-        }}
-        transition={{
-          duration: 1.8,
-          ease: [0.33, 1, 0.68, 1], // Smooth bezier curve easing
-        }}
-      >
-        🌟
-      </motion.div>
-    </div> */}
-
-        {/* <div className=" flex flex-col lg:flex-row items-center justify-between w-full md:w-[90%] max-w-[1500px] mx-auto py-9 md:py-24">
-          <div className=" w-[70%] flex flex-col justify-start items-start">
-            <h1 className=" text-start text-[42px] leading-[42px] md:text-[80px] md:leading-[86px] font-jakarta font-bold">
-              Find the <span className="text-[#D41414]">Right Talent</span> Without the Runaround
-            </h1>
-            <p className=" text-base text-start pt-6 md:pt-9 md:text-[24px] md:leading-[40px]">
-              Skillchecker takes the guesswork out of hiring. Our AI-driven interview platform <br />
-              evaluates real-world skills with precision, giving you fast, unbiased, and data-<br /> backed insights — so you can make confident hiring decisions every time
-            </p>
-            <div className="flex gap-6">
-              <button onClick={handleAuthentication} className="bg-[#D41414] text-white py-2 md:py-4 px-5 md:px-8 rounded-full text-sm md:text-base font-medium mt-5 lg:mt-10">
-                Request a Demo
-              </button>
-              <button onClick={handleAuthentication} className="bg-[#000] text-white py-2 md:py-4 px-5 md:px-8 rounded-full text-sm md:text-base font-medium mt-5 lg:mt-10">
-                Get Started
-              </button>
-            </div>
-
-          </div>
-
-        </div> */}
-        {/* <div className=" w-[90%] max-w-[1500px] grid place-items-center place-content-center mx-auto lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 mt-10 pb-16">
-          <Image
-            alt="Google logo"
-            loading="lazy"
-            width="130"
-            height="32"
-            decoding="async"
-            data-nimg="1"
-            src={google}
-            className=" mt-5 md:mt-0"
-          />
-          <Image
-            alt="Spotify logo"
-            loading="lazy"
-            width="170"
-            height="38"
-            decoding="async"
-            data-nimg="1"
-            src={spotify}
-            className=" mt-5 md:mt-0"
-          />
-          <Image
-            alt="Samsung logo"
-            loading="lazy"
-            width="137"
-            height="35"
-            decoding="async"
-            data-nimg="1"
-            src={samsung}
-            className=" mt-5 md:mt-0"
-          />
-          <Image
-            alt="Dropbox logo"
-            loading="lazy"
-            width="160"
-            height="35"
-            decoding="async"
-            data-nimg="1"
-            src={dropbox}
-            className=" mt-5 md:mt-0"
-          />
-          <Image
-            alt="Shadcn logo"
-            loading="lazy"
-            width="137"
-            height="35"
-            decoding="async"
-            data-nimg="1"
-            src={airbnb}
-            className=" mt-5 md:mt-0"
-          />
-        </div> */}
       </div>
 
-      {/* <div className=" w-full bg-[#fff] relative text-white overflow-hidden">
-        <div className=" w-[90%] max-w-[1500px] mx-auto mt-[3rem]">
-          <h1 className=" text-start text-black font-bold text-[25px] pb-5 ">
-            We got what you looking for
+      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-[#f0f0f0] rounded-[10px]">
+          <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
+            Skills Checked. Risks Eliminated. Possibilities Unlocked.
           </h1>
 
-        </div>
-        <div className="w-[90%] max-w-[1500px] mx-auto flex flex-wrap gap-4 py-2">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="py-5 px-2 border-2 border-black rounded-lg "
-            >
-              <h3 className="font-semibold text-lg text-black">{feature.title}</h3>
-              <p className="text-gray-600 mt-1">{feature.desc}</p>
-            </div>
-          ))}
-        </div>
+          <div>
+            {object.map((section, index) => (
+              <div key={index} className="pt-[25px] md:pt-[35px]">
+                {/* Title with Click Handler for Mobile */}
+                <h1
+                  onClick={() => toggleSection(index)} // Toggle visibility on click
+                  className={`text-center md:text-start text-black dark:text-white font-bold text-base leading-[20px] md:leading-[20px] cursor-pointer sm:cursor-auto border-2 border-black rounded-[50px] px-[15px] py-[15px] md:border-none md:rounded-none md:px-0 md:py-0 ${section.color} md:bg-transparent`}
+                >
+                  {section.titleHead}
+                </h1>
 
-      </div> */}
-
-      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto pt-3 md:pt-10">
-          <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[56px] md:leading-[60px] pb-3 ">
-            We got what you looking for
-          </h1>
-        </div>
-        <div className="w-[90%] max-w-[1500px] mx-auto flex flex-wrap gap-4 py-2">
-          <div className="slider">
-            <div className="slide-track flex gap-6">
-              {featuresOne.map((feature, index) => (
-                <div className="slide" key={index}>
-                  <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
-                    <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
-                    <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
+                {/* Features Grid - Conditionally Rendered */}
+                {(expandedSections[index] || true) && (
+                  <div className={`grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-6 md:mt-[15px] ${expandedSections[index] ? 'mt-[15px]' : ''}`}>
+                    {section.features.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className={`bg-[#f3f3f3] dark:bg-[#181818] px-[15px] py-[15px] flex justify-center items-start flex-col md:border-2 md:border-black rounded-[7px] min-h-[108px] ${expandedSections[index] ? '' : 'hidden md:block'
+                          }`}
+                      >
+                        <h3 className="font-bold text-[12px] text-black dark:text-white leading-[20px] text-start">
+                          {item.title}
+                        </h3>
+                        <p className="text-black dark:text-white text-[12px] leading-[18px] mt-[15px]">
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="slider">
-            <div className="slide-track flex gap-6">
-              {featuresTwo.map((feature, index) => (
-                <div className="slide" key={index}>
-                  <div className="py-3 px-3 border-2 border-black dark:border-white rounded-lg ">
-                    <h3 className="font-bold text-xs text-black dark:text-white leading-6">{feature.title}</h3>
-                    <p className="text-black dark:text-white text-xs leading-7">{feature.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className=" w-full bg-background relative overflow-hidden">
-        <div className=" w-[90%] max-w-[1500px] mx-auto border-0 md:border-black dark:md:border-[#282828] md:border-2 md:mt-10 mt-[30px] py-[0px] md:py-[30px] md:px-[30px] px-[26px]">
-          <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl  leading-[24px] md:leading-[60px] ">
-            We got what you looking for
-          </h1>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:mt-[11px] mt-[20px]">
-
-
-            {superPower.map((feature, index) => (
-              <div className="bg-[#f3f3f3] dark:bg-[#181818]" key={index}>
-                <div className="px-[1.175rem] py-[1.175rem] flex justify-center items-center md:justify-start md:items-start flex-col">
-                  <Image
-                    src='/landing_page/grid/image1.png'
-                    alt="bg"
-                    width="300"
-                    height="275"
-                  />
-                  <h3 className="font-bold text-sm text-black dark:text-white mt-[18px] leading-8 text-start">{feature.title}</h3>
-                  <p className="text-black dark:text-white text-sm leading-6">{feature.desc}</p>
-                </div>
+                )}
               </div>
             ))}
-
-            {/* <div className="bg-[#f3f3f3] dark:bg-[#181818]">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src="/landing_page/grid/image1.png"
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-bold text-sm text-black dark:text-white mt-[18px] leading-8">Real-World Scenarios</h3>
-                <p className="text-black dark:text-white text-sm leading-6">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div>
-
-
-            <div className="bg-[#f3f3f3] ">
-              <div className="px-[1.175rem] py-[1.175rem] flex justify-center md:justify-start items-center md:items-start flex-col">
-                <Image
-                  src='/landing_page/grid/image1.png'
-                  alt="bg"
-                  width="300"
-                  height="275"
-                />
-                <h3 className="font-semibold text-lg text-black  mt-[18px]">Real-World Scenarios</h3>
-                <p className="text-gray-600 mt-1">Test Skills in action, not just on paper</p>
-              </div>
-            </div> */}
           </div>
+
         </div>
       </div>
 
-      {/* why this product */}
-      {/* <div className=" w-full bg-cover relative text-white overflow-hidden">
-        <div className=" absolute inset-0 bg-background -z-20"></div>
-        <Image
-          src={bgGrid}
-          alt="bg"
-          className=" absolute w-full top-0 left-0 -z-10 "
-        />
-        <div className=" mt-16 w-[90%] max-w-[1500px] mx-auto">
-          <p className=" text-center uppercase text-gray-500 font-semibold text-xl pb-5 md:py-8">
-            Why this product
-          </p>
-          <h1 className=" text-[48px] leading-[48px] md:text-[60px] md:leading-[60px] w-[90%] md:w-[70%] mx-auto text-[#785DFB] font-semibold text-center">
-            This header tells people why they should use it
-          </h1>
-        </div>
-        <div className=" my-16 w-[90%] max-w-[1500px]  mx-auto grid grid-cols-1 gap-8 lg:grid-cols-3 place-items-center">
-          <div className=" bg-slate-500/10 rounded-lg">
-            <div className="">
-              <Image src={BgRound} alt="bg" className=" w-full rounded-lg " />
-            </div>
-            <div className=" p-9 ">
-              <h1 className=" text-4xl font-semibold ">Candidates</h1>
-              <p className=" text-lg text-gray-500 py-4">
-                This is text describing why people should use your product.
-                Double-click anywhere on the text to edit it&apos;s contents.
-              </p>
-            </div>
-          </div>
-          <div className=" bg-slate-500/10 rounded-lg">
-            <div className="">
-              <Image src={BgSquare} alt="bg" className=" w-full rounded-lg " />
-            </div>
-            <div className=" p-9 ">
-              <h1 className=" text-4xl font-semibold ">Companies</h1>
-              <p className=" text-lg text-gray-500 py-4">
-                This is text describing why people should use your product.
-                Double-click anywhere on the text to edit it&apos;s contents.
-              </p>
-            </div>
-          </div>
-          <div className=" bg-slate-500/10 rounded-lg">
-            <div className="">
-              <Image src={BgTrangel} alt="bg" className=" w-full rounded-lg " />
-            </div>
-            <div className=" p-9 ">
-              <h1 className=" text-4xl font-semibold ">Entrepreneurs</h1>
-              <p className=" text-lg text-gray-500 py-4">
-                This is text describing why people should use your product.
-                Double-click anywhere on the text to edit it&apos;s contents.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div> */}
 
-      <div className=" w-full bg-background relative overflow-hidden">
+
+      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[45px] md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+          <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl  leading-[24px] md:leading-[28px] mb-[30px]">
+            Powerful features that will make skill verification <br />
+            Fast, Fair, and Foolproof
+          </h1>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-[30px]">
+            <VideoCard video={videos[0]} />
+            <VideoCard video={videos[1]} />
+          </div>
+
+          {/* Bottom Row Videos */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <VideoCard video={videos[2]} />
+            <VideoCard video={videos[3]} />
+            <VideoCard video={videos[4]} />
+          </div>
+
+
+        </div>
+      </div>
+
+
+      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto px-[35px] py-[35px] bg-[#fcf5e7] rounded-[10px]">
+          <div className="max-w-[591px]">
+            <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
+              Who Can Benefit from Skillchecker?
+            </h1>
+            <p className="text-center md:text-start text-black dark:text-white text-base leading-[25px] md:leading-[25px] pt-[15px]">
+              At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you're a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
+            </p>
+          </div>
+
+
+
+          <div className="">
+            {/* Main beneficiary groups - 4 columns on desktop, 1 column on mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
+              {beneficiaryGroups.map((group, index) => (
+                <div key={index} className={`border-2 border-black rounded-lg px-3 py-5 ${group.color}`}>
+                  {/* <div className="flex items-center justify-center w-[18rem]  bg-white border border-gray-300 rounded-full p-[6px] mb-4 mx-auto">
+                    <span className="text-sm font-medium text-black">{group.title}</span>
+                  </div> */}
+                  <h1 className="text-center text-black text-sm font-bold leading-[20px] md:leading-[20px] border-2 border-black rounded-[50px] px-[5px] py-[6px]">
+                    {group.title}
+                  </h1>
+
+                  <ul className="space-y-3">
+                    {group.benefits.map((benefit, benefitIndex) => (
+                      <li key={benefitIndex} className="flex pt-[20px]">
+                        <span className="mr-2 text-black">•</span>
+                        <div className="text-sm text-black">
+                          <span className="font-bold ">{benefit.title} – </span>
+                          <span className="text-black">{benefit.description}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col items-center space-y-3">
+              {/* First row - two pills */}
+              <div className="flex flex-wrap justify-center gap-3 w-full">
+                {widerAudiences.slice(0, 2).map((category, index) => (
+                  <div
+                    key={index}
+                    className="w-full md:w-auto inline-flex items-center justify-center text-center bg-[#f4f4f4] md:bg-white md:border-2 md:border-black md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm"
+                  >
+                    <span className="text-black">{category.title}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Second row - two pills */}
+              <div className="flex flex-wrap justify-center gap-3 w-full">
+                {widerAudiences.slice(2, 4).map((category, index) => (
+                  <div
+                    key={index}
+                    className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] md:bg-white md:border-2 md:border-black md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center"
+                  >
+                    <span className="text-black">{category.title}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Final row - width based on content */}
+              <div className="flex justify-center w-full">
+                <div className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] md:bg-white md:border-2 md:border-black md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
+                  <span className="text-black">{widerAudiences[4].title}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      {/* <div className=" w-full bg-background relative overflow-hidden">
 
         <div className="  bg-black dark:bg-white dark:text-black text-white mt-[30px] md:mt-10 ">
           <div className="w-full flex flex-wrap md:flex-nowrap items-center py-6 md:py-10 px-6 justify-evenly gap-2 flex-col-reverse md:flex-row">
-            {/* Icons Section */}
             <div className="hidden md:flex justify-center items-center gap-4 py-7 ">
               {imageQueues.map((imageQueue, index) => (
                 <div
@@ -850,7 +841,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Description Section */}
             <div className="max-w-lg">
               <h2 className="text-center md:text-start text-xl font-bold leading-10">
                 Skillchecker helps
@@ -864,7 +854,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Pricing */}
       {/* <div className=" relative w-full text-white  overflow-hidden">
@@ -973,10 +963,9 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className=" w-full bg-background relative overflow-hidden">
-
-        <div className="  bg-[#009bac] text-black mb-4">
-          <div className="w-[90%] max-w-[1500px] mx-auto flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
+      <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
+        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-[#ffdc6a] text-black mb-4">
+          <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full">
                 <Image src={logo} alt="logo" width="180" height="24" />
@@ -996,10 +985,7 @@ export default function Home() {
             <div className="flex gap-3 mt-3 md:mt-0 flex-col md:flex-row items-center justify-center md:justify-between">
               {/* <input placeholder="Email" type="text" className="w-full md:min-w-[235px] h-[50px] bg-transparent text-black py-2 md:py-4 px-5 md:px-5 text-sm  font-medium border-black border-2 focus:border-black active:border-black target:border-black before:border-black after:border-black" /> */}
 
-              <button
-                onClick={handleAuthentication}
-                className="bg-black text-white py-2 md:py-4 h-[67px] md:h-[51px] px-5 md:px-5 text-sm  font-medium w-full md:min-w-[135px]"
-              >
+              <button onClick={requestDemo} className="bg-[#ffffff] text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
             </div>
@@ -1034,3 +1020,23 @@ export default function Home() {
     </div>
   );
 }
+
+
+const VideoCard = ({ video }) => (
+  <div>
+    <div className="bg-sky-100 rounded-lg aspect-video w-full mb-2 overflow-hidden">
+      {/* <video
+        className="w-full h-full object-cover"
+        controls
+        poster="/video-placeholder.jpg" // Optional: Add a placeholder image
+      >
+        <source src={video.url} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video> */}
+    </div>
+    <div>
+      <h3 className="text-sm font-bold text-black mt-4 leading-[34px]">{video.title}</h3>
+      <p className="text-sm text-black  leading-[35px]">{video.description}</p>
+    </div>
+  </div>
+);
