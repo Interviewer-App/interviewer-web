@@ -684,6 +684,7 @@ const MatterCircleStack = () => {
   };
 
   const handleSearchClick = () => {
+    setIsEmojiClicked(false);
     setLoading(true);
     setAnalizing(true);
     setFirstPlace("?");
