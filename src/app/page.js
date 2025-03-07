@@ -665,7 +665,7 @@ export default function Home() {
                 {/* Title with Click Handler for Mobile */}
                 <h1
                   onClick={() => toggleSection(index)} // Toggle visibility on click
-                  className={`text-center md:text-start text-black dark:text-white font-bold text-base leading-[20px] md:leading-[20px] cursor-pointer sm:cursor-auto border-2 border-black rounded-[50px] px-[15px] py-[15px] md:border-none md:rounded-none md:px-0 md:py-0 ${section.color} md:bg-transparent`}
+                  className={`text-center md:text-start text-black md:dark:text-white font-bold text-base leading-[20px] md:leading-[20px] cursor-pointer sm:cursor-auto border-2 border-black rounded-[50px] px-[15px] py-[15px] md:border-none md:rounded-none md:px-0 md:py-0 ${section.color} md:bg-transparent`}
                 >
                   {section.titleHead}
                 </h1>
@@ -676,7 +676,7 @@ export default function Home() {
                     {section.features.map((item, idx) => (
                       <div
                         key={idx}
-                        className={`bg-[#ffffff] dark:bg-[#3b3b3d] px-[15px] py-[15px] flex justify-center items-start flex-col md:border-2 md:border-[#343434] md:dark:border-[#545454] rounded-[7px] min-h-[108px] ${expandedSections[index] ? '' : 'hidden md:block'
+                        className={`bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[15px] flex justify-center items-start flex-col md:border-2 md:border-[#343434] md:dark:border-[#545454] rounded-[7px] min-h-[108px] ${expandedSections[index] ? '' : 'hidden md:block'
                           }`}
                       >
                         <h3 className="font-bold text-[12px] text-black dark:text-white leading-[20px] text-start">
@@ -723,7 +723,7 @@ export default function Home() {
 
 
       <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto px-[35px] py-[35px] bg-transparent md:bg-benefits-card-background rounded-[10px]">
+        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[35px] py-[35px] bg-transparent md:bg-benefits-card-background rounded-[10px]">
           <div className="max-w-[591px]">
             <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
@@ -743,7 +743,7 @@ export default function Home() {
                   {/* <div className="flex items-center justify-center w-[18rem]  bg-white border border-gray-300 rounded-full p-[6px] mb-4 mx-auto">
                     <span className="text-sm font-medium text-black">{group.title}</span>
                   </div> */}
-                  <h1 className="text-center text-black dark:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:bg-black border-black dark:border-white rounded-[50px] px-[5px] py-[6px]">
+                  <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:md:bg-black border-black dark:md:border-white rounded-[50px] px-[5px] py-[6px]">
                     {group.title}
                   </h1>
 
@@ -1034,8 +1034,8 @@ export default function Home() {
 
 
 const VideoCard = ({ video }) => (
-  <div>
-    <div className=" bg-features-card-background rounded-lg aspect-video w-full mb-2 overflow-hidden">
+  <div className=" bg-[#ffffff] dark:bg-[#1f1e20] md:bg-transparent md:dark:bg-transparent p-4 md:p-0 rounded-lg ">
+    <div className=" bg-features-card-background rounded-sm aspect-square md:aspect-video w-full mb-2 overflow-hidden">
       {/* <video
         className="w-full h-full object-cover"
         controls
