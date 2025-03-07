@@ -173,7 +173,7 @@ export default function Home() {
         { title: "💰 Investing Wisely", desc: "Know if a startup’s technical team actually has the expertise." },
         { title: "🤝  Partnering Smartly", desc: "Verify collaborators’ skills before committing to projects." },
         { title: "🚀 Scaling with Trust", desc: "Ensure the right talent fuels your business growth." },
-        { title: "🚀 Scaling with Trust", desc: "Recruit the best talent even outside your domain." }
+        { title: "🤜🤛Building Future-Ready Teams", desc: "Recruit the best talent even outside your domain." }
 
       ]
     },
