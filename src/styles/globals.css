@@ -7,13 +7,33 @@
   --secondary-color: #000000;
   --accent-color: #007bff;
   --background-color: #ffffff;
+  --title-card-background: #ffe582;
+  --footer-background: #ffe582;
+  --skills-card-background: #f0f0f0;
+  --features-card-background: #e7effc;
+  --benefits-card-background: #fcf5e7;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #e6ccff;
 }
 
 [data-theme="dark"] {
   /* --primary-color: #121212; */
   --secondary-color: #ffffff;
   --accent-color: #bb86fc;
-  --background-color: #1e1e1e;
+  --background-color: #161618;
+  --title-card-background: #82e0ff;
+  --footer-background: #82e0ff;
+  --skills-card-background: #1f1e20;
+  --features-card-background: #3b3b3d;
+  --benefits-card-background: #1f1e20;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #e6ccff;
 }
 
 [data-theme="theme1"] {
@@ -21,6 +41,16 @@
   --secondary-color: #007bff;
   --accent-color: #0056b3;
   --background-color: #DDDDDD;
+  --title-card-background: #ffe582;
+  --footer-background: #ffe582;
+  --skills-card-background: #f0f0f0;
+  --features-card-background: #e7effc;
+  --benefits-card-background: #fcf5e7;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #e6ccff;
 }
 
 
@@ -29,6 +59,16 @@
   --secondary-color: #fb8c00;
   --accent-color: #ef6c00;
   --background-color: #D1F8FF;
+  --title-card-background: #a6e197;
+  --footer-background: #a6e197;
+  --skills-card-background: #c3ecf3;
+  --features-card-background: #ffffff;
+  --benefits-card-background: #e3ffd5;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background:#e7f5fc;
 }
 
 /* Theme 4: Cool Green */
@@ -37,6 +77,16 @@
   --secondary-color: #2e7d32;
   --accent-color: #1b5e20;
   --background-color: #DDFFD1;
+  --title-card-background:#d3b4ff;
+  --footer-background: #d3b4ff;
+  --skills-card-background: #d3f0c8;
+  --features-card-background: #ffffff;
+  --benefits-card-background: #d9ebff;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #ddffd1;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #ccffd5;
 }
 
 /* Theme 5: Purple Haze */
@@ -45,6 +95,16 @@
   --secondary-color: #673ab7;
   --accent-color: #311b92;
   --background-color: #FFF8D1;
+  --title-card-background: #ffb3b5;
+  --footer-background: #ffb3b5;
+  --skills-card-background: #f2ebc2;
+  --features-card-background: #ffffff;
+  --benefits-card-background: #e5dcff;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #fff4cc;
 }
 
 [data-theme="theme5"] {
@@ -52,6 +112,16 @@
   --secondary-color: #673ab7;
   --accent-color: #311b92;
   --background-color: #FEDBDB;
+  --title-card-background: #82dbff;
+  --footer-background: #9cb3ff;
+  --skills-card-background: #ffefef;
+  --features-card-background: #ffffff;
+  --benefits-card-background: #e9fcfd;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #bdccff;
 }
 
 html {
