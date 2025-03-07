@@ -45,7 +45,8 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [theme, setTheme] = useState('default');
   const [expandedSections, setExpandedSections] = useState({});
-
+  const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
+  
   const initialImages = [
     [
       "/landing_page/icons/Investors.png",
@@ -395,14 +396,14 @@ export default function Home() {
     }
   ];
   const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
-  let currentThemeIndex = 0;
+  // let currentThemeIndex = 0;
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'default';
     document.documentElement.setAttribute('data-theme', savedTheme);
     setTheme(savedTheme);
 
-    currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
-
+    const currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
+    setCurrentThemeIndex(currentThemeIndex);
     // Check if a theme is already saved in localStorage
     // const savedTheme = localStorage.getItem("theme");
 
@@ -498,9 +499,9 @@ export default function Home() {
   const handleThemeChangeMobile = () => {
     // const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
 
-    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-    const newTheme = themes[currentThemeIndex];
-
+    const currentThemeIndexNew = (currentThemeIndex + 1) % themes.length;
+    const newTheme = themes[currentThemeIndexNew];
+    setCurrentThemeIndex(currentThemeIndexNew);
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
 
