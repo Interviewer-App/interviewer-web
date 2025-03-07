@@ -31,7 +31,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { Moon, Sun } from "lucide-react";
-import { LuMoon, LuSun } from "react-icons/lu";
+import { LuMoon, LuSun, Hand } from "react-icons/lu";
+import { PiHandPointing } from "react-icons/pi";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -417,11 +418,11 @@ export default function Home() {
       ).matches;
       setIsDarkMode(prefersDarkMode);
       document.documentElement.classList.toggle("dark", prefersDarkMode);
-      if(prefersDarkMode){
-        setTheme( 'dark');
+      if (prefersDarkMode) {
+        setTheme('dark');
         document.documentElement.setAttribute('data-theme', 'dark');
         // localStorage.setItem('theme', newTheme);
-      }else{
+      } else {
         setTheme(savedTheme);
         document.documentElement.setAttribute('data-theme', savedTheme);
       }
@@ -489,6 +490,29 @@ export default function Home() {
     setTheme(newTheme);
   };
 
+  const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
+  let currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
+
+  const handleThemeChangeMobile = () => {
+    // const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
+
+    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+    const newTheme = themes[currentThemeIndex];
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add("dark");
+      setIsDarkMode(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setIsDarkMode(false);
+    }
+
+    setTheme(newTheme);
+  };
+
 
   // Toggle visibility of a section
   const toggleSection = (index) => {
@@ -517,6 +541,18 @@ export default function Home() {
 
   const requestDemo = async () => {
     router.push("https://tally.so/r/wQko91");
+  };
+
+  const getButtonBgColor = () => {
+    const themeColors = {
+      default: '#ffe582',
+      theme2: '#a6e197',
+      theme3: '#d3b4ff',
+      theme4: '#ffb3b5',
+      theme5: '#82dbff',
+      dark: '#82e0ff',
+    };
+    return themeColors[theme] || '#ffffff';
   };
 
   return (
@@ -563,7 +599,7 @@ export default function Home() {
             </div>
 
             <div className="flex justify-center items-center">
-              <div className="flex justify-center items-center gap-4 mt-4">
+              <div className="sm:flex justify-center items-center gap-4 mt-4 hidden ">
                 <button
                   onClick={() => handleThemeChange('default')}
                   className={`w-8 h-8 rounded-full bg-[#ffffff] ${theme === 'default' ? 'border-2 border-gray-400' : ''}`}
@@ -594,24 +630,19 @@ export default function Home() {
                 ></button>
               </div>
               {/* <button
-                onClick={toggleTheme}
-                className="bg-black dark:bg-white w-11 h-11 md:w-16 md:h-16 rounded-full flex justify-center items-center transition-all duration-300"
+                  onClick={() => handleThemeChangeMobile()}
+                className="bg-black dark:bg-white w-11 h-11 md:w-16 md:h-16 rounded-full flex justify-center items-center transition-all duration-300 sm:hidden"
               >
-                <div className="hidden md:block">
-                  {isDarkMode ? (
-                    <LuSun size={34} color="#000" />
-                  ) : (
-                    <LuMoon size={34} color="#fff" />
-                  )}
-                </div>
-                <div className="block md:hidden">
-                  {isDarkMode ? (
-                    <LuSun size={24} color="#000" />
-                  ) : (
-                    <LuMoon size={24} color="#fff" />
-                  )}
-                </div>
+                <PiHandPointing size={24} color="#fff" />
               </button> */}
+              <button
+                onClick={() => handleThemeChangeMobile()}
+                className="w-11 h-11 md:w-16 md:h-16 rounded-full flex justify-center items-center transition-all duration-300 sm:hidden "
+                style={{ backgroundColor: getButtonBgColor() }}
+              >
+                {/* { isDarkMode ? <PiHandPointing size={24} color="#fff" /> : <PiHandPointing size={24} color="#000" /> } */}
+                <PiHandPointing size={24} color="#000" />
+              </button>
             </div>
           </div>
         </header>
