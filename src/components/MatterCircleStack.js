@@ -118,7 +118,7 @@ const MatterCircleStack = () => {
       const emojiCount =
         window.innerWidth > 1024 ? 60 : window.innerWidth > 768 ? 40 : 25;
       const emojiScale = window.innerWidth > 1024 ? 0.18 : 0.13;
-      const emojiOralScale = window.innerWidth > 1024 ? 40 : 25;
+      const emojiOralScale = window.innerWidth > 1024 ? 35 : 25;
       const emojiForce = window.innerWidth > 1024 ? 0.01 : 0.003;
       setEmojiCount(emojiCount);
       setEmojiScale(emojiScale);
@@ -508,6 +508,7 @@ const MatterCircleStack = () => {
           setSelectedEmoji(clickedEmoji.url);
         }
       }
+      document.body.style.cursor = "default";
     });
 
     Render.run(render);
