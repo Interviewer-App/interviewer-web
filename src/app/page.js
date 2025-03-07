@@ -394,11 +394,14 @@ export default function Home() {
       isFullWidth: true,
     }
   ];
-
+  const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
+  let currentThemeIndex = 0;
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'default';
     document.documentElement.setAttribute('data-theme', savedTheme);
     setTheme(savedTheme);
+
+    currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
 
     // Check if a theme is already saved in localStorage
     // const savedTheme = localStorage.getItem("theme");
@@ -490,8 +493,7 @@ export default function Home() {
     setTheme(newTheme);
   };
 
-  const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
-  let currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
+
 
   const handleThemeChangeMobile = () => {
     // const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
@@ -651,11 +653,11 @@ export default function Home() {
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-title-card-background dark:bg-title-card-background dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
               <span>Need to assess skills in a</span><br />
-              <span>field you don't understand?</span><br />
-              <span>We've got you</span>
+              <span>field you don&apos;t understand?</span><br />
+              <span>We&apos;ve got you</span>
             </h1>
             <p className="max-w-[368px] md:max-w-[358px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[20px] leading-[18px] text-black dark:text-black font-puls">
-              The Skillchecker is an AI-powered tool that helps you evaluate skills in fields you’re unfamiliar with.
+              The Skillchecker is an AI-powered tool that helps you evaluate skills in fields you&apos;re unfamiliar with.
               Expanding your possibilities beyond your expertise. It opens doors to opportunities you never thought possible, empowering you to make decisions with confidence, no matter the industry.
             </p>
             <div className="flex gap-6 pt-[15px] md:pt-[90px]">
@@ -760,7 +762,7 @@ export default function Home() {
               Who Can Benefit from Skillchecker?
             </h1>
             <p className="text-center md:text-start text-black dark:text-white text-base leading-[25px] md:leading-[25px] pt-[15px]">
-              At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you're a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
+              At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you&apos;re a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
             </p>
           </div>
 
