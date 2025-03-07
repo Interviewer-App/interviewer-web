@@ -406,7 +406,7 @@ export default function Home() {
       // If "dark" is saved, enable dark mode
       setIsDarkMode(true);
       document.documentElement.classList.add("dark");
-    } else if (savedTheme === "light") {
+    } else if ((savedTheme === "light") || (savedTheme === "theme1") || (savedTheme === "theme2") || (savedTheme === "theme3") || (savedTheme === "theme4") || (savedTheme === "theme5")) {
       // If "light" is saved, enable light mode
       setIsDarkMode(false);
       document.documentElement.classList.remove("dark");
@@ -417,6 +417,15 @@ export default function Home() {
       ).matches;
       setIsDarkMode(prefersDarkMode);
       document.documentElement.classList.toggle("dark", prefersDarkMode);
+      if(prefersDarkMode){
+        setTheme( 'dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+        // localStorage.setItem('theme', newTheme);
+      }else{
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+
     }
   }, []);
 
@@ -607,7 +616,7 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-title-card-background dark:bg-title-card-background dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
               <span>Need to assess skills in a</span><br />
