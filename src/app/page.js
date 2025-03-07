@@ -402,22 +402,22 @@ export default function Home() {
     // Check if a theme is already saved in localStorage
     // const savedTheme = localStorage.getItem("theme");
 
-    // if (savedTheme === "dark") {
-    //   // If "dark" is saved, enable dark mode
-    //   setIsDarkMode(true);
-    //   document.documentElement.classList.add("dark");
-    // } else if (savedTheme === "light") {
-    //   // If "light" is saved, enable light mode
-    //   setIsDarkMode(false);
-    //   document.documentElement.classList.remove("dark");
-    // } else {
-    //   // If no theme is saved, use the system's preferred theme
-    //   const prefersDarkMode = window.matchMedia(
-    //     "(prefers-color-scheme: dark)"
-    //   ).matches;
-    //   setIsDarkMode(prefersDarkMode);
-    //   document.documentElement.classList.toggle("dark", prefersDarkMode);
-    // }
+    if (savedTheme === "dark") {
+      // If "dark" is saved, enable dark mode
+      setIsDarkMode(true);
+      document.documentElement.classList.add("dark");
+    } else if (savedTheme === "light") {
+      // If "light" is saved, enable light mode
+      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    } else {
+      // If no theme is saved, use the system's preferred theme
+      const prefersDarkMode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setIsDarkMode(prefersDarkMode);
+      document.documentElement.classList.toggle("dark", prefersDarkMode);
+    }
   }, []);
 
   useEffect(() => {
@@ -470,9 +470,11 @@ export default function Home() {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     if (newTheme === 'dark') {
+      document.documentElement.classList.toggle("dark");
       setIsDarkMode(true);
     } else {
       setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
     }
 
     setTheme(newTheme);
@@ -555,31 +557,31 @@ export default function Home() {
               <div className="flex justify-center items-center gap-4 mt-4">
                 <button
                   onClick={() => handleThemeChange('default')}
-                  className="w-8 h-8 rounded-full bg-[#fff]"
+                  className={`w-8 h-8 rounded-full bg-[#ffffff] ${theme === 'default' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
-                <button
+                {/* <button
                   onClick={() => handleThemeChange('theme1')}
                   className="w-8 h-8 rounded-full bg-[#DDDDDD]"
-                ></button>
+                ></button> */}
                 <button
                   onClick={() => handleThemeChange('theme2')}
-                  className="w-8 h-8 rounded-full bg-[#D1F8FF]"
+                  className={`w-8 h-8 rounded-full bg-[#D1F8FF] ${theme === 'theme2' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange('theme3')}
-                  className="w-8 h-8 rounded-full bg-[#DDFFD1]"
+                  className={`w-8 h-8 rounded-full bg-[#DDFFD1] ${theme === 'theme3' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange('theme4')}
-                  className="w-8 h-8 rounded-full bg-[#FFF8D1]"
+                  className={`w-8 h-8 rounded-full bg-[#FFF8D1] ${theme === 'theme4' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange('theme5')}
-                  className="w-8 h-8 rounded-full bg-[#FEDBDB]"
+                  className={`w-8 h-8 rounded-full bg-[#FEDBDB] ${theme === 'theme5' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange('dark')}
-                  className="w-8 h-8 rounded-full bg-[#000]"
+                  className={`w-8 h-8 rounded-full bg-[#161618] ${theme === 'dark' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
               </div>
               {/* <button
@@ -606,18 +608,18 @@ export default function Home() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
-          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-[#FFE582] dark:bg-[#FFE582] dark:text-black">
+          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-title-card-background dark:bg-title-card-background dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
               <span>Need to assess skills in a</span><br />
-              <span>field you don’t understand?</span><br />
-              <span>We’ve got you</span>
+              <span>field you don't understand?</span><br />
+              <span>We've got you</span>
             </h1>
             <p className="max-w-[368px] md:max-w-[358px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[20px] leading-[18px] text-black dark:text-black font-puls">
               The Skillchecker is an AI-powered tool that helps you evaluate skills in fields you’re unfamiliar with.
               Expanding your possibilities beyond your expertise. It opens doors to opportunities you never thought possible, empowering you to make decisions with confidence, no matter the industry.
             </p>
             <div className="flex gap-6 pt-[15px] md:pt-[90px]">
-              <button onClick={requestDemo} className="bg-purple-200 text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
+              <button onClick={requestDemo} className=" bg-request-demo-background text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
               {/* <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
@@ -627,7 +629,7 @@ export default function Home() {
               </button> */}
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
-                className="  relative  dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black bg-yellow-200 text-black shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+                className=" relative bg-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
               >
                 Contact us now
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
@@ -643,8 +645,8 @@ export default function Home() {
       </div>
 
       <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-[#f0f0f0] rounded-[10px]">
-          <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
+        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-skills-card-background rounded-[10px]">
+          <h1 className="text-center text-black dark:text-white font-bold text-xl leading-[28px] md:leading-[28px]">
             Skills Checked. Risks Eliminated. Possibilities Unlocked.
           </h1>
 
@@ -665,7 +667,7 @@ export default function Home() {
                     {section.features.map((item, idx) => (
                       <div
                         key={idx}
-                        className={`bg-[#f3f3f3] dark:bg-[#181818] px-[15px] py-[15px] flex justify-center items-start flex-col md:border-2 md:border-black rounded-[7px] min-h-[108px] ${expandedSections[index] ? '' : 'hidden md:block'
+                        className={`bg-[#ffffff] dark:bg-[#3b3b3d] px-[15px] py-[15px] flex justify-center items-start flex-col md:border-2 md:border-[#343434] md:dark:border-[#545454] rounded-[7px] min-h-[108px] ${expandedSections[index] ? '' : 'hidden md:block'
                           }`}
                       >
                         <h3 className="font-bold text-[12px] text-black dark:text-white leading-[20px] text-start">
@@ -712,7 +714,7 @@ export default function Home() {
 
 
       <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto px-[35px] py-[35px] bg-[#fcf5e7] rounded-[10px]">
+        <div className=" w-[90%] max-w-[1500px] mx-auto px-[35px] py-[35px] bg-transparent md:bg-benefits-card-background rounded-[10px]">
           <div className="max-w-[591px]">
             <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
@@ -728,11 +730,11 @@ export default function Home() {
             {/* Main beneficiary groups - 4 columns on desktop, 1 column on mobile */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
               {beneficiaryGroups.map((group, index) => (
-                <div key={index} className={`border-2 border-black rounded-lg px-3 py-5 ${group.color}`}>
+                <div key={index} className={`border-2 border-black rounded-lg px-3 py-5 ${group.color} bg-feature-card${index + 1}-background`}>
                   {/* <div className="flex items-center justify-center w-[18rem]  bg-white border border-gray-300 rounded-full p-[6px] mb-4 mx-auto">
                     <span className="text-sm font-medium text-black">{group.title}</span>
                   </div> */}
-                  <h1 className="text-center text-black text-sm font-bold leading-[20px] md:leading-[20px] border-2 border-black rounded-[50px] px-[5px] py-[6px]">
+                  <h1 className="text-center text-black dark:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:bg-black border-black dark:border-white rounded-[50px] px-[5px] py-[6px]">
                     {group.title}
                   </h1>
 
@@ -757,9 +759,9 @@ export default function Home() {
                 {widerAudiences.slice(0, 2).map((category, index) => (
                   <div
                     key={index}
-                    className="w-full md:w-auto inline-flex items-center justify-center text-center bg-[#f4f4f4] md:bg-white md:border-2 md:border-black md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm"
+                    className="w-full md:w-auto inline-flex items-center justify-center text-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm"
                   >
-                    <span className="text-black">{category.title}</span>
+                    <span className="text-black dark:text-white font-bold">{category.title}</span>
                   </div>
                 ))}
               </div>
@@ -769,17 +771,17 @@ export default function Home() {
                 {widerAudiences.slice(2, 4).map((category, index) => (
                   <div
                     key={index}
-                    className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] md:bg-white md:border-2 md:border-black md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center"
+                    className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center"
                   >
-                    <span className="text-black">{category.title}</span>
+                    <span className="text-black dark:text-white font-bold">{category.title}</span>
                   </div>
                 ))}
               </div>
 
               {/* Final row - width based on content */}
               <div className="flex justify-center w-full">
-                <div className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] md:bg-white md:border-2 md:border-black md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
-                  <span className="text-black">{widerAudiences[4].title}</span>
+                <div className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
+                  <span className="text-black dark:text-white font-bold">{widerAudiences[4].title}</span>
                 </div>
               </div>
             </div>
@@ -964,7 +966,7 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
-        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-[#ffdc6a] text-black mb-4">
+        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-footer-background text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full">
@@ -985,7 +987,7 @@ export default function Home() {
             <div className="flex gap-3 mt-3 md:mt-0 flex-col md:flex-row items-center justify-center md:justify-between">
               {/* <input placeholder="Email" type="text" className="w-full md:min-w-[235px] h-[50px] bg-transparent text-black py-2 md:py-4 px-5 md:px-5 text-sm  font-medium border-black border-2 focus:border-black active:border-black target:border-black before:border-black after:border-black" /> */}
 
-              <button onClick={requestDemo} className="bg-[#ffffff] text-black dark:text-white py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
+              <button onClick={requestDemo} className="bg-[#ffffff] text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
             </div>
@@ -1024,7 +1026,7 @@ export default function Home() {
 
 const VideoCard = ({ video }) => (
   <div>
-    <div className="bg-sky-100 rounded-lg aspect-video w-full mb-2 overflow-hidden">
+    <div className=" bg-features-card-background rounded-lg aspect-video w-full mb-2 overflow-hidden">
       {/* <video
         className="w-full h-full object-cover"
         controls
@@ -1035,8 +1037,8 @@ const VideoCard = ({ video }) => (
       </video> */}
     </div>
     <div>
-      <h3 className="text-sm font-bold text-black mt-4 leading-[34px]">{video.title}</h3>
-      <p className="text-sm text-black  leading-[35px]">{video.description}</p>
+      <h3 className="text-sm font-bold text-black dark:text-white mt-4 leading-[34px]">{video.title}</h3>
+      <p className="text-sm text-black dark:text-white  leading-[35px]">{video.description}</p>
     </div>
   </div>
 );
