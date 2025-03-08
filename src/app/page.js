@@ -662,7 +662,7 @@ export default function Home() {
               Expanding your possibilities beyond your expertise. It opens doors to opportunities you never thought possible, empowering you to make decisions with confidence, no matter the industry.
             </p>
             <div className="flex gap-6 pt-[15px] md:pt-[90px]">
-              <button onClick={requestDemo} className=" bg-request-demo-background text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
+              <button onClick={requestDemo} className=" bg-request-demo-background text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
               {/* <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
@@ -672,7 +672,7 @@ export default function Home() {
               </button> */}
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
-                className=" relative bg-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+                className=" relative bg-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black] hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
               >
                 Contact us now
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
@@ -708,18 +708,33 @@ export default function Home() {
                 {(expandedSections[index] || true) && (
                   <div className={`grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-6 md:mt-[15px] ${expandedSections[index] ? 'mt-[15px]' : ''}`}>
                     {section.features.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className={`bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[15px] flex justify-center items-start flex-col md:border-2 md:border-[#343434] md:dark:border-[#545454] rounded-[7px] min-h-[108px] ${expandedSections[index] ? '' : 'hidden md:block'
-                          }`}
-                      >
-                        <h3 className="font-bold text-[12px] text-black dark:text-white leading-[20px] text-start">
-                          {item.title}
-                        </h3>
-                        <p className="text-black dark:text-white text-[12px] leading-[18px] mt-[15px]">
-                          {item.desc}
-                        </p>
-                      </div>
+                    <div
+                    key={idx}
+                    className={`group relative bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[15px] 
+                      flex justify-center items-start flex-col md:border-2 md:border-[#343434] 
+                      md:dark:border-[#545454] rounded-[7px] min-h-[108px] 
+                      ${expandedSections[index] ? '' : 'hidden md:block'}
+                      transition-all duration-300`}
+                  >
+                    {/* Original Content */}
+                    <h3 className="font-bold text-[12px] text-black dark:text-white 
+                      leading-[20px] text-start transition-opacity duration-300 
+                      group-hover:opacity-0">
+                      {item.title}
+                    </h3>
+                    <p className="text-black dark:text-white text-[12px] leading-[18px] 
+                      mt-[15px] transition-opacity duration-300 group-hover:opacity-0">
+                      {item.desc}
+                    </p>
+                  
+                    {/* Hover Content */}
+                    <div className="absolute inset-0 flex items-center justify-center 
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-300 
+                      bg-black bg-opacity-75 text-white text-[14px] font-medium 
+                      rounded-[7px]">
+                      <span className="text-center px-2">New Content Here</span>
+                    </div>
+                  </div>
                     ))}
                   </div>
                 )}
@@ -1019,11 +1034,11 @@ export default function Home() {
                 Terms and conditions{" "}
                 <FiArrowUpRight className=" inline-block mr-2" />
                 <span>
-                  Privacy <FiArrowUpRight className=" inline-block" />
+                  Privacy policy{" "} <FiArrowUpRight className=" inline-block" />
                 </span>
-                <span>
-                  policy <FiArrowUpRight className=" inline-block" />
-                </span>
+                {/* <span className="ml-2">
+                  policy{" "} <FiArrowUpRight className=" inline-block" />
+                </span> */}
               </span>
             </div>
 

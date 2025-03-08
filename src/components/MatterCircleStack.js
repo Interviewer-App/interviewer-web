@@ -1008,7 +1008,7 @@ const MatterCircleStack = () => {
         // style={{ backgroundColor: buttonColor }}
       >
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
-          <div className="rounded-full text-stroke z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             1
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
               st
@@ -1033,7 +1033,7 @@ const MatterCircleStack = () => {
           </div>
         </div>
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
-          <div className="rounded-full z-50 text-stroke absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#A6A6A6] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#A6A6A6] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             2
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
               nd
@@ -1058,7 +1058,7 @@ const MatterCircleStack = () => {
           </div>
         </div>
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
-          <div className="rounded-full text-stroke z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-white text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+          <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             3
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
               rd
