@@ -681,7 +681,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black border-2 rounded-[10px]">
+          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[10px]">
             <MatterCircleStack />
           </div>
         </div>
