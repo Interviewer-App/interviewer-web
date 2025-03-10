@@ -4,6 +4,22 @@
 
 :root {
   /* --primary-color: #ffffff; */
+  /* --secondary-color: #000000;
+  --accent-color: #007bff;
+  --background-color: #ffffff;
+  --title-card-background: #ffe582;
+  --footer-background: #ffe582;
+  --skills-card-background: #f0f0f0;
+  --features-card-background: #e7effc;
+  --benefits-card-background: #fcf5e7;
+  --benefit-card1-background: #ffffff;
+  --benefit-card2-background: #f1ffe6;
+  --benefit-card3-background: #e6f6ff;
+  --benefit-card4-background: #f4e6ff;
+  --request-demo-background: #e6ccff; */
+}
+[data-theme="default"] {
+  /* --primary-color: #121212; */
   --secondary-color: #000000;
   --accent-color: #007bff;
   --background-color: #ffffff;
@@ -18,6 +34,7 @@
   --benefit-card4-background: #f4e6ff;
   --request-demo-background: #e6ccff;
 }
+
 
 [data-theme="dark"] {
   /* --primary-color: #121212; */

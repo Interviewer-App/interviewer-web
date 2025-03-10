@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Matter from "matter-js";
 import MatterCircleStack from "@/components/MatterCircleStack";
-import { color, motion } from "framer-motion";
+import { color, hover, motion } from "framer-motion";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -169,11 +169,11 @@ export default function Home() {
       titleHead: "Unlocking Certainty & Smart Decision-Making",
       color: "bg-[#f1ffe6]",
       features: [
-        { title: "💪  Hiring with Confidence", desc: "Hiring with Confidence – No more guessing if a candidate is truly qualified." },
-        { title: "💰 Investing Wisely", desc: "Know if a startup’s technical team actually has the expertise." },
-        { title: "🤝  Partnering Smartly", desc: "Verify collaborators’ skills before committing to projects." },
-        { title: "🚀 Scaling with Trust", desc: "Ensure the right talent fuels your business growth." },
-        { title: "🤜🤛Building Future-Ready Teams", desc: "Recruit the best talent even outside your domain." }
+        { title: "💪  Hiring with Confidence", desc: "Hiring with Confidence – No more guessing if a candidate is truly qualified.", hover:'A startup founder hiring a developer but has no coding knowledge.' },
+        { title: "💰 Investing Wisely", desc: "Know if a startup’s technical team actually has the expertise." , hover:'An investor backing an AI startup without understanding AI.'},
+        { title: "🤝  Partnering Smartly", desc: "Verify collaborators’ skills before committing to projects.", hover:'A restaurant owner partnering with a marketer to grow online sales.' },
+        { title: "🚀 Scaling with Trust", desc: "Ensure the right talent fuels your business growth.", hover:'A real estate agency outsourcing website development but unsure about the developer’s skills.' },
+        { title: "🤜🤛Building Future-Ready Teams", desc: "Recruit the best talent even outside your domain.", hover:'A medical practice hiring a cybersecurity expert for patient data protection.' }
 
       ]
     },
@@ -181,11 +181,11 @@ export default function Home() {
       titleHead: "Expanding Collaboration Across Industries",
       color: "bg-[#e6f6ff]",
       features: [
-        { title: "🔬 Cross-Industry Innovation", desc: "Work across disciplines without fear of knowledge gaps." },
-        { title: "💪  Seamless Outsourcing", desc: "Hire specialists globally without needing to vet them yourself." },
-        { title: "🙋‍♂️  Bridging Skill Gaps", desc: "Find experts even in fields you know nothing about." },
-        { title: "⚡ Better Vendor Selection", desc: "Confirm service providers actually deliver on their promises." },
-        { title: "⚛︎  Unlocking Multi-Disciplinary Projects", desc: "Bring together professionals from different domains with certainty." }
+        { title: "🔬 Cross-Industry Innovation", desc: "Work across disciplines without fear of knowledge gaps.", hover:'A fashion brand hiring an AI consultant to integrate smart wearables.' },
+        { title: "💪  Seamless Outsourcing", desc: "Hire specialists globally without needing to vet them yourself.", hover:'A business owner in the US hiring a data analyst from India.' },
+        { title: "🙋‍♂️  Bridging Skill Gaps", desc: "Find experts even in fields you know nothing about.", hover:'A musician looking for a video editor to create professional content.' },
+        { title: "⚡ Better Vendor Selection", desc: "Confirm service providers actually deliver on their promises.", hover:'A company hiring a blockchain consultant but unsure if they truly understand the tech.' },
+        { title: "⚛︎  Unlocking Multi-Disciplinary Projects", desc: "Bring together professionals from different domains with certainty.", hover:'A game developer hiring an AI expert to create NPC interactions.' }
 
       ]
     },
@@ -193,11 +193,11 @@ export default function Home() {
       titleHead: "Enabling Bold Moves & Limitless Possibilities",
       color: "bg-[#f4e6ff]",
       features: [
-        { title: "🌍 Entering New Markets", desc: "Expand without needing to master every skill yourself." },
-        { title: "✪ Breaking Industry Barriers", desc: "Collaborate across fields with verified expertise." },
-        { title: "💫  Launching Big Ideas Faster", desc: "Build projects with the right team from day one." },
-        { title: "🌟 Democratizing Opportunity", desc: "Give under-the-radar talent a fair shot based on real skills." },
-        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the right team backing you." }
+        { title: "🌍 Entering New Markets", desc: "Expand without needing to master every skill yourself.", hover:'A traditional farmer adopting automation and hiring a robotics engineer.' },
+        { title: "✪ Breaking Industry Barriers", desc: "Collaborate across fields with verified expertise.", hover:'A filmmaker using AI to analyze audience trends before hiring a marketing strategist.' },
+        { title: "💫  Launching Big Ideas Faster", desc: "Build projects with the right team from day one.", hover:'An educator creating an EdTech platform but not knowing how to evaluate developers.' },
+        { title: "🌟 Democratizing Opportunity", desc: "Give under-the-radar talent a fair shot based on real skills.", hover:'A non-profit organization choosing a social media strategist based on performance, not degrees.' },
+        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the right team backing you.", hover:'A fitness coach launching a mobile app but unsure about app development.' }
 
       ]
     },
@@ -205,11 +205,11 @@ export default function Home() {
       titleHead: "Reducing Risk & Ensuring Quality",
       color: "bg-[#fedbdb]",
       features: [
-        { title: "🥊 Avoiding Costly Mistakes", desc: "Stop hiring or investing based on inflated resumes." },
-        { title: "⚖️  Minimizing Bias in Hiring", desc: "Focus on proven skills, not just credentials." },
-        { title: "🎯 Ensuring Skill-Based Excellence", desc: "No more “experts” who can’t actually do the job." },
-        { title: "📊  Making Data-Driven Decisions", desc: "Trust verified skills over flashy presentations." },
-        { title: "📊  🥸 Eliminating Skill Fraud", desc: "Weed out imposters who talk big but can’t deliver." }
+        { title: "🥊 Avoiding Costly Mistakes", desc: "Stop hiring or investing based on inflated resumes.", hover:'A CEO hiring a CFO but not knowing how to verify their financial expertise.' },
+        { title: "⚖️  Minimizing Bias in Hiring", desc: "Focus on proven skills, not just credentials.", hover:'A recruiter choosing between two designers—one with a degree, one with verified talent.)' },
+        { title: "🎯 Ensuring Skill-Based Excellence", desc: "No more “experts” who can’t actually do the job.", hover:'A parent verifying if a music teacher is actually skilled before hiring them for their child.' },
+        { title: "📊  Making Data-Driven Decisions", desc: "Trust verified skills over flashy presentations.", hover:'A business guru promising 10x growth—do they actually have a proven strategy?' },
+        { title: "📊  🥸 Eliminating Skill Fraud", desc: "Weed out imposters who talk big but can’t deliver.", hover:' A small business hiring an SEO consultant but not knowing if they actually understand search algorithms.' }
       ]
     }
   ];
@@ -411,7 +411,7 @@ export default function Home() {
       // If "dark" is saved, enable dark mode
       setIsDarkMode(true);
       document.documentElement.classList.add("dark");
-    } else if ((savedTheme === "light") || (savedTheme === "theme1") || (savedTheme === "theme2") || (savedTheme === "theme3") || (savedTheme === "theme4") || (savedTheme === "theme5")) {
+    } else if ((savedTheme === "default") || (savedTheme === "theme1") || (savedTheme === "theme2") || (savedTheme === "theme3") || (savedTheme === "theme4") || (savedTheme === "theme5")) {
       // If "light" is saved, enable light mode
       setIsDarkMode(false);
       document.documentElement.classList.remove("dark");
@@ -732,7 +732,7 @@ export default function Home() {
                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 
                       bg-black bg-opacity-75 text-white text-[14px] font-medium 
                       rounded-[7px]">
-                      <span className="text-center px-2">New Content Here</span>
+                      <span className="text-center px-2 text-xs">{item.hover}</span>
                     </div>
                   </div>
                     ))}
