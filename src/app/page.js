@@ -197,7 +197,7 @@ export default function Home() {
         { title: "✪ Breaking Industry Barriers", desc: "Collaborate across fields with verified expertise.", hover:'A filmmaker using AI to analyze audience trends before hiring a marketing strategist.' },
         { title: "💫  Launching Big Ideas Faster", desc: "Build projects with the right team from day one.", hover:'An educator creating an EdTech platform but not knowing how to evaluate developers.' },
         { title: "🌟 Democratizing Opportunity", desc: "Give under-the-radar talent a fair shot based on real skills.", hover:'A non-profit organization choosing a social media strategist based on performance, not degrees.' },
-        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the right team backing you.", hover:'A fitness coach launching a mobile app but unsure about app development.' }
+        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the perfect team.", hover:'A fitness coach launching a mobile app but unsure about app development.' }
 
       ]
     },
@@ -710,9 +710,9 @@ export default function Home() {
                     {section.features.map((item, idx) => (
                     <div
                     key={idx}
-                    className={`group relative bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[15px] 
+                    className={`group relative bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[10px] 
                       flex justify-center items-start flex-col md:border-2 md:border-[#343434] 
-                      md:dark:border-[#545454] rounded-[7px] min-h-[108px] 
+                      md:dark:border-[#545454] rounded-[7px] min-h-[92px] hover:bg-black
                       ${expandedSections[index] ? '' : 'hidden md:block'}
                       transition-all duration-300`}
                   >
@@ -723,7 +723,7 @@ export default function Home() {
                       {item.title}
                     </h3>
                     <p className="text-black dark:text-white text-[12px] leading-[18px] 
-                      mt-[15px] transition-opacity duration-300 group-hover:opacity-0">
+                      mt-[6px] transition-opacity duration-300 group-hover:opacity-0">
                       {item.desc}
                     </p>
                   
@@ -747,7 +747,7 @@ export default function Home() {
 
 
 
-      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[45px] md:pt-10 ">
+      {/* <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[45px] md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
           <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl  leading-[24px] md:leading-[28px] mb-[30px]">
             Powerful features that will make skill verification <br />
@@ -759,7 +759,6 @@ export default function Home() {
             <VideoCard video={videos[1]} />
           </div>
 
-          {/* Bottom Row Videos */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <VideoCard video={videos[2]} />
             <VideoCard video={videos[3]} />
@@ -768,7 +767,7 @@ export default function Home() {
 
 
         </div>
-      </div>
+      </div> */}
 
 
       <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
@@ -785,13 +784,9 @@ export default function Home() {
 
 
           <div className="">
-            {/* Main beneficiary groups - 4 columns on desktop, 1 column on mobile */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
               {beneficiaryGroups.map((group, index) => (
                 <div key={index} className={`border-2 border-black rounded-lg px-3 py-5 ${group.color} bg-feature-card${index + 1}-background`}>
-                  {/* <div className="flex items-center justify-center w-[18rem]  bg-white border border-gray-300 rounded-full p-[6px] mb-4 mx-auto">
-                    <span className="text-sm font-medium text-black">{group.title}</span>
-                  </div> */}
                   <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:md:bg-black border-black dark:md:border-white rounded-[50px] px-[5px] py-[6px]">
                     {group.title}
                   </h1>
@@ -812,7 +807,6 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col items-center space-y-3">
-              {/* First row - two pills */}
               <div className="flex flex-wrap justify-center gap-3 w-full">
                 {widerAudiences.slice(0, 2).map((category, index) => (
                   <div
@@ -824,7 +818,6 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Second row - two pills */}
               <div className="flex flex-wrap justify-center gap-3 w-full">
                 {widerAudiences.slice(2, 4).map((category, index) => (
                   <div
@@ -836,7 +829,6 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Final row - width based on content */}
               <div className="flex justify-center w-full">
                 <div className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black md:dark:border-[#545454] rounded-[10px] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
                   <span className="text-black dark:text-white md:font-bold">{widerAudiences[4].title}</span>
