@@ -13,8 +13,8 @@ export default function CampanyLayout({
     children,
 }) {
     return (
-        <>
-           <SessionValidation> {children}</SessionValidation>
-        </>
+        <div className="dark">
+            <SessionValidation> {children}</SessionValidation>
+        </div>
     )
 }
