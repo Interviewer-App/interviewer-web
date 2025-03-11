@@ -857,48 +857,62 @@ const MatterCircleStack = () => {
                     />
 
                     <div className=" w-full flex justify-between items-center">
-                      <div className="w-[48%] h-3 lg:h-[14px] bg-gray-200 border border-white text-[6px] text-white text-center rounded-full mt-3 lg:mt-4 overflow-hidden">
-                        <div
-                          className="h-full rounded-full pt-[2px]"
-                          style={{
-                            width: `${emoji.technicalLevel}%`,
-                            background: `black`,
-                          }}
-                        >
-                          {emoji.technicalLevel}%
+                      <div className=" w-[48%]">
+                        <span className="text-white text-[8px]">
+                          Score 1: {emoji.technicalLevel}%
+                        </span>
+                        <div className=" h-3 lg:h-[14px] bg-gray-200 border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full pt-[2px]"
+                            style={{
+                              width: `${emoji.technicalLevel}%`,
+                              background: `black`,
+                            }}
+                          >
+                            {emoji.technicalLevel}%
+                          </div>
                         </div>
                       </div>
-                      <div className="w-[48%] h-3 lg:h-[14px] bg-gray-200 border text-[6px] text-white text-center border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
-                        <div
-                          className="h-full rounded-full pt-[2px]"
-                          style={{
-                            width: `${emoji.behevioralLevel}%`,
-                            background: `black`,
-                          }}
-                        >
-                          {emoji.behevioralLevel}%
+                      <div className=" w-[48%]">
+                        <span className="text-white text-[8px]">
+                          Score 1: {emoji.behevioralLevel}%
+                        </span>
+                        <div className=" h-3 lg:h-[14px] bg-gray-200 border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full pt-[2px]"
+                            style={{
+                              width: `${emoji.behevioralLevel}%`,
+                              background: `black`,
+                            }}
+                          >
+                            {emoji.behevioralLevel}%
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="w-full h-3 lg:h-[14px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-white rounded-full mt-3 lg:mt-3 mb-3 lg:mb-4 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full pt-[1px] ${
-                          emoji.skillLevel > 75
-                            ? "bg-green-500"
-                            : emoji.skillLevel > 60
-                            ? "bg-yellow-500"
-                            : emoji.skillLevel > 30
-                            ? "bg-orange-500"
-                            : "bg-red-500"
-                        }`}
-                        style={{
-                          width: `${emoji.skillLevel}%`,
-                          // background: `linear-gradient(to right, red, yellow, green)`,
-                        }}
-                      >{emoji.skillLevel}%</div>
-                      {/* <div className=" absolute top-[1px] left-1/2 -translate-x-1/2 font-extrabold ">
-                        {emoji.skillLevel}%
-                      </div> */}
+                    <div>
+                      <div className=" text-[8px] mt-2 lg:mt-2 text-white ">
+                        Total score:{emoji.skillLevel}%
+                      </div>
+                      <div className="w-full h-3 lg:h-[14px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-white rounded-full mb-3 lg:mb-4 overflow-hidden">
+                        <div
+                          className="h-full rounded-full pt-[1px]"
+                          style={{
+                            width: `${emoji.skillLevel}%`,
+                            background: `linear-gradient(to right, red, ${
+                              emoji.skillLevel <= 25
+                                ? "red"
+                                : emoji.skillLevel <= 65
+                                ? "orange, yellow"
+                                : emoji.skillLevel <= 80
+                                ? "orange, yellow, green"
+                                : "orange, yellow, green, green"
+                            })`,
+                          }}
+                        >
+                          {emoji.skillLevel}%
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -945,18 +959,35 @@ const MatterCircleStack = () => {
               className=" mx-auto w-16 h-16 lg:w-32 lg:h-32"
             />
             <div className=" w-full flex justify-between items-center">
-              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-[16px]  text-white text-[7px] text-center bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
-                <div
-                  className="h-full rounded-full pt-[4px]"
-                  style={{
-                    width: `${selectedBehavioralLevel}%`,
-                    background: `black`,
-                  }}
-                >
-                  <span>{selectedBehavioralLevel}%</span>
+              <div className=" w-[47%] lg:w-[48%] text-[10px] text-white">
+                <div>Score 1: {selectedBehavioralLevel}%</div>
+                <div className="  h-3 lg:h-[16px]  text-white text-[7px] text-center bg-gray-200 border border-white rounded-full mt-1 overflow-hidden">
+                  <div
+                    className="h-full rounded-full pt-[4px]"
+                    style={{
+                      width: `${selectedBehavioralLevel}%`,
+                      background: `black`,
+                    }}
+                  >
+                    <span>{selectedBehavioralLevel}%</span>
+                  </div>
                 </div>
               </div>
-              <div className=" w-[47%] lg:w-[48%] h-3 lg:h-[16px] text-white text-[7px] text-center bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
+              <div className=" w-[47%] lg:w-[48%] text-[10px] text-white">
+                <div>Score 2: {selectedTechnicalLevel}%</div>
+                <div className="  h-3 lg:h-[16px]  text-white text-[7px] text-center bg-gray-200 border border-white rounded-full mt-1 overflow-hidden">
+                  <div
+                    className="h-full rounded-full pt-[4px]"
+                    style={{
+                      width: `${selectedTechnicalLevel}%`,
+                      background: `black`,
+                    }}
+                  >
+                    <span>{selectedTechnicalLevel}%</span>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="  h-3 lg:h-[16px] text-white text-[7px] text-center bg-gray-200 border border-white rounded-full mt-3 lg:mt-4 overflow-hidden">
                 <div
                   className="h-full rounded-full pt-[4px]"
                   style={{
@@ -966,27 +997,34 @@ const MatterCircleStack = () => {
                 >
                   <span>{selectedTechnicalLevel}%</span>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className="w-full h-3 lg:h-[14px] bg-gray-200 border text-black font-extrabold relative text-[8px] text-center border-white rounded-full mt-3 lg:mt-4 mb-3 lg:mb-5 overflow-hidden">
-              <div
-                className={`h-full rounded-full pt-[2px] ${
-                  selectedSkillLevel > 75
-                    ? "bg-green-500"
-                    : selectedSkillLevel > 60
-                    ? "bg-yellow-500"
-                    : selectedSkillLevel > 30
-                    ? "bg-orange-500"
-                    : "bg-red-500"
-                }`}
-                style={{
-                  width: `${selectedSkillLevel}%`,
-                  // background: `linear-gradient(to right, red, yellow, green)`,
-                }}
-              >{selectedSkillLevel}%</div>
-              {/* <div className=" absolute top-[2px] left-1/2 -translate-x-1/2 ">
+            <div className=" w-full mt-3 lg:mt-4">
+              <div className=" text-[10px] text-white">
+                Total score: {selectedSkillLevel}%
+              </div>
+              <div className="w-full h-3 mt-1 lg:h-[14px] bg-gray-200 border text-black font-extrabold relative text-[8px] text-center border-white rounded-full mb-3 lg:mb-5 overflow-hidden">
+                <div
+                  className={`h-full rounded-full pt-[2px]`}
+                  style={{
+                    width: `${selectedSkillLevel}%`,
+                    background: `linear-gradient(to right, red, ${
+                      selectedSkillLevel <= 25
+                        ? "red"
+                        : selectedSkillLevel <= 65
+                        ? "orange, yellow"
+                        : selectedSkillLevel <= 80
+                        ? "orange, yellow, green"
+                        : "orange, yellow, green, green"
+                    })`,
+                  }}
+                >
+                  {selectedSkillLevel}%
+                </div>
+                {/* <div className=" absolute top-[2px] left-1/2 -translate-x-1/2 ">
                 {selectedSkillLevel}%
               </div> */}
+              </div>
             </div>
           </motion.div>
         </div>
