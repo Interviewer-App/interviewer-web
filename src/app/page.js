@@ -46,7 +46,7 @@ export default function Home() {
   const [theme, setTheme] = useState('default');
   const [expandedSections, setExpandedSections] = useState({});
   const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
-  
+
   const initialImages = [
     [
       "/landing_page/icons/Investors.png",
@@ -169,11 +169,11 @@ export default function Home() {
       titleHead: "Unlocking Certainty & Smart Decision-Making",
       color: "bg-[#f1ffe6]",
       features: [
-        { title: "💪  Hiring with Confidence", desc: "Hiring with Confidence – No more guessing if a candidate is truly qualified.", hover:'A startup founder hiring a developer but has no coding knowledge.' },
-        { title: "💰 Investing Wisely", desc: "Know if a startup’s technical team actually has the expertise." , hover:'An investor backing an AI startup without understanding AI.'},
-        { title: "🤝  Partnering Smartly", desc: "Verify collaborators’ skills before committing to projects.", hover:'A restaurant owner partnering with a marketer to grow online sales.' },
-        { title: "🚀 Scaling with Trust", desc: "Ensure the right talent fuels your business growth.", hover:'A real estate agency outsourcing website development but unsure about the developer’s skills.' },
-        { title: "🤜🤛Building Future-Ready Teams", desc: "Recruit the best talent even outside your domain.", hover:'A medical practice hiring a cybersecurity expert for patient data protection.' }
+        { title: "💪  Hiring with Confidence", desc: "Hiring with Confidence – No more guessing if a candidate is truly qualified.", hover: 'A startup founder hiring a developer but has no coding knowledge.' },
+        { title: "💰 Investing Wisely", desc: "Know if a startup’s technical team actually has the expertise.", hover: 'An investor backing an AI startup without understanding AI.' },
+        { title: "🤝  Partnering Smartly", desc: "Verify collaborators’ skills before committing to projects.", hover: 'A restaurant owner partnering with a marketer to grow online sales.' },
+        { title: "🚀 Scaling with Trust", desc: "Ensure the right talent fuels your business growth.", hover: 'A real estate agency outsourcing website development but unsure about the developer’s skills.' },
+        { title: "🤜🤛Building Future-Ready Teams", desc: "Recruit the best talent even outside your domain.", hover: 'A medical practice hiring a cybersecurity expert for patient data protection.' }
 
       ]
     },
@@ -181,11 +181,11 @@ export default function Home() {
       titleHead: "Expanding Collaboration Across Industries",
       color: "bg-[#e6f6ff]",
       features: [
-        { title: "🔬 Cross-Industry Innovation", desc: "Work across disciplines without fear of knowledge gaps.", hover:'A fashion brand hiring an AI consultant to integrate smart wearables.' },
-        { title: "💪  Seamless Outsourcing", desc: "Hire specialists globally without needing to vet them yourself.", hover:'A business owner in the US hiring a data analyst from India.' },
-        { title: "🙋‍♂️  Bridging Skill Gaps", desc: "Find experts even in fields you know nothing about.", hover:'A musician looking for a video editor to create professional content.' },
-        { title: "⚡ Better Vendor Selection", desc: "Confirm service providers actually deliver on their promises.", hover:'A company hiring a blockchain consultant but unsure if they truly understand the tech.' },
-        { title: "⚛︎  Unlocking Multi-Disciplinary Projects", desc: "Bring together professionals from different domains with certainty.", hover:'A game developer hiring an AI expert to create NPC interactions.' }
+        { title: "🔬 Cross-Industry Innovation", desc: "Work across disciplines without fear of knowledge gaps.", hover: 'A fashion brand hiring an AI consultant to integrate smart wearables.' },
+        { title: "💪  Seamless Outsourcing", desc: "Hire specialists globally without needing to vet them yourself.", hover: 'A business owner in the US hiring a data analyst from India.' },
+        { title: "🙋‍♂️  Bridging Skill Gaps", desc: "Find experts even in fields you know nothing about.", hover: 'A musician looking for a video editor to create professional content.' },
+        { title: "⚡ Better Vendor Selection", desc: "Confirm service providers actually deliver on their promises.", hover: 'A company hiring a blockchain consultant but unsure if they truly understand the tech.' },
+        { title: "⚛︎  Unlocking Multi-Disciplinary Projects", desc: "Bring together professionals from different domains with certainty.", hover: 'A game developer hiring an AI expert to create NPC interactions.' }
 
       ]
     },
@@ -193,11 +193,11 @@ export default function Home() {
       titleHead: "Enabling Bold Moves & Limitless Possibilities",
       color: "bg-[#f4e6ff]",
       features: [
-        { title: "🌍 Entering New Markets", desc: "Expand without needing to master every skill yourself.", hover:'A traditional farmer adopting automation and hiring a robotics engineer.' },
-        { title: "✪ Breaking Industry Barriers", desc: "Collaborate across fields with verified expertise.", hover:'A filmmaker using AI to analyze audience trends before hiring a marketing strategist.' },
-        { title: "💫  Launching Big Ideas Faster", desc: "Build projects with the right team from day one.", hover:'An educator creating an EdTech platform but not knowing how to evaluate developers.' },
-        { title: "🌟 Democratizing Opportunity", desc: "Give under-the-radar talent a fair shot based on real skills.", hover:'A non-profit organization choosing a social media strategist based on performance, not degrees.' },
-        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the perfect team.", hover:'A fitness coach launching a mobile app but unsure about app development.' }
+        { title: "🌍 Entering New Markets", desc: "Expand without needing to master every skill yourself.", hover: 'A traditional farmer adopting automation and hiring a robotics engineer.' },
+        { title: "✪ Breaking Industry Barriers", desc: "Collaborate across fields with verified expertise.", hover: 'A filmmaker using AI to analyze audience trends before hiring a marketing strategist.' },
+        { title: "💫  Launching Big Ideas Faster", desc: "Build projects with the right team from day one.", hover: 'An educator creating an EdTech platform but not knowing how to evaluate developers.' },
+        { title: "🌟 Democratizing Opportunity", desc: "Give under-the-radar talent a fair shot based on real skills.", hover: 'A non-profit organization choosing a social media strategist based on performance, not degrees.' },
+        { title: "✊ Empowering Entrepreneurs", desc: "Start ventures in industries you don’t fully understand, with the perfect team.", hover: 'A fitness coach launching a mobile app but unsure about app development.' }
 
       ]
     },
@@ -205,11 +205,11 @@ export default function Home() {
       titleHead: "Reducing Risk & Ensuring Quality",
       color: "bg-[#fedbdb]",
       features: [
-        { title: "🥊 Avoiding Costly Mistakes", desc: "Stop hiring or investing based on inflated resumes.", hover:'A CEO hiring a CFO but not knowing how to verify their financial expertise.' },
-        { title: "⚖️  Minimizing Bias in Hiring", desc: "Focus on proven skills, not just credentials.", hover:'A recruiter choosing between two designers—one with a degree, one with verified talent.)' },
-        { title: "🎯 Ensuring Skill-Based Excellence", desc: "No more “experts” who can’t actually do the job.", hover:'A parent verifying if a music teacher is actually skilled before hiring them for their child.' },
-        { title: "📊  Making Data-Driven Decisions", desc: "Trust verified skills over flashy presentations.", hover:'A business guru promising 10x growth—do they actually have a proven strategy?' },
-        { title: "📊  🥸 Eliminating Skill Fraud", desc: "Weed out imposters who talk big but can’t deliver.", hover:' A small business hiring an SEO consultant but not knowing if they actually understand search algorithms.' }
+        { title: "🥊 Avoiding Costly Mistakes", desc: "Stop hiring or investing based on inflated resumes.", hover: 'A CEO hiring a CFO but not knowing how to verify their financial expertise.' },
+        { title: "⚖️  Minimizing Bias in Hiring", desc: "Focus on proven skills, not just credentials.", hover: 'A recruiter choosing between two designers one with a degree, one with verified talent.)' },
+        { title: "🎯 Ensuring Skill-Based Excellence", desc: "No more “experts” who can’t actually do the job.", hover: 'A parent verifying if a music teacher is actually skilled before hiring them for their child.' },
+        { title: "📊  Making Data-Driven Decisions", desc: "Trust verified skills over flashy presentations.", hover: 'A business guru promising 10x growth do they actually have a proven strategy?' },
+        { title: "📊  🥸 Eliminating Skill Fraud", desc: "Weed out imposters who talk big but can’t deliver.", hover: ' A small business hiring an SEO consultant but not knowing if they actually understand search algorithms.' }
       ]
     }
   ];
@@ -653,15 +653,20 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-title-card-background dark:bg-title-card-background dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
-              <span>Need to assess skills in a</span><br />
-              <span>field you don&apos;t understand?</span><br />
-              <span>We&apos;ve got you</span>
+              <span>Evaluate Skills in Any Field.</span><br />
+              <span>No Expertise Needed.</span><br />
+              {/* <span>We&apos;ve got you</span> */}
             </h1>
-            <p className="max-w-[368px] md:max-w-[358px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[20px] leading-[18px] text-black dark:text-black font-puls">
-              The Skillchecker is an AI-powered tool that helps you evaluate skills in fields you&apos;re unfamiliar with.
-              Expanding your possibilities beyond your expertise. It opens doors to opportunities you never thought possible, empowering you to make decisions with confidence, no matter the industry.
+
+            <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[28px] leading-[18px] text-black dark:text-black font-puls">
+            <span>The Skillchecker is an AI powered tool that helps you evaluate skills in any field,</span><br/>
+            <span>especially those outside your expertise.</span><br/><br/>
+            <span>  Whether you are hiring, investing, or partnering,</span><br/>
+              
+            <span>  it gives you the confidence to make smart decisions when evaluating someone’s skills without needing an external expert every time.</span>
+             
             </p>
-            <div className="flex gap-6 pt-[15px] md:pt-[90px]">
+            <div className="flex gap-6 pt-[15px] md:pt-[82px]">
               <button onClick={requestDemo} className=" bg-request-demo-background hover:bg-request-demo-background-hover text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
@@ -672,7 +677,7 @@ export default function Home() {
               </button> */}
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
-                className=" relative bg-white hover:bg-[#d4d4d4] dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+                className=" relative bg-white hover:bg-gray-200 dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
               >
                 Contact us now
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
@@ -708,33 +713,33 @@ export default function Home() {
                 {(expandedSections[index] || true) && (
                   <div className={`grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-6 md:mt-[15px] ${expandedSections[index] ? 'mt-[15px]' : ''}`}>
                     {section.features.map((item, idx) => (
-                    <div
-                    key={idx}
-                    className={`group relative bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[10px] 
+                      <div
+                        key={idx}
+                        className={`group relative bg-[#f4f4f4] dark:bg-[#3b3b3d] px-[15px] py-[10px] 
                       flex justify-center items-start flex-col md:border-2 md:border-[#343434] 
                       md:dark:border-[#545454] rounded-[7px] min-h-[92px] hover:bg-black
                       ${expandedSections[index] ? '' : 'hidden md:block'}
                       transition-all duration-300`}
-                  >
-                    {/* Original Content */}
-                    <h3 className="font-bold text-[12px] text-black dark:text-white 
+                      >
+                        {/* Original Content */}
+                        <h3 className="font-bold text-[12px] text-black dark:text-white 
                       leading-[20px] text-start transition-opacity duration-300 
                       group-hover:opacity-0">
-                      {item.title}
-                    </h3>
-                    <p className="text-black dark:text-white text-[12px] leading-[18px] 
+                          {item.title}
+                        </h3>
+                        <p className="text-black dark:text-white text-[12px] leading-[18px] 
                       mt-[6px] transition-opacity duration-300 group-hover:opacity-0">
-                      {item.desc}
-                    </p>
-                  
-                    {/* Hover Content */}
-                    <div className="absolute inset-0 flex items-center justify-center 
+                          {item.desc}
+                        </p>
+
+                        {/* Hover Content */}
+                        <div className="absolute inset-0 flex items-center justify-center 
                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 
                       bg-black bg-opacity-75 text-white text-[14px] font-medium 
                       rounded-[7px]">
-                      <span className="text-center px-2 text-xs">{item.hover}</span>
-                    </div>
-                  </div>
+                          <span className="text-center px-2 text-xs">{item.hover}</span>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}
