@@ -25,6 +25,7 @@ module.exports = {
         "footer-background": "var(--footer-background)",
 		"skills-card-background": "var(--skills-card-background)",
         "request-demo-background": "var(--request-demo-background)",
+        "request-demo-background-hover": "var(--request-demo-background-hover)",
 
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
