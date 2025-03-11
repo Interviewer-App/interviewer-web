@@ -370,7 +370,7 @@ export default function Home() {
 
   const widerAudiences = [
     {
-      title: "🌐 For Everyone (Because The Possibilities Are Endless!)",
+      title: "✨ Anyone who wants to make smarter choices – If skills matter, The Skillchecker is for you",
       icon: "🌐",
       isWide: true,
     },
@@ -390,7 +390,7 @@ export default function Home() {
       isWide: true,
     },
     {
-      title: "✨ Anyone who wants to make smarter choices – If skills matter, The Skillchecker is for you",
+      title: "🌐 For Everyone (Because The Possibilities Are Endless!)",
       icon: "✨",
       isFullWidth: true,
     }
