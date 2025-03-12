@@ -1054,7 +1054,9 @@ const MatterCircleStack = () => {
       </div>
 
       {!(isEmojiClicked || showResult) && (
-        <div className="absolute bottom-2 lg:bottom-4 left-1/2 transform -translate-x-1/2 w-fit">
+        // <div className="bg-[#E7E5E5] p-2">
+        <div className="absolute bottom-2 lg:bottom-4 right-1 transform  w-fit bg-[#E7E5E5] p-1 rounded-xl pt-0">
+          <h1 className="font-normal relative mx-8 my-3">Change Field</h1>
           <motion.button
             onClick={handleButtonClick}
             initial={{ opacity: 1, scale: 1 }}
@@ -1062,8 +1064,8 @@ const MatterCircleStack = () => {
               opacity: isAnimatingButton ? 0.1 : 1,
               scale: isAnimatingButton ? 0.9 : 1,
             }}
-            transition={{ duration: 0.001, ease: "easeInOut" }}
-            className={` h-11 lg:h-14 px-5 lg:px-10 mx-auto rounded-full cursor-pointer text-base lg:text-xl font-semibold shadow-lg border-4 border-black transition-all ${
+            transition={{ duration: 0.001, ease: "easeInOut" }} 
+            className={` h-11 lg:h-14 px-2 lg:px-2 mx-auto rounded-full cursor-pointer text-sm lg:text-base font-semibold shadow-lg border-2 border-black transition-all w-full ${
               buttons[currentIndex].bgColor
             } ${buttons[currentIndex].textColor} ${
               buttons[currentIndex].font || ""
@@ -1071,11 +1073,13 @@ const MatterCircleStack = () => {
           >
             {buttons[currentIndex].text}
           </motion.button>
+        {/* </div> */}
         </div>
       )}
 
+
       <div
-        className="absolute bg-white top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg"
+        className="absolute bg-white top-1 right-1 lg:top-3 lg:right-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg"
         // style={{ backgroundColor: buttonColor }}
       >
         <div className=" lg:mb-1 relative h-8 lg:h-10 flex justify-center items-center">
@@ -1162,6 +1166,10 @@ const MatterCircleStack = () => {
           </div>
         )}
       </div>
+
+
+
+
     </div>
   );
 };
