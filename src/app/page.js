@@ -658,7 +658,7 @@ export default function Home() {
               {/* <span>We&apos;ve got you</span> */}
             </h1>
 
-            <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[28px] leading-[18px] text-black dark:text-black font-puls">
+            <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
             <span>The Skillchecker is an AI powered tool that helps you evaluate skills in any field,</span><br/>
             <span>especially those outside your expertise.</span><br/><br/>
             <span>  Whether you are hiring, investing, or partnering,</span><br/>
@@ -666,7 +666,7 @@ export default function Home() {
             <span>  it gives you the confidence to make smart decisions when evaluating someone’s skills without needing an external expert every time.</span>
              
             </p>
-            <div className="flex gap-6 pt-[15px] md:pt-[82px]">
+            <div className="flex gap-6 pt-[15px] md:pt-[40px]">
               <button onClick={requestDemo} className=" bg-request-demo-background hover:bg-request-demo-background-hover text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
