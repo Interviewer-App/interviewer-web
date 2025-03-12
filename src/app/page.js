@@ -47,6 +47,10 @@ export default function Home() {
   const [expandedSections, setExpandedSections] = useState({});
   const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
 
+  const cardRefs = useRef([]); 
+  const glowRefs = useRef([]);
+  const contentRefs = useRef([]);
+
   const initialImages = [
     [
       "/landing_page/icons/Investors.png",
@@ -295,7 +299,7 @@ export default function Home() {
 
   const beneficiaryGroups = [
     {
-      title: "💼 For Business Leaders & Hiring Managers",
+      title: "💼 For Founders & Hiring Managers",
       color: "bg-[#FFE6E6]",
       benefits: [
         {
@@ -556,6 +560,48 @@ export default function Home() {
       dark: '#82e0ff',
     };
     return themeColors[theme] || '#ffffff';
+  };
+
+
+  const handleMouseMove = (e, index) => {
+    const card = cardRefs.current[index];
+    const glow = glowRefs.current[index];
+    const content = contentRefs.current[index];
+
+    if (!card || !glow || !content) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const percentX = (x - centerX) / centerX;
+    const percentY = -((y - centerY) / centerY);
+
+    card.style.transform = `perspective(1000px) rotateY(${percentX * 6}deg) rotateX(${percentY * 6}deg)`;
+    content.style.transform = `translateZ(50px)`;
+    glow.style.opacity = "1";
+    glow.style.backgroundImage = `
+      radial-gradient(
+        circle at ${x}px ${y}px, 
+        #ffffff44,
+        #0000000f
+      )
+    `;
+  };
+
+  const handleMouseLeave = (index) => {
+    const card = cardRefs.current[index];
+    const glow = glowRefs.current[index];
+    const content = contentRefs.current[index];
+
+    if (!card || !glow || !content) return;
+
+    card.style.transform = "perspective(1000px) rotateY(0deg) rotateX(0deg)";
+    content.style.transform = "translateZ(0px)";
+    glow.style.opacity = "0";
   };
 
   return (
@@ -875,7 +921,19 @@ export default function Home() {
           <div className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
               {beneficiaryGroups.map((group, index) => (
-                <div key={index} className={`border-2 border-black rounded-lg px-3 py-5 ${group.color} bg-feature-card${index + 1}-background`}>
+                <div key={index} className={`tilt-card transition-all duration-300 ease-out hover:scale-105 border-2 border-black rounded-lg px-3 py-5 ${group.color} bg-feature-card${index + 1}-background`}
+                ref={(el) => (cardRefs.current[index] = el)}
+                onMouseMove={(e) => handleMouseMove(e, index)}
+                onMouseLeave={() => handleMouseLeave(index)}
+                >
+                   <div
+            ref={(el) => (glowRefs.current[index] = el)}
+            className="glow opacity-0 transition-opacity duration-300 absolute inset-0"
+          ></div>
+          <div
+            ref={(el) => (contentRefs.current[index] = el)}
+            className="tilt-card-content p-4  h-full  relative z-10"
+          >
                   <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:md:bg-black border-black dark:md:border-white rounded-[50px] px-[5px] py-[6px]">
                     {group.title}
                   </h1>
@@ -892,6 +950,8 @@ export default function Home() {
                     ))}
                   </ul>
                 </div>
+                </div>
+               
               ))}
             </div>
 

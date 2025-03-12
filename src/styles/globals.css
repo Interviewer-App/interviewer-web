@@ -474,3 +474,17 @@ body {
   width: calc(250px * 14);
 }
 
+
+
+
+
+
+
+.tilt-card {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+}
+
+.tilt-card-content {
+  transform: translateZ(50px);
+}
