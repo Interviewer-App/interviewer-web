@@ -960,7 +960,7 @@ export default function Home() {
                 {widerAudiences.slice(0, 2).map((category, index) => (
                   <div
                     key={index}
-                    className="w-full md:w-auto inline-flex items-center justify-center text-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black rounded-[10px] md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm"
+                    className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center text-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black rounded-[10px] md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm"
                   >
                     <span className="text-black dark:text-white md:font-bold">{category.title}</span>
                   </div>
@@ -971,7 +971,7 @@ export default function Home() {
                 {widerAudiences.slice(2, 4).map((category, index) => (
                   <div
                     key={index}
-                    className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black rounded-[10px] md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center"
+                    className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black rounded-[10px] md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center"
                   >
                     <span className="text-black dark:text-white md:font-bold">{category.title}</span>
                   </div>
@@ -979,7 +979,7 @@ export default function Home() {
               </div>
 
               <div className="flex justify-center w-full">
-                <div className="w-full md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-[#FFDCC0] md:border-2 md:border-black md:dark:border-[#545454] rounded-[10px] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
+                <div className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-[#FFDCC0] md:border-2 md:border-black md:dark:border-[#545454] rounded-[10px] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
                   <span className="text-black dark:text-white md:font-bold">{widerAudiences[4].title}</span>
                 </div>
               </div>
