@@ -665,7 +665,7 @@ export default function Home() {
               <br /><br />
               Whether you are hiring, investing, or Collaborating,
               it gives you the confidence to make smart
-              decisions when evaluating someone's skills
+              decisions when evaluating someone&apos;s skills
               without needing an external expert every time.
             </p>
 
@@ -690,9 +690,9 @@ export default function Home() {
           </div>
 
           {/* Right side - Blue card taking remaining space */}
-          <div className="flex flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full flex-grow">
+          <div className="flex lg:flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 flex-col">
 
-            <div>
+            <div className="w-[28%] ">
               <h2 className="font-bold text-xl text-black m-6 mb-4">
                 How Skillchecker works?
               </h2>
@@ -701,7 +701,7 @@ export default function Home() {
                 <li className="flex items-start">
                   <span className="text-lg mr-2">•</span>
                   <span>
-                    Skillchecker evaluates
+                    Skillchecker evaluates <br></br>
                     <strong> Technical Skills </strong>
                     and gives a score
                   </span>
@@ -711,8 +711,8 @@ export default function Home() {
                   <span className="text-lg mr-2">•</span>
                   <span>
                     You evaluate soft skills, such as
-                    cultural fit, problem-solving,
-                    and teamwork, and assign a
+                    cultural fit, problem-solving,<br></br>
+                    and teamwork, and assign a <br></br>
                     score.
                   </span>
                 </li>
@@ -720,20 +720,20 @@ export default function Home() {
                 <li className="flex items-start">
                   <span className="text-lg mr-2">•</span>
                   <span>
-                    Then, Skillchecker ranks the
+                    Then, Skillchecker ranks the <br></br>
                     talent pool based on the
                     overall score.
                   </span>
                 </li>
               </ul>
 
-              <p className="text-xs text-center mx-6">
+              <p className="text-xs text-center mx-6 justify-center">
                 Play around with the interactive preview
                 on the right to see how it works in action!
               </p>
             </div>
 
-            <div>
+            <div className="w-[72%]">
             <MatterCircleStack />
             </div>
 
