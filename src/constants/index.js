@@ -210,3 +210,53 @@ export const imageUrls = [
   { name: "Owen", skillLevel: 70, technicalLevel: 82, behevioralLevel: 58, url: "/icons/emoji36.png" },
   { name: "Avery", skillLevel: 60, technicalLevel: 72, behevioralLevel: 48, url: "/icons/emoji37.png" }
 ];
+
+export const musicEmoji = [
+  { name: "Alex", skillLevel: 78, technicalLevel: 88, behevioralLevel: 68, url: "/icons/music/emoji1.png" },
+  { name: "Sophia", skillLevel: 80, technicalLevel: 90, behevioralLevel: 70, url: "/icons/music/emoji2.png" },
+  { name: "Liam", skillLevel: 77, technicalLevel: 85, behevioralLevel: 69, url: "/icons/music/emoji3.png" },
+  { name: "Emma", skillLevel: 79, technicalLevel: 92, behevioralLevel: 66, url: "/icons/music/emoji4.png" },
+  { name: "Noah", skillLevel: 76, technicalLevel: 84, behevioralLevel: 68, url: "/icons/music/emoji5.png" },
+  { name: "Olivia", skillLevel: 82, technicalLevel: 94, behevioralLevel: 70, url: "/icons/music/emoji6.png" },
+  { name: "Ethan", skillLevel: 81, technicalLevel: 93, behevioralLevel: 69, url: "/icons/music/emoji7.png" },
+  { name: "Ava", skillLevel: 77, technicalLevel: 86, behevioralLevel: 68, url: "/icons/music/emoji8.png" },
+  { name: "Mason", skillLevel: 85, technicalLevel: 95, behevioralLevel: 75, url: "/icons/music/emoji9.png" },
+  { name: "Isabella", skillLevel: 70, technicalLevel: 80, behevioralLevel: 60, url: "/icons/emusic/moji10.png" },
+]
+export const developerEmoji = [
+  { name: "James", skillLevel: 72, technicalLevel: 82, behevioralLevel: 62, url: "/icons/dev/emoji1.png" },
+  { name: "Mia", skillLevel: 73, technicalLevel: 85, behevioralLevel: 61, url: "/icons/dev/emoji2.png" },
+  { name: "Benjamin", skillLevel: 74, technicalLevel: 84, behevioralLevel: 64, url: "/icons/dev/emoji3.png" },
+  { name: "Charlotte", skillLevel: 65, technicalLevel: 75, behevioralLevel: 55, url: "/icons/dev/emoji4.png" },
+  { name: "Lucas", skillLevel: 61, technicalLevel: 71, behevioralLevel: 51, url: "/icons/dev/emoji5.png" },
+  { name: "Amelia", skillLevel: 63, technicalLevel: 73, behevioralLevel: 53, url: "/icons/dev/emoji6.png" },
+  { name: "William", skillLevel: 59, technicalLevel: 69, behevioralLevel: 49, url: "/icons/dev/emoji7.png" },
+  { name: "Harper", skillLevel: 55, technicalLevel: 65, behevioralLevel: 45, url: "/icons/dev/emoji8.png" },
+  { name: "Elijah", skillLevel: 54, technicalLevel: 64, behevioralLevel: 44, url: "/icons/dev/emoji9.png" },
+  { name: "Evelyn", skillLevel: 58, technicalLevel: 68, behevioralLevel: 48, url: "/icons/dev/emoji10.png" }
+]
+export const accountantEmoji = [
+  { name: "Scarlett", skillLevel: 30, technicalLevel: 40, behevioralLevel: 20, url: "/icons/accountant/emoji1.png" },
+  { name: "Daniel", skillLevel: 25, technicalLevel: 35, behevioralLevel: 15, url: "/icons/accountant/emoji2.png" },
+  { name: "Victoria", skillLevel: 28, technicalLevel: 38, behevioralLevel: 18, url: "/icons/accountant/emoji3.png" },
+  { name: "Matthew", skillLevel: 29, technicalLevel: 39, behevioralLevel: 19, url: "/icons/accountant/emoji4.png" },
+  { name: "Lily", skillLevel: 80, technicalLevel: 92, behevioralLevel: 68, url: "/icons/accountant/emoji5.png" },
+  { name: "Joseph", skillLevel: 82, technicalLevel: 95, behevioralLevel: 69, url: "/icons/accountant/emoji6.png" },
+  { name: "Chloe", skillLevel: 79, technicalLevel: 91, behevioralLevel: 67, url: "/icons/accountant/emoji7.png" },
+  { name: "Samuel", skillLevel: 77, technicalLevel: 90, behevioralLevel: 64, url: "/icons/accountant/emoji8.png" },
+  { name: "Aria", skillLevel: 81, technicalLevel: 94, behevioralLevel: 68, url: "/icons/accountant/emoji9.png" },
+  { name: "David", skillLevel: 76, technicalLevel: 89, behevioralLevel: 63, url: "/icons/accountant/emoji10.png" }
+]
+
+export const designerEmoji = [
+  { name: "Carter", skillLevel: 88, technicalLevel: 99, behevioralLevel: 77, url: "/icons/design/emoji1.png" },
+  { name: "Hannah", skillLevel: 75, technicalLevel: 87, behevioralLevel: 63, url: "/icons/design/emoji2.png" },
+  { name: "Owen", skillLevel: 70, technicalLevel: 82, behevioralLevel: 58, url: "/icons/design/emoji3.png" },
+  { name: "Avery", skillLevel: 60, technicalLevel: 72, behevioralLevel: 48, url: "/icons/design/emoji4.png" },
+  { name: "Jack", skillLevel: 50, technicalLevel: 60, behevioralLevel: 40, url: "/icons/design/emoji5.png" },
+  { name: "Henry", skillLevel: 45, technicalLevel: 55, behevioralLevel: 35, url: "/icons/design/emoji6.png" },
+  { name: "Ethan", skillLevel: 81, technicalLevel: 93, behevioralLevel: 69, url: "/icons/design/emoji7.png" },
+  { name: "Ava", skillLevel: 77, technicalLevel: 86, behevioralLevel: 68, url: "/icons/design/emoji8.png" },
+  { name: "Mason", skillLevel: 85, technicalLevel: 95, behevioralLevel: 75, url: "/icons/design/emoji9.png" },
+  { name: "Isabella", skillLevel: 70, technicalLevel: 80, behevioralLevel: 60, url: "/icons/edesign/moji10.png" }
+]
