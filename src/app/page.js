@@ -650,24 +650,27 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
-          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[30px] bg-title-card-background dark:bg-title-card-background dark:text-black">
-            <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
-              <span>Evaluate Skills in Any Field.</span><br />
-              <span>No Expertise Needed.</span><br />
-              {/* <span>We&apos;ve got you</span> */}
+        <div className="flex flex-col md:flex-row w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-6">
+          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black w-full md:max-w-[418px] md:min-h-[418px] flex-shrink-0">
+            <h1 className="font-bohemian-soul text-center md:text-start leading-[30px] text-[24px] md:text-[24px] md:leading-[30px] text-black dark:text-black">
+              Evaluate Skills in Any Field.
+              <br />
+              No Expertise Needed.
             </h1>
 
             <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
-            <span>The Skillchecker is an AI powered tool that helps you evaluate skills in any field,</span><br/>
-            <span>especially those outside your expertise.</span><br/><br/>
-            <span>  Whether you are hiring, investing, or partnering,</span><br/>
-              
-            <span>  it gives you the confidence to make smart decisions when evaluating someone’s skills without needing an external expert every time.</span>
-             
+              The Skillchecker is an AI powered tool that helps
+              you evaluate skills in any field, especially those
+              outside your expertise.
+              <br /><br />
+              Whether you are hiring, investing, or Collaborating,
+              it gives you the confidence to make smart
+              decisions when evaluating someone's skills
+              without needing an external expert every time.
             </p>
-            <div className="flex gap-6 pt-[15px] md:pt-[40px]">
-              <button onClick={requestDemo} className=" bg-request-demo-background hover:bg-request-demo-background-hover text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
+
+            <div className="flex gap-4 pt-[15px] md:pt-[40px] justify-between">
+              <button onClick={requestDemo} className="bg-request-demo-background hover:bg-request-demo-background-hover text-black hover:text-request-demo-text-hover py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
               {/* <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
@@ -677,7 +680,88 @@ export default function Home() {
               </button> */}
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
-                className=" relative bg-white hover:bg-gray-200 dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+                className="relative bg-white hover:bg-[#575757] hover:text-white hover:dark:text-white dark:text-black py-[12px] px-[16px] text-xs md:text-base font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+              >
+                Contact us now
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+              </a>
+            </div>
+          </div>
+
+          {/* Right side - Blue card taking remaining space */}
+          <div className="flex flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full flex-grow">
+
+            <div>
+              <h2 className="font-bold text-xl text-black m-6 mb-4">
+                How Skillchecker works?
+              </h2>
+
+              <ul className="text-sm space-y-6 mb-4 mx-6">
+                <li className="flex items-start">
+                  <span className="text-lg mr-2">•</span>
+                  <span>
+                    Skillchecker evaluates
+                    <strong> Technical Skills </strong>
+                    and gives a score
+                  </span>
+                </li>
+
+                <li className="flex items-start">
+                  <span className="text-lg mr-2">•</span>
+                  <span>
+                    You evaluate soft skills, such as
+                    cultural fit, problem-solving,
+                    and teamwork, and assign a
+                    score.
+                  </span>
+                </li>
+
+                <li className="flex items-start">
+                  <span className="text-lg mr-2">•</span>
+                  <span>
+                    Then, Skillchecker ranks the
+                    talent pool based on the
+                    overall score.
+                  </span>
+                </li>
+              </ul>
+
+              <p className="text-xs text-center mx-6">
+                Play around with the interactive preview
+                on the right to see how it works in action!
+              </p>
+            </div>
+
+            <div>
+            <MatterCircleStack />
+            </div>
+
+          </div>
+        </div>
+
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
+          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black">
+            <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
+              <span>Evaluate Skills in Any Field.</span><br />
+              <span>No Expertise Needed.</span><br />
+            </h1>
+
+            <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
+              <span>The Skillchecker is an AI powered tool that helps you evaluate skills in any field,</span><br />
+              <span>especially those outside your expertise.</span><br /><br />
+              <span>  Whether you are hiring, investing, or partnering,</span><br />
+
+              <span>  it gives you the confidence to make smart decisions when evaluating someone’s skills without needing an external expert every time.</span>
+
+            </p>
+            <div className="flex gap-6 pt-[15px] md:pt-[40px]">
+              <button onClick={requestDemo} className="bg-request-demo-background hover:bg-request-demo-background-hover text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
+                Request a Demo
+              </button>
+              <a
+                href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
+                className="relative bg-white hover:bg-gray-200 dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold inline-block border-2 border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
               >
                 Contact us now
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
@@ -689,7 +773,7 @@ export default function Home() {
           <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[10px]">
             <MatterCircleStack />
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">

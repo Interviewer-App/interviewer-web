@@ -33,7 +33,8 @@
   --benefit-card3-background: #e6f6ff;
   --benefit-card4-background: #f4e6ff;
   --request-demo-background: #e6ccff;
-  --request-demo-background-hover:#d5bdec;
+  --request-demo-background-hover:#7800E9;
+  --request-demo-text-hover:#ffffff;
 }
 
 
@@ -52,7 +53,8 @@
   --benefit-card3-background: #e6f6ff;
   --benefit-card4-background: #f4e6ff;
   --request-demo-background: #e6ccff;
-  --request-demo-background-hover:#d3bbeb;
+  --request-demo-background-hover:#EB46A6;
+  --request-demo-text-hover:#ffffff;
 }
 
 [data-theme="theme1"] {
@@ -89,7 +91,8 @@
   --benefit-card3-background: #e6f6ff;
   --benefit-card4-background: #f4e6ff;
   --request-demo-background:#e7f5fc;
-  --request-demo-background-hover:#ccdee7;
+  --request-demo-background-hover:#3CC1FF;
+  --request-demo-text-hover:#000;
 }
 
 /* Theme 4: Cool Green */
@@ -108,7 +111,8 @@
   --benefit-card3-background: #e6f6ff;
   --benefit-card4-background: #f4e6ff;
   --request-demo-background: #ccffd5;
-  --request-demo-background-hover:#b0ddb8;
+  --request-demo-background-hover:#6FFF89;
+  --request-demo-text-hover:#000;
 }
 
 /* Theme 5: Purple Haze */
@@ -127,7 +131,8 @@
   --benefit-card3-background: #e6f6ff;
   --benefit-card4-background: #f4e6ff;
   --request-demo-background: #fff4cc;
-  --request-demo-background-hover:#e4d7ab;
+  --request-demo-background-hover:#FFD231;
+  --request-demo-text-hover:#000;
 }
 
 [data-theme="theme5"] {
@@ -145,7 +150,8 @@
   --benefit-card3-background: #e6f6ff;
   --benefit-card4-background: #f4e6ff;
   --request-demo-background: #bdccff;
-  --request-demo-background-hover:#a2b1e2;
+  --request-demo-background-hover:#3060FF;
+  --request-demo-text-hover:#ffffff;
 }
 
 html {
