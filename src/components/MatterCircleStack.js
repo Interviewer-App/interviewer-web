@@ -12,6 +12,9 @@ import {
 } from "@/constants";
 import { AnimatePresence, motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
+import { FaArrowRight } from "react-icons/fa";
+import { set } from "zod";
+import { width } from "@mui/system";
 
 const getRandomLightColor = () => {
   const r = Math.random();
@@ -78,6 +81,7 @@ const MatterCircleStack = () => {
   const [analizing, setAnalizing] = useState(false);
   const [isAnimatingButton, setIsAnimatingButton] = useState(false);
   const [emojiArray, setEmojiArray] = useState(developerEmoji);
+  const [glowingEffect, setGlowingEffect] = useState(false);
   // const [dragPosition, setDragPosition] = useState(null);
   const buttons = [
     {
@@ -150,18 +154,18 @@ const MatterCircleStack = () => {
       setEmojiOralScale(emojiOralScale);
       setEmojiForce(emojiForce);
 
-      // const cornerWidth = window.innerWidth > 1024 ? 150 : 300;
-      // const cornerHeight = window.innerWidth > 1024 ? 200 : 50;
+      const cornerWidth = window.innerWidth > 1024 ? 150 : 300;
+      const cornerHeight = window.innerWidth > 1024 ? 200 : 50;
       // const bottomWidth = window.innerWidth > 1024 ? 260 : 150;
       // const bottomHeight = window.innerWidth > 1024 ? 80 : 50;
-      // const topRightWidth = window.innerWidth > 1024 ? 70 : 50;
-      // const topRightHeight = window.innerWidth > 1024 ? 70 : 100;
-      const cornerWidth = window.innerWidth > 1024 ? 70 : 50;
-      const cornerHeight = window.innerWidth > 1024 ? 70 : 100;
+      const topRightWidth = window.innerWidth > 1024 ? 70 : 50;
+      const topRightHeight = window.innerWidth > 1024 ? 70 : 100;
+      // const cornerWidth = window.innerWidth > 1024 ? 70 : 50;
+      // const cornerHeight = window.innerWidth > 1024 ? 70 : 100;
       const bottomWidth = window.innerWidth > 1024 ? 150 : 300;
       const bottomHeight = window.innerWidth > 1024 ? 110 : 50;
-      const topRightWidth = window.innerWidth > 1024 ? 150 : 300;
-      const topRightHeight = window.innerWidth > 1024 ? 200 : 50;
+      // const topRightWidth = window.innerWidth > 1024 ? 150 : 300;
+      // const topRightHeight = window.innerWidth > 1024 ? 200 : 50;
 
       setCornerWidth(cornerWidth);
       setCornerHeight(cornerHeight);
@@ -344,9 +348,11 @@ const MatterCircleStack = () => {
         const isInTopRight =
           x > dimensions.width - topRightWidth && y < topRightHeight;
         const isInBottomCenter =
-          x > dimensions.width / 2 - bottomWidth / 2 &&
+          // x > dimensions.width / 2 - bottomWidth / 2 &&
           // x < dimensions.width / 2 + bottomWidth / 2 &&
-          y > dimensions.height - bottomHeight;
+          // y > dimensions.height - bottomHeight;
+          // x < cornerWidth && y < dimensions.height /2 - cornerHeight/2;
+          x < cornerWidth && y > dimensions.height - bottomHeight / 2;
 
         if (!isInTopLeft && !isInBottomCenter && !isInTopRight) {
           isValidPosition = true;
@@ -385,7 +391,7 @@ const MatterCircleStack = () => {
     );
 
     const bottomCenterBoundary = Bodies.rectangle(
-      dimensions.width - bottomWidth / 2,
+      0 + bottomWidth / 2,
       dimensions.height - bottomHeight / 2,
       bottomWidth,
       bottomHeight,
@@ -753,18 +759,27 @@ const MatterCircleStack = () => {
     setShowResult(true);
 
     setTimeout(() => {
-      setAnimateRanking(true);
+      setLoading(false);
+      setIsRankFinished(true);
+    }, 2000);
+
+    setTimeout(() => {
+      setGlowingEffect(true);
     }, 3000);
 
-    setTimeout(() => {
-      setFirstPlace(sortEmolis[0].url);
-      setSecondPlace(sortEmolis[1].url);
-      setThirdPlace(sortEmolis[2].url);
-    }, 4300);
+    // setTimeout(() => {
+    //   setAnimateRanking(true);
+    // }, 3000);
 
-    setTimeout(() => {
-      setIsRankFinished(true);
-    }, 5000);
+    // setTimeout(() => {
+    //   setFirstPlace(sortEmolis[0].url);
+    //   setSecondPlace(sortEmolis[1].url);
+    //   setThirdPlace(sortEmolis[2].url);
+    // }, 4300);
+
+    // setTimeout(() => {
+    //   setIsRankFinished(true);
+    // }, 5000);
   };
 
   const handleButtonClick = () => {
@@ -777,15 +792,27 @@ const MatterCircleStack = () => {
   };
 
   const handleCloseRankWindow = () => {
-    setShowResult(false);
-    setAnimateRanking(false);
-    setIsRankFinished(false);
-    setLoading(false);
+    // setTimeout(() => {
+    setAnimateRanking(true);
+    // }, 3000);
+
+    setTimeout(() => {
+      setFirstPlace(selectedImage[0].url);
+      setSecondPlace(selectedImage[1].url);
+      setThirdPlace(selectedImage[2].url);
+    }, 1500);
+
+    setTimeout(() => {
+      setShowResult(false);
+      setAnimateRanking(false);
+      // setIsRankFinished(false);
+      // setLoading(false);
+    }, 2000);
   };
 
   return (
     <div
-      className="relative w-full h-full min-h-[418px] rounded-[10px]"
+      className="relative w-full h-full min-h-[418px] rounded-xl"
       id="matter-circle-stack"
       ref={containerRef}
       style={{ backgroundColor: bgColor }}
@@ -793,9 +820,16 @@ const MatterCircleStack = () => {
       <div ref={sceneRef} className="absolute inset-0" />
       {showResult && (
         <div
-          onClick={handleCloseRankWindow}
-          className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center !z-10"
+          // onClick={handleCloseRankWindow}
+          className="absolute top-0 h-full w-full bg-black/90 rounded-xl flex flex-col justify-center items-center !z-10"
         >
+          <div
+            onClick={handleCloseRankWindow}
+            className=" bg-white h-9 aspect-square cursor-pointer rounded-full flex justify-center items-center absolute left-4 bottom-4"
+          >
+            <FaArrowRight size={20} color="#000000" />
+          </div>
+
           {!analizing ? (
             <div className=" grid w-[90%] lg:w-[60%] !z-20 grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
@@ -815,18 +849,86 @@ const MatterCircleStack = () => {
                   <motion.div
                     className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center !z-10"
                     animate={{
-                      rotateY: isRankFinished && index < 3 ? [0, 360] : 0,
-                      opacity: isRankFinished && index < 3 ? [1, 1, 0.9, 0] : 1,
-                      display:
-                        isRankFinished && index < 3
-                          ? ["block", "block", "block", "none"]
-                          : "block",
+                      filter:
+                        isRankFinished && index == 0
+                          ? [
+                              "drop-shadow(0px 0px 0px #E4AF1E)",
+                              "drop-shadow(0px 0px 10px #E4AF1E)",
+                              "drop-shadow(0px 0px 20px #E4AF1E)",
+                              "drop-shadow(0px 0px 0px #E4AF1E)",
+                            ]
+                          : isRankFinished && index == 1
+                          ? [
+                              "drop-shadow(0px 0px 0px #C1C1C1)",
+                              "drop-shadow(0px 0px 10px #C1C1C1)",
+                              "drop-shadow(0px 0px 20px #C1C1C1)",
+                              "drop-shadow(0px 0px 0px #C1C1C1)",
+                            ]
+                          : isRankFinished && index == 2
+                          ? [
+                              "drop-shadow(0px 0px 0px #DA875B)",
+                              "drop-shadow(0px 0px 10px #DA875B)",
+                              "drop-shadow(0px 0px 20px #DA875B)",
+                              "drop-shadow(0px 0px 0px #DA875B)",
+                            ]
+                          : "none",
                     }}
                     transition={{
-                      duration: 1,
+                      duration: 1.5,
                       ease: "easeInOut",
                     }}
                   >
+                    <motion.div
+                      className={` ${
+                        (index < 3 ? "block" : "hidden",
+                        index == 0
+                          ? "bg-[#E4AF1E]"
+                          : index == 1
+                          ? "bg-[#C1C1C1]"
+                          : index == 2
+                          ? "bg-[#DA875B]"
+                          : "bg-transparent")
+                      } absolute top-0 w-full h-full rounded-lg`}
+                      animate={{
+                        scale:
+                          isRankFinished && index < 3 ? [1, 1.2, 0.5, 0] : 0,
+                        opacity:
+                          isRankFinished && index < 3 ? [0.1, 0.1, 0.1, 0] : 0,
+                        filter:
+                          isRankFinished && index == 0
+                            ? [
+                                "drop-shadow(0px 0px 100px #E4AF1E)",
+                                "drop-shadow(0px 0px 100px #E4AF1E)",
+                                "drop-shadow(0px 0px 200px #E4AF1E)",
+                                "drop-shadow(0px 0px 0px #E4AF1E)",
+                              ]
+                            : isRankFinished && index == 1
+                            ? [
+                                "drop-shadow(0px 0px 0px #C1C1C1)",
+                                "drop-shadow(0px 0px 100px #C1C1C1)",
+                                "drop-shadow(0px 0px 200px #C1C1C1)",
+                                "drop-shadow(0px 0px 0px #C1C1C1)",
+                              ]
+                            : isRankFinished && index == 2
+                            ? [
+                                "drop-shadow(0px 0px 0px #DA875B)",
+                                "drop-shadow(0px 0px 100px #DA875B)",
+                                "drop-shadow(0px 0px 200px #DA875B)",
+                                "drop-shadow(0px 0px 0px #DA875B)",
+                              ]
+                            : "none",
+
+                        // opacity: isRankFinished && index < 3 ? [1, 1, 0.9, 0] : 1,
+                        // display:
+                        //   isRankFinished && index < 3
+                        //     ? ["block", "block", "block", "none"]
+                        //     : "block",
+                      }}
+                      transition={{
+                        duration: 2.5,
+                        ease: "easeInOut",
+                      }}
+                    ></motion.div>
                     <div
                       className={` ${
                         index === 0
@@ -836,7 +938,7 @@ const MatterCircleStack = () => {
                           : index === 2
                           ? "bg-[#DA875B]"
                           : " text-black"
-                      } absolute top-3 left-3 text-sm lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black p-[2px]`}
+                      } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black`}
                     >
                       {index + 1}
                       <span className="text-[12px] lg:text-[10px]">
@@ -898,8 +1000,12 @@ const MatterCircleStack = () => {
                     <div className="space-y-1">
                       <div className=" w-full">
                         <div className="flex justify-between">
-                        <span className="text-black text-[8px] font-semibold">Technical</span>
-                        <span className="text-black text-[8px] font-semibold">{emoji.technicalLevel}/100</span>
+                          <span className="text-black text-[8px] font-semibold">
+                            Technical
+                          </span>
+                          <span className="text-black text-[8px] font-semibold">
+                            {emoji.technicalLevel}/100
+                          </span>
                         </div>
                         <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
                           <div
@@ -908,15 +1014,17 @@ const MatterCircleStack = () => {
                               width: `${emoji.technicalLevel}%`,
                               background: `black`,
                             }}
-                          >
-                            
-                          </div>
+                          ></div>
                         </div>
                       </div>
                       <div className=" w-full pb-2">
-                      <div className="flex justify-between">
-                        <span className="text-black text-[8px] font-semibold">Behevioral</span>
-                        <span className="text-black text-[8px] font-semibold">{emoji.technicalLevel}/100</span>
+                        <div className="flex justify-between">
+                          <span className="text-black text-[8px] font-semibold">
+                            Behevioral
+                          </span>
+                          <span className="text-black text-[8px] font-semibold">
+                            {emoji.behevioralLevel}/100
+                          </span>
                         </div>
                         <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
                           <div
@@ -925,36 +1033,51 @@ const MatterCircleStack = () => {
                               width: `${emoji.behevioralLevel}%`,
                               background: `black`,
                             }}
-                          >
-                          </div>
+                          ></div>
                         </div>
                       </div>
-                 
-                    <div className="bg-[#C2C2C2] rounded-md p-2">
-                    <div className="flex justify-between">
-                        <span className="text-black text-[8px] font-semibold">Overall Score</span>
-                        <span className="text-black text-[8px] font-semibold">{emoji.technicalLevel}/100</span>
+
+                      <div className="bg-[#C2C2C2] rounded-md p-2">
+                        <div className="flex justify-between">
+                          <span className="text-black text-[8px] font-semibold">
+                            Overall Score
+                          </span>
+                          <span className="text-black text-[8px] font-semibold">
+                            {emoji.skillLevel}/100
+                          </span>
                         </div>
-                      <div className="w-full h-2 lg:h-[7px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-white rounded-full overflow-hidden ">
                         <div
-                          className="h-full rounded-full pt-[1px]"
                           style={{
-                            width: `${emoji.skillLevel}%`,
-                            background: `linear-gradient(to right, red, ${
-                              emoji.skillLevel <= 25
-                                ? "red"
-                                : emoji.skillLevel <= 65
-                                ? "orange, yellow"
-                                : emoji.skillLevel <= 80
-                                ? "orange, yellow, green"
-                                : "orange, yellow, green, green"
-                            })`,
+                            background: `linear-gradient(to right, red, orange, yellow, green`,
                           }}
+                          className="w-full h-2 lg:h-[7px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-black rounded-full overflow-hidden "
                         >
-                         
+                          <div
+                            className="h-full pt-[1px]"
+                            // style={{
+                            //   width: `${emoji.skillLevel}%`,
+                            //   background: `linear-gradient(to right, red, ${
+                            //     emoji.skillLevel <= 25
+                            //       ? "red"
+                            //       : emoji.skillLevel <= 65
+                            //       ? "orange, yellow"
+                            //       : emoji.skillLevel <= 80
+                            //       ? "orange, yellow, green"
+                            //       : "orange, yellow, green, green"
+                            //   })`,
+                            // }}
+                            style={{
+                              width: `${100 - emoji.skillLevel}%`,
+                              backgroundColor: "#030303",
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              height: "100%",
+                              transition: "width 0.5s ease-in-out",
+                            }}
+                          ></div>
                         </div>
                       </div>
-                    </div>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -981,7 +1104,7 @@ const MatterCircleStack = () => {
       {isEmojiClicked && (
         <div
           onClick={() => setIsEmojiClicked(false)}
-          className="absolute top-0 h-full w-full bg-black text-8xl flex flex-col justify-center items-center"
+          className="absolute top-0 h-full w-full bg-black rounded-xl text-8xl flex flex-col justify-center items-center"
         >
           <motion.div
             className=" w-[45%] lg:w-[40%] max-w-[200px] text-black min-w-[200px] lg:min-w-[250px] lg:max-w-[300px] bg-[#FFFFFF] border-2 border-white rounded-lg p-3 lg:p-5 flex flex-col items-center "
@@ -1057,7 +1180,7 @@ const MatterCircleStack = () => {
               >
                 <div
                   style={{
-                    width: `${100 - selectedSkillLevel}%`, // The white part should cover the remaining percentage
+                    width: `${100 - selectedSkillLevel}%`,
                     backgroundColor: "#030303",
                     position: "absolute",
                     top: 0,
@@ -1084,7 +1207,7 @@ const MatterCircleStack = () => {
           className="p-3 rounded-full shadow-lg hover:bg-gray-100 transition"
           style={{ backgroundColor: buttonColor }}
         >
-             <PiHandPointing size={22} color="#FFFFFF" />
+          <PiHandPointing size={22} color="#FFFFFF" />
           {/* <LuPaintbrush size={22} color="#FFFFFF" /> */}
         </button>
         {!animateRanking && (
@@ -1186,7 +1309,7 @@ const MatterCircleStack = () => {
             )}
           </div>
         </div>
-        <div className=" lg:mb-[2px] relative h-8 lg:h-10 flex justify-center items-center">
+        <div className=" lg:mb-[4px] relative h-8 lg:h-10 flex justify-center items-center">
           {/* <div className="rounded-full z-50 absolute top-0 left-0 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
             3
             <span className=" align-super -top-1 relative text-[8px] lg:text-xs">
@@ -1217,7 +1340,9 @@ const MatterCircleStack = () => {
         {!animateRanking && (
           <div
             onClick={handleSearchClick}
-            className=" hidden bg-black rounded-full font-semibold text-white text-center text-xs w-[105px] cursor-pointer h-9 lg:flex justify-center items-center"
+            className={` hidden ${
+              showResult ? " bg-[#EAEAEA] text-black" : "bg-black text-white"
+            } rounded-full font-semibold text-center text-xs w-[105px] cursor-pointer h-9 lg:flex justify-center items-center`}
           >
             {loading ? (
               <LoaderCircle className="animate-spin" />
