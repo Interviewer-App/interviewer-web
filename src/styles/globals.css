@@ -488,3 +488,39 @@ body {
 .tilt-card-content {
   transform: translateZ(50px);
 }
+
+
+
+
+
+.card-shine{
+    /* z-index:400; */
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-shine::before  {
+    position: absolute;
+    top: 0;
+    /* left: -50%; */
+    z-index: 3;
+    display: block;
+    content: '';
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 20, 20, 0) 0%, rgba(158, 96, 96, 0.3) 100%);
+    transform: skewX(-25deg);
+    animation: shine 4s infinite;
+}
+
+@keyframes shine {
+  0%{
+    transform: skewX(-25deg);
+    left: -100%;
+  }
+  100% {
+    transform: skewX(-25deg);
+    left: 100%;
+  }
+}

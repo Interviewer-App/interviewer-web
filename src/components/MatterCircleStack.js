@@ -833,8 +833,9 @@ const MatterCircleStack = () => {
           {!analizing ? (
             <div className=" grid w-[90%] lg:w-[60%] grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
+                <div className="card-shine" key={index}>
                 <motion.div
-                  key={index}
+                  
                   className=" w-full "
                   animate={{
                     opacity: [0, 1],
@@ -846,6 +847,7 @@ const MatterCircleStack = () => {
                     ease: "easeInOut",
                   }}
                 >
+
                   <motion.div
                     className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center"
                     animate={{
@@ -878,6 +880,8 @@ const MatterCircleStack = () => {
                       ease: "easeInOut",
                     }}
                   >
+                    {/* <div className="card-shine"></div> */}
+
                     <motion.div
                       className={` ${
                         (index < 3 ? "block" : "hidden",
@@ -997,6 +1001,7 @@ const MatterCircleStack = () => {
                       }}
                     />
 
+
                     <div className="space-y-1">
                       <div className=" w-full">
                         <div className="flex justify-between">
@@ -1081,6 +1086,7 @@ const MatterCircleStack = () => {
                     </div>
                   </motion.div>
                 </motion.div>
+                </div>
               ))}
             </div>
           ) : (
