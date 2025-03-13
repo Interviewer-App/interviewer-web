@@ -745,7 +745,7 @@ export default function Home() {
             </div>
 
             <div className=" w-full lg:w-[243px] bg-[#FFFFFF] rounded-xl justify-center">
-              <h2 className="font-bold text-black mb-8 mt-10 text-center text-2xl">
+              <h2 className="font-bold text-black mb-8 mt-8 text-center text-2xl">
                 How Skillchecker works?
               </h2>
 
