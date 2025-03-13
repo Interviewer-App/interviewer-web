@@ -981,8 +981,8 @@ export default function Home() {
               </div>
 
               <div className="flex justify-center w-full">
-                <div className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-[#FFDCC0] md:border-2 md:border-black md:dark:border-[#545454] rounded-[10px] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
-                  <span className="text-black dark:text-white md:font-bold">{widerAudiences[4].title}</span>
+                <div className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#f4f4f4] dark:text-black text-black md:bg-[#FFDCC0] md:border-2 md:border-black md:dark:border-[#545454] rounded-[10px] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
+                  <span className=" md:font-bold">{widerAudiences[4].title}</span>
                 </div>
               </div>
             </div>
