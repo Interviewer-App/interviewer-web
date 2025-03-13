@@ -744,16 +744,16 @@ export default function Home() {
               <MatterCircleStack />
             </div>
 
-            <div className=" w-full lg:w-[28%] bg-[#FFFFFF] rounded-xl">
-              <h2 className="font-bold text-xl text-black m-6 mb-4">
+            <div className=" w-full lg:w-[28%] bg-[#FFFFFF] rounded-xl justify-center">
+              <h2 className="font-bold text-lg text-black m-6 mb-4 text-center">
                 How Skillchecker works?
               </h2>
 
-              <ul className="text-sm space-y-6 mb-4 mx-6">
+              <ul className="text-sm space-y-1 mb-4 mx-4">
                 <li className="flex items-start">
                   <span className="text-lg mr-2">•</span>
                   <span>
-                    Skillchecker evaluates <br></br>
+                    Skillchecker evaluates
                     <strong> Technical Skills </strong>
                     and gives a score
                   </span>
@@ -763,8 +763,8 @@ export default function Home() {
                   <span className="text-lg mr-2">•</span>
                   <span>
                     You evaluate soft skills, such as
-                    cultural fit, problem-solving,<br></br>
-                    and teamwork, and assign a <br></br>
+                    cultural fit, problem-solving,
+                    and teamwork, and assign a 
                     score.
                   </span>
                 </li>
@@ -779,7 +779,7 @@ export default function Home() {
                 </li>
               </ul>
 
-              <p className="text-xs text-center mx-6 justify-center">
+              <p className="text-xs text-center mx-6 justify-center font-semibold">
                 Play around with the interactive preview
                 on the right to see how it works in action!
               </p>
