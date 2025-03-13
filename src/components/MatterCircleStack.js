@@ -827,11 +827,11 @@ const MatterCircleStack = () => {
                     <div
                       className={` ${
                         index === 0
-                          ? " bg-[#f1b612]"
+                          ? " bg-[#E4AF1E]"
                           : index === 1
-                          ? "bg-[#B5B5B5]"
+                          ? "bg-[#C1C1C1]"
                           : index === 2
-                          ? "bg-[#CD8648]"
+                          ? "bg-[#DA875B]"
                           : " text-black"
                       } absolute top-3 left-3 text-sm lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black p-[2px]`}
                     >
@@ -853,7 +853,7 @@ const MatterCircleStack = () => {
                       ref={(el) => (emojiRefs.current[index] = el)}
                       src={emoji.url}
                       alt="Selected Image"
-                      className="absolute  mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4 !z-50"
+                      className=" mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4 !z-50"
                       animate={{
                         x:
                           animateRanking && index === 0
