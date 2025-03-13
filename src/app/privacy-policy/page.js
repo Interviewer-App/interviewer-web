@@ -208,7 +208,7 @@ export default function PrivacyPolicy() {
                     <section>
                         <h2 className="font-bold mb-2 text-base">Introduction</h2>
                         <p>
-                            SkillChecker ("Service"), a product of Coullax ("Company," "we," "our," or "us"), is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our Service. By accessing or using SkillChecker, you agree to the terms of this Privacy Policy.
+                            SkillChecker &#40;&apos;Service&apos;&#41;, a product of Coullax &#40;&apos;Company,&apos; &apos;we,&apos; &apos;our,&apos; or &apos;us&apos;&#41;, is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our Service. By accessing or using SkillChecker, you agree to the terms of this Privacy Policy.
                         </p>
                     </section>
 
