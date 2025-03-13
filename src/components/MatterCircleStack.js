@@ -833,165 +833,57 @@ const MatterCircleStack = () => {
           {!analizing ? (
             <div className=" grid w-[90%] lg:w-[60%] grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
-                <div className="card-shine" key={index}>
-                <motion.div
-                  
-                  className=" w-full "
-                  animate={{
-                    opacity: [0, 1],
-                    scale: [0.5, 1],
-                    rotateX: [90, 0],
-                  }}
-                  transition={{
-                    duration: 0.8,
-                    ease: "easeInOut",
-                  }}
+                <div
+                  className={` ${index < 3 ? "card-shine" : ""} ${
+                    index == 0
+                      ? "card-shine1"
+                      : index == 1
+                      ? "card-shine2"
+                      : index == 2
+                      ? "card-shine3"
+                      : ""
+                  }`}
+                  // style={{
+                  //   background: 'linear-gradient(to right, rgba(255, 20, 20, 0) 0%, rgba(158, 96, 96, 0.3) 100%)'
+                  // }}
+                  key={index}
                 >
-
                   <motion.div
-                    className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center"
+                    className=" w-full "
                     animate={{
-                      filter:
-                        isRankFinished && index == 0
-                          ? [
-                              "drop-shadow(0px 0px 0px #E4AF1E)",
-                              "drop-shadow(0px 0px 10px #E4AF1E)",
-                              "drop-shadow(0px 0px 20px #E4AF1E)",
-                              "drop-shadow(0px 0px 0px #E4AF1E)",
-                            ]
-                          : isRankFinished && index == 1
-                          ? [
-                              "drop-shadow(0px 0px 0px #C1C1C1)",
-                              "drop-shadow(0px 0px 10px #C1C1C1)",
-                              "drop-shadow(0px 0px 20px #C1C1C1)",
-                              "drop-shadow(0px 0px 0px #C1C1C1)",
-                            ]
-                          : isRankFinished && index == 2
-                          ? [
-                              "drop-shadow(0px 0px 0px #DA875B)",
-                              "drop-shadow(0px 0px 10px #DA875B)",
-                              "drop-shadow(0px 0px 20px #DA875B)",
-                              "drop-shadow(0px 0px 0px #DA875B)",
-                            ]
-                          : "none",
+                      opacity: [0, 1],
+                      scale: [0.5, 1],
+                      rotateX: [90, 0],
                     }}
                     transition={{
-                      duration: 1.5,
+                      duration: 0.8,
                       ease: "easeInOut",
                     }}
                   >
-                    {/* <div className="card-shine"></div> */}
-
                     <motion.div
-                      className={` ${
-                        (index < 3 ? "block" : "hidden",
-                        index == 0
-                          ? "bg-[#E4AF1E]"
-                          : index == 1
-                          ? "bg-[#C1C1C1]"
-                          : index == 2
-                          ? "bg-[#DA875B]"
-                          : "bg-transparent")
-                      } absolute top-0 w-full h-full rounded-lg`}
+                      className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center"
                       animate={{
-                        scale:
-                          isRankFinished && index < 3 ? [1, 1.2, 0.5, 0] : 0,
-                        opacity:
-                          isRankFinished && index < 3 ? [0.1, 0.2, 0.1, 0] : 0,
                         filter:
                           isRankFinished && index == 0
                             ? [
-                                "drop-shadow(0px 0px 100px #E4AF1E)",
-                                "drop-shadow(0px 0px 100px #E4AF1E)",
-                                "drop-shadow(0px 0px 200px #E4AF1E)",
+                                "drop-shadow(0px 0px 0px #E4AF1E)",
+                                "drop-shadow(0px 0px 10px #E4AF1E)",
+                                "drop-shadow(0px 0px 20px #E4AF1E)",
                                 "drop-shadow(0px 0px 0px #E4AF1E)",
                               ]
                             : isRankFinished && index == 1
                             ? [
                                 "drop-shadow(0px 0px 0px #C1C1C1)",
-                                "drop-shadow(0px 0px 100px #C1C1C1)",
-                                "drop-shadow(0px 0px 200px #C1C1C1)",
+                                "drop-shadow(0px 0px 10px #C1C1C1)",
+                                "drop-shadow(0px 0px 20px #C1C1C1)",
                                 "drop-shadow(0px 0px 0px #C1C1C1)",
                               ]
                             : isRankFinished && index == 2
                             ? [
                                 "drop-shadow(0px 0px 0px #DA875B)",
-                                "drop-shadow(0px 0px 100px #DA875B)",
-                                "drop-shadow(0px 0px 200px #DA875B)",
+                                "drop-shadow(0px 0px 10px #DA875B)",
+                                "drop-shadow(0px 0px 20px #DA875B)",
                                 "drop-shadow(0px 0px 0px #DA875B)",
-                              ]
-                            : "none",
-
-                        // opacity: isRankFinished && index < 3 ? [1, 1, 0.9, 0] : 1,
-                        // display:
-                        //   isRankFinished && index < 3
-                        //     ? ["block", "block", "block", "none"]
-                        //     : "block",
-                      }}
-                      transition={{
-                        duration: 3.5,
-                        ease: "easeInOut",
-                      }}
-                    ></motion.div>
-                    <div
-                      className={` ${
-                        index === 0
-                          ? " bg-[#E4AF1E]"
-                          : index === 1
-                          ? "bg-[#C1C1C1]"
-                          : index === 2
-                          ? "bg-[#DA875B]"
-                          : " text-black"
-                      } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square text-[8px] lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black`}
-                    >
-                      {index + 1}
-                      <span className="text-[8px] lg:text-[10px]">
-                        {index === 0
-                          ? "st"
-                          : index === 1
-                          ? "nd"
-                          : index === 2
-                          ? "rd"
-                          : index === 3
-                          ? "th"
-                          : "th"}
-                      </span>
-                    </div>
-
-                    <motion.img
-                      ref={(el) => (emojiRefs.current[index] = el)}
-                      src={emoji.url}
-                      alt="Selected Image"
-                      className=" mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4"
-                      animate={{
-                        x:
-                          animateRanking && index === 0
-                            ? firstBoxPosition.x - positions[0]?.x
-                            : animateRanking && index === 1
-                            ? secondBoxPosition.x - positions[1]?.x
-                            : animateRanking && index === 2
-                            ? thridBoxPosition.x - positions[2]?.x
-                            : 0,
-                        y:
-                          animateRanking && index === 0
-                            ? firstBoxPosition.y - positions[0]?.y
-                            : animateRanking && index === 1
-                            ? secondBoxPosition.y - positions[1]?.y
-                            : animateRanking && index === 2
-                            ? thridBoxPosition.y - positions[2]?.y
-                            : 0,
-                        scale:
-                          animateRanking && index < 3 ? [1, 1.2, 0.8, 1] : 1,
-                        opacity:
-                          animateRanking && index < 3 ? [1, 1, 0.9, 0] : 1,
-                        zIndex: 1000,
-                        filter:
-                          animateRanking && index < 3
-                            ? [
-                                "drop-shadow(0px 0px 0px gold)",
-                                "drop-shadow(0px 0px 10px gold)",
-                                "drop-shadow(0px 0px 20px gold)",
-                                "drop-shadow(0px 0px 0px gold)",
                               ]
                             : "none",
                       }}
@@ -999,93 +891,214 @@ const MatterCircleStack = () => {
                         duration: 1.5,
                         ease: "easeInOut",
                       }}
-                    />
+                    >
+                      {/* <div className="card-shine"></div> */}
 
+                      <motion.div
+                        className={` ${
+                          (index < 3 ? "block" : "hidden",
+                          index == 0
+                            ? "bg-[#E4AF1E]"
+                            : index == 1
+                            ? "bg-[#C1C1C1]"
+                            : index == 2
+                            ? "bg-[#DA875B]"
+                            : "bg-transparent")
+                        } absolute top-0 w-full h-full rounded-lg`}
+                        animate={{
+                          scale:
+                            isRankFinished && index < 3 ? [1, 1.2, 0.5, 0] : 0,
+                          opacity:
+                            isRankFinished && index < 3
+                              ? [0.1, 0.2, 0.1, 0]
+                              : 0,
+                          filter:
+                            isRankFinished && index == 0
+                              ? [
+                                  "drop-shadow(0px 0px 100px #E4AF1E)",
+                                  "drop-shadow(0px 0px 100px #E4AF1E)",
+                                  "drop-shadow(0px 0px 200px #E4AF1E)",
+                                  "drop-shadow(0px 0px 0px #E4AF1E)",
+                                ]
+                              : isRankFinished && index == 1
+                              ? [
+                                  "drop-shadow(0px 0px 0px #C1C1C1)",
+                                  "drop-shadow(0px 0px 100px #C1C1C1)",
+                                  "drop-shadow(0px 0px 200px #C1C1C1)",
+                                  "drop-shadow(0px 0px 0px #C1C1C1)",
+                                ]
+                              : isRankFinished && index == 2
+                              ? [
+                                  "drop-shadow(0px 0px 0px #DA875B)",
+                                  "drop-shadow(0px 0px 100px #DA875B)",
+                                  "drop-shadow(0px 0px 200px #DA875B)",
+                                  "drop-shadow(0px 0px 0px #DA875B)",
+                                ]
+                              : "none",
 
-                    <div className="space-y-1">
-                      <div className=" w-full">
-                        <div className="flex justify-between">
-                          <span className="text-black text-[8px] font-semibold">
-                            Technical
-                          </span>
-                          <span className="text-black text-[8px] font-semibold">
-                            {emoji.technicalLevel}/100
-                          </span>
+                          // opacity: isRankFinished && index < 3 ? [1, 1, 0.9, 0] : 1,
+                          // display:
+                          //   isRankFinished && index < 3
+                          //     ? ["block", "block", "block", "none"]
+                          //     : "block",
+                        }}
+                        transition={{
+                          duration: 3.5,
+                          ease: "easeInOut",
+                        }}
+                      ></motion.div>
+                      <div
+                        className={` ${
+                          index == 0
+                            ? " bg-[#E4AF1E]"
+                            : index == 1
+                            ? "bg-[#C1C1C1]"
+                            : index == 2
+                            ? "bg-[#DA875B]"
+                            : " text-black"
+                        } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square text-[8px] lg:text-[10px] font-semibold lg:font-bold rounded-full border-2 border-black`}
+                      >
+                        {index + 1}
+                        <span className="text-[8px] lg:text-[10px]">
+                          {index === 0
+                            ? "st"
+                            : index === 1
+                            ? "nd"
+                            : index === 2
+                            ? "rd"
+                            : index === 3
+                            ? "th"
+                            : "th"}
+                        </span>
+                      </div>
+
+                      <motion.img
+                        ref={(el) => (emojiRefs.current[index] = el)}
+                        src={emoji.url}
+                        alt="Selected Image"
+                        className=" mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4"
+                        animate={{
+                          x:
+                            animateRanking && index === 0
+                              ? firstBoxPosition.x - positions[0]?.x
+                              : animateRanking && index === 1
+                              ? secondBoxPosition.x - positions[1]?.x
+                              : animateRanking && index === 2
+                              ? thridBoxPosition.x - positions[2]?.x
+                              : 0,
+                          y:
+                            animateRanking && index === 0
+                              ? firstBoxPosition.y - positions[0]?.y
+                              : animateRanking && index === 1
+                              ? secondBoxPosition.y - positions[1]?.y
+                              : animateRanking && index === 2
+                              ? thridBoxPosition.y - positions[2]?.y
+                              : 0,
+                          scale:
+                            animateRanking && index < 3 ? [1, 1.2, 0.8, 1] : 1,
+                          opacity:
+                            animateRanking && index < 3 ? [1, 1, 0.9, 0] : 1,
+                          zIndex: 1000,
+                          filter:
+                            animateRanking && index < 3
+                              ? [
+                                  "drop-shadow(0px 0px 0px gold)",
+                                  "drop-shadow(0px 0px 10px gold)",
+                                  "drop-shadow(0px 0px 20px gold)",
+                                  "drop-shadow(0px 0px 0px gold)",
+                                ]
+                              : "none",
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          ease: "easeInOut",
+                        }}
+                      />
+
+                      <div className="space-y-1">
+                        <div className=" w-full">
+                          <div className="flex justify-between">
+                            <span className="text-black text-[8px] font-semibold">
+                              Technical
+                            </span>
+                            <span className="text-black text-[8px] font-semibold">
+                              {emoji.technicalLevel}/100
+                            </span>
+                          </div>
+                          <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full pt-[2px]"
+                              style={{
+                                width: `${emoji.technicalLevel}%`,
+                                background: `black`,
+                              }}
+                            ></div>
+                          </div>
                         </div>
-                        <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
+                        <div className=" w-full pb-2">
+                          <div className="flex justify-between">
+                            <span className="text-black text-[8px] font-semibold">
+                              Behevioral
+                            </span>
+                            <span className="text-black text-[8px] font-semibold">
+                              {emoji.behevioralLevel}/100
+                            </span>
+                          </div>
+                          <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full pt-[2px]"
+                              style={{
+                                width: `${emoji.behevioralLevel}%`,
+                                background: `black`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+
+                        <div className="bg-[#C2C2C2] rounded-md p-2">
+                          <div className="flex justify-between">
+                            <span className="text-black text-[8px] font-semibold">
+                              Overall Score
+                            </span>
+                            <span className="text-black text-[8px] font-semibold">
+                              {emoji.skillLevel}/100
+                            </span>
+                          </div>
                           <div
-                            className="h-full rounded-full pt-[2px]"
                             style={{
-                              width: `${emoji.technicalLevel}%`,
-                              background: `black`,
+                              background: `linear-gradient(to right, red, orange, yellow, green`,
                             }}
-                          ></div>
+                            className="w-full h-2 lg:h-[7px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-black rounded-full overflow-hidden "
+                          >
+                            <div
+                              className="h-full pt-[1px]"
+                              // style={{
+                              //   width: `${emoji.skillLevel}%`,
+                              //   background: `linear-gradient(to right, red, ${
+                              //     emoji.skillLevel <= 25
+                              //       ? "red"
+                              //       : emoji.skillLevel <= 65
+                              //       ? "orange, yellow"
+                              //       : emoji.skillLevel <= 80
+                              //       ? "orange, yellow, green"
+                              //       : "orange, yellow, green, green"
+                              //   })`,
+                              // }}
+                              style={{
+                                width: `${100 - emoji.skillLevel}%`,
+                                backgroundColor: "#030303",
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                                height: "100%",
+                                transition: "width 0.5s ease-in-out",
+                              }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                      <div className=" w-full pb-2">
-                        <div className="flex justify-between">
-                          <span className="text-black text-[8px] font-semibold">
-                            Behevioral
-                          </span>
-                          <span className="text-black text-[8px] font-semibold">
-                            {emoji.behevioralLevel}/100
-                          </span>
-                        </div>
-                        <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full pt-[2px]"
-                            style={{
-                              width: `${emoji.behevioralLevel}%`,
-                              background: `black`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="bg-[#C2C2C2] rounded-md p-2">
-                        <div className="flex justify-between">
-                          <span className="text-black text-[8px] font-semibold">
-                            Overall Score
-                          </span>
-                          <span className="text-black text-[8px] font-semibold">
-                            {emoji.skillLevel}/100
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            background: `linear-gradient(to right, red, orange, yellow, green`,
-                          }}
-                          className="w-full h-2 lg:h-[7px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-black rounded-full overflow-hidden "
-                        >
-                          <div
-                            className="h-full pt-[1px]"
-                            // style={{
-                            //   width: `${emoji.skillLevel}%`,
-                            //   background: `linear-gradient(to right, red, ${
-                            //     emoji.skillLevel <= 25
-                            //       ? "red"
-                            //       : emoji.skillLevel <= 65
-                            //       ? "orange, yellow"
-                            //       : emoji.skillLevel <= 80
-                            //       ? "orange, yellow, green"
-                            //       : "orange, yellow, green, green"
-                            //   })`,
-                            // }}
-                            style={{
-                              width: `${100 - emoji.skillLevel}%`,
-                              backgroundColor: "#030303",
-                              position: "absolute",
-                              top: 0,
-                              right: 0,
-                              height: "100%",
-                              transition: "width 0.5s ease-in-out",
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
                 </div>
               ))}
             </div>
@@ -1347,7 +1360,9 @@ const MatterCircleStack = () => {
           <div
             onClick={handleSearchClick}
             className={` hidden ${
-              showResult || isEmojiClicked ? " bg-[#EAEAEA] text-black" : "bg-black text-white"
+              showResult || isEmojiClicked
+                ? " bg-[#EAEAEA] text-black"
+                : "bg-black text-white"
             } rounded-full font-semibold text-center text-xs w-[105px] cursor-pointer h-9 lg:flex justify-center items-center`}
           >
             {loading ? (
