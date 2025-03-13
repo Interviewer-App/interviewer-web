@@ -509,9 +509,19 @@ body {
     content: '';
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255, 20, 20, 0) 0%, rgba(158, 96, 96, 0.3) 100%);
+    /* background: linear-gradient(to right, rgba(255, 20, 20, 0) 0%, rgba(158, 96, 96, 0.3) 100%); */
     transform: skewX(-25deg);
     animation: shine 4s infinite;
+}
+
+.card-shine1::before{
+    background: linear-gradient(to right, rgba(228, 175, 30, 0) 0%, rgba(228, 175, 30, 0.3) 100%);
+}
+.card-shine2::before{
+    background: linear-gradient(to right, rgb(193, 193, 193, 0) 0%, rgba(193, 193, 193, 0.3) 100%);
+}
+.card-shine3::before{
+    background: linear-gradient(to right, rgb(218, 135, 91, 0) 0%, rgba(218, 135, 91, 0.3) 100%);
 }
 
 @keyframes shine {
