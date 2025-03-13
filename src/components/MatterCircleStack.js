@@ -821,7 +821,7 @@ const MatterCircleStack = () => {
       {showResult && (
         <div
           // onClick={handleCloseRankWindow}
-          className="absolute top-0 h-full w-full bg-black/90 rounded-xl flex flex-col justify-center items-center !z-20"
+          className="absolute top-0 h-full w-full bg-black rounded-xl flex flex-col justify-center items-center !z-20"
         >
           <div
             onClick={handleCloseRankWindow}
