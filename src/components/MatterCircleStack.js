@@ -833,23 +833,25 @@ const MatterCircleStack = () => {
           {!analizing ? (
             <div className=" grid w-[90%] lg:w-[60%] grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
-                <div
-                  className={` ${index < 3 ? "card-shine" : ""} ${
-                    index == 0
-                      ? "card-shine1"
-                      : index == 1
-                      ? "card-shine2"
-                      : index == 2
-                      ? "card-shine3"
-                      : ""
-                  }`}
-                  // style={{
-                  //   background: 'linear-gradient(to right, rgba(255, 20, 20, 0) 0%, rgba(158, 96, 96, 0.3) 100%)'
-                  // }}
-                  key={index}
-                >
+                // <div
+                //   className={` ${index < 3 ? "card-shine" : ""} ${
+                //     index == 0
+                //       ? "card-shine1"
+                //       : index == 1
+                //       ? "card-shine2"
+                //       : index == 2
+                //       ? "card-shine3"
+                //       : ""
+                //   }`}
+                //   // style={{
+                //   //   background: 'linear-gradient(to right, rgba(255, 20, 20, 0) 0%, rgba(158, 96, 96, 0.3) 100%)'
+                //   // }}
+                //   key={index}
+                // >
+                
                   <motion.div
                     className=" w-full "
+                    key={index}
                     animate={{
                       opacity: [0, 1],
                       scale: [0.5, 1],
@@ -895,7 +897,7 @@ const MatterCircleStack = () => {
                       {/* <div className="card-shine"></div> */}
 
                       <motion.div
-                        className={` ${
+                        className={`${
                           (index < 3 ? "block" : "hidden",
                           index == 0
                             ? "bg-[#E4AF1E]"
@@ -947,6 +949,15 @@ const MatterCircleStack = () => {
                           ease: "easeInOut",
                         }}
                       ></motion.div>
+                      <div className={`${index < 3 ? "card-shine" : ""} ${
+                          index == 0
+                            ? "card-shine1"
+                            : index == 1
+                            ? "card-shine2"
+                            : index == 2
+                            ? "card-shine3"
+                            : ""
+                        } absolute top-0 left-0 !z-50 w-full h-full`}></div>
                       <div
                         className={` ${
                           index == 0
@@ -1099,7 +1110,7 @@ const MatterCircleStack = () => {
                       </div>
                     </motion.div>
                   </motion.div>
-                </div>
+                // </div>
               ))}
             </div>
           ) : (

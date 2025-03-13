@@ -496,7 +496,7 @@ body {
 .card-shine{
     /* z-index:400; */
     margin: 0;
-    position: relative;
+    /* position: relative; */
     overflow: hidden;
 }
 
