@@ -736,43 +736,43 @@ export default function Home() {
           </div>
 
           {/* Right side - Blue card taking remaining space */}
-          <div className="flex lg:flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 flex-col text-black space-x-2">
+          <div className="flex lg:flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 flex-col text-black justify-between">
 
 
 
-            <div className=" w-full lg:w-[72%]">
+            <div className=" w-full lg:w-[769px]">
               <MatterCircleStack />
             </div>
 
-            <div className=" w-full lg:w-[28%] bg-[#FFFFFF] rounded-xl justify-center">
-              <h2 className="font-bold text-lg text-black m-6 mb-4 text-center">
+            <div className=" w-full lg:w-[243px] bg-[#FFFFFF] rounded-xl justify-center">
+              <h2 className="font-bold text-black mb-8 mt-10 text-center text-2xl">
                 How Skillchecker works?
               </h2>
 
-              <ul className="text-sm space-y-1 mb-4 mx-4">
+              <ul className="text-xs space-y-4 mb-9 mx-4 font-semibold ">
                 <li className="flex items-start">
-                  <span className="text-lg mr-2">•</span>
+                  <span className="text-xs mr-1">1.</span>
                   <span>
                     Skillchecker evaluates
-                    <strong> Technical Skills </strong>
+                    Technical Skills
                     and gives a score
                   </span>
                 </li>
 
                 <li className="flex items-start">
-                  <span className="text-lg mr-2">•</span>
+                  <span className="text-xs mr-1">2.</span>
                   <span>
                     You evaluate soft skills, such as
                     cultural fit, problem-solving,
-                    and teamwork, and assign a 
+                    and teamwork, and assign a
                     score.
                   </span>
                 </li>
 
                 <li className="flex items-start">
-                  <span className="text-lg mr-2">•</span>
+                  <span className="text-xs mr-1">3.</span>
                   <span>
-                    Then, Skillchecker ranks the <br></br>
+                    Then, Skillchecker ranks the
                     talent pool based on the
                     overall score.
                   </span>
