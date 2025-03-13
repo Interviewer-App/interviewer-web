@@ -736,16 +736,16 @@ export default function Home() {
           </div>
 
           {/* Right side - Blue card taking remaining space */}
-          <div className="flex lg:flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 flex-col text-black justify-between">
+          <div className="flex lg:flex-row border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 flex-col text-black justify-between space-y-4 lg:space-y-0">
 
 
 
-            <div className=" w-full lg:w-[769px]">
+            <div className=" w-full md:max-w-[769px] ">
               <MatterCircleStack />
             </div>
 
             <div className=" w-full lg:w-[243px] bg-[#FFFFFF] rounded-xl justify-center">
-              <h2 className="font-bold text-black mb-10 mt-8 text-center text-2xl">
+              <h2 className="font-bold text-black mb- mt-8 text-center text-2xl">
                 How Skillchecker works?
               </h2>
 
