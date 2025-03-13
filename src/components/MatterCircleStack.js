@@ -812,7 +812,7 @@ const MatterCircleStack = () => {
 
   return (
     <div
-      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-xl"
+      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-[7px]"
       id="matter-circle-stack"
       ref={containerRef}
       style={{ backgroundColor: bgColor }}
@@ -850,7 +850,7 @@ const MatterCircleStack = () => {
                 // >
                 
                   <motion.div
-                    className=" w-full "
+                  className={` w-full`}
                     key={index}
                     animate={{
                       opacity: [0, 1],
@@ -863,7 +863,17 @@ const MatterCircleStack = () => {
                     }}
                   >
                     <motion.div
-                      className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center"
+                  className={` ${
+                    index == 0
+                      ? "bg-[#fae3a2]"
+                      : index == 1
+                      ? "bg-[#dad9d9]"
+                      : index == 2
+                      ? "bg-[#d1a48b]"
+                      : "bg-[#ffffff]"
+                  } relative w-full   border-2 border-white rounded-lg p-3 flex flex-col items-center`}
+
+                      // className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center"
                       animate={{
                         filter:
                           isRankFinished && index == 0
@@ -957,7 +967,7 @@ const MatterCircleStack = () => {
                             : index == 2
                             ? "card-shine3"
                             : ""
-                        } absolute top-0 left-0 !z-50 w-full h-full`}></div>
+                        } absolute top-0 left-0 !z-50 w-full h-full `}></div>
                       <div
                         className={` ${
                           index == 0
@@ -967,7 +977,7 @@ const MatterCircleStack = () => {
                             : index == 2
                             ? "bg-[#DA875B]"
                             : " text-black"
-                        } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square text-[8px] lg:text-[10px] font-semibold lg:font-bold rounded-full border-2 border-black`}
+                        } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square text-[8px] lg:text-[10px] font-semibold lg:font-bold rounded-full border-2 border-black `}
                       >
                         {index + 1}
                         <span className="text-[8px] lg:text-[10px]">
@@ -1026,7 +1036,7 @@ const MatterCircleStack = () => {
                         }}
                       />
 
-                      <div className="space-y-1">
+                      <div className="space-y-1 ">
                         <div className=" w-full">
                           <div className="flex justify-between">
                             <span className="text-black text-[8px] font-semibold">
@@ -1036,7 +1046,7 @@ const MatterCircleStack = () => {
                               {emoji.technicalLevel}/100
                             </span>
                           </div>
-                          <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
+                          <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border border-black text-[6px] text-white text-center rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full pt-[2px]"
                               style={{
@@ -1055,7 +1065,7 @@ const MatterCircleStack = () => {
                               {emoji.behevioralLevel}/100
                             </span>
                           </div>
-                          <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
+                          <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border text-[6px] text-white text-center border-black rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full pt-[2px]"
                               style={{
@@ -1066,7 +1076,15 @@ const MatterCircleStack = () => {
                           </div>
                         </div>
 
-                        <div className="bg-[#C2C2C2] rounded-md p-2">
+                        <div className={`${
+                    index == 0
+                      ? "bg-[#ffffff]"
+                      : index == 1
+                      ? "bg-[#ffffff]"
+                      : index == 2
+                      ? "bg-[#ffffff]"
+                      : "bg-[#C2C2C2]"
+                  } rounded-md p-2`} >
                           <div className="flex justify-between">
                             <span className="text-black text-[8px] font-semibold">
                               Overall Score
@@ -1256,7 +1274,7 @@ const MatterCircleStack = () => {
       </div>
 
       {!(isEmojiClicked || showResult) && (
-        <div className="absolute bottom-2 lg:bottom-3 left-3 transform flex flex-col justify-center items-center px-3 pb-3 bg-[#E7E5E5] rounded-lg">
+        <div className="absolute bottom-2 lg:bottom-3 left-3 transform flex flex-col justify-center items-center px-3 pb-3 bg-[#ffffff] rounded-lg">
           <h1 className=" text-xs font-semibold relative text-center my-2 w-full">
             Change Field
           </h1>
@@ -1290,7 +1308,7 @@ const MatterCircleStack = () => {
               st
             </span>
           </div> */}
-          <div className=" mx-2 flex flex-row justify-start h-7 lg:h-9 w-[70px] lg:w-[110px] bg-[#EAEAEA] border-2 border-[#EAEAEA] items-center rounded-full gap-3">
+          <div className=" mx-2 flex flex-row justify-start h-7 lg:h-9 w-[70px] lg:w-[110px] bg-[#ffffff] border-2 border-[#ffffff] items-center rounded-full gap-3">
             <div className="rounded-full z-50 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-base flex justify-center items-center h-full aspect-square">
               1<span className=" text-[8px] lg:text-[12px]">st</span>
             </div>
@@ -1318,7 +1336,7 @@ const MatterCircleStack = () => {
               nd
             </span>
           </div> */}
-          <div className=" mx-2 flex flex-row justify-start gap-3 h-7 lg:h-9 w-[70px] lg:w-[110px] bg-[#EAEAEA] border-2 border-[#EAEAEA] items-center rounded-full">
+          <div className=" mx-2 flex flex-row justify-start gap-3 h-7 lg:h-9 w-[70px] lg:w-[110px] bg-[#ffffff] border-2 border-[#ffffff] items-center rounded-full">
             <div className="rounded-full z-50 font-semibold lg:font-extrabold bg-[#A6A6A6] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-base flex justify-center items-center h-full aspect-square">
               2<span className="text-[8px] lg:text-[12px]">nd</span>
             </div>
@@ -1346,7 +1364,7 @@ const MatterCircleStack = () => {
               rd
             </span>
           </div> */}
-          <div className="flex flex-row justify-start gap-3 h-7 lg:h-9 w-[70px] lg:w-[110px] bg-[#EAEAEA] border-2 border-[#EAEAEA] items-center rounded-full">
+          <div className="flex flex-row justify-start gap-3 h-7 lg:h-9 w-[70px] lg:w-[110px] bg-[#ffffff] border-2 border-[#ffffff] items-center rounded-full">
             <div className="rounded-full z-50 font-semibold lg:font-extrabold bg-[#BC712F] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-base flex justify-center items-center h-full aspect-square">
               3<span className=" text-[8px] lg:text-[12px]">rd</span>
             </div>
