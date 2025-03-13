@@ -208,7 +208,7 @@ export default function TermsAndConditions() {
                     <section>
                         <h2 className="font-bold mb-2 text-base">1. Acceptance of Terms</h2>
                         <p>
-                            By accessing or using SkillChecker &#40;&apos;Service&apos;&#41;, a product of Coullax &#40;&apos;Company,&apos; &apos;we,&apos; &apos;our,&apos; or &apos;us&apos;&#41;, you &#40;,&apos;User,&apos; &apos;you&apos;&#41; agree to be bound by these Terms and Conditions ("Terms"). If you do not agree with any part of these Terms, you must not use our Service.
+                            By accessing or using SkillChecker &#40;&apos;Service&apos;&#41;, a product of Coullax &#40;&apos;Company,&apos; &apos;we,&apos; &apos;our,&apos; or &apos;us&apos;&#41;, you &#40;,&apos;User,&apos; &apos;you&apos;&#41; agree to be bound by these Terms and Conditions &#40;&apos;Terms&apos;&#41;. If you do not agree with any part of these Terms, you must not use our Service.
                         </p>
                     </section>
 
