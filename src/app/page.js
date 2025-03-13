@@ -47,7 +47,7 @@ export default function Home() {
   const [expandedSections, setExpandedSections] = useState({});
   const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
 
-  const cardRefs = useRef([]); 
+  const cardRefs = useRef([]);
   const glowRefs = useRef([]);
   const contentRefs = useRef([]);
 
@@ -549,7 +549,9 @@ export default function Home() {
   const requestDemo = async () => {
     router.push("https://tally.so/r/wQko91");
   };
-
+  const pageRedirection = async (path) => {
+    router.push(`${path}`);
+  };
   const getButtonBgColor = () => {
     const themeColors = {
       default: '#ffe582',
@@ -617,6 +619,8 @@ export default function Home() {
                     alt="logo"
                     width={464}
                     height={82}
+                    onClick={() => { pageRedirection('/') }}
+                    className="cursor-pointer"
                   />
                 ) : (
                   <Image
@@ -624,6 +628,8 @@ export default function Home() {
                     alt="logo"
                     width={464}
                     height={82}
+                    onClick={() => { pageRedirection('/') }}
+                    className="cursor-pointer"
                   />
                 )}
               </div>
@@ -924,36 +930,36 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
               {beneficiaryGroups.map((group, index) => (
                 <div key={index} className={`tilt-card transition-all duration-300 ease-out hover:scale-105 border-2 border-black rounded-lg px-3 py-5 ${group.color} bg-feature-card${index + 1}-background`}
-                ref={(el) => (cardRefs.current[index] = el)}
-                onMouseMove={(e) => handleMouseMove(e, index)}
-                onMouseLeave={() => handleMouseLeave(index)}
+                  ref={(el) => (cardRefs.current[index] = el)}
+                  onMouseMove={(e) => handleMouseMove(e, index)}
+                  onMouseLeave={() => handleMouseLeave(index)}
                 >
-                   <div
-            ref={(el) => (glowRefs.current[index] = el)}
-            className="glow opacity-0 transition-opacity duration-300 absolute inset-0"
-          ></div>
-          <div
-            ref={(el) => (contentRefs.current[index] = el)}
-            className="tilt-card-content p-4  h-full  relative z-10"
-          >
-                  <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:md:bg-black border-black dark:md:border-white rounded-[50px] px-[5px] py-[6px]">
-                    {group.title}
-                  </h1>
+                  <div
+                    ref={(el) => (glowRefs.current[index] = el)}
+                    className="glow opacity-0 transition-opacity duration-300 absolute inset-0"
+                  ></div>
+                  <div
+                    ref={(el) => (contentRefs.current[index] = el)}
+                    className="tilt-card-content p-4  h-full  relative z-10"
+                  >
+                    <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 bg-[#ffffff] dark:md:bg-black border-black dark:md:border-white rounded-[50px] px-[5px] py-[6px]">
+                      {group.title}
+                    </h1>
 
-                  <ul className="space-y-3">
-                    {group.benefits.map((benefit, benefitIndex) => (
-                      <li key={benefitIndex} className="flex pt-[20px]">
-                        <span className="mr-2 text-black">•</span>
-                        <div className="text-sm text-black">
-                          <span className="font-bold ">{benefit.title} – </span>
-                          <span className="text-black">{benefit.description}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="space-y-3">
+                      {group.benefits.map((benefit, benefitIndex) => (
+                        <li key={benefitIndex} className="flex pt-[20px]">
+                          <span className="mr-2 text-black">•</span>
+                          <div className="text-sm text-black">
+                            <span className="font-bold ">{benefit.title} – </span>
+                            <span className="text-black">{benefit.description}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                </div>
-               
+
               ))}
             </div>
 
@@ -1170,13 +1176,15 @@ export default function Home() {
         <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-footer-background text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
-              <div className="flex justify-center md:justify-start text-sm text-center w-full">
-                <Image src={logo} alt="logo" width="180" height="24" />
+              <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
+                <Image src={logo} alt="logo" width="180" height="24" onClick={() => { pageRedirection('/') }} />
               </div>
-              <span className="text-xs text-center inline-block mt-2">
-                Terms and conditions{" "}
-                <FiArrowUpRight className=" inline-block mr-2" />
-                <span>
+              <span className="text-xs text-center inline-block mt-2 " >
+                <span className="mr-2 cursor-pointer hover:underline" onClick={() => { pageRedirection('/terms-conditions') }}>
+                  Terms and conditions{" "}<FiArrowUpRight className=" inline-block" onClick={() => { pageRedirection('/privacy-policy') }} />
+                </span>
+               
+                <span className="cursor-pointer hover:underline" onClick={() => { pageRedirection('/privacy-policy') }} >
                   Privacy policy{" "} <FiArrowUpRight className=" inline-block" />
                 </span>
                 {/* <span className="ml-2">
