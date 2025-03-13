@@ -221,7 +221,7 @@ export const musicEmoji = [
   { name: "Ethan", skillLevel: 81, technicalLevel: 93, behevioralLevel: 69, url: "/icons/music/emoji7.png" },
   { name: "Ava", skillLevel: 77, technicalLevel: 86, behevioralLevel: 68, url: "/icons/music/emoji8.png" },
   { name: "Mason", skillLevel: 85, technicalLevel: 95, behevioralLevel: 75, url: "/icons/music/emoji9.png" },
-  { name: "Isabella", skillLevel: 70, technicalLevel: 80, behevioralLevel: 60, url: "/icons/emusic/moji10.png" },
+  { name: "Isabella", skillLevel: 70, technicalLevel: 80, behevioralLevel: 60, url: "/icons/music/emoji10.png" },
 ]
 export const developerEmoji = [
   { name: "James", skillLevel: 72, technicalLevel: 82, behevioralLevel: 62, url: "/icons/dev/emoji1.png" },
@@ -258,5 +258,5 @@ export const designerEmoji = [
   { name: "Ethan", skillLevel: 81, technicalLevel: 93, behevioralLevel: 69, url: "/icons/design/emoji7.png" },
   { name: "Ava", skillLevel: 77, technicalLevel: 86, behevioralLevel: 68, url: "/icons/design/emoji8.png" },
   { name: "Mason", skillLevel: 85, technicalLevel: 95, behevioralLevel: 75, url: "/icons/design/emoji9.png" },
-  { name: "Isabella", skillLevel: 70, technicalLevel: 80, behevioralLevel: 60, url: "/icons/edesign/moji10.png" }
+  { name: "Isabella", skillLevel: 70, technicalLevel: 80, behevioralLevel: 60, url: "/icons/design/emoji10.png" }
 ]
