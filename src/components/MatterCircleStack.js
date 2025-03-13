@@ -146,7 +146,7 @@ const MatterCircleStack = () => {
 
       const emojiCount =
         window.innerWidth > 1024 ? 40 : window.innerWidth > 768 ? 40 : 25;
-      const emojiScale = window.innerWidth > 1024 ? 0.18 : 0.13;
+      const emojiScale = window.innerWidth > 1024 ? 0.13 : 0.13;
       const emojiOralScale = window.innerWidth > 1024 ? 35 : 25;
       const emojiForce = window.innerWidth > 1024 ? 0.01 : 0.003;
       setEmojiCount(emojiCount);
@@ -154,7 +154,7 @@ const MatterCircleStack = () => {
       setEmojiOralScale(emojiOralScale);
       setEmojiForce(emojiForce);
 
-      const cornerWidth = window.innerWidth > 1024 ? 150 : 300;
+      const cornerWidth = window.innerWidth > 1024 ? 150 : 250;
       const cornerHeight = window.innerWidth > 1024 ? 200 : 50;
       // const bottomWidth = window.innerWidth > 1024 ? 260 : 150;
       // const bottomHeight = window.innerWidth > 1024 ? 80 : 50;
@@ -162,8 +162,8 @@ const MatterCircleStack = () => {
       const topRightHeight = window.innerWidth > 1024 ? 70 : 100;
       // const cornerWidth = window.innerWidth > 1024 ? 70 : 50;
       // const cornerHeight = window.innerWidth > 1024 ? 70 : 100;
-      const bottomWidth = window.innerWidth > 1024 ? 150 : 300;
-      const bottomHeight = window.innerWidth > 1024 ? 110 : 50;
+      const bottomWidth = window.innerWidth > 1024 ? 150 : 160;
+      const bottomHeight = window.innerWidth > 1024 ? 110 : 100;
       // const topRightWidth = window.innerWidth > 1024 ? 150 : 300;
       // const topRightHeight = window.innerWidth > 1024 ? 200 : 50;
 
@@ -812,7 +812,7 @@ const MatterCircleStack = () => {
 
   return (
     <div
-      className="relative w-full h-full min-h-[418px] rounded-xl"
+      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-xl"
       id="matter-circle-stack"
       ref={containerRef}
       style={{ backgroundColor: bgColor }}
@@ -821,17 +821,17 @@ const MatterCircleStack = () => {
       {showResult && (
         <div
           // onClick={handleCloseRankWindow}
-          className="absolute top-0 h-full w-full bg-black/90 rounded-xl flex flex-col justify-center items-center !z-10"
+          className="absolute top-0 h-full w-full bg-black/90 rounded-xl flex flex-col justify-center items-center !z-20"
         >
           <div
             onClick={handleCloseRankWindow}
-            className=" bg-white h-9 aspect-square cursor-pointer rounded-full flex justify-center items-center absolute left-4 bottom-4"
+            className=" bg-white h-8 aspect-square cursor-pointer rounded-full flex justify-center items-center absolute left-4 bottom-4"
           >
-            <FaArrowRight size={20} color="#000000" />
+            <FaArrowRight size={15} color="#000000" />
           </div>
 
           {!analizing ? (
-            <div className=" grid w-[90%] lg:w-[60%] !z-20 grid-cols-3 gap-3 lg:ml-[10%]">
+            <div className=" grid w-[90%] lg:w-[60%] grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
                 <motion.div
                   key={index}
@@ -847,7 +847,7 @@ const MatterCircleStack = () => {
                   }}
                 >
                   <motion.div
-                    className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center !z-10"
+                    className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center"
                     animate={{
                       filter:
                         isRankFinished && index == 0
@@ -893,7 +893,7 @@ const MatterCircleStack = () => {
                         scale:
                           isRankFinished && index < 3 ? [1, 1.2, 0.5, 0] : 0,
                         opacity:
-                          isRankFinished && index < 3 ? [0.1, 0.1, 0.1, 0] : 0,
+                          isRankFinished && index < 3 ? [0.1, 0.2, 0.1, 0] : 0,
                         filter:
                           isRankFinished && index == 0
                             ? [
@@ -925,7 +925,7 @@ const MatterCircleStack = () => {
                         //     : "block",
                       }}
                       transition={{
-                        duration: 2.5,
+                        duration: 3.5,
                         ease: "easeInOut",
                       }}
                     ></motion.div>
@@ -938,10 +938,10 @@ const MatterCircleStack = () => {
                           : index === 2
                           ? "bg-[#DA875B]"
                           : " text-black"
-                      } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black`}
+                      } absolute top-3 left-3 text-sm h-7 flex justify-center items-center aspect-square text-[8px] lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black`}
                     >
                       {index + 1}
-                      <span className="text-[12px] lg:text-[10px]">
+                      <span className="text-[8px] lg:text-[10px]">
                         {index === 0
                           ? "st"
                           : index === 1
@@ -958,7 +958,7 @@ const MatterCircleStack = () => {
                       ref={(el) => (emojiRefs.current[index] = el)}
                       src={emoji.url}
                       alt="Selected Image"
-                      className=" mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4 !z-50"
+                      className=" mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4"
                       animate={{
                         x:
                           animateRanking && index === 0
@@ -1250,7 +1250,7 @@ const MatterCircleStack = () => {
       )}
 
       <div
-        className="absolute top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg !z-10"
+        className="absolute top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg !z-20"
         // style={{ backgroundColor: buttonColor }}
       >
         <div className=" lg:mb-[2px] relative h-8 lg:h-10 flex justify-center items-center">
@@ -1269,12 +1269,12 @@ const MatterCircleStack = () => {
                 ref={firstPlaceDivRef}
                 src={firstPlace}
                 alt="First Place"
-                className="lg:w-14 lg:h-14 h-12 w-12 absolute -top-2 right-2 lg:right-6"
+                className="lg:w-12 lg:h-12 h-12 w-12 absolute -top-2 right-1 lg:right-6"
               />
             ) : (
               <div
                 ref={firstPlaceDivRef}
-                className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
+                className="w-[28px] mr-5 pr-3 lg:pr-0 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
               >
                 ?
               </div>
@@ -1297,12 +1297,12 @@ const MatterCircleStack = () => {
                 ref={secondPlaceDivRef}
                 src={secondPlace}
                 alt="First Place"
-                className="lg:w-14 lg:h-14 h-12 w-12 absolute -top-2 right-2 lg:right-6"
+                className="lg:w-12 lg:h-12 h-12 w-12 absolute -top-2 right-1 lg:right-6"
               />
             ) : (
               <div
                 ref={secondPlaceDivRef}
-                className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
+                className="w-[28px] mr-0 pr-3 lg:pr-0 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
               >
                 ?
               </div>
@@ -1325,12 +1325,12 @@ const MatterCircleStack = () => {
                 ref={thridPlaceDivRef}
                 src={thirdPlace}
                 alt="First Place"
-                className="lg:w-14 lg:h-14 h-12 w-12 absolute -top-2 right-2 lg:right-4"
+                className="lg:w-12 lg:h-12 h-12 w-12 absolute -top-2 right-1 lg:right-4"
               />
             ) : (
               <div
                 ref={thridPlaceDivRef}
-                className="w-[28px] mr-5 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
+                className="w-[28px] mr-5 pr-3 lg:pr-0 text-black text-center text-base flex justify-center items-center font-semibold h-7 aspect-square"
               >
                 ?
               </div>
@@ -1341,7 +1341,7 @@ const MatterCircleStack = () => {
           <div
             onClick={handleSearchClick}
             className={` hidden ${
-              showResult ? " bg-[#EAEAEA] text-black" : "bg-black text-white"
+              showResult || isEmojiClicked ? " bg-[#EAEAEA] text-black" : "bg-black text-white"
             } rounded-full font-semibold text-center text-xs w-[105px] cursor-pointer h-9 lg:flex justify-center items-center`}
           >
             {loading ? (
