@@ -791,14 +791,14 @@ const MatterCircleStack = () => {
       {showResult && (
         <div
           onClick={handleCloseRankWindow}
-          className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center"
+          className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center !z-10"
         >
           {!analizing ? (
-            <div className=" grid w-[90%] lg:w-[60%] z-50 grid-cols-3 gap-3 lg:mr-[10%]">
+            <div className=" grid w-[90%] lg:w-[60%] !z-20 grid-cols-3 gap-3 lg:mr-[10%]">
               {selectedImage.map((emoji, index) => (
                 <motion.div
                   key={index}
-                  className=" w-full"
+                  className=" w-full "
                   animate={{
                     opacity: [0, 1],
                     scale: [0.5, 1],
@@ -810,7 +810,7 @@ const MatterCircleStack = () => {
                   }}
                 >
                   <motion.div
-                    className=" relative w-full bg-[#FFFFFF1A] border-2 border-white rounded-lg p-3 flex flex-col items-center"
+                    className=" relative w-full bg-[#ffffff] border-2 border-white rounded-lg p-3 flex flex-col items-center !z-10"
                     animate={{
                       rotateY: isRankFinished && index < 3 ? [0, 360] : 0,
                       opacity: isRankFinished && index < 3 ? [1, 1, 0.9, 0] : 1,
@@ -827,16 +827,16 @@ const MatterCircleStack = () => {
                     <div
                       className={` ${
                         index === 0
-                          ? " text-[#FBC225]"
+                          ? " bg-[#f1b612]"
                           : index === 1
-                          ? "text-[#B5B5B5]"
+                          ? "bg-[#B5B5B5]"
                           : index === 2
-                          ? "text-[#CD8648]"
-                          : " text-white"
-                      } absolute top-3 left-3 text-sm lg:text-xl font-semibold lg:font-bold`}
+                          ? "bg-[#CD8648]"
+                          : " text-black"
+                      } absolute top-3 left-3 text-sm lg:text-[10px] font-semibold lg:font-bold bg-white rounded-full border-2 border-black p-[2px]`}
                     >
                       {index + 1}
-                      <span className=" align-super -top-1 relative text-[12px] lg:text-sm">
+                      <span className="text-[12px] lg:text-[10px]">
                         {index === 0
                           ? "st"
                           : index === 1
@@ -853,7 +853,7 @@ const MatterCircleStack = () => {
                       ref={(el) => (emojiRefs.current[index] = el)}
                       src={emoji.url}
                       alt="Selected Image"
-                      className="mx-auto h-12 w-12 lg:h-14 lg:w-14 mt-4 !z-50"
+                      className="absolute  mx-auto h-12 w-12 lg:h-14 lg:w-14 -mt-3 -mr-4 !z-50"
                       animate={{
                         x:
                           animateRanking && index === 0
@@ -892,10 +892,13 @@ const MatterCircleStack = () => {
                       }}
                     />
 
-                    <div className=" w-full flex justify-between items-center">
-                      <div className=" w-[48%]">
-                        <span className="text-white text-[8px]">Technical</span>
-                        <div className=" h-3 lg:h-[14px] bg-gray-200 border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
+                    <div className="space-y-1">
+                      <div className=" w-full">
+                        <div className="flex justify-between">
+                        <span className="text-black text-[8px] font-semibold">Technical</span>
+                        <span className="text-black text-[8px] font-semibold">{emoji.technicalLevel}/100</span>
+                        </div>
+                        <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border border-white text-[6px] text-white text-center rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full pt-[2px]"
                             style={{
@@ -903,15 +906,16 @@ const MatterCircleStack = () => {
                               background: `black`,
                             }}
                           >
-                            {emoji.technicalLevel}%
+                            
                           </div>
                         </div>
                       </div>
-                      <div className=" w-[48%]">
-                        <span className="text-white text-[8px]">
-                          Behevioral
-                        </span>
-                        <div className=" h-3 lg:h-[14px] bg-gray-200 border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
+                      <div className=" w-full pb-2">
+                      <div className="flex justify-between">
+                        <span className="text-black text-[8px] font-semibold">Behevioral</span>
+                        <span className="text-black text-[8px] font-semibold">{emoji.technicalLevel}/100</span>
+                        </div>
+                        <div className=" h-2 lg:h-[8px] bg-[#C2C2C2] border text-[6px] text-white text-center border-white rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full pt-[2px]"
                             style={{
@@ -919,16 +923,16 @@ const MatterCircleStack = () => {
                               background: `black`,
                             }}
                           >
-                            {emoji.behevioralLevel}%
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className=" text-[8px] mt-2 lg:mt-2 text-white ">
-                        Overall score
-                      </div>
-                      <div className="w-full h-3 lg:h-[14px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-white rounded-full mb-3 lg:mb-4 overflow-hidden">
+                 
+                    <div className="bg-[#C2C2C2] rounded-md p-2">
+                    <div className="flex justify-between">
+                        <span className="text-black text-[8px] font-semibold">Overall Score</span>
+                        <span className="text-black text-[8px] font-semibold">{emoji.technicalLevel}/100</span>
+                        </div>
+                      <div className="w-full h-2 lg:h-[7px] bg-gray-200 relative text-black font-extrabold text-[8px] text-center border border-white rounded-full overflow-hidden ">
                         <div
                           className="h-full rounded-full pt-[1px]"
                           style={{
@@ -944,9 +948,10 @@ const MatterCircleStack = () => {
                             })`,
                           }}
                         >
-                          {emoji.skillLevel}%
+                         
                         </div>
                       </div>
+                    </div>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -1112,7 +1117,7 @@ const MatterCircleStack = () => {
       )}
 
       <div
-        className="absolute top-1 right-1 lg:top-3 lg:right-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg"
+        className="absolute top-1 right-1 lg:top-3 lg:right-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg !z-10"
         // style={{ backgroundColor: buttonColor }}
       >
         <div className=" lg:mb-[6px] relative h-8 lg:h-10 flex justify-center items-center">
@@ -1123,7 +1128,7 @@ const MatterCircleStack = () => {
             </span>
           </div> */}
           <div className=" mx-2 flex flex-row justify-start h-7 lg:h-10 w-[70px] lg:w-[110px] bg-[#EAEAEA] border-2 border-[#EAEAEA] items-center rounded-full gap-3">
-            <div className="rounded-full z-50 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
+            <div className="rounded-full !z-10 font-semibold lg:font-extrabold bg-[#FBC225] border-2 lg:border-[3px] border-black text-black text-center text-sm lg:text-lg flex justify-center items-center h-full aspect-square">
               1<span className=" text-[8px] lg:text-xs">st</span>
             </div>
             {firstPlace !== "?" ? (
