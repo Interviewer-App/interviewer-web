@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import { LuPaintbrush } from "react-icons/lu";
-import { PiRankingBold } from "react-icons/pi";
+import { PiHandPointing, PiRankingBold } from "react-icons/pi";
 import {
   imageUrls,
   musicEmoji,
@@ -316,7 +316,6 @@ const MatterCircleStack = () => {
     renderRef.current = render;
 
     const createImageCircle = (x, y) => {
-      console.log("emojiArray:", emojiArray);
       const emoji = emojiArray[Math.floor(Math.random() * emojiArray.length)];
       return Bodies.circle(x, y, emojiOralScale, {
         restitution: 0.8,
@@ -798,7 +797,7 @@ const MatterCircleStack = () => {
           className="absolute top-0 h-full w-full bg-black/90 flex flex-col justify-center items-center !z-10"
         >
           {!analizing ? (
-            <div className=" grid w-[90%] lg:w-[60%] !z-20 grid-cols-3 gap-3 lg:mr-[10%]">
+            <div className=" grid w-[90%] lg:w-[60%] !z-20 grid-cols-3 gap-3 lg:ml-[10%]">
               {selectedImage.map((emoji, index) => (
                 <motion.div
                   key={index}
@@ -1079,13 +1078,14 @@ const MatterCircleStack = () => {
         </div>
       )}
 
-      <div className="absolute top-1 left-1 lg:top-3 lg:left-3 flex flex-col justify-start items-center">
+      <div className="absolute top-1 right-1 lg:top-3 lg:right-3 flex flex-col justify-start items-center">
         <button
           onClick={changeBackgroundColor}
           className="p-3 rounded-full shadow-lg hover:bg-gray-100 transition"
           style={{ backgroundColor: buttonColor }}
         >
-          <LuPaintbrush size={22} color="#FFFFFF" />
+             <PiHandPointing size={22} color="#FFFFFF" />
+          {/* <LuPaintbrush size={22} color="#FFFFFF" /> */}
         </button>
         {!animateRanking && (
           <button
@@ -1103,7 +1103,7 @@ const MatterCircleStack = () => {
       </div>
 
       {!(isEmojiClicked || showResult) && (
-        <div className="absolute bottom-2 lg:bottom-3 right-3 transform flex flex-col justify-center items-center px-3 pb-3 bg-[#E7E5E5] rounded-lg">
+        <div className="absolute bottom-2 lg:bottom-3 left-3 transform flex flex-col justify-center items-center px-3 pb-3 bg-[#E7E5E5] rounded-lg">
           <h1 className=" text-xs font-semibold relative text-center my-2 w-full">
             Change Field
           </h1>
@@ -1127,7 +1127,7 @@ const MatterCircleStack = () => {
       )}
 
       <div
-        className="absolute top-1 right-1 lg:top-3 lg:right-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg !z-10"
+        className="absolute top-1 left-1 lg:top-3 lg:left-3 p-1 lg:p-2 flex flex-row lg:flex-col justify-center items-center rounded-md lg:rounded-lg !z-10"
         // style={{ backgroundColor: buttonColor }}
       >
         <div className=" lg:mb-[2px] relative h-8 lg:h-10 flex justify-center items-center">
