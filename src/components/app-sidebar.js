@@ -87,8 +87,8 @@ const adminItems = [
 
 const teams = [
   {
-    name: "Skillchecker",
-    logo: SiEclipsejetty,
+    name: "Skillchecker.ai",
+    logo: "./skillchecker.png",
     plan: "Decisions at Jet Speed",
   },
 ];
@@ -100,13 +100,14 @@ export function AppSidebar() {
 
   // const session=await getSession();
   const userEmail = session?.user?.email;
+
   // const userRole=session?.user?.role;
 
   const [userData, setUserData] = React.useState({
     user: {
       name: role,
       email: userEmail,
-      avatar: "https://github.com/shadcn.png",
+      avatar: "",
     },
   });
 
