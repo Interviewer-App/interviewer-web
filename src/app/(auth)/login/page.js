@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
@@ -33,6 +33,16 @@ const LoginPage = () => {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.documentElement.classList.remove(savedTheme);
+    }
+    localStorage.setItem("theme", "dark");
+    document.documentElement.classList.add("dark");
+    document.documentElement.setAttribute("data-theme", "dark");
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -43,26 +53,8 @@ const LoginPage = () => {
       });
 
       if (res.ok) {
-
         const authCallback = `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`;
         router.push(authCallback);
-        
-        // const session = await getSession();
-        // const userRole = session?.user?.role;
-        // const token = session?.user?.accessToken;
-        // localStorage.setItem('accessToken', token);
-
-        // if (userRole === 'COMPANY') {
-        //   router.push('/interviews');
-        // } else if (userRole === 'CANDIDATE') {
-        //   router.push('/my-interviews');
-        // } else if (userRole === 'ADMIN')  {
-        //   router.push('/users');
-        // } else{
-        //   router.push('/');
-        // }
-
-
       } else {
         toast({
           variant: "destructive",
