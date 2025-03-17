@@ -342,7 +342,7 @@ const VideoCall = forwardRef(({ sessionId, isCandidate , senderId , role}, ref) 
           ref={localVideoRef}
           autoPlay
           muted
-          className="absolute top-4 right-4 w-48 h-32 rounded-lg border-2 border-gray-200 bg-black"
+          className="absolute top-4 right-4 w-16 h-12 rounded-lg border-2 border-gray-200 bg-black"
         />
       </div>
 
