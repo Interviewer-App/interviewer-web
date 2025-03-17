@@ -140,7 +140,7 @@ export function AppSidebar({ ...props }) {
                     <Link
                       href={item.url}
                       className={`${isActive(item.url)
-                          ? "bg-primary text-white bg-black" // active styles
+                          ? "bg-zinc-800 text-white" // active styles
                           : "text-slate-300 hover:bg-primary hover:text-white"
                         } flex items-center p-7 rounded-md text-base font-semibold`}
                     >
