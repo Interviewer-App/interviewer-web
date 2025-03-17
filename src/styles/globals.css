@@ -344,13 +344,13 @@ body {
 }
 
 .description h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
 
 }
 
 .description h2 {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
 
 }
@@ -523,6 +523,7 @@ body {
 .card-shine3::before{
     background: linear-gradient(to right, rgb(218, 135, 91, 0) 0%, rgba(218, 135, 91, 0.3) 100%);
 }
+
 
 @keyframes shine {
   0%{
