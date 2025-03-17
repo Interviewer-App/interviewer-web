@@ -13,7 +13,16 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { AlertCircle, CheckCircle2, ChevronDown, ClipboardList, Clock, ListTodo, VideoIcon, XCircle } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  ChevronDown,
+  ClipboardList,
+  Clock,
+  ListTodo,
+  VideoIcon,
+  XCircle,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getSession, useSession } from "next-auth/react";
@@ -24,8 +33,8 @@ import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import Lottie from "lottie-react";
 import interviewAnimation from "../../components/ui/animation/interviewAnimation";
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,24 +45,41 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { Atom, BadgeCheck } from "lucide-react";
 import { getCandidateById } from "@/lib/api/users";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Info } from 'lucide-react';
-import { Card } from "@/components/ui/card"
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "./alert";
 import { Badge } from "./badge";
-import { cn } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible";
-export const TimelineLayout = ({ interviews, overview, showPastInterviews, setShowPastInterviews, isProfileCompleted }) => {
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./collapsible";
+import { LuCircleCheck } from "react-icons/lu";
+export const TimelineLayout = ({
+  interviews,
+  overview,
+  showPastInterviews,
+  setShowPastInterviews,
+  isProfileCompleted,
+}) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   //   const [interviews, setInterviews] = useState([]);
@@ -78,6 +104,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
   const [isOpen, setIsOpen] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const formatDate = (date) => {
     const options = { month: "short" };
@@ -114,7 +141,7 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
             ...prevState,
             [interviewId]: false,
           }));
-        }, 2000); // Reset after 2 seconds  
+        }, 2000); // Reset after 2 seconds
       })
       .catch((err) => console.log("Failed to copy text: ", err));
   };
@@ -198,9 +225,8 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
   };
 
   const profileNavigate = () => {
-    router.push('/user-profile');
+    router.push("/user-profile");
   };
-
 
   useEffect(() => {
     const fetchCandidateDetails = async () => {
@@ -246,20 +272,25 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
     fetchCandidateDetails();
   }, []);
 
-
-
   return (
     <div className="mt-4">
-
       {!isProfileCompleted && (
         <Alert className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20">
           <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           <AlertDescription className="flex items-center justify-between">
             <div>
-              <span className="font-semibold text-amber-900 dark:text-amber-400">Profile Incomplete</span>
-              <p className="text-amber-700 dark:text-amber-500">Please update your experience, skills, and social profiles.</p>
+              <span className="font-semibold text-amber-900 dark:text-amber-400">
+                Profile Incomplete
+              </span>
+              <p className="text-amber-700 dark:text-amber-500">
+                Please update your experience, skills, and social profiles.
+              </p>
             </div>
-            <Button onClick={profileNavigate} variant="outline" className="border-amber-200 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/30">
+            <Button
+              onClick={profileNavigate}
+              variant="outline"
+              className="border-amber-200 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/30"
+            >
               View Profile
             </Button>
           </AlertDescription>
@@ -356,10 +387,6 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
         </Select>
       </div> */}
 
-
-
-
-
       {/* <div className="max-w-2xl rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-6 mx-auto flex gap-6 shadow-xl hover:shadow-2xl transition-shadow">
         <div className="flex-1 space-y-6">
           <div className="flex justify-between items-start">
@@ -407,7 +434,6 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
         </div>
       </div> */}
 
-
       {/* <div className="flex justify-end items-center space-x-2 md:mt-4">
         <Switch
           id="show-past-interviews"
@@ -449,63 +475,90 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
           const timeBgColor = isClose
             ? "bg-[#F4BB50]"
             : isFar
-              ? "bg-[#7DDA6A]"
-              : ismedium
-                ? "bg-[#F4BB50]"
-                : "bg-gray-900";
+            ? "bg-[#7DDA6A]"
+            : ismedium
+            ? "bg-[#F4BB50]"
+            : "bg-gray-900";
 
           return (
-            <Card key={interview.scheduleID} className={cn(
-              "p-6 transition-all hover:shadow-lg bg-card",
-              "group relative overflow-hidden"
-            )}>
+            <Card
+              key={interview.scheduleID}
+              className={cn(
+                "p-6 transition-all hover:shadow-lg bg-card",
+                "group relative overflow-hidden"
+              )}
+            >
               <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-lg flex flex-col items-center justify-center">
-                  <span className="text-sm font-medium">{formatDate(interview.startTime)}</span>
-                  <span className="text-xl font-bold">{formatDay(interview.startTime)}</span>
+                  <span className="text-sm font-medium">
+                    {formatDate(interview.startTime)}
+                  </span>
+                  <span className="text-xl font-bold">
+                    {formatDay(interview.startTime)}
+                  </span>
                 </div>
                 <div className="flex-grow">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold">{interview.interview.jobTitle} - {interview.interview.company.companyName}</h3>
-                        <Badge variant="secondary" className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
+                        <h3 className="text-lg font-semibold">
+                          {interview.interview.jobTitle} -{" "}
+                          {interview.interview.company.companyName}
+                        </h3>
+                        <Badge
+                          variant="secondary"
+                          className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                        >
                           Active
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">{formatTime(interview.startTime)}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatTime(interview.startTime)}
+                      </p>
                     </div>
-                    <Button
-                      className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                      size="sm"
-                    >
-                      <VideoIcon className="h-4 w-4 mr-2" />
-                      Join Interview
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-destructive border-destructive/50"
-                    >
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Reschedule
-                    </Button>
+                    {isAccepted ? (
+                      <Button
+                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                        size="sm"
+                      >
+                        <VideoIcon className="h-4 w-4 mr-2" />
+                        Join Interview
+                      </Button>
+                    ) : (
+                      <div className=" flex justify-start gap-3 items-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-destructive border-destructive/50"
+                        >
+                          <XCircle className="h-4 w-4 mr-2" />
+                          Reschedule
+                        </Button>
+                        <Button
+                        onClick={() => setIsAccepted(true)}
+                          variant="outline"
+                          size="sm"
+                          className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                        >
+                          <LuCircleCheck className="h-4 w-4 mr-2" />
+                          Accept
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                     <div className="space-y-2">
                       {/* <h4 className="text-sm font-medium text-muted-foreground">Position Overview</h4> */}
-                      <p className={cn(
-                        "text-sm text-muted-foreground description leading-7",
-                        !isOpen && "line-clamp-2 "
-                      )}
-                      dangerouslySetInnerHTML={{
-                        __html:interview.interview.jobDescription
-
-                      }}
-                      >
-                      </p>
+                      <p
+                        className={cn(
+                          "text-sm text-muted-foreground description leading-7",
+                          !isOpen && "line-clamp-2 "
+                        )}
+                        dangerouslySetInnerHTML={{
+                          __html: interview.interview.jobDescription,
+                        }}
+                      ></p>
                     </div>
                     {/* <CollapsibleContent className="space-y-4">
                       <div className="mt-4">
@@ -540,12 +593,17 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
                       </div>
                     </CollapsibleContent> */}
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="mt-4 p-0 h-auto text-sm text-primary hover:text-primary/80">
-                        {isOpen ? 'Show Less' : 'More Details'}
-                        <ChevronDown className={cn(
-                          "h-4 w-4 ml-1 transition-transform duration-200",
-                          isOpen && "transform rotate-180"
-                        )} />
+                      <Button
+                        variant="ghost"
+                        className="mt-4 p-0 h-auto text-sm text-primary hover:text-primary/80"
+                      >
+                        {isOpen ? "Show Less" : "More Details"}
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 ml-1 transition-transform duration-200",
+                            isOpen && "transform rotate-180"
+                          )}
+                        />
                       </Button>
                     </CollapsibleTrigger>
                   </Collapsible>
@@ -553,7 +611,6 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
               </div>
             </Card>
 
-            
             // <TimelineItem key={interview.scheduleID} className="">
             //   <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-xl">
             //     <TimelineTime
@@ -685,9 +742,8 @@ export const TimelineLayout = ({ interviews, overview, showPastInterviews, setSh
           );
         })}
         {/* Active Interview Card */}
-      
       </div>
-{/* 
+      {/* 
       <Card className={cn(
               "p-6 transition-all bg-card/50",
               "group relative overflow-hidden mt-3"
