@@ -93,7 +93,7 @@ const teams = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ ...props }) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const role = session?.user?.role;
@@ -125,7 +125,7 @@ export function AppSidebar() {
   const isActive = (url) => pathname === url;
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={teams} />
       </SidebarHeader>
