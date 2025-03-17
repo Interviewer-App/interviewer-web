@@ -517,35 +517,41 @@ export const TimelineLayout = ({
                         {formatTime(interview.startTime)}
                       </p>
                     </div>
-                    {isAccepted ? (
-                      <Button
-                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                        size="sm"
-                      >
-                        <VideoIcon className="h-4 w-4 mr-2" />
-                        Join Interview
-                      </Button>
-                    ) : (
-                      <div className=" flex justify-start gap-3 items-center">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-destructive border-destructive/50"
-                        >
-                          <XCircle className="h-4 w-4 mr-2" />
-                          Reschedule
-                        </Button>
-                        <Button
-                        onClick={() => setIsAccepted(true)}
-                          variant="outline"
-                          size="sm"
-                          className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                        >
-                          <LuCircleCheck className="h-4 w-4 mr-2" />
-                          Accept
-                        </Button>
-                      </div>
-                    )}
+                    {interview.interviewSession?.interviewStatus !==
+                      "completed" &&
+                      new Date(interview.startTime) > new Date() && (
+                        <>
+                          {isAccepted ? (
+                            <Button
+                              className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                              size="sm"
+                            >
+                              <VideoIcon className="h-4 w-4 mr-2" />
+                              Join Interview
+                            </Button>
+                          ) : (
+                            <div className=" flex justify-start gap-3 items-center">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-destructive border-destructive/50"
+                              >
+                                <XCircle className="h-4 w-4 mr-2" />
+                                Reschedule
+                              </Button>
+                              <Button
+                                onClick={() => setIsAccepted(true)}
+                                variant="outline"
+                                size="sm"
+                                className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                              >
+                                <LuCircleCheck className="h-4 w-4 mr-2" />
+                                Accept
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
                   </div>
                   <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                     <div className="space-y-2">
