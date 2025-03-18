@@ -372,7 +372,7 @@ export const TimelineLayout = ({
       <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900">
         <CardContent className="p-6">
           <h1 className="text-2xl md:text-3xl font-bold">
-            {getTimeOfDay()}, {session?.user?.firstName.split(' ')[0] || 'Candidate'}
+            {getTimeOfDay()}, {session?.user?.firstName || 'Candidate'}
           </h1>
           <p className="text-muted-foreground mt-1">
             Welcome back to your interview dashboard
