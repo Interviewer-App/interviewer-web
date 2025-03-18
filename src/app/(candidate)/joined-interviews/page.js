@@ -33,6 +33,30 @@ import {
 } from "@/components/ui/tooltip"
 import { Info } from 'lucide-react';
 const JoinedInterviews = () => {
+  // const hardcodedInterviewData = [
+  //   {
+  //     id: 1,
+  //     interviewStatus: "Completed",
+  //     interviewCategory: "Technical",
+  //     scheduledDate: '2025-03-14', // Valid ISO date string
+  //     score: 85,
+  //   },
+  //   {
+  //     id: 2,
+  //     interviewStatus: "Completed",
+  //     interviewCategory: "Behavioural",
+  //     scheduledDate: '2025-03-14', // Valid ISO date string
+  //     score: 78,
+  //   },
+  //   {
+  //     id: 3,
+  //     interviewStatus: "Completed",
+  //     interviewCategory: "Technical",
+  //     scheduledDate: '2025-03-14', // Valid ISO date string
+  //     score: 21,
+  //   },
+  // ];
+
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [interviewData, setInterviewData] = useState([]); // Store interviews data
@@ -115,22 +139,25 @@ const JoinedInterviews = () => {
 
       <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
         <h1 className="text-3xl font-semibold">Interviews</h1>
-        <div className=" bg-slate-600/10 w-full h-fit  p-9 rounded-lg mt-5">
+        <div className=" bg-[#1b1d22] w-full h-fit  p-6 rounded-lg mt-7">
           <div>
-            <div className="flex flex-row items-center space-x-2">
-            <h1 className=" text-2xl font-semibold">My Interview</h1>
-            <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-4 h-4 text-white hover:text-gray-200 cursor-pointer" />
-            </TooltipTrigger>
-            <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
-            View the interviews you&apos;ve attended, along with your performance and scores.
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        </div>
-            <div className="flex mb-5 justify-end"></div>
+          <div className="mb-3">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                My Interview
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="w-4 h-4  rounded-full border flex items-center justify-center text-xs">?</span>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                      View the interviews you&apos;ve attended, along with your performance and scores.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+              </h2>
+            </div>
+        
             <div>
               {loading ? (
                 <div>Loading interviews...</div>
@@ -141,35 +168,45 @@ const JoinedInterviews = () => {
           </div>
 
           {/* Pagination Section */}
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={handlePreviousPage}
-                  disabled={page <= 1}
-                />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink onClick={() => setPage(page)}>
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink onClick={() => setPage(page + 1)}>
-                  {page + 1}
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext
-                  onClick={handleNextPage}
-                  disabled={page * limit >= totalUsers}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={handlePreviousPage}
+                    disabled={page <= 1}
+                  />
+                </PaginationItem>
+
+                {/* Page Numbers */}
+                {[...Array(Math.ceil(totalUsers / limit)).keys()].map((pageNumber) => (
+                  <PaginationItem key={pageNumber + 1}>
+                    <PaginationLink
+                      onClick={() => setPage(pageNumber + 1)}
+                      className={
+                        page === pageNumber + 1
+                          ? "bg-[#000000] text-white" // Highlight current page
+                          : "text-gray-700 hover:bg-gray-100" // Default style
+                      }
+                    >
+                      {pageNumber + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={handleNextPage}
+                    disabled={page * limit >= totalUsers}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </div>
     </SidebarInset>

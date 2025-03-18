@@ -52,7 +52,7 @@ export function DataTable({ columns, data }) {
     }
 
     return (
-        <div className="px-6">
+        <div className="">
             <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Filter sessions..."
@@ -66,7 +66,7 @@ export function DataTable({ columns, data }) {
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="outline"
-                            className="max-w-[120px] ml-auto" 
+                            className="max-w-[120px] ml-auto " 
                         >
                             Columns
                         </Button>
@@ -98,13 +98,13 @@ export function DataTable({ columns, data }) {
 
             </div>
 
-            <div className="overflow-x-auto">
-                <Table className="min-w-full">
+            <div className="overflow-x-auto border border-zinc-800 rounded-md">
+            <Table className="min-w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="p-4 text-left">
+                                    <TableHead key={header.id} className="gap-2 text-left">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -119,11 +119,11 @@ export function DataTable({ columns, data }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => handleMyInterviewSessionDetail(row)}>
+                                <TableRow key={row.id} className="hover:bg-[#22242c] cursor-pointer" onClick={() => handleMyInterviewSessionDetail(row)}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell
                                             key={cell.id}
-                                            className="p-4 border-b md:border-none"
+                                            className="p-4 md:border-none"
                                         >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
