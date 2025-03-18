@@ -98,7 +98,7 @@ export function DataTable({ columns, data }) {
 
             </div>
 
-            <div className="overflow-x-auto border border-gray-700 rounded-md">
+            <div className="overflow-x-auto border border-zinc-800 rounded-md">
             <Table className="min-w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
