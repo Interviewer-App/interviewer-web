@@ -218,6 +218,102 @@ body {
   }
   
 }
+
+
+@layer utilities {
+  /* .transition-all-fast {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  .transition-transform-fast {
+    @apply transition-transform duration-200 ease-in-out;
+  }
+  .glassmorphism {
+    @apply bg-opacity-20 backdrop-blur-md bg-secondary border border-secondary/30;
+  } */
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s infinite;
+  }
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+  /* Add these new utility classes for the updated design */
+  .bg-dashboard-greeting {
+    background: linear-gradient(to bottom right, #1A1A1A, #111111);
+  }
+  .bg-dashboard-upcoming {
+    background: linear-gradient(to right, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.1));
+  }
+  .bg-dashboard-alert {
+    background: linear-gradient(to right, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0.1));
+  }
+}
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    --str-video__primary-color: #005fff;
+    --str-video__background-color: #ffffff;
+    --str-video__text-color: #000000;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: #434343;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    --str-video__primary-color: #0099ff;
+    --str-video__background-color: #1a1a1a;
+    --str-video__text-color: #ffffff;
+    --str-video__secondary-background-color: #2d2d2d;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+  
+}
+
 .rich-text{
   /* .editor{
     height: auto;

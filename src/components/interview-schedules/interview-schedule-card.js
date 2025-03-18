@@ -149,11 +149,14 @@ export default function InterviewScheduleCard({
               __html: interview.jobDescription,
             }}
           ></p>
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4 ">
+            <span className="flex items-center text-xs ">Starts on </span>
             <div className="flex items-center text-xs bg-white/10 px-3 py-1 rounded-full">
+            
               <CalendarIcon className="h-3 w-3 mr-1" />
-              <span>{new Date(interview.startDate).toLocaleDateString()}</span>
+              <span> {new Date(interview.startDate).toLocaleDateString()}</span>
             </div>
+            <span className="flex items-center text-xs ">at </span>
             <div className="flex items-center text-xs bg-white/10 px-3 py-1 rounded-full">
               <Clock className="h-3 w-3 mr-1" />
               <span>
