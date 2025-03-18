@@ -366,58 +366,66 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                 <CardContent className="p-4">
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 gap-3  h-[500px] overflow-y-scroll ">
-                      {interviewDetail?.scheduling?.map((slot, index) => (
-                        <div
-                          key={index}
-                          className={`border rounded-md p-3 cursor-pointer transition-all ${
-                            selectedSlot === slot.scheduleID
-                              ? "border-[#b3b3b3] bg-[#b3b3b31a]"
-                              : "border !border-[#b3b3b35a] hover:border-[#b3b3b3aa]"
-                          } ${
-                            slot.isBooked ? "opacity-50 cursor-not-allowed" : ""
-                          }`}
-                          onClick={() =>
-                            !slot.isBooked && setSelectedSlot(slot.scheduleID)
-                          }
-                        >
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                              <CalendarClock className="h-4 w-4 text-[#b3b3b3]" />
-                              <span className="font-medium">
-                                {new Date(slot.startTime).toLocaleString(
-                                  "en-US",
-                                  {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }
-                                )}
-                              </span>
-                              <span className="text-sm text-[#b3b3b3]">at</span>
-                              <span className="font-medium">
-                                {new Date(slot.startTime)
-                                  .toLocaleString("en-US", {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  })
-                                  .replace(" ", "")}
-                              </span>
+                      {interviewDetail?.scheduling
+                        ?.sort((a, b) => {
+                          return new Date(a.startTime) - new Date(b.startTime);
+                        })
+                        .map((slot, index) => (
+                          <div
+                            key={index}
+                            className={`border rounded-md p-3 cursor-pointer transition-all ${
+                              selectedSlot === slot.scheduleID
+                                ? "border-[#b3b3b3] bg-[#b3b3b31a]"
+                                : "border !border-[#b3b3b35a] hover:border-[#b3b3b3aa]"
+                            } ${
+                              slot.isBooked
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              !slot.isBooked && setSelectedSlot(slot.scheduleID)
+                            }
+                          >
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-2">
+                                <CalendarClock className="h-4 w-4 text-[#b3b3b3]" />
+                                <span className="font-medium">
+                                  {new Date(slot.startTime).toLocaleString(
+                                    "en-US",
+                                    {
+                                      month: "short",
+                                      day: "numeric",
+                                      year: "numeric",
+                                    }
+                                  )}
+                                </span>
+                                <span className="text-sm text-[#b3b3b3]">
+                                  at
+                                </span>
+                                <span className="font-medium">
+                                  {new Date(slot.startTime)
+                                    .toLocaleString("en-US", {
+                                      hour: "numeric",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })
+                                    .replace(" ", "")}
+                                </span>
+                              </div>
+                              {slot.isBooked && (
+                                <Badge
+                                  variant="outline"
+                                  className="!bg-red-500/10 !text-red-600 !border-red-500/50"
+                                >
+                                  Booked
+                                </Badge>
+                              )}
+                              {selectedSlot === slot.scheduleID && (
+                                <CheckCircle className="h-4 w-4 text-primary" />
+                              )}
                             </div>
-                            {slot.isBooked && (
-                              <Badge
-                                variant="outline"
-                                className="bg-red-500/10 text-red-500 border-red-500/20"
-                              >
-                                Booked
-                              </Badge>
-                            )}
-                            {selectedSlot === slot.scheduleID && (
-                              <CheckCircle className="h-4 w-4 text-primary" />
-                            )}
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                     <AlertDialog>
                       <AlertDialogTrigger
