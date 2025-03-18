@@ -787,7 +787,7 @@ export default function Home() {
 
               <p className="md:text-sm lg:text-xs text-center mx-6 font-semibold lg:mt-0  lg:mb-0 mt-9 mb-9">
                 Play around with the interactive preview
-                on the left to see how it works in action!
+                on <span className=" lg:hidden inline-block">above</span><span className=" hidden lg:inline-block">the left</span> to see how it works in action!
               </p>
             </div>
 
