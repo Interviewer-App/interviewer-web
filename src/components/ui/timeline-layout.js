@@ -15,6 +15,7 @@ import {
 
 import {
   AlertCircle,
+  AlertCircleIcon,
   ArrowRight,
   Bell,
   Calendar,
@@ -380,27 +381,56 @@ export const TimelineLayout = ({
         </CardContent>
       </Card>
 
+      {/* <Card
+        className={cn(
+          "border-none shadow-md overflow-hidden bg-[#2b2410] border-l-4 border-l-warning",
+          "animate-scale-in")}
+      >
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <AlertCircleIcon className="h-5 w-5 text-warning" />
+              <div>
+                <p className="text-sm font-medium">Profile Incomplete</p>
+                <p className="text-xs text-muted-foreground">Please update your experience, skills, and social profiles.</p>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-warning text-warning hover:bg-warning/10 hover:text-warning"
+            >
+              View Profile
+            </Button>
+          </div>
+        </CardContent>
+      </Card> */}
+
       {!isProfileCompleted && (
-        <Alert className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20 mt-5">
-          <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+        <Alert className="mb-6 border-none shadow-md bg-amber-50 dark:border-l-4 border-l-warning dark:bg-[#2b2410] mt-5 animate-scale-in ">
+          {/* <AlertCircle className="h-5 w-5 text-warning" /> */}
           <AlertDescription className="flex items-center justify-between">
-            <div>
-              <span className="font-semibold text-amber-900 dark:text-amber-400">
-                Profile Incomplete
-              </span>
-              <p className="text-amber-700 dark:text-amber-500">
-                Please update your experience, skills, and social profiles.
-              </p>
+            <div className="flex items-center gap-3">
+              <AlertCircleIcon className="h-5 w-5 text-warning" />
+              <div>
+                <p className="text-sm font-medium">Profile Incomplete</p>
+                <p className="text-xs text-muted-foreground">Please update your experience, skills, and social profiles.</p>
+              </div>
             </div>
             <Button
               onClick={profileNavigate}
               variant="outline"
+              size="sm"
               className="border-amber-200 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/30"
+
             >
               View Profile
             </Button>
           </AlertDescription>
         </Alert>
+
+
         // <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-orange-400">
         //   <div className="w-full flex items-center justify-between">
         //     <div>
