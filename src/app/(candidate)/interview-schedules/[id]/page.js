@@ -22,7 +22,7 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Filter } from "lucide-react";
+import { CalendarClock, CheckCircle, Filter } from "lucide-react";
 import { getInterviewById } from "@/lib/api/interview";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -30,6 +30,21 @@ import { getSession } from "next-auth/react";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import ScheduleDesplayModal from "@/components/candidate/schedule-display-modal";
 import { set } from "zod";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { bookSchedule } from "@/lib/api/interview-schedules";
 
 const InterviewScheduleDetailsPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -44,11 +59,12 @@ const InterviewScheduleDetailsPage = ({ params }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
   const [interviewId, setInterviewId] = useState(null);
-  const [interviewDetail, setInterviewDetail] = useState("");
+  const [interviewDetail, setInterviewDetail] = useState({});
   const handleOpen = () => setIsSheetOpen(true);
   const handleClose = () => setIsSheetOpen(false);
   const { toast } = useToast();
   const [slotModalOpen, setSlotModalOpen] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -106,6 +122,10 @@ const InterviewScheduleDetailsPage = ({ params }) => {
     };
     if (interviewId) fetchInterview();
   }, [interviewId, status]);
+
+  useEffect(() => {
+    console.log("Interview Detail:", interviewDetail.scheduling);
+  }, [interviewDetail]);
 
   const joinInterviewSession = async (e) => {
     e.preventDefault();
@@ -181,6 +201,54 @@ const InterviewScheduleDetailsPage = ({ params }) => {
     }
   }
 
+  const handleBookSlot = async () => {
+    try {
+      const session = await getSession();
+      const candidateID = session?.user?.candidateID;
+      const booking = {
+        interviewId: interviewId,
+        scheduleId: selectedSlot,
+        candidateId: candidateID,
+      };
+      const response = await bookSchedule(booking);
+      if (response) {
+        toast({
+          title: "Success!",
+          description: `Your slot has been booked successfully.`,
+        });
+        setSlotModalOpen(false);
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Schedule Booking failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
   return (
     <>
       <SidebarInset>
@@ -207,6 +275,190 @@ const InterviewScheduleDetailsPage = ({ params }) => {
         </header>
 
         <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold">Interview ID: {interviewId}</h1>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <Card className="border-t-4 !border-t-white !bg-[#1b1d22]">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <h2 className="text-2xl font-bold">
+                        Company: {interviewDetail.companyName}
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <h3 className="text-sm text-[#b3b3b3]">Job Title:</h3>
+                          <p className="font-semibold text-lg">
+                            {interviewDetail.jobTitle}
+                          </p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm text-[#b3b3b3]">
+                            Interview Category:
+                          </h3>
+                          <p className="font-semibold text-lg">Technical</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="!bg-[#1b1d22]">
+                <CardHeader>
+                  <CardTitle>Job Description</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: interviewDetail.jobDescription,
+                      }}
+                      className="text-[#b3b3b3] text-justify leading-relaxed description"
+                    ></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-6">
+              <Card className="border-t-4 !border-t-white !bg-[#1b1d22]">
+                <CardHeader>
+                  <CardTitle>Schedule Details</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-[#b3b3b3]">
+                        Total Interview Dates:
+                      </span>
+                      <span className="font-medium">1</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between">
+                      <span className="text-[#b3b3b3]">
+                        Total Schedule Slots:
+                      </span>
+                      <span className="font-medium">14</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between">
+                      <span className="text-[#b3b3b3]">Booked Slots:</span>
+                      <span className="font-medium">1</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between">
+                      <span className="text-[#b3b3b3]">Available Slots:</span>
+                      <span className="font-medium">13</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Book Slot Card */}
+              <Card className="!bg-[#1b1d22]">
+                <CardHeader>
+                  <CardTitle>Book Your Slot</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-3  h-[500px] overflow-y-scroll ">
+                      {interviewDetail?.scheduling?.map((slot, index) => (
+                        <div
+                          key={index}
+                          className={`border rounded-md p-3 cursor-pointer transition-all ${
+                            selectedSlot === slot.scheduleID
+                              ? "border-[#b3b3b3] bg-[#b3b3b31a]"
+                              : "border !border-[#b3b3b35a] hover:border-[#b3b3b3aa]"
+                          } ${
+                            slot.isBooked ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                          onClick={() =>
+                            !slot.isBooked && setSelectedSlot(slot.scheduleID)
+                          }
+                        >
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                              <CalendarClock className="h-4 w-4 text-[#b3b3b3]" />
+                              <span className="font-medium">
+                                {new Date(slot.startTime).toLocaleString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  }
+                                )}
+                              </span>
+                              <span className="text-sm text-[#b3b3b3]">at</span>
+                              <span className="font-medium">
+                                {new Date(slot.startTime)
+                                  .toLocaleString("en-US", {
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  })
+                                  .replace(" ", "")}
+                              </span>
+                            </div>
+                            {slot.isBooked && (
+                              <Badge
+                                variant="outline"
+                                className="bg-red-500/10 text-red-500 border-red-500/20"
+                              >
+                                Booked
+                              </Badge>
+                            )}
+                            {selectedSlot === slot.scheduleID && (
+                              <CheckCircle className="h-4 w-4 text-primary" />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger
+                        className={`w-full ${
+                          selectedSlot === null ? "bg-[#ffffff5a]" : "bg-white"
+                        } text-black rounded-lg py-2 h-11 text-sm font-semibold`}
+                        disabled={selectedSlot === null}
+                      >
+                        Book Your Slot
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you sure you want to Book this time slot?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            If you book this time slot, it will be marked as
+                            Booked.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleBookSlot()}
+                            className="h-[40px] font-medium"
+                          >
+                            Book now
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
           <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center">
             <h1 className="text-4xl font-semibold">
               Interview ID: {interviewId}
@@ -223,7 +475,6 @@ const InterviewScheduleDetailsPage = ({ params }) => {
           {interviewDetail ? (
             <div className="mt-6 flex flex-col md:flex-row justify-between items-start">
               <div className=" w-full md:w-[70%]">
-                {/* Company Info Section */}
                 <div className="bg-gray-500/20 p-8 rounded-lg shadow-md">
                   <h2 className="text-3xl font-semibold text-primary mb-2">
                     Company: {interviewDetail.companyName}
@@ -240,15 +491,8 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                       {interviewDetail.interviewCategory}
                     </span>
                   </p>
-                  {/* <p className="text-lg text-gray-300">
-                    Scheduled At:{" "}
-                    <span className="font-medium text-white">
-                      {new Date(interviewDetail.scheduledAt).toLocaleString()}
-                    </span>
-                  </p> */}
                 </div>
 
-                {/* Job Description Section */}
                 <div className="bg-gray-500/20 p-8 mt-5 rounded-lg shadow-md">
                   <h3 className="text-2xl font-semibold text-primary mb-4">
                     Job Description
@@ -310,16 +554,16 @@ const InterviewScheduleDetailsPage = ({ params }) => {
               </p>
             </div>
           )}
-        </div>
+        </div> */}
       </SidebarInset>
-      {slotModalOpen && (
+      {/* {slotModalOpen && (
         <ScheduleDesplayModal
           setSlotModalOpen={setSlotModalOpen}
           interviewId={interviewId}
           startDate={interviewDetail.startDate}
           endDate={interviewDetail.endDate}
         />
-      )}
+      )} */}
     </>
   );
 };
