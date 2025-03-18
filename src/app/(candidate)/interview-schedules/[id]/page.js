@@ -281,7 +281,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <Card className="border-t-4 !border-t-white !bg-[#1b1d22]">
+              <Card className="border-t-4 dark:!border-t-white !bg-[#1b1d22]">
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div>
@@ -325,7 +325,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
             </div>
 
             <div className="space-y-6">
-              <Card className="border-t-4 !border-t-white !bg-[#1b1d22]">
+              <Card className="border-t-4 dark:!border-t-white !bg-[#1b1d22]">
                 <CardHeader>
                   <CardTitle>Schedule Details</CardTitle>
                 </CardHeader>

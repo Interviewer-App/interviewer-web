@@ -43,18 +43,18 @@ export const columns = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        interviewStatus
+        Interview Status
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
     accessorKey: "interviewCategory",  
-    header: "interview Category",
+    header: "Interview Category",
   },
   {
     accessorKey: "scheduledDate", 
-    header: "scheduledDate",
+    header: "Scheduled Date",
     cell: ({ row }) => {
       const createdAt = new Date(row.original.createdAt); // Parse the date string
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -64,7 +64,7 @@ export const columns = [
 
   {
     accessorKey: "score",  
-    header: "score",
+    header: "Score",
     cell: ({ row }) => {
       const score = row.original.score; // Get the score value
       // If the score is a decimal (e.g., 0.85), multiply by 100 to get percentage
@@ -77,32 +77,5 @@ export const columns = [
   //   header: "interviewCategory",
   // },
   // Add the "Actions" column
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {/* <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem> */}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
 ];
