@@ -89,6 +89,7 @@ export const TimelineLayout = ({
   showPastInterviews,
   setShowPastInterviews,
   isProfileCompleted,
+  setIsAccepted
 }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -164,7 +165,6 @@ export const TimelineLayout = ({
       const response = await updateInterviewInvitaionStatus(interviewId, candidateId, {
         status: status,
       });
-
       if (response) {
         setIsAccepted(true)
         // socket.emit("InterviewStatus", {

@@ -44,7 +44,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Mail, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -98,6 +98,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import ProfileHeader from "@/components/profileHeader";
+import { Badge } from "@/components/ui/badge";
 const UserProfile = () => {
   const [Tab, setTab] = useState("details");
   const { data: session, status } = useSession();
@@ -477,7 +479,6 @@ const UserProfile = () => {
             </Breadcrumb>
           </div>
         </header>
-
         <div
           className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative"
           ref={pdfRef}
@@ -495,14 +496,24 @@ const UserProfile = () => {
               </AvatarFallback>
             </Avatar>
             <div className=" ml-5 mt-5 md:mt-0">
-              <p className=" text-2xl md:text-5xl md:text-left text-center py-1">
+              <p className=" text-3xl font-bold md:text-left text-center py-1">
                 {candidateDetails?.user?.firstName || "Candidate"}{" "}
                 {candidateDetails?.user?.lastName || ""}
               </p>
-              <p className=" text-lg md:text-xl md:text-left text-center text-gray-500">
-                {candidateDetails?.user?.email}
-              </p>
-              <div className="flex items-center justify-center gap-6 md:justify-start mt-3">
+              <div className="flex items-center mt-1 gap-2">
+                <Mail size={14} className="text-muted-foreground" />
+                <p className="text-muted-foreground text-sm">{session?.user?.email || 'user@example.com'}</p>
+              </div>
+              <div className="flex items-center mt-1 gap-2">
+                <Phone size={14} className="text-muted-foreground" />
+                <p className="text-muted-foreground text-sm">+1 (555) 000-0000</p>
+              </div>
+              <div className="flex items-center mt-3 space-x-3">
+                <Badge variant="secondary" className="bg-accent text-accent-foreground uppercase">
+                  {session?.user?.role || 'Candidate'}
+                </Badge>
+              </div>
+              {/* <div className="flex items-center justify-center gap-6 md:justify-start mt-3">
                 <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
                   {candidateDetails?.user?.role || "Candidate"}
                 </p>
@@ -524,32 +535,29 @@ const UserProfile = () => {
                     </>
                   )}
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className=" flex justify-between items-center w-full mt-8 ml-md mb-12">
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("details")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "details" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "details" ? "bg-gray-800" : ""
+                  } `}
               >
                 Details
               </button>
               <button
                 onClick={() => setTab("document")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "document" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "document" ? "bg-gray-800" : ""
+                  } `}
               >
                 Documents
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "settings" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "settings" ? "bg-gray-800" : ""
+                  } `}
               >
                 Settings
               </button>
@@ -557,18 +565,16 @@ const UserProfile = () => {
             <div className={` ${Tab !== "details" ? "hidden" : "block"} `}>
               <button
                 onClick={() => setIsEdit(true)}
-                className={` ${
-                  isEdit ? "hidden" : "block"
-                } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
+                className={` ${isEdit ? "hidden" : "block"
+                  } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
               >
                 <MdEdit className=" text-base mr-2" />{" "}
                 <span className=" inline-block">Edit Profile</span>
               </button>
               <button
                 onClick={handleSaveChanges}
-                className={` ${
-                  isEdit ? "block" : "hidden"
-                } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
+                className={` ${isEdit ? "block" : "hidden"
+                  } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
               >
                 Save Changes
               </button>
@@ -710,17 +716,15 @@ const UserProfile = () => {
                       </TooltipProvider>
                     </div>
                     <div
-                      className={` ${
-                        isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
+                      className={` ${isEdit ? "hidden" : "block"
+                        } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: experience || "No Experiences",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"experience"}
@@ -747,17 +751,15 @@ const UserProfile = () => {
                       </TooltipProvider>
                     </div>
                     <div
-                      className={`${
-                        isEdit ? "hidden" : "block"
-                      } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
+                      className={`${isEdit ? "hidden" : "block"
+                        } text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3 description`}
                       dangerouslySetInnerHTML={{
                         __html: skillHighlights || "No Skill Highlight",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-5 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-5 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"skillHighlights"}
@@ -861,9 +863,8 @@ const UserProfile = () => {
                         value={contactNo || ""}
                         placeholder="+94 xx xxx xxxx"
                         onChange={(e) => setContactNo(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
+                        className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                          } w-full text-sm `}
                       />
                     </div>
                   </div>
@@ -878,19 +879,17 @@ const UserProfile = () => {
                           value={linkedinUrl || ""}
                           placeholder="Linkedin URL"
                           onChange={(e) => setLinkedinUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
                         <a
                           href={linkedinUrl || "#"}
                           target="_blank"
-                          className={` text-sm ${
-                            !linkedinUrl
+                          className={` text-sm ${!linkedinUrl
                               ? "text-gray-400 pointer-events-none"
                               : "text-blue-500"
-                          }`}
+                            }`}
                         >
                           {linkedinUrl || "Linkedin URL"}
                         </a>
@@ -905,19 +904,17 @@ const UserProfile = () => {
                           value={githubUrl || ""}
                           placeholder="Github URL"
                           onChange={(e) => setGithubUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
                         <a
                           href={githubUrl || "#"}
                           target="_blank"
-                          className={` text-sm ${
-                            !githubUrl
+                          className={` text-sm ${!githubUrl
                               ? "text-gray-400 pointer-events-none"
                               : "text-blue-500"
-                          }`}
+                            }`}
                         >
                           {githubUrl || "Github URL"}
                         </a>
@@ -932,19 +929,17 @@ const UserProfile = () => {
                           value={facebookUrl || ""}
                           placeholder="Facebook URL"
                           onChange={(e) => setFacebookUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
                         <a
                           href={facebookUrl || "#"}
                           target="_blank"
-                          className={` text-sm ${
-                            !facebookUrl
+                          className={` text-sm ${!facebookUrl
                               ? "text-gray-400 pointer-events-none"
                               : "text-blue-500"
-                          }`}
+                            }`}
                         >
                           {facebookUrl || "Facebook URL"}
                         </a>
@@ -959,19 +954,17 @@ const UserProfile = () => {
                           value={twitterUrl || ""}
                           placeholder="X URL"
                           onChange={(e) => setTwitterUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
                         <a
                           href={twitterUrl || "#"}
                           target="_blank"
-                          className={` text-sm ${
-                            !twitterUrl
+                          className={` text-sm ${!twitterUrl
                               ? "text-gray-400 pointer-events-none"
                               : "text-blue-500"
-                          }`}
+                            }`}
                         >
                           {twitterUrl || "X URL"}
                         </a>
@@ -986,19 +979,17 @@ const UserProfile = () => {
                           value={discordUrl || ""}
                           placeholder="Discord URL"
                           onChange={(e) => setDiscordUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
                         <a
                           href={discordUrl || "#"}
                           target="_blank"
-                          className={` text-sm ${
-                            !discordUrl
+                          className={` text-sm ${!discordUrl
                               ? "text-gray-400 pointer-events-none"
                               : "text-blue-500"
-                          }`}
+                            }`}
                         >
                           {discordUrl || "Discord URL"}
                         </a>
