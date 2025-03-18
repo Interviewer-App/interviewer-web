@@ -15,12 +15,19 @@ import {
 
 import {
   AlertCircle,
+  Bell,
+  Check,
   CheckCircle2,
   ChevronDown,
   ClipboardList,
   Clock,
   ListTodo,
+  Mic,
+  UserCircle2,
+  Video,
   VideoIcon,
+  Wifi,
+  X,
   XCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -56,7 +63,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "./alert";
 import { Badge } from "./badge";
 import { cn } from "@/lib/utils";
@@ -73,6 +80,7 @@ import {
   CollapsibleTrigger,
 } from "./collapsible";
 import { LuCircleCheck } from "react-icons/lu";
+import Link from "next/link";
 export const TimelineLayout = ({
   interviews,
   overview,
@@ -104,6 +112,28 @@ export const TimelineLayout = ({
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
   const [isOpen, setIsOpen] = useState(false);
+  const requirements = [
+    {
+      icon: <UserCircle2 className="h-5 w-5" />,
+      text: "Complete your profile information",
+      subtext: "Ensure your profile details are up-to-date"
+    },
+    {
+      icon: <Wifi className="h-5 w-5" />,
+      text: "Stable internet connection",
+      subtext: "Minimum 1Mbps upload and download speed"
+    },
+    {
+      icon: <Video className="h-5 w-5" />,
+      text: "Camera is ready",
+      subtext: "Find a well-lit, professional background"
+    },
+    {
+      icon: <Mic className="h-5 w-5" />,
+      text: "Microphone is working",
+      subtext: "Test your audio in a quiet environment"
+    }
+  ];
 
 
   const formatDate = (date) => {
@@ -129,7 +159,7 @@ export const TimelineLayout = ({
     const session = await getSession();
     const candidateId = session?.user?.candidateID;
     try {
-      const response = await updateInterviewInvitaionStatus(interviewId, candidateId,{
+      const response = await updateInterviewInvitaionStatus(interviewId, candidateId, {
         status: status,
       });
 
@@ -326,10 +356,30 @@ export const TimelineLayout = ({
     fetchCandidateDetails();
   }, []);
 
+  const getTimeOfDay = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
     <div className="mt-4">
+      {/* Greeting Card */}
+      <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900">
+        <CardContent className="p-6">
+          <h1 className="text-2xl md:text-3xl font-bold">
+            {getTimeOfDay()}, {session?.user?.firstName.split(' ')[0] || 'Candidate'}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Welcome back to your interview dashboard
+          </p>
+        </CardContent>
+      </Card>
+
       {!isProfileCompleted && (
-        <Alert className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20">
+        <Alert className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20 mt-5">
           <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           <AlertDescription className="flex items-center justify-between">
             <div>
@@ -363,6 +413,7 @@ export const TimelineLayout = ({
         //   </div>
         // </div>
       )}
+
 
       {/* <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
 
@@ -529,10 +580,10 @@ export const TimelineLayout = ({
           const timeBgColor = isClose
             ? "bg-[#F4BB50]"
             : isFar
-            ? "bg-[#7DDA6A]"
-            : ismedium
-            ? "bg-[#F4BB50]"
-            : "bg-gray-900";
+              ? "bg-[#7DDA6A]"
+              : ismedium
+                ? "bg-[#F4BB50]"
+                : "bg-gray-900";
 
           return (
             <Card
@@ -575,18 +626,103 @@ export const TimelineLayout = ({
                       "completed" &&
                       new Date(interview.startTime) > new Date() && (
                         <>
-                          {interview.invitation?.status === 'APPROVED' || interview.invitation === null  ? (
-                            <Button
-                              className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                              size="sm"
-                            >
-                              <VideoIcon className="h-4 w-4 mr-2" />
-                              Join Interview
-                            </Button>
+                          {interview.invitation?.status === 'APPROVED' || interview.invitation === null ? (
+                            <AlertDialog >
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                  size="sm"
+                                >
+                                  <VideoIcon className="h-4 w-4 mr-2" />
+                                  Join Interview
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle className="text-xl text-gray-100">
+                                    Ready to Join the Interview?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription className="text-gray-400">
+                                    Please ensure you meet all requirements before joining the live interview session.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+
+                                <div className="space-y-4 my-4">
+                                  {requirements.map((req, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
+                                    >
+                                      <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
+                                        {req.icon}
+                                      </div>
+                                      <div className="flex-1">
+                                        <h4 className="text-sm font-medium text-gray-200">{req.text}</h4>
+                                        <p className="text-xs text-gray-400 mt-0.5">{req.subtext}</p>
+                                      </div>
+                                      <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                                    </div>
+                                  ))}
+                                </div>
+
+                                <AlertDialogFooter className="sm:space-x-2 justify-between">
+                                  <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
+                                    <X className="h-4 w-4 mr-2" />
+                                    Not Ready Yet
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => {joinInterviewSession(interview)}}
+                                    className="bg-emerald-600 text-white hover:bg-emerald-500"
+                                  >
+                                    <Check className="h-4 w-4 mr-2" />
+                                    Join Interview
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+
+                                <div className="mt-4 text-center">
+                                  <p className="text-xs text-gray-500">
+                                    By joining, you agree to our interview guidelines and code of conduct.
+                                    Your session may be recorded for quality assurance.
+                                  </p>
+                                </div>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                            // <AlertDialog>
+                            //   <AlertDialogTrigger asChild>
+                            //     <Button
+                            //       className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                            //       size="sm"
+                            //     >
+                            //       <VideoIcon className="h-4 w-4 mr-2" />
+                            //       Join Interview
+                            //     </Button>
+                            //   </AlertDialogTrigger>
+                            //   <AlertDialogContent>
+                            //     <AlertDialogHeader>
+                            //       <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
+                            //       <AlertDialogDescription className="text-gray-600">
+                            //         By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
+                            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Make sure your profile is completed</span>
+
+                            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15}
+                            //           className="mt-1" />  You&apos;re in a quiet environment</span>
+                            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
+                            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
+
+                            //       </AlertDialogDescription>
+                            //     </AlertDialogHeader>
+                            //     <AlertDialogFooter>
+                            //       <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
+                            //       <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
+                            //         joinInterviewSession(interview);
+                            //       }}>Confirm Join</AlertDialogAction>
+                            //     </AlertDialogFooter>
+                            //   </AlertDialogContent>
+                            // </AlertDialog>
                           ) : (
                             <div className=" flex justify-start gap-3 items-center">
                               <Button
-                                onClick={() => handleInterviewStatus(interview.interview.interviewID,"REJECTED")}
+                                onClick={() => handleInterviewStatus(interview.interview.interviewID, "REJECTED")}
                                 variant="outline"
                                 size="sm"
                                 className="text-destructive border-destructive/50"
@@ -595,7 +731,7 @@ export const TimelineLayout = ({
                                 Reject
                               </Button>
                               <Button
-                                onClick={() => handleInterviewStatus(interview.interview.interviewID,"APPROVED")}
+                                onClick={() => handleInterviewStatus(interview.interview.interviewID, "APPROVED")}
                                 // onClick={() => setIsAccepted(true)}
                                 variant="outline"
                                 size="sm"
@@ -687,37 +823,37 @@ export const TimelineLayout = ({
             //       {/* Conditionally render the "Join Now" button */}
             //       {interview.interviewSession?.interviewStatus !== "completed" &&
             //         new Date(interview.startTime) > new Date() && (
-            //           <AlertDialog>
-            //             <AlertDialogTrigger asChild>
-            //               <button
+            // <AlertDialog>
+            //   <AlertDialogTrigger asChild>
+            //     <button
 
-            //                 className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
-            //               >
-            //                 Join Now
-            //               </button>
-            //             </AlertDialogTrigger>
-            //             <AlertDialogContent>
-            //               <AlertDialogHeader>
-            //                 <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
-            //                 <AlertDialogDescription className="text-gray-600">
-            //                   By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Make sure your profile is completed</span>
+            //       className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
+            //     >
+            //       Join Now
+            //     </button>
+            //   </AlertDialogTrigger>
+            //   <AlertDialogContent>
+            //     <AlertDialogHeader>
+            //       <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
+            //       <AlertDialogDescription className="text-gray-600">
+            //         By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
+            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Make sure your profile is completed</span>
 
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15}
-            //                     className="mt-1" />  You&apos;re in a quiet environment</span>
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
+            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15}
+            //           className="mt-1" />  You&apos;re in a quiet environment</span>
+            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
+            //         <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
 
-            //                 </AlertDialogDescription>
-            //               </AlertDialogHeader>
-            //               <AlertDialogFooter>
-            //                 <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
-            //                 <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
-            //                   joinInterviewSession(interview);
-            //                 }}>Confirm Join</AlertDialogAction>
-            //               </AlertDialogFooter>
-            //             </AlertDialogContent>
-            //           </AlertDialog>
+            //       </AlertDialogDescription>
+            //     </AlertDialogHeader>
+            //     <AlertDialogFooter>
+            //       <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
+            //       <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
+            //         joinInterviewSession(interview);
+            //       }}>Confirm Join</AlertDialogAction>
+            //     </AlertDialogFooter>
+            //   </AlertDialogContent>
+            // </AlertDialog>
 
             //         )}
             //     </div>
