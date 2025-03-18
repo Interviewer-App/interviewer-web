@@ -54,7 +54,9 @@ const handler = NextAuth({
               id: res.data.user.userID,
               companyID: companyID,
               candidateID: candidateID,
-              isSurveyCompleted: res.data.user.isSurveyCompleted
+              isSurveyCompleted: res.data.user.isSurveyCompleted,
+              firstName: res.data.user.firstName,
+              lastName: res.data.user.lastName,
             };
 
           }
@@ -110,7 +112,9 @@ const handler = NextAuth({
             user.id = newUser.user.userID,
             user.companyID = companyID,
             user.candidateID = candidateID
-            user.isSurveyCompleted = newUser.user.candidate.isSurveyCompleted
+            user.isSurveyCompleted = newUser.user.candidate.isSurveyCompleted,
+            user.firstName = newUser.user.firstName,
+            user.lastName =newUser.user.lastName
           }
 
 
@@ -139,6 +143,8 @@ const handler = NextAuth({
         token.companyID = user.companyID,
         token.candidateID = user.candidateID
         token.isSurveyCompleted = user.isSurveyCompleted
+        token.firstName = user.firstName
+        token.lastName = user.lastName
       }
       return token;
     },
@@ -150,6 +156,8 @@ const handler = NextAuth({
       session.user.companyID = token.companyID,
       session.user.candidateID = token.candidateID
       session.user.isSurveyCompleted = token.isSurveyCompleted
+      session.user.firstName = token.firstName
+      session.user.lastName = token.lastName
       return session;
     },
 

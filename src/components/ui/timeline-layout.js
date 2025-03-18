@@ -15,12 +15,21 @@ import {
 
 import {
   AlertCircle,
+  ArrowRight,
+  Bell,
+  Calendar,
+  Check,
   CheckCircle2,
   ChevronDown,
   ClipboardList,
   Clock,
   ListTodo,
+  Mic,
+  UserCircle2,
+  Video,
   VideoIcon,
+  Wifi,
+  X,
   XCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -56,7 +65,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "./alert";
 import { Badge } from "./badge";
 import { cn } from "@/lib/utils";
@@ -73,6 +82,7 @@ import {
   CollapsibleTrigger,
 } from "./collapsible";
 import { LuCircleCheck } from "react-icons/lu";
+import Link from "next/link";
 export const TimelineLayout = ({
   interviews,
   overview,
@@ -104,6 +114,28 @@ export const TimelineLayout = ({
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
   const [isOpen, setIsOpen] = useState(false);
+  const requirements = [
+    {
+      icon: <UserCircle2 className="h-5 w-5" />,
+      text: "Complete your profile information",
+      subtext: "Ensure your profile details are up-to-date"
+    },
+    {
+      icon: <Wifi className="h-5 w-5" />,
+      text: "Stable internet connection",
+      subtext: "Minimum 1Mbps upload and download speed"
+    },
+    {
+      icon: <Video className="h-5 w-5" />,
+      text: "Camera is ready",
+      subtext: "Find a well-lit, professional background"
+    },
+    {
+      icon: <Mic className="h-5 w-5" />,
+      text: "Microphone is working",
+      subtext: "Test your audio in a quiet environment"
+    }
+  ];
 
 
   const formatDate = (date) => {
@@ -129,7 +161,7 @@ export const TimelineLayout = ({
     const session = await getSession();
     const candidateId = session?.user?.candidateID;
     try {
-      const response = await updateInterviewInvitaionStatus(interviewId, candidateId,{
+      const response = await updateInterviewInvitaionStatus(interviewId, candidateId, {
         status: status,
       });
 
@@ -326,10 +358,30 @@ export const TimelineLayout = ({
     fetchCandidateDetails();
   }, []);
 
+  const getTimeOfDay = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
     <div className="mt-4">
+      {/* Greeting Card */}
+      <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900">
+        <CardContent className="p-6">
+          <h1 className="text-2xl md:text-3xl font-bold">
+            {getTimeOfDay()}, {session?.user?.firstName.split(' ')[0] || 'Candidate'}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Welcome back to your interview dashboard
+          </p>
+        </CardContent>
+      </Card>
+
       {!isProfileCompleted && (
-        <Alert className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20">
+        <Alert className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20 mt-5">
           <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           <AlertDescription className="flex items-center justify-between">
             <div>
@@ -363,6 +415,7 @@ export const TimelineLayout = ({
         //   </div>
         // </div>
       )}
+
 
       {/* <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
 
@@ -515,295 +568,226 @@ export const TimelineLayout = ({
 
       {/* Interview Cards */}
       <div className="space-y-4">
-        {interviews.map((interview) => {
-          const timeDifference = getTimeDifferenceInMinutes(
-            interview.startTime
-          );
-          const isExpanded = expandedInterviewId === interview.scheduleID;
-          const isCopied = copiedInterviewIds[interview.interviewId];
-          // Time differnce dynamic class definations
-          const isClose = timeDifference <= 30 && timeDifference > 0; //adjust the time whatever values you prefer
-          const isFar = timeDifference > 180;
-          const ismedium = timeDifference <= 60 && timeDifference > 0;
+        {interviews.length > 0 ? (
+          interviews.map((interview) => {
+            const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
+            const isExpanded = expandedInterviewId === interview.scheduleID;
+            const isCopied = copiedInterviewIds[interview.interviewId];
 
-          const timeBgColor = isClose
-            ? "bg-[#F4BB50]"
-            : isFar
-            ? "bg-[#7DDA6A]"
-            : ismedium
-            ? "bg-[#F4BB50]"
-            : "bg-gray-900";
+            const isClose = timeDifference <= 30 && timeDifference > 0;
+            const isFar = timeDifference > 180;
+            const isMedium = timeDifference <= 60 && timeDifference > 0;
 
-          return (
-            <Card
-              key={interview.scheduleID}
-              className={cn(
-                "p-6 transition-all hover:shadow-lg bg-card",
-                "group relative overflow-hidden"
-              )}
-            >
-              <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-lg flex flex-col items-center justify-center">
-                  <span className="text-sm font-medium">
-                    {formatDate(interview.startTime)}
-                  </span>
-                  <span className="text-xl font-bold">
-                    {formatDay(interview.startTime)}
-                  </span>
-                </div>
-                <div className="flex-grow">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold">
-                          {interview.interview.jobTitle} -{" "}
-                          {interview.interview.company.companyName}
-                        </h3>
-                        <Badge
-                          variant="secondary"
-                          className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                        >
-                          Active
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {formatTime(interview.startTime)}
-                      </p>
-                    </div>
-                    {interview.interviewSession?.interviewStatus !==
-                      "completed" &&
-                      new Date(interview.startTime) > new Date() && (
-                        <>
-                          {interview.invitation?.status === 'APPROVED' || interview.invitation === null  ? (
-                            <Button
-                              className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                              size="sm"
-                            >
-                              <VideoIcon className="h-4 w-4 mr-2" />
-                              Join Interview
-                            </Button>
-                          ) : (
-                            <div className=" flex justify-start gap-3 items-center">
-                              <Button
-                                onClick={() => handleInterviewStatus(interview.interview.interviewID,"REJECTED")}
-                                variant="outline"
-                                size="sm"
-                                className="text-destructive border-destructive/50"
-                              >
-                                <XCircle className="h-4 w-4 mr-2" />
-                                Reject
-                              </Button>
-                              <Button
-                                onClick={() => handleInterviewStatus(interview.interview.interviewID,"APPROVED")}
-                                // onClick={() => setIsAccepted(true)}
-                                variant="outline"
-                                size="sm"
-                                className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                              >
-                                <LuCircleCheck className="h-4 w-4 mr-2" />
-                                Accept
-                              </Button>
-                            </div>
-                          )}
-                        </>
-                      )}
+            const timeBgColor = isClose
+              ? "bg-[#F4BB50]"
+              : isFar
+                ? "bg-[#7DDA6A]"
+                : isMedium
+                  ? "bg-[#F4BB50]"
+                  : "bg-gray-900";
+
+            return (
+              <Card
+                key={interview.scheduleID}
+                className={cn(
+                  "p-6 transition-all hover:shadow-lg bg-card",
+                  "group relative overflow-hidden"
+                )}
+              >
+                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-lg flex flex-col items-center justify-center">
+                    <span className="text-sm font-medium">
+                      {formatDate(interview.startTime)}
+                    </span>
+                    <span className="text-xl font-bold">
+                      {formatDay(interview.startTime)}
+                    </span>
                   </div>
-                  <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-                    <div className="space-y-2">
-                      {/* <h4 className="text-sm font-medium text-muted-foreground">Position Overview</h4> */}
-                      <p
-                        className={cn(
-                          "text-sm text-muted-foreground description leading-7",
-                          !isOpen && "line-clamp-2 "
+                  <div className="flex-grow">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <h3 className="text-lg font-semibold">
+                            {interview.interview.jobTitle} -{" "}
+                            {interview.interview.company.companyName}
+                          </h3>
+                          <Badge
+                            variant="secondary"
+                            className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                          >
+                            Active
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {formatTime(interview.startTime)}
+                        </p>
+                      </div>
+                      {interview.interviewSession?.interviewStatus !== "completed" &&
+                        new Date(interview.startTime) > new Date() && (
+                          <>
+                            {interview.invitation?.status === "APPROVED" ||
+                              interview.invitation === null ? (
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                    size="sm"
+                                  >
+                                    <VideoIcon className="h-4 w-4 mr-2" />
+                                    Join Interview
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-xl text-gray-100">
+                                      Ready to Join the Interview?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription className="text-gray-400">
+                                      Please ensure you meet all requirements before
+                                      joining the live interview session.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+
+                                  <div className="space-y-4 my-4">
+                                    {requirements.map((req, index) => (
+                                      <div
+                                        key={index}
+                                        className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
+                                      >
+                                        <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
+                                          {req.icon}
+                                        </div>
+                                        <div className="flex-1">
+                                          <h4 className="text-sm font-medium text-gray-200">
+                                            {req.text}
+                                          </h4>
+                                          <p className="text-xs text-gray-400 mt-0.5">
+                                            {req.subtext}
+                                          </p>
+                                        </div>
+                                        <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  <AlertDialogFooter className="sm:space-x-2 justify-between">
+                                    <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
+                                      <X className="h-4 w-4 mr-2" />
+                                      Not Ready Yet
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => {
+                                        joinInterviewSession(interview);
+                                      }}
+                                      className="bg-emerald-600 text-white hover:bg-emerald-500"
+                                    >
+                                      <Check className="h-4 w-4 mr-2" />
+                                      Join Interview
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+
+                                  <div className="mt-4 text-center">
+                                    <p className="text-xs text-gray-500">
+                                      By joining, you agree to our interview
+                                      guidelines and code of conduct. Your session may
+                                      be recorded for quality assurance.
+                                    </p>
+                                  </div>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            ) : (
+                              <div className="flex justify-start gap-3 items-center">
+                                <Button
+                                  onClick={() =>
+                                    handleInterviewStatus(
+                                      interview.interview.interviewID,
+                                      "REJECTED"
+                                    )
+                                  }
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-destructive border-destructive/50"
+                                >
+                                  <XCircle className="h-4 w-4 mr-2" />
+                                  Reject
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    handleInterviewStatus(
+                                      interview.interview.interviewID,
+                                      "APPROVED"
+                                    )
+                                  }
+                                  variant="outline"
+                                  size="sm"
+                                  className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                >
+                                  <LuCircleCheck className="h-4 w-4 mr-2" />
+                                  Accept
+                                </Button>
+                              </div>
+                            )}
+                          </>
                         )}
-                        dangerouslySetInnerHTML={{
-                          __html: interview.interview.jobDescription,
-                        }}
-                      ></p>
                     </div>
-                    {/* <CollapsibleContent className="space-y-4">
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium mb-2">Key Responsibilities:</h4>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                          <li>Create user-centered designs by understanding business requirements</li>
-                          <li>Create user flows, wireframes, prototypes and mockups</li>
-                          <li>Develop UI mockups and prototypes that clearly illustrate how sites function and look</li>
-                          <li>Gather and evaluate user requirements in collaboration with product managers</li>
-                          <li>Identify and troubleshoot UX problems (e.g. responsiveness)</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium mb-2">Requirements:</h4>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                          <li>Proven experience as a UI/UX Designer or similar role</li>
-                          <li>Portfolio of design projects</li>
-                          <li>Knowledge of wireframe tools (e.g. Figma, Sketch, Adobe XD)</li>
-                          <li>Up-to-date with the latest UI trends, techniques, and technologies</li>
-                          <li>Team player with excellent communication skills</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium mb-2">Benefits:</h4>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                          <li>Competitive salary package</li>
-                          <li>Health insurance</li>
-                          <li>Flexible working hours</li>
-                          <li>Remote work options</li>
-                          <li>Professional development opportunities</li>
-                        </ul>
-                      </div>
-                    </CollapsibleContent> */}
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="mt-4 p-0 h-auto text-sm text-primary hover:text-primary/80"
-                      >
-                        {isOpen ? "Show Less" : "More Details"}
-                        <ChevronDown
+                    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                      <div className="space-y-2">
+                        <p
                           className={cn(
-                            "h-4 w-4 ml-1 transition-transform duration-200",
-                            isOpen && "transform rotate-180"
+                            "text-sm text-muted-foreground description leading-7",
+                            !isOpen && "line-clamp-2 "
                           )}
-                        />
-                      </Button>
-                    </CollapsibleTrigger>
-                  </Collapsible>
+                          dangerouslySetInnerHTML={{
+                            __html: interview.interview.jobDescription,
+                          }}
+                        ></p>
+                      </div>
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="mt-4 p-0 h-auto text-sm text-primary hover:text-primary/80"
+                        >
+                          {isOpen ? "Show Less" : "More Details"}
+                          <ChevronDown
+                            className={cn(
+                              "h-4 w-4 ml-1 transition-transform duration-200",
+                              isOpen && "transform rotate-180"
+                            )}
+                          />
+                        </Button>
+                      </CollapsibleTrigger>
+                    </Collapsible>
+                  </div>
                 </div>
+              </Card>
+            );
+          })
+        ) : (
+          <Card className="border-none shadow-md overflow-hidden bg-gray-900 border-l-4 border-l-gray-700">
+            <CardContent className="p-8 flex flex-col items-center text-center">
+              <div className="mb-4 p-3 rounded-full bg-gray-800">
+                <Calendar className="h-6 w-6 text-gray-400" />
               </div>
-            </Card>
-
-            // <TimelineItem key={interview.scheduleID} className="">
-            //   <TimelineHeader className="bg-[#18181E] py-4 px-8 rounded-t-xl">
-            //     <TimelineTime
-            //       date={formatDate(interview.startTime)}
-            //       time={formatTime(interview.startTime)}
-            //       timeBgColor={timeBgColor}
-            //       className={`transition-all duration-300 text-white py-2 rounded-lg  max-w-52 mx-auto text-center font-thin`}
-            //     />
-
-            //     <div className="flex justify-between items-center w-full ">
-            //       <TimelineTitle>{interview.interview.jobTitle}</TimelineTitle>
-            //       {/* Conditionally render the "Join Now" button */}
-            //       {interview.interviewSession?.interviewStatus !== "completed" &&
-            //         new Date(interview.startTime) > new Date() && (
-            //           <AlertDialog>
-            //             <AlertDialogTrigger asChild>
-            //               <button
-
-            //                 className="ml-4 bg-[#6E6ADA] text-white px-4 py-2 rounded-md"
-            //               >
-            //                 Join Now
-            //               </button>
-            //             </AlertDialogTrigger>
-            //             <AlertDialogContent>
-            //               <AlertDialogHeader>
-            //                 <AlertDialogTitle>Ready to Join the Interview?</AlertDialogTitle>
-            //                 <AlertDialogDescription className="text-gray-600">
-            //                   By continuing, you&apos;ll enter the live interview session immediately. Please ensure:
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Make sure your profile is completed</span>
-
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15}
-            //                     className="mt-1" />  You&apos;re in a quiet environment</span>
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  Your camera and microphone are ready</span>
-            //                   <span className="flex justify-start gap-3 pl-7"><BadgeCheck size={15} className="mt-1" />  You have stable internet connection</span>
-
-            //                 </AlertDialogDescription>
-            //               </AlertDialogHeader>
-            //               <AlertDialogFooter>
-            //                 <AlertDialogCancel>Not Ready Yet</AlertDialogCancel>
-            //                 <AlertDialogAction className="bg-[#6E6ADA] hover:bg-[#5B57B3]" onClick={() => {
-            //                   joinInterviewSession(interview);
-            //                 }}>Confirm Join</AlertDialogAction>
-            //               </AlertDialogFooter>
-            //             </AlertDialogContent>
-            //           </AlertDialog>
-
-            //         )}
-            //     </div>
-            //   </TimelineHeader>
-            //   <div className="bg-[#18181E]">
-            //     <TimelineDescription className="-mt-1  px-8 text-[#6F6F7B] ">
-            //       <div
-            //         className={`w-[90%] pb-3 text-justify bg-transparent rounded-lg description`}
-            //         dangerouslySetInnerHTML={{
-            //           __html: isExpanded
-            //             ? interview.interview.jobDescription
-            //             : `${interview.interview.jobDescription.slice(0, 200)}...`,
-            //         }}
-            //       />
-
-            //       <Accordion type="single" collapsible>
-            //         <AccordionItem value="item-1">
-            //           {/* <div className="flex justify-end">
-            //             <AccordionTrigger
-            //               onClick={() => toggleDescription(interview.scheduleID)} // Toggle description on button click
-            //               className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
-            //             >
-            //               {isExpanded ? "Show Less" : "More Details"}
-            //             </AccordionTrigger>
-            //           </div> */}
-            //           <AccordionContent className="bg-[#18181E] p-4 shadow-md ">
-            //             <div className="space-y-2 text-white mt-4 ">
-            //               <div className="flex items-center">
-            //                 <span className="font-medium">ID:</span>
-            //                 <span className="ml-2">
-            //                   {interview.interviewId}
-            //                 </span>
-            //                 <button
-            //                   onClick={() => handleCopy(interview.interviewId)}
-            //                   className="ml-4 text-blue-500 hover:text-blue-700"
-            //                   title="Copy Interview ID"
-            //                 >
-            //                   <ClipboardList className="w-5 h-5 inline" />
-            //                   <span className="hidden sm:inline ml-2">
-            //                     {isCopied ? "Copied!" : "Copy"}
-            //                   </span>
-            //                 </button>
-            //               </div>
-            //               <div>
-            //                 <span className="font-medium">
-            //                   Interview Category:
-            //                 </span>
-            //                 <span className="ml-2">
-            //                   {interview.interview.interviewCategory}
-            //                 </span>
-            //               </div>
-            //               <div>
-            //                 <span className="font-medium">End Date:</span>
-            //                 <span className="ml-2">
-            //                   {formatDateMoreDetailsSection(
-            //                     interview?.interview?.endDate
-            //                   )}
-            //                 </span>
-            //               </div>
-            //               <div>
-            //                 <span className="font-medium">Company Name:</span>
-            //                 <span className="ml-2">
-            //                   {interview.interview.company.companyName}
-            //                 </span>
-            //               </div>
-            //             </div>
-            //           </AccordionContent>
-            //           {/* Move the button to the bottom of the AccordionContent */}
-            //           <div className="flex justify-end -mt-4">
-            //             <AccordionTrigger
-            //               onClick={() =>
-            //                 toggleDescription(interview.scheduleID)
-            //               } // Toggle description on button click
-            //               className="text-sm font-thin text-[#BBB9FF] hover:text-white px-4 py-1 bg-[#25252F] rounded-lg mb-6 mt-2 hover:no-underline"
-            //             >
-            //               {isExpanded ? "Show Less" : "More Details"}
-            //             </AccordionTrigger>
-            //           </div>
-            //         </AccordionItem>
-            //       </Accordion>
-            //     </TimelineDescription>
-            //   </div>
-            // </TimelineItem>
-          );
-        })}
-        {/* Active Interview Card */}
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                No Upcoming Interviews
+              </h3>
+              <p className="text-sm text-gray-400 mb-6 max-w-md">
+                Ready to take the next step in your career? Explore available
+                interview opportunities and find your perfect match.
+              </p>
+              <Button
+                size="lg"
+                className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium"
+                onClick={() => {
+                  router.push("/interview-schedules");
+                }}
+              >
+                Explore Interviews <ArrowRight className="h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
       {/* 
       <Card className={cn(
