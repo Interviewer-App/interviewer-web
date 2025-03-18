@@ -330,12 +330,14 @@ body {
 .description li[data-list="bullet"] {
   position: relative;
   list-style: none;
+  margin-bottom: 15px;
 }
 
 .description li[data-list="bullet"]::before {
   content: "•"; 
   position: absolute;
   left: -1.5rem;
+
 }
 
 .description .ql-ui {
@@ -346,42 +348,48 @@ body {
 .description h1 {
   font-size: 1.5rem;
   font-weight: 700;
-
+  padding-bottom: 20px;
+  padding-top: 30px;
 }
 
 .description h2 {
   font-size: 1.1rem;
   font-weight: 700;
-
+  padding-bottom: 20px;
+  padding-top: 30px;
 }
 
 .description h3 {
   font-size: 1.25rem;
   font-weight: 700;
-
+  padding-bottom: 20px;
+  padding-top: 30px;
 }
 
 .description h4 {
   font-size: 1rem;
   font-weight: 700;
-
+  padding-bottom: 20px;
+  padding-top: 30px;
 }
 
 .description h5 {
   font-size: 0.875rem;
   font-weight: 700;
-
+  padding-bottom: 10px;
+  padding-top: 30px;
 }
 
 .description h6 {
   font-size: 0.75rem;
   font-weight: 700;
-
+  padding-bottom: 10px;
+  padding-top: 30px;
 }
 
 .description p {
   font-size: 1rem;
-
+  line-height: 30px;
 }
 
 .description span {
