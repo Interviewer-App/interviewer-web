@@ -161,3 +161,12 @@ export const reorderInterviewFlow = async (data) => {
     }
 }
 
+export const updateInterviewInvitaionStatus = async (interviewId,candidateId, data) => {
+    try{
+        const response = await axiosInstance.patch(`/interview/invitations/update-status/${interviewId}/${candidateId}`, data);
+        return response;
+    } catch(error){
+        console.log('Error updating interview:', error);
+        throw error;
+    }
+}

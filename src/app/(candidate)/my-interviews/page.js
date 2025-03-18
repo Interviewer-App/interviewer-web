@@ -39,6 +39,7 @@ const MyInterviews = () => {
   const [showPastInterviews, setShowPastInterviews] = useState(false);
   const [isProfileComplete,setIsProfileComplete]=useState(true);
   const [scheduleData,setScheduleData]=useState({});
+  const [isAccepted, setIsAccepted] = useState(false);
   useEffect(() => {
     const fetchCandidateId = async () => {
       try {
@@ -72,7 +73,7 @@ const MyInterviews = () => {
     };
 
     if (candidateId) fetchUserJoinedInterviews();
-  }, [candidateId]);
+  }, [candidateId, isAccepted]);
 
   useEffect(() => {
     const fetchCandidateOverview = async () => {
@@ -112,7 +113,7 @@ const MyInterviews = () => {
       .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
   
     setSortedScheduleInterviews(filteredAndSortedArray);
-  }, [scheduleInterviews, showPastInterviews]);
+  }, [scheduleInterviews, showPastInterviews, isAccepted]);
 
   if (status === "loading") {
     return <Loading />;
@@ -146,6 +147,7 @@ const MyInterviews = () => {
           showPastInterviews={showPastInterviews}
           setShowPastInterviews={setShowPastInterviews}
           isProfileCompleted={isProfileComplete} 
+          setIsAccepted={setIsAccepted}
         />
       </div>
     </SidebarInset>

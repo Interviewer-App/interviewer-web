@@ -28,7 +28,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getInterviewById } from "@/lib/api/interview";
+import { getInterviewById, updateInterviewInvitaionStatus } from "@/lib/api/interview";
 import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import Lottie from "lottie-react";
@@ -104,7 +104,7 @@ export const TimelineLayout = ({
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
   const [isOpen, setIsOpen] = useState(false);
-  const [isAccepted, setIsAccepted] = useState(false);
+
 
   const formatDate = (date) => {
     const options = { month: "short" };
@@ -123,6 +123,60 @@ export const TimelineLayout = ({
   const formatTime = (date) => {
     const options = { hour: "numeric", minute: "numeric", hour12: true };
     return new Date(date).toLocaleTimeString("en-US", options); // e.g., '4:45 PM'
+  };
+
+  const handleInterviewStatus = async (interviewId, status) => {
+    const session = await getSession();
+    const candidateId = session?.user?.candidateID;
+    try {
+      const response = await updateInterviewInvitaionStatus(interviewId, candidateId,{
+        status: status,
+      });
+
+      if (response) {
+        setIsAccepted(true)
+        // socket.emit("InterviewStatus", {
+        //   interviewId: interviewId,
+        //   status: status,
+        // });
+
+        // toast({
+        //   title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
+        //     } Successfully!`,
+        //   description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
+        //     } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+        //   action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+        // });
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview update failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
   };
 
   const handleCopy = (interviewId) => {
@@ -521,7 +575,7 @@ export const TimelineLayout = ({
                       "completed" &&
                       new Date(interview.startTime) > new Date() && (
                         <>
-                          {isAccepted ? (
+                          {interview.invitation?.status === 'APPROVED' || interview.invitation === null  ? (
                             <Button
                               className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
                               size="sm"
@@ -532,15 +586,17 @@ export const TimelineLayout = ({
                           ) : (
                             <div className=" flex justify-start gap-3 items-center">
                               <Button
+                                onClick={() => handleInterviewStatus(interview.interview.interviewID,"REJECTED")}
                                 variant="outline"
                                 size="sm"
                                 className="text-destructive border-destructive/50"
                               >
                                 <XCircle className="h-4 w-4 mr-2" />
-                                Reschedule
+                                Reject
                               </Button>
                               <Button
-                                onClick={() => setIsAccepted(true)}
+                                onClick={() => handleInterviewStatus(interview.interview.interviewID,"APPROVED")}
+                                // onClick={() => setIsAccepted(true)}
                                 variant="outline"
                                 size="sm"
                                 className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
