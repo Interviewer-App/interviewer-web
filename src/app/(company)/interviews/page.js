@@ -308,21 +308,21 @@ const InterviewsPage = () => {
               title="Total Candidates"
               value={totalCandidates}
               variant="total"
-              className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:0ms] hover:border-primary/30"
+              className="transform transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:0ms] hover:border-primary/30"
             />
 
             <StatCard
               title="Scheduled Interviews"
               value={interviews.length}
               variant="pending"
-              className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:100ms] hover:border-warning/30"
+              className="transform transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:100ms] hover:border-warning/30"
             />
 
             <StatCard
               title="Pending Reviews"
               value={pendingReviews}
               variant="completed"
-              className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:200ms] hover:border-success/30"
+              className="transform transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:200ms] hover:border-success/30"
             />
           </div>
 
