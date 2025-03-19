@@ -38,7 +38,10 @@ import { ToastAction } from "@/components/ui/toast";
 import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getInterviewById, updateInterviewInvitaionStatus } from "@/lib/api/interview";
+import {
+  getInterviewById,
+  updateInterviewInvitaionStatus,
+} from "@/lib/api/interview";
 import socket from "@/lib/utils/socket";
 import { createInterviewSession } from "@/lib/api/interview-session";
 import Lottie from "lottie-react";
@@ -90,7 +93,7 @@ export const TimelineLayout = ({
   showPastInterviews,
   setShowPastInterviews,
   isProfileCompleted,
-  setIsAccepted
+  setIsAccepted,
 }) => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -120,25 +123,24 @@ export const TimelineLayout = ({
     {
       icon: <UserCircle2 className="h-5 w-5" />,
       text: "Complete your profile information",
-      subtext: "Ensure your profile details are up-to-date"
+      subtext: "Ensure your profile details are up-to-date",
     },
     {
       icon: <Wifi className="h-5 w-5" />,
       text: "Stable internet connection",
-      subtext: "Minimum 1Mbps upload and download speed"
+      subtext: "Minimum 1Mbps upload and download speed",
     },
     {
       icon: <Video className="h-5 w-5" />,
       text: "Camera is ready",
-      subtext: "Find a well-lit, professional background"
+      subtext: "Find a well-lit, professional background",
     },
     {
       icon: <Mic className="h-5 w-5" />,
       text: "Microphone is working",
-      subtext: "Test your audio in a quiet environment"
-    }
+      subtext: "Test your audio in a quiet environment",
+    },
   ];
-
 
   const formatDate = (date) => {
     const options = { month: "short" };
@@ -163,11 +165,15 @@ export const TimelineLayout = ({
     const session = await getSession();
     const candidateId = session?.user?.candidateID;
     try {
-      const response = await updateInterviewInvitaionStatus(interviewId, candidateId, {
-        status: status,
-      });
+      const response = await updateInterviewInvitaionStatus(
+        interviewId,
+        candidateId,
+        {
+          status: status,
+        }
+      );
       if (response) {
-        setIsAccepted(true)
+        setIsAccepted(true);
         // socket.emit("InterviewStatus", {
         //   interviewId: interviewId,
         //   status: status,
@@ -362,18 +368,18 @@ export const TimelineLayout = ({
   const getTimeOfDay = () => {
     const hour = new Date().getHours();
 
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
   };
 
   const handleOpen = (interviewId) => {
-    setExpandedInterviewIds(prevIds => {
+    setExpandedInterviewIds((prevIds) => {
       const newIds = new Set(prevIds);
       if (newIds.has(interviewId)) {
         newIds.delete(interviewId);
       } else {
-        newIds.add(interviewId); 
+        newIds.add(interviewId);
       }
       return newIds;
     });
@@ -385,7 +391,7 @@ export const TimelineLayout = ({
       <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900 mb-5">
         <CardContent className="p-6">
           <h1 className="text-2xl md:text-3xl font-bold">
-            {getTimeOfDay()}, {session?.user?.firstName || 'Candidate'}
+            {getTimeOfDay()}, {session?.user?.firstName || "Candidate"}
           </h1>
           <p className="text-muted-foreground mt-1">
             Welcome back to your interview dashboard
@@ -427,7 +433,9 @@ export const TimelineLayout = ({
               <AlertCircleIcon className="h-5 w-5 text-warning" />
               <div>
                 <p className="text-sm font-medium">Profile Incomplete</p>
-                <p className="text-xs text-muted-foreground">Please update your experience, skills, and social profiles.</p>
+                <p className="text-xs text-muted-foreground">
+                  Please update your experience, skills, and social profiles.
+                </p>
               </div>
             </div>
             <Button
@@ -435,13 +443,11 @@ export const TimelineLayout = ({
               variant="outline"
               size="sm"
               className="border-amber-200 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/30"
-
             >
               View Profile
             </Button>
           </AlertDescription>
         </Alert>
-
 
         // <div className="w-full h-fit bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-orange-400">
         //   <div className="w-full flex items-center justify-between">
@@ -457,7 +463,6 @@ export const TimelineLayout = ({
         //   </div>
         // </div>
       )}
-
 
       {/* <div className="bg-zinc-900 text-white pt-6 rounded-lg mb-6 mt-12 max-w-full text-left ">
 
@@ -612,8 +617,12 @@ export const TimelineLayout = ({
       <div className="space-y-4">
         {interviews.length > 0 ? (
           interviews.map((interview) => {
-            const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
-            const isExpanded = expandedInterviewIds.has(interview.interview.interviewID)
+            const timeDifference = getTimeDifferenceInMinutes(
+              interview.startTime
+            );
+            const isExpanded = expandedInterviewIds.has(
+              interview.interview.interviewID
+            );
             const isCopied = copiedInterviewIds[interview.interviewId];
 
             const isClose = timeDifference <= 30 && timeDifference > 0;
@@ -623,10 +632,10 @@ export const TimelineLayout = ({
             const timeBgColor = isClose
               ? "bg-[#F4BB50]"
               : isFar
-                ? "bg-[#7DDA6A]"
-                : isMedium
-                  ? "bg-[#F4BB50]"
-                  : "bg-gray-900";
+              ? "bg-[#7DDA6A]"
+              : isMedium
+              ? "bg-[#F4BB50]"
+              : "bg-gray-900";
 
             return (
               <Card
@@ -665,11 +674,12 @@ export const TimelineLayout = ({
                           {formatTime(interview.startTime)}
                         </p>
                       </div>
-                      {interview.interviewSession?.interviewStatus !== "completed" &&
+                      {interview.interviewSession?.interviewStatus !==
+                        "completed" &&
                         new Date(interview.startTime) > new Date() && (
                           <>
                             {interview.invitation?.status === "APPROVED" ||
-                              interview.invitation === null ? (
+                            interview.invitation === null ? (
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                   <Button
@@ -686,8 +696,8 @@ export const TimelineLayout = ({
                                       Ready to Join the Interview?
                                     </AlertDialogTitle>
                                     <AlertDialogDescription className="text-gray-400">
-                                      Please ensure you meet all requirements before
-                                      joining the live interview session.
+                                      Please ensure you meet all requirements
+                                      before joining the live interview session.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
 
@@ -732,8 +742,9 @@ export const TimelineLayout = ({
                                   <div className="mt-4 text-center">
                                     <p className="text-xs text-gray-500">
                                       By joining, you agree to our interview
-                                      guidelines and code of conduct. Your session may
-                                      be recorded for quality assurance.
+                                      guidelines and code of conduct. Your
+                                      session may be recorded for quality
+                                      assurance.
                                     </p>
                                   </div>
                                 </AlertDialogContent>
@@ -773,13 +784,18 @@ export const TimelineLayout = ({
                           </>
                         )}
                     </div>
-                    <Collapsible open={isExpanded} onOpenChange={() => handleOpen(interview.interview.interviewID)}>
+                    <Collapsible
+                      open={isExpanded}
+                      onOpenChange={() =>
+                        handleOpen(interview.interview.interviewID)
+                      }
+                    >
                       <div className="space-y-2">
                         <p
-                          className={cn(
-                            "text-sm text-muted-foreground description leading-7",
-                            !isExpanded && "line-clamp-2"
-                          )}
+                          className={`
+                            text-sm text-muted-foreground leading-7 
+                            ${!isExpanded ? "line-clamp-2" : "description"}
+                          `}
                           dangerouslySetInnerHTML={{
                             __html: interview.interview.jobDescription,
                           }}
