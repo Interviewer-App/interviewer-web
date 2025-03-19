@@ -377,45 +377,46 @@ const InterviewsPage = () => {
                       }
                     `}
               >
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-lg font-semibold">
-                      {interview.jobTitle}
-                    </h3>
-                    {getStatusBadge(
-                      interview.scheduling[0].startTime,
-                      interview.scheduling[interview.scheduling.length - 1]
-                        .endTime
-                    )}
-                  </div>
+                <div className="p-4 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="text-lg font-semibold">
+                        {interview.jobTitle}
+                      </h3>
+                      {getStatusBadge(
+                        interview.scheduling[0].startTime,
+                        interview.scheduling[interview.scheduling.length - 1]
+                          .endTime
+                      )}
+                    </div>
 
-                  {/* <div className="flex items-center space-x-2 mb-3 text-sm text-[#b3b3b3]">
+                    {/* <div className="flex items-center space-x-2 mb-3 text-sm text-[#b3b3b3]">
                     <Building2 className="h-4 w-4" />
                     <span>{interview.department}</span>
                   </div> */}
 
-                  <div className="space-y-1 border-t border-gray-800 pt-3 pb-1">
-                    <div className="flex items-center text-sm text-[#b3b3b3]">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      <span>
-                        {new Date(
-                          interview.scheduling[0].startTime
-                        ).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </span>
-                    </div>
+                    <div className="space-y-1 border-t border-gray-800 pt-3 pb-1">
+                      <div className="flex items-center text-sm text-[#b3b3b3]">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <span>
+                          {new Date(
+                            interview.scheduling[0].startTime
+                          ).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
 
-                    <div className="flex items-center text-sm text-[#b3b3b3]">
-                      <Users className="h-4 w-4 mr-2" />
-                      <span>
-                        {interview.interviewSessions.length} candidates
-                      </span>
+                      <div className="flex items-center text-sm text-[#b3b3b3]">
+                        <Users className="h-4 w-4 mr-2" />
+                        <span>
+                          {interview.interviewSessions.length} candidates
+                        </span>
+                      </div>
                     </div>
                   </div>
-
                   <div className="mt-3 flex justify-end">
                     <Button
                       variant="ghost"
