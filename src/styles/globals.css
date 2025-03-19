@@ -193,6 +193,31 @@ body {
     --str-video__primary-color: #005fff;
     --str-video__background-color: #ffffff;
     --str-video__text-color: #000000;
+
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 55 100% 60%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
+    --radius: 0.5rem;
+
+    --card: 220 13% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 220 13% 12%;
+    --popover-foreground: 0 0% 98%;
+    --secondary: 220 13% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 220 13% 18%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 55 100% 60%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
   }
   .dark {
     --sidebar-background: 240 5.9% 10%;
