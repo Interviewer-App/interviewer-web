@@ -328,11 +328,31 @@ export default function CreateInterviewModal({ setModalOpen }) {
   const handleAddCatagoty = (e) => {
     e.preventDefault();
 
-    if (
-      inputCatagory.trim() !== "" &&
-      inputPercentage.trim() !== "" &&
-      totalPercentage < 100
-    ) {
+
+    const newPercentage = parseFloat(inputPercentage.trim());
+    const currentTotal = categoryList.reduce((total, cat) => total + parseFloat(cat.percentage), 0);
+  
+
+
+    if (inputCatagory.trim() === "" || inputPercentage.trim() === "") {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please provide both the category name and percentage to add to the list.",
+      });
+      return;
+    }
+  
+    if (currentTotal + newPercentage > 100) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "The percentage cannot exceed 100%.",
+      });
+      return;
+    }
+    
+    {
       setCatagoryList((prev) => [
         ...prev,
         {
@@ -1578,9 +1598,9 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   (genJobDescription || "").trim() === "" ||
                   jobDescription === "<p><br></p>" ||
                   genJobDescription === "<p><br></p>" ||
-                  chipData.length === 0)
+                  chipData.length === 0) ||
                 // Step 1 validations
-                // (stepperCount === 1 && totalPercentage === 100) // Check if interval duration is filled
+                (stepperCount === 1 && totalPercentage !== 100) // Disable if totalPercentage is not 100%
               }
               className={`mt-6 px-5 py-2 rounded-lg text-center text-sm font-semibold ${
                 // Step 0 enabled condition
@@ -1592,7 +1612,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
                   chipData.length > 0) ||
                 // Step 1 enabled condition
 
-                totalPercentage === 100
+                (stepperCount === 1 && totalPercentage === 100)
                   ? "bg-white text-black border-2 border-white"
                   : "border-2 border-gray-700 text-gray-700"
               }`}
