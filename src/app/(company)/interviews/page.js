@@ -23,21 +23,28 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
-import { AlertCircle } from "lucide-react"
-import { getCompanyById } from "@/lib/api/users";
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
-import { Info } from 'lucide-react';
-          
+  AlertCircle,
+  Building2,
+  Calendar,
+  ChevronRight,
+  Plus,
+  Users,
+} from "lucide-react";
+import { getCompanyById } from "@/lib/api/users";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
+import { StatCard } from "@/components/interviews/StatCard";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const InterviewsPage = () => {
   const { data: session, status } = useSession();
@@ -49,7 +56,9 @@ const InterviewsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [companyDetails, setCompanyDetails] = useState({});
   const [companyId, setCompanyId] = useState("");
-  const [hoveredId,setHoveredId]=useState();
+  const [hoveredId, setHoveredId] = useState();
+  const router = useRouter();
+
   useEffect(() => {
     const fetchInterviews = async () => {
       setIsLoading(true);
@@ -62,7 +71,6 @@ const InterviewsPage = () => {
           setInterviews(response.data);
           setIsAnyInterviews(response.data.length > 0);
         }
-
       } catch (error) {
         setIsLoading(false);
         // Check if the error is a 404 (no interviews found)
@@ -129,15 +137,12 @@ const InterviewsPage = () => {
     fetchCompanyId();
   }, []);
 
-
-
   useEffect(() => {
     const fetchCompanyDetails = async () => {
       try {
         const response = await getCompanyById(companyId);
         if (response.data) {
           setCompanyDetails(response.data);
-          
         }
       } catch (err) {
         if (err.response) {
@@ -161,7 +166,8 @@ const InterviewsPage = () => {
           toast({
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
-            description: "An unexpected error occurred. Please check your network and try again.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         }
@@ -172,9 +178,6 @@ const InterviewsPage = () => {
       fetchCompanyDetails();
     }
   }, [companyId]);
-
-
-
 
   if (status === "loading") {
     return (
@@ -188,6 +191,74 @@ const InterviewsPage = () => {
       redirect(loginURL);
     }
   }
+
+  const getStatusBadge = (startTime, endTime) => {
+    const currentDate = new Date();
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+    let status = "upcoming";
+
+    if (currentDate < startDate) {
+      status = "upcoming";
+    } else if (currentDate >= startDate && currentDate <= endDate) {
+      status = "ongoing";
+    } else if (currentDate > endDate) {
+      status = "completed";
+    }
+
+    switch (status) {
+      case "upcoming":
+        return (
+          <Badge
+            variant="outline"
+            className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/10"
+          >
+            Upcoming
+          </Badge>
+        );
+      case "ongoing":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-emerald-400 py-1 px-4 !border-emerald-400/30 !bg-emerald-400/10"
+          >
+            Ongoing
+          </Badge>
+        );
+      case "completed":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-green-600 !border-green-600/30 bg-green-600/10 py-1 px-4"
+          >
+            Completed
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getInterviewStatus = (startTime, endTime) => {
+    const currentDate = new Date();
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+    let status = "upcoming";
+
+    if (currentDate < startDate) {
+      status = "upcoming";
+    } else if (currentDate >= startDate && currentDate <= endDate) {
+      status = "ongoing";
+    } else if (currentDate > endDate) {
+      status = "completed";
+    }
+
+    return status;
+  };
+
+  const navigationClickHandler = (interviewID) => {
+    router.push(`/interviews/${encodeURIComponent(interviewID)}`);
+  };
 
   return (
     <>
@@ -212,9 +283,155 @@ const InterviewsPage = () => {
         </header>
 
         <div className=" px-9 py-4 w-full bg-black max-w-[1500px] mx-auto h-full">
-          <div className=" flex items-start justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <StatCard
+              title="Total Candidates"
+              value={24}
+              variant="total"
+              className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:0ms] hover:border-primary/30"
+            />
 
-            <div className="flex flex-row items-center space-x-1">
+            <StatCard
+              title="Scheduled Interviews"
+              value={8}
+              variant="pending"
+              className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:100ms] hover:border-warning/30"
+            />
+
+            <StatCard
+              title="Pending Reviews"
+              value={5}
+              variant="completed"
+              className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:200ms] hover:border-success/30"
+            />
+          </div>
+
+          <div className=" mt-10 mb-5">
+            <div className=" flex w-full items-center justify-between">
+              <div className="flex items-center w-full justify-between">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-semibold">Interviews</h2>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-[#b3b3b3] cursor-pointer" />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                        View the interviews published by the company, including
+                        available roles and details about each interview
+                        process.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+
+                <Button
+                  onClick={() => setModalOpen(true)}
+                  className="flex items-center gap-2 transform hover:scale-105 transition-all animate-scale-in shadow-sm"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Create Interview</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {interviews.map((interview, index) => (
+              <Card
+                key={interview.interviewID}
+                onClick={() => navigationClickHandler(interview.interviewID)}
+                className={`
+                      relative !bg-[#1b1d23] overflow-hidden shadow-sm transition-all hover:shadow-md animate-scale-in cursor-pointer
+                      ${
+                        getInterviewStatus(
+                          interview.scheduling[0].startTime,
+                          interview.scheduling[interview.scheduling.length - 1]
+                            .endTime
+                        ) === "upcoming"
+                          ? "!border-l-2 !border-l-orange-400"
+                          : getInterviewStatus(
+                              interview.scheduling[0].startTime,
+                              interview.scheduling[
+                                interview.scheduling.length - 1
+                              ].endTime
+                            ) === "ongoing"
+                          ? "!border-l-2 !border-l-emerald-500"
+                          : getInterviewStatus(
+                              interview.scheduling[0].startTime,
+                              interview.scheduling[
+                                interview.scheduling.length - 1
+                              ].endTime
+                            ) === "completed"
+                          ? "!border-l-2 !border-l-green-600"
+                          : ""
+                      }
+                      ${
+                        index === 0
+                          ? "[animation-delay:100ms]"
+                          : index === 1
+                          ? "[animation-delay:200ms]"
+                          : index === 2
+                          ? "[animation-delay:300ms]"
+                          : "[animation-delay:400ms]"
+                      }
+                    `}
+              >
+                <div className="p-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-lg font-semibold">
+                      {interview.jobTitle}
+                    </h3>
+                    {getStatusBadge(
+                      interview.scheduling[0].startTime,
+                      interview.scheduling[interview.scheduling.length - 1]
+                        .endTime
+                    )}
+                  </div>
+
+                  {/* <div className="flex items-center space-x-2 mb-3 text-sm text-[#b3b3b3]">
+                    <Building2 className="h-4 w-4" />
+                    <span>{interview.department}</span>
+                  </div> */}
+
+                  <div className="space-y-1 border-t border-gray-800 pt-3 pb-1">
+                    <div className="flex items-center text-sm text-[#b3b3b3]">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span>
+                        {new Date(
+                          interview.scheduling[0].startTime
+                        ).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center text-sm text-[#b3b3b3]">
+                      <Users className="h-4 w-4 mr-2" />
+                      <span>
+                        {interview.interviewSessions.length} candidates
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex justify-end">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center gap-1 text-xs text-[#b3b3b3] hover:text-primary"
+                    >
+                      Details
+                      <ChevronRight className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+        {/* <div className="flex flex-row items-center space-x-1">
               <h1 className=" text-4xl font-semibold mb-4">Interviews</h1>
               <TooltipProvider>
                 <Tooltip>
@@ -222,30 +439,22 @@ const InterviewsPage = () => {
                     <Info className="w-5 h-5 text-white hover:text-gray-200 cursor-pointer" />
                   </TooltipTrigger>
                   <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
-                  View the interviews published by the company, including available roles and details about each interview process.
+                    View the interviews published by the company, including
+                    available roles and details about each interview process.
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            </div>
-            {/* {(companyDetails?.companyDescription === null || companyDetails?.companyDescription === "<p><br></p>") && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Warning</AlertTitle>
-                <AlertDescription>
-                  Please complete your company details section before scheduling an interview.
-                </AlertDescription>
-              </Alert>
-            )} */}
-            {!isAnyInterviews && (
+            </div> */}
+        {/* {!isAnyInterviews && (
               <button
                 onClick={() => setModalOpen(true)}
                 className=" hidden md:block rounded-lg font-semibold bg-white text-black text-sm px-5 py-2"
               >
                 + Create Interview
               </button>
-            )}
-          </div>
-          {isAnyInterviews && (
+            )} */}
+        {/* </div> */}
+        {/* {isAnyInterviews && (
             <div className=" grid grid-cols-1 gap-9 mt-6 md:grid-cols-2 lg:grid-cols-3">
               <div
                 onClick={() => setModalOpen(true)}
@@ -256,23 +465,22 @@ const InterviewsPage = () => {
                 </div>
               </div>
               {interviews.map((interview, index) => (
-
-                <div  className="w-full" key={interview.interviewID}  // Use a unique identifier as the key 
-                onMouseEnter={() => setHoveredId(interview.interviewID)} >
-                <InterviewDisplayCard
-                  key={index}
-                  index={index + 1}
-                  interview={interview}
-                  hoveredId={hoveredId}
-                  
-                />
-                
+                <div
+                  className="w-full"
+                  key={interview.interviewID}
+                  onMouseEnter={() => setHoveredId(interview.interviewID)}
+                >
+                  <InterviewDisplayCard
+                    key={index}
+                    index={index + 1}
+                    interview={interview}
+                    hoveredId={hoveredId}
+                  />
                 </div>
-                
               ))}
             </div>
-          )}
-          {!isAnyInterviews && (
+          )} */}
+        {/* {!isAnyInterviews && (
             <div className=" relative flex justify-center items-center h-full w-full">
               <div className=" w-full">
                 <Image
@@ -291,8 +499,8 @@ const InterviewsPage = () => {
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          )} */}
+        {/* </div> */}
         {modalOpen && <CreateInterviewModal setModalOpen={setModalOpen} />}
         {isLoading && (
           <div className=" fixed  top-0 left-0 h-full w-full flex items-center justify-center bg-black/50">
