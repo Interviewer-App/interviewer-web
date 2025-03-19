@@ -365,7 +365,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                 </CardHeader>
                 <CardContent className="p-4">
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 gap-3  h-[500px] overflow-y-scroll ">
+                    <div className="grid grid-cols-1 gap-3 max-h-[500px] overflow-y-scroll ">
                       {interviewDetail?.scheduling
                         ?.sort((a, b) => {
                           return new Date(a.startTime) - new Date(b.startTime);
@@ -373,7 +373,7 @@ const InterviewScheduleDetailsPage = ({ params }) => {
                         .map((slot, index) => (
                           <div
                             key={index}
-                            className={`border rounded-md p-3 cursor-pointer transition-all ${
+                            className={`border max-h-12 rounded-md p-3 cursor-pointer transition-all ${
                               selectedSlot === slot.scheduleID
                                 ? "border-[#b3b3b3] bg-[#b3b3b31a]"
                                 : "border !border-[#b3b3b35a] hover:border-[#b3b3b3aa]"
