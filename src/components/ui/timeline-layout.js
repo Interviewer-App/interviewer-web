@@ -115,8 +115,7 @@ export const TimelineLayout = ({
   const [candidateId, setCandidateId] = useState();
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
-  const [expanedInterview, setExpandedInterview] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [expandedInterviewIds, setExpandedInterviewIds] = useState(new Set());
   const requirements = [
     {
       icon: <UserCircle2 className="h-5 w-5" />,
@@ -369,9 +368,15 @@ export const TimelineLayout = ({
   };
 
   const handleOpen = (interviewId) => {
-    setExpandedInterviewId(prevId => 
-      prevId === interviewId ? null : interviewId
-    );
+    setExpandedInterviewIds(prevIds => {
+      const newIds = new Set(prevIds);
+      if (newIds.has(interviewId)) {
+        newIds.delete(interviewId);
+      } else {
+        newIds.add(interviewId); 
+      }
+      return newIds;
+    });
   };
 
   return (
@@ -608,7 +613,7 @@ export const TimelineLayout = ({
         {interviews.length > 0 ? (
           interviews.map((interview) => {
             const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
-            const isExpanded = expandedInterviewId === interview.interview.interviewID;
+            const isExpanded = expandedInterviewIds.has(interview.interview.interviewID)
             const isCopied = copiedInterviewIds[interview.interviewId];
 
             const isClose = timeDifference <= 30 && timeDifference > 0;
