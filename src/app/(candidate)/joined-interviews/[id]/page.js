@@ -285,7 +285,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                           <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
                           <div>
                             <p className="text-sm text-muted-foreground">Company</p>
-                            <p className="font-medium">Tech Solutions Inc.</p>
+                            <p className="font-medium">{sessionDetails?.interview?.company.companyName || ""}</p>
                           </div>
                         </div>
                         <div className="flex items-start gap-3">
@@ -299,7 +299,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                           <Target className="h-5 w-5 text-muted-foreground mt-0.5" />
                           <div>
                             <p className="text-sm text-muted-foreground">Status</p>
-                            <Badge className="mt-1" variant="outline">Completed</Badge>
+                            <Badge className="mt-1" variant="outline">{sessionDetails?.interviewStatus || ""}</Badge>
                           </div>
                         </div>
                         <div className="flex items-start gap-3">
