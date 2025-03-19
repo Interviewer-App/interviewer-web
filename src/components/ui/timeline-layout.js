@@ -105,8 +105,8 @@ export const TimelineLayout = ({
   const router = useRouter();
   const [interviewId, setInterviewId] = useState(null);
   const [interviewDetail, setInterviewDetail] = useState("");
-  const handleOpen = () => setIsSheetOpen(true);
-  const handleClose = () => setIsSheetOpen(false);
+  // const handleOpen = () => setIsSheetOpen(true);
+  // const handleClose = () => setIsSheetOpen(false);
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [expandedInterviewId, setExpandedInterviewId] = useState(null);
@@ -115,6 +115,7 @@ export const TimelineLayout = ({
   const [candidateId, setCandidateId] = useState();
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
+  const [expanedInterview, setExpandedInterview] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const requirements = [
     {
@@ -367,10 +368,16 @@ export const TimelineLayout = ({
     return 'Good evening';
   };
 
+  const handleOpen = (interviewId) => {
+    setExpandedInterviewId(prevId => 
+      prevId === interviewId ? null : interviewId
+    );
+  };
+
   return (
     <div className="mt-4">
       {/* Greeting Card */}
-      <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900">
+      <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900 mb-5">
         <CardContent className="p-6">
           <h1 className="text-2xl md:text-3xl font-bold">
             {getTimeOfDay()}, {session?.user?.firstName || 'Candidate'}
@@ -601,7 +608,7 @@ export const TimelineLayout = ({
         {interviews.length > 0 ? (
           interviews.map((interview) => {
             const timeDifference = getTimeDifferenceInMinutes(interview.startTime);
-            const isExpanded = expandedInterviewId === interview.scheduleID;
+            const isExpanded = expandedInterviewId === interview.interview.interviewID;
             const isCopied = copiedInterviewIds[interview.interviewId];
 
             const isClose = timeDifference <= 30 && timeDifference > 0;
@@ -761,12 +768,12 @@ export const TimelineLayout = ({
                           </>
                         )}
                     </div>
-                    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                    <Collapsible open={isExpanded} onOpenChange={() => handleOpen(interview.interview.interviewID)}>
                       <div className="space-y-2">
                         <p
                           className={cn(
                             "text-sm text-muted-foreground description leading-7",
-                            !isOpen && "line-clamp-2 "
+                            !isExpanded && "line-clamp-2"
                           )}
                           dangerouslySetInnerHTML={{
                             __html: interview.interview.jobDescription,
@@ -778,11 +785,11 @@ export const TimelineLayout = ({
                           variant="ghost"
                           className="mt-4 p-0 h-auto text-sm text-primary hover:text-primary/80"
                         >
-                          {isOpen ? "Show Less" : "More Details"}
+                          {isExpanded ? "Show Less" : "More Details"}
                           <ChevronDown
                             className={cn(
                               "h-4 w-4 ml-1 transition-transform duration-200",
-                              isOpen && "transform rotate-180"
+                              isExpanded && "transform rotate-180"
                             )}
                           />
                         </Button>
