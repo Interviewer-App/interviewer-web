@@ -57,6 +57,8 @@ const InterviewsPage = () => {
   const [companyDetails, setCompanyDetails] = useState({});
   const [companyId, setCompanyId] = useState("");
   const [hoveredId, setHoveredId] = useState();
+  const [totalCandidates, setTotalCandidates] = useState(0);
+  const [pendingReviews, setPendingReviews] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -179,6 +181,24 @@ const InterviewsPage = () => {
     }
   }, [companyId]);
 
+  useEffect(() => {
+    if (interviews.length > 0) {
+      let totalCandidates = 0;
+      let pendingReviews = 0;
+
+      interviews.forEach((interview) => {
+        totalCandidates += interview.interviewSessions.length;
+        interview.interviewSessions.forEach((session) => {
+          if (session.feedbackId === null) {
+            pendingReviews += 1;
+          }
+        });
+      });
+      setTotalCandidates(totalCandidates);
+      setPendingReviews(pendingReviews);
+    }
+  }, [interviews]);
+
   if (status === "loading") {
     return (
       <>
@@ -286,21 +306,21 @@ const InterviewsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <StatCard
               title="Total Candidates"
-              value={24}
+              value={totalCandidates}
               variant="total"
               className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:0ms] hover:border-primary/30"
             />
 
             <StatCard
               title="Scheduled Interviews"
-              value={8}
+              value={interviews.length}
               variant="pending"
               className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:100ms] hover:border-warning/30"
             />
 
             <StatCard
               title="Pending Reviews"
-              value={5}
+              value={pendingReviews}
               variant="completed"
               className="transform hover:scale-105 transition-transform duration-300 shadow-md border border-border/30 animate-scale-in [animation-delay:200ms] hover:border-success/30"
             />
