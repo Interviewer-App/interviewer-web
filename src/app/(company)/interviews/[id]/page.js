@@ -570,6 +570,14 @@ export default function InterviewPreviewPage({ params }) {
           value: interviewStatusDetails.schedulesWithInvitations,
           color: "#0ea5e9",
         },
+        {
+          name: "Rmaining",
+          value:
+            interviewStatusDetails.totalSchedules -
+            (interviewStatusDetails.bookedSchedules +
+              interviewStatusDetails.schedulesWithInvitations),
+          color: "#9999993a",
+        },
       ]);
       setSessionsData([
         {
@@ -1371,25 +1379,35 @@ export default function InterviewPreviewPage({ params }) {
                         config={{
                           requests: { color: "#6b46c1" },
                           invitations: { color: "#0ea5e9" },
+                          remaining: { color: "#9999993a" },
                         }}
                       >
-                        <PieChart>
-                          <Pie
-                            data={bookingsData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={4}
-                            dataKey="value"
-                          >
-                            {bookingsData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <ChartLegend content={<ChartLegendContent />} />
-                        </PieChart>
+                        {scheduleList.length > 0 ? (
+                          <PieChart>
+                            <Pie
+                              data={bookingsData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={4}
+                              dataKey="value"
+                            >
+                              {bookingsData.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                          </PieChart>
+                        ) : (
+                          <div className="flex items-center text-[#b3b3b3] justify-center h-full">
+                            <p>No schedules available</p>
+                          </div>
+                        )}
                       </ChartContainer>
                     </div>
                   </CardContent>
@@ -1407,23 +1425,32 @@ export default function InterviewPreviewPage({ params }) {
                           completed: { color: "#0ea5e9" },
                         }}
                       >
-                        <PieChart>
-                          <Pie
-                            data={sessionsData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={4}
-                            dataKey="value"
-                          >
-                            {sessionsData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <ChartLegend content={<ChartLegendContent />} />
-                        </PieChart>
+                        {interviewSessions.length > 0 ? (
+                          <PieChart>
+                            <Pie
+                              data={sessionsData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={4}
+                              dataKey="value"
+                            >
+                              {sessionsData.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                          </PieChart>
+                        ) : (
+                          <div className="flex items-center text-[#b3b3b3] justify-center h-full">
+                            <p>No sessions available</p>
+                          </div>
+                        )}
                       </ChartContainer>
                     </div>
                   </CardContent>
