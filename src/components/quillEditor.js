@@ -38,7 +38,8 @@ const QuillEditor = ({ value, placeholder, onChange, editorId, jobDescription })
         font-style: normal !important;
       }
       .ql-container {
-        border: none !important;
+        border-color: #27282c !important;
+
       }
       .ql-editor {
         outline: none !important;
