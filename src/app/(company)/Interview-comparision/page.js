@@ -886,7 +886,7 @@ const EmptyStateCards = () => (
           <PieChart className="h-16 w-16 text-gray-700 mx-auto" />
           <h3 className="text-xl font-medium text-gray-300">Performance Score Visualization</h3>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            After comparing candidates, you'll see charts comparing their overall performance scores,
+            After comparing candidates, you&apos;ll see charts comparing their overall performance scores,
             strengths vs. weaknesses ratio, and other key metrics to help you make an informed decision.
           </p>
         </div>
