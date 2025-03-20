@@ -25,6 +25,7 @@ import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import {
   AlertCircle,
+  ArrowRight,
   Building2,
   Calendar,
   ChevronRight,
@@ -43,7 +44,7 @@ import {
 } from "@/components/ui/tooltip";
 import { StatCard } from "@/components/interviews/StatCard";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const InterviewsPage = () => {
@@ -345,23 +346,26 @@ const InterviewsPage = () => {
                   </TooltipProvider>
                 </div>
 
-                <Button
-                  onClick={() => setModalOpen(true)}
-                  className="flex items-center gap-2 transform hover:scale-105 transition-all animate-scale-in shadow-sm"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Create Interview</span>
-                </Button>
+                {interviews.length > 0 && (
+                  <Button
+                    onClick={() => setModalOpen(true)}
+                    className="flex items-center gap-2 transform hover:scale-105 transition-all animate-scale-in shadow-sm"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Create Interview</span>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {interviews.map((interview, index) => (
-              <Card
-                key={interview.interviewID}
-                onClick={() => navigationClickHandler(interview.interviewID)}
-                className={`
+            {interviews.length > 0 ? (
+              interviews.map((interview, index) => (
+                <Card
+                  key={interview.interviewID}
+                  onClick={() => navigationClickHandler(interview.interviewID)}
+                  className={`
                       relative !bg-[#1b1d23] overflow-hidden shadow-sm transition-all hover:shadow-md animate-scale-in cursor-pointer
                       ${
                         getInterviewStatus(
@@ -396,60 +400,84 @@ const InterviewsPage = () => {
                           : "[animation-delay:400ms]"
                       }
                     `}
-              >
-                <div className="p-4 flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-lg font-semibold">
-                        {interview.jobTitle}
-                      </h3>
-                      {getStatusBadge(
-                        interview.scheduling[0].startTime,
-                        interview.scheduling[interview.scheduling.length - 1]
-                          .endTime
-                      )}
-                    </div>
+                >
+                  <div className="p-4 flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-lg font-semibold">
+                          {interview.jobTitle}
+                        </h3>
+                        {getStatusBadge(
+                          interview.scheduling[0].startTime,
+                          interview.scheduling[interview.scheduling.length - 1]
+                            .endTime
+                        )}
+                      </div>
 
-                    {/* <div className="flex items-center space-x-2 mb-3 text-sm text-[#b3b3b3]">
+                      {/* <div className="flex items-center space-x-2 mb-3 text-sm text-[#b3b3b3]">
                     <Building2 className="h-4 w-4" />
                     <span>{interview.department}</span>
                   </div> */}
 
-                    <div className="space-y-1 border-t border-gray-800 pt-3 pb-1">
-                      <div className="flex items-center text-sm text-[#b3b3b3]">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        <span>
-                          {new Date(
-                            interview.scheduling[0].startTime
-                          ).toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </div>
+                      <div className="space-y-1 border-t border-gray-800 pt-3 pb-1">
+                        <div className="flex items-center text-sm text-[#b3b3b3]">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          <span>
+                            {new Date(
+                              interview.scheduling[0].startTime
+                            ).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </span>
+                        </div>
 
-                      <div className="flex items-center text-sm text-[#b3b3b3]">
-                        <Users className="h-4 w-4 mr-2" />
-                        <span>
-                          {interview.interviewSessions.length} candidates
-                        </span>
+                        <div className="flex items-center text-sm text-[#b3b3b3]">
+                          <Users className="h-4 w-4 mr-2" />
+                          <span>
+                            {interview.interviewSessions.length} candidates
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <div className="mt-3 flex justify-end">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-1 text-xs text-[#b3b3b3] hover:text-primary"
+                      >
+                        Details
+                        <ChevronRight className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="mt-3 flex justify-end">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center gap-1 text-xs text-[#b3b3b3] hover:text-primary"
-                    >
-                      Details
-                      <ChevronRight className="h-3 w-3" />
-                    </Button>
+                </Card>
+              ))
+            ) : (
+              <Card className="border-none shadow-md overflow-hidden col-span-3 bg-gray-900 border-l-4 border-l-gray-700">
+                <CardContent className="p-8 flex flex-col items-center text-center">
+                  <div className="mb-4 p-3 rounded-full bg-gray-800">
+                    <Calendar className="h-6 w-6 text-gray-400" />
                   </div>
-                </div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                    No Interviews Found
+                  </h3>
+                  <p className="text-sm text-gray-400 mb-6 max-w-md">
+                    It looks like there are no interviews scheduled yet. Start
+                    creating interviews to connect with top talent and fill your
+                    open positions.
+                  </p>
+                  <Button
+                    size="lg"
+                    className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium"
+                    onClick={() => setModalOpen(true)}
+                  >
+                    Create Interview <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </CardContent>
               </Card>
-            ))}
+            )}
           </div>
         </div>
         {/* <div className="flex flex-row items-center space-x-1">
