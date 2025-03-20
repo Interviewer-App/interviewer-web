@@ -68,6 +68,10 @@ const formSchema = z.object({
 });
 
 
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast";
+import { generateInterviewJobDescription } from "@/lib/api/ai";
+  
 const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', '#8B5CF6'];
 
 const PREDEFINED_CATEGORIES = [
@@ -92,6 +96,7 @@ const INTERVAL_PRESETS = [
   { value: 240, label: '4 hours' },
 ];
 
+
 const CreateInterview = () => {
   const [activeTab, setActiveTab] = useState("details");
   const [categories, setCategories] = useState([]);
@@ -114,6 +119,12 @@ const CreateInterview = () => {
   const [selectedDuration, setSelectedDuration] = useState(DURATION_PRESETS[1].id);
   const [intervalMinutes, setIntervalMinutes] = useState(60);
   const [generatedSlots, setGeneratedSlots] = useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { toast } = useToast()
+  const [descriptionPrompt, setDescriptionPrompt] = React.useState("");
+  const [jobDescription, setJobDescription] = React.useState("");
+  const [genJobDescription, setGenJobDescription] = React.useState();
+
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -352,9 +363,54 @@ const CreateInterview = () => {
     },
   });
 
+  const handleOnChange = (content) => {
+    setJobDescription(content);
+  };
 
-  const handleOnChange = (value) => {
+  const generateDescription = async (e) => {
+    setIsLoading(true);
+    e.preventDefault();
+    try {
+      const data = {
+        description: descriptionPrompt,
+      };
+      const response = await generateInterviewJobDescription(data);
 
+      if (response) {
+        setGenJobDescription(response.data.description);
+        setJobDescription(response.data.description); 
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
   };
 
   return (
@@ -462,12 +518,12 @@ const CreateInterview = () => {
                                     name="prompt"
 
                                     onChange={(e) => {
-                                      // setDescriptionPrompt(e.target.value);
+                                      setDescriptionPrompt(e.target.value);
                                     }}
                                     className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#000000] placeholder-[#737883] px-6 py-2 mb-5 "
                                   />
                                   <button
-
+                                    onClick={generateDescription}
                                     type="button"
                                     className="bg-white text-black h-[45px] rounded-lg text-sm w-32 flex align-middle items-center justify-center text-center"
                                   >
@@ -483,7 +539,8 @@ const CreateInterview = () => {
                                 <QuillEditor
                                   editorId={"jobDescription"}
                                   placeholder="Job Description here..."
-
+                                  onChange={handleOnChange}
+                                  value={jobDescription} //change this line to store the jobdescription when user go step forward and come back
 
                                 />
                               </FormControl>
