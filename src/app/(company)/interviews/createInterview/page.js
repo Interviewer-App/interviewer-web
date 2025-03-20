@@ -37,6 +37,7 @@ import {
   Check,
   Percent,
   Palette,
+  Sparkles,
   WandSparkles,
   GanttChartSquare,
   ChevronRight,
@@ -380,7 +381,7 @@ const CreateInterview = () => {
 
         <div>
           <main className="container mx-auto py-8 px-4 max-w-5xl">
-            <div className="flex items-center mb-6">
+            <div className="flex items-center mb-6 ">
               <Button
                 variant="ghost"
                 size="sm"
@@ -402,7 +403,7 @@ const CreateInterview = () => {
                     <span>Interview Details</span>
                   </div>
                 </TabsTrigger>
-                <TabsTrigger value="categories" disabled={activeTab === "details"} className="data-[state=active]:bg-primary/20">
+                <TabsTrigger value="categories" className="data-[state=active]:bg-primary/20">
                   <div className="flex items-center gap-2">
                     <Plus className="h-4 w-4" />
                     <span>Categories</span>
@@ -416,10 +417,11 @@ const CreateInterview = () => {
                 </TabsTrigger>
               </TabsList>
               
+              
               <Form {...form}>
                 <form className="space-y-6">
                   <TabsContent value="details" className="space-y-6">
-                    <Card>
+                    <Card className='!bg-[#1b1d23]'>
                       <CardHeader>
                         <CardTitle>Interview Details</CardTitle>
                         <CardDescription>
@@ -460,15 +462,19 @@ const CreateInterview = () => {
                                     name="prompt"
 
                                     onChange={(e) => {
-                                      setDescriptionPrompt(e.target.value);
+                                      // setDescriptionPrompt(e.target.value);
                                     }}
-                                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5 "
+                                    className=" h-[45px] w-full rounded-lg text-sm border-0 bg-[#000000] placeholder-[#737883] px-6 py-2 mb-5 "
                                   />
                                   <button
 
                                     type="button"
-                                    className="bg-white text-black h-[45px] rounded-lg text-sm w-14 flex align-middle items-center justify-center text-center"
+                                    className="bg-white text-black h-[45px] rounded-lg text-sm w-32 flex align-middle items-center justify-center text-center"
                                   >
+                                    <Sparkles />
+                                    <span className="font-bold ml-2">
+                                      Generate
+                                    </span>
                                   </button>
                                 </div>
                               </div>
@@ -492,13 +498,13 @@ const CreateInterview = () => {
                         </FormItem>
                       </CardContent>
                       <CardFooter className="flex justify-end">
-                        <Button type="submit">Continue to Categories</Button>
+                        <Button type="submit"   onClick={() => setActiveTab("categories")}  >Continue to Categories</Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
 
                   <TabsContent value="categories" className="space-y-6">
-                    <Card>
+                    <Card className='!bg-[#1b1d23]'>
                       <CardHeader>
                         <CardTitle>Interview Categories</CardTitle>
                         <CardDescription>
@@ -506,7 +512,7 @@ const CreateInterview = () => {
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
-                        <div className="bg-primary/5 border-l-4 border-primary p-4 rounded-md mb-6 shadow-sm">
+                        <div className="bg-[#26282d] border-l-4 border-primary p-4 rounded-md mb-6 shadow-sm">
                           <div className="flex justify-between items-center mb-2">
                             <h3 className="text-base font-medium flex items-center gap-2">
                               <Badge variant="default" className="bg-primary text-primary-foreground">Mandatory</Badge>
@@ -725,7 +731,7 @@ const CreateInterview = () => {
 
                           {categories.length > 0 && (
                             <div className="flex items-center justify-center">
-                              <ResponsiveContainer width="100%" height={200}>
+                              <ResponsiveContainer width="100%" height={300}>
                                 <PieChart>
                                   <Pie
                                     data={categories}
@@ -768,7 +774,7 @@ const CreateInterview = () => {
 
 
                   <TabsContent value="schedules" className="space-y-6">
-                    <Card>
+                    <Card className='!bg-[#1b1d23]'>
                       <CardHeader>
                         <CardTitle>Interview Schedules</CardTitle>
                         <CardDescription>
@@ -1077,6 +1083,7 @@ const CreateInterview = () => {
 
                 </form>
               </Form>
+          
             </Tabs>
           </main>
         </div>
