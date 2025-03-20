@@ -71,7 +71,17 @@ const formSchema = z.object({
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/hooks/use-toast";
 import { generateInterviewJobDescription } from "@/lib/api/ai";
-  
+import { getSession } from "next-auth/react";
+import { createCategory, getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', '#8B5CF6'];
 
 const PREDEFINED_CATEGORIES = [
@@ -124,6 +134,14 @@ const CreateInterview = () => {
   const [descriptionPrompt, setDescriptionPrompt] = React.useState("");
   const [jobDescription, setJobDescription] = React.useState("");
   const [genJobDescription, setGenJobDescription] = React.useState();
+  const [jobTitle, setJobTitle] = React.useState("");
+  const [interviewCatName, setInterviewCatName] = React.useState([]);
+  const [interviewCatDesc, setInterviewCateDesc] = React.useState([]);
+  const [color, setColor] = useState("#034f84");
+  const [interviewCategories, setInterviewCategories] = React.useState([]);
+  const [filteredCategories, setFilteredCategories] = React.useState([]);
+  const [inputCatagory, setInputCatagory] = React.useState("");
+  const [categoryList, setCatagoryList] = React.useState([]);
 
 
   useEffect(() => {
@@ -378,7 +396,7 @@ const CreateInterview = () => {
 
       if (response) {
         setGenJobDescription(response.data.description);
-        setJobDescription(response.data.description); 
+        setJobDescription(response.data.description);
         setIsLoading(false);
       }
     } catch (err) {
@@ -412,6 +430,98 @@ const CreateInterview = () => {
       }
     }
   };
+
+
+  const handleCategorySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const session = await getSession();
+      const companyId = session?.user?.companyID;
+      const response = await createCategory({
+        companyId: companyId,
+        categoryName: interviewCatName,
+        description: interviewCatDesc,
+        color: newCategoryColor 
+      });
+
+      if (response) {
+        // Assuming `response.data` contains the newly created category
+        const newCategory = response.data.category;
+
+        // Update the state without re-fetching data
+        setInterviewCategories((prevCategories) => [
+          ...prevCategories,
+          newCategory,
+        ]);
+        setFilteredCategories((prevCategories) => [
+          ...prevCategories,
+          newCategory,
+        ]);
+
+        // setModalOpen(false);
+        toast({
+          title: "Interview Category Created Successfully!",
+          description: "The interview category has been successfully created.",
+        });
+
+        // Optionally, reset input fields
+        setInterviewCatName("");
+        setInterviewCateDesc("");
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview category create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchInterviewCategories = async () => {
+      try {
+        const session = await getSession();
+        const companyId = session?.user?.companyID;
+        const response = await getInterviewCategoryCompanyById(companyId);
+        console.log(response.data.categories);
+        if (response) {
+          setInterviewCategories(response.data.categories);
+          setFilteredCategories(response.data.categories);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `Error fetching interviews: ${error}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    };
+    fetchInterviewCategories();
+  }, []);
+
+  useEffect(() => {
+    const filter = interviewCategories.filter((category) =>
+      categoryList.every((item) => item.key !== category.categoryId)
+    );
+    setFilteredCategories(filter);
+  }, []);
+
 
   return (
     <>
@@ -472,8 +582,8 @@ const CreateInterview = () => {
                   </div>
                 </TabsTrigger>
               </TabsList>
-              
-              
+
+
               <Form {...form}>
                 <form className="space-y-6">
                   <TabsContent value="details" className="space-y-6">
@@ -492,7 +602,11 @@ const CreateInterview = () => {
                             <FormItem>
                               <FormLabel>Job Title</FormLabel>
                               <FormControl>
-                                <Input placeholder="e.g. Senior Frontend Developer" {...field} />
+                                <Input placeholder="e.g. Senior Frontend Developer" {...field} type="text"
+                                  name="title"
+                                  value={jobTitle}
+                                  onChange={(e) => setJobTitle(e.target.value)}
+                                  required />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -555,7 +669,7 @@ const CreateInterview = () => {
                         </FormItem>
                       </CardContent>
                       <CardFooter className="flex justify-end">
-                        <Button type="submit"   onClick={() => setActiveTab("categories")}  >Continue to Categories</Button>
+                        <Button type="submit" onClick={() => setActiveTab("categories")}  >Continue to Categories</Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
@@ -603,27 +717,49 @@ const CreateInterview = () => {
                           <div className="space-y-4">
                             <h3 className="text-sm font-medium">Add Predefined Category</h3>
                             <div className="space-y-4">
-                              <div>
-                                {/* <FormLabel>Category</FormLabel> */}
-                                <Select
-                                  value={selectedPredefinedCategory}
-                                  onValueChange={setSelectedPredefinedCategory}
-                                >
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select a category" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {PREDEFINED_CATEGORIES.map((category, index) => (
-                                      <SelectItem
-                                        key={index}
-                                        value={category.name}
-                                        disabled={categories.some(cat => cat.name === category.name)}
+                              <div className="flex w-full justify-center md:flex-col flex-col  md:space-y-4 space-y-4 items-center">
+                                <div className="w-full">
+                                  <label className="text-sm font-medium text-white">Category</label>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        className={`!bg-[black] h-10 m-0 px-2 focus:outline-none outline-none w-full`}
+                                        variant="outline"
                                       >
-                                        {category.name}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                        {interviewCategories.find(
+                                          (cat) => cat.categoryId === inputCatagory
+                                        )?.categoryName || "Select Category"}
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56">
+                                      <DropdownMenuLabel>
+                                        Interview Catagory
+                                      </DropdownMenuLabel>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuRadioGroup
+                                        value={inputCatagory}
+                                        onValueChange={setInputCatagory}
+                                      >
+                                        {filteredCategories.map((category) => (
+                                          <DropdownMenuRadioItem
+                                            key={category.categoryId}
+                                            value={category.categoryId}
+                                          >
+                                            {category.categoryName}
+                                          </DropdownMenuRadioItem>
+                                        ))}
+                                      </DropdownMenuRadioGroup>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </div>
+                                <div className="w-full">
+                                  <label className="text-sm font-medium text-white">Percentage</label>
+                                  <input
+                                    placeholder="Percentage"
+                                    type="number"
+                                    className="h-10 w-full rounded-lg text-sm border-0 bg-black placeholder-[#737883]  text-center"
+                                  />
+                                </div>
                               </div>
 
                               {selectedPredefinedCategory && (
@@ -666,8 +802,7 @@ const CreateInterview = () => {
                               <Button
                                 type="button"
                                 onClick={handleAddPredefinedCategory}
-                                disabled={!selectedPredefinedCategory}
-                                className="w-full"
+                                className="w-full !mt-14"
                               >
                                 <Plus className="h-4 w-4 mr-1" />
                                 Add Category
@@ -679,28 +814,27 @@ const CreateInterview = () => {
                             <h3 className="text-sm font-medium">Add Custom Category</h3>
                             <div className="space-y-4">
                               <div>
-                                {/* <FormLabel>Category Name</FormLabel> */}
+                                <label className="text-sm font-medium text-white">Category Name</label>
                                 <Input
+                                  type="text"
+                                  onChange={(e) => setInterviewCatName(e.target.value)}
+                                  value={interviewCatName}
+                                  required
                                   placeholder="e.g. Team Collaboration"
-                                  value={newCategory.name}
-                                  onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+
                                 />
                               </div>
                               <div>
-                                {/* <FormLabel>Percentage (%)</FormLabel> */}
+                                <label className="text-sm font-medium text-white">Category Description</label>
                                 <div className="flex items-center gap-2">
                                   <Input
-                                    type="number"
-                                    placeholder="e.g. 15"
-                                    min="1"
-                                    max="100"
-                                    value={newCategory.percentage || ''}
-                                    onChange={(e) => setNewCategory({
-                                      ...newCategory,
-                                      percentage: parseInt(e.target.value) || 0
-                                    })}
+                                    type="text"
+                                    placeholder="Category Description..."
+                                    onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
+                                    value={interviewCatDesc} // Binding input to state
+                                    required
                                   />
-                                  <Percent className="h-4 w-4 text-muted-foreground" />
+
                                 </div>
                               </div>
 
@@ -715,7 +849,7 @@ const CreateInterview = () => {
                                       key={i}
                                       className={`w-6 h-6 rounded-full cursor-pointer hover:scale-110 transition-transform ${color === newCategoryColor ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
                                       style={{ backgroundColor: color }}
-                                      onClick={() => setNewCategoryColor(color)}
+                                      onClick={() => setNewCategoryColor(color)} // Update the selected color
                                     />
                                   ))}
                                 </div>
@@ -723,9 +857,9 @@ const CreateInterview = () => {
 
                               <Button
                                 type="button"
-                                onClick={addCategory}
+                                onClick={handleCategorySubmit}
                                 className="w-full"
-                                disabled={!newCategory.name || !newCategory.percentage}
+                                disabled={!interviewCatName || !interviewCatDesc} // Disable button if input is empty
                               >
                                 <Plus className="h-4 w-4 mr-1" />
                                 Add Custom Category
@@ -745,8 +879,8 @@ const CreateInterview = () => {
                                   <div
                                     key={cat.id}
                                     className={`flex items-center justify-between p-3 rounded-md ${cat.id === 'technical'
-                                        ? 'bg-primary/10 border border-primary/20'
-                                        : 'bg-secondary/20'
+                                      ? 'bg-primary/10 border border-primary/20'
+                                      : 'bg-secondary/20'
                                       }`}
                                   >
                                     <div className="flex items-center gap-2">
@@ -1140,7 +1274,7 @@ const CreateInterview = () => {
 
                 </form>
               </Form>
-          
+
             </Tabs>
           </main>
         </div>
