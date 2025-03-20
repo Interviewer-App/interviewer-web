@@ -15,12 +15,24 @@ import {
 //Icons
 import { MdEdit } from "react-icons/md";
 import { IoCloseCircle } from "react-icons/io5";
-import { CalendarIcon, Percent } from "lucide-react";
+import {
+  ArrowLeft,
+  Briefcase,
+  Building2,
+  CalendarIcon,
+  ChevronRight,
+  Clock,
+  Edit,
+  Percent,
+  Trash2,
+  Users,
+  Calendar as CalendarIcon2,
+} from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
-import brownzeTrophy from "@/assets/analyze/brownzeTrophy.png"
-import silverTrophy from "@/assets/analyze/silverTrophy.png"
-import goldTrophy from "@/assets/analyze/goldTrophy.png"
+import brownzeTrophy from "@/assets/analyze/brownzeTrophy.png";
+import silverTrophy from "@/assets/analyze/silverTrophy.png";
+import goldTrophy from "@/assets/analyze/goldTrophy.png";
 //UI Components
 import { Chip } from "@mui/material";
 import { useToast } from "@/hooks/use-toast";
@@ -65,7 +77,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -74,27 +85,27 @@ import {
 import GenerateQuestionModal from "@/components/company/generate-question-modal";
 import CreateQuestionModal from "@/components/company/create-question-modal";
 import dynamic from "next/dynamic";
-import { Doughnut, Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
+// import { Doughnut, Pie } from "react-chartjs-2";
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   ArcElement,
+// } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-);
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   ArcElement
+// );
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -116,12 +127,38 @@ import InvitedCandidates from "@/components/interviews/invite-candidates";
 import QuestionDisplayCard from "@/components/company/question-display-card";
 import { CandidateDataTable } from "@/components/ui/candidateDataTable/DataTable";
 import SubCategoryDisplayCard from "@/components/interviews/subCategory-display-card";
-import Image from "next/image"; 
+import Image from "next/image";
+import Link from "next/link";
+import { LuCircleCheckBig } from "react-icons/lu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+import { Badge } from "@/components/ui/badge";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const [interviewDetail, setInterviewDetail] = useState("");
+  const [interviewDetail, setInterviewDetail] = useState({});
   const [interviewId, setInterviewId] = useState(null);
   const [description, setDescription] = useState("");
   const [editDetails, setEditDetails] = useState(false);
@@ -162,11 +199,14 @@ export default function InterviewPreviewPage({ params }) {
   const [questionList, setQuestionList] = useState([]);
   const [selectedSubAssignment, setSelectedSubAssignment] = useState(null);
   const [selectedSortCategory, setSelectedSortCategory] = useState("overall");
-  const [sortLimit, setSortLimit] = useState('');
+  const [sortLimit, setSortLimit] = useState("");
   const [candidates, setCandidates] = useState([]);
   const [sortDirection, setSortDirection] = useState("desc");
   const [dateRange, setDateRange] = useState({});
   const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
+  const [activeTab, setActiveTab] = useState("overview");
+  const [bookingsData, setBookingsData] = useState([]);
+  const [sessionsData, setSessionsData] = useState([]);
   const [chartData, setChartData] = useState({
     labels: ["Requests", "Invitations"],
     datasets: [
@@ -287,7 +327,6 @@ export default function InterviewPreviewPage({ params }) {
     if (interviewId) fetchCandidatesData();
   }, [interviewId, page, limit, inviteModalOpen]);
 
-
   const hexToRgba = (hex, opacity = 0.2) => {
     // Remove the hash symbol if it exists
     hex = hex.replace("#", "");
@@ -301,7 +340,6 @@ export default function InterviewPreviewPage({ params }) {
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
 
-
   useEffect(() => {
     const totalPercentage = categoryList.reduce(
       (acc, cat) => acc + parseFloat(cat.percentage),
@@ -314,7 +352,7 @@ export default function InterviewPreviewPage({ params }) {
       hexToRgba(cat.color, 0.2)
     );
     const borderColors = categoryList.map((cat) => hexToRgba(cat.color, 1));
-    
+
     const dataset = {
       labels: categoryList.map((cat) => cat.catagory),
       datasets: [
@@ -492,7 +530,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-              interviewStatusDetails.completedSchedules,
+                interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -518,6 +556,37 @@ export default function InterviewPreviewPage({ params }) {
   useEffect(() => {
     if (interviewId) sortTopCandidates();
   }, [interviewId]);
+
+  useEffect(() => {
+    if (interviewStatusDetails) {
+      setBookingsData([
+        {
+          name: "Requests",
+          value: interviewStatusDetails.bookedSchedules,
+          color: "#6b46c1",
+        },
+        {
+          name: "Invitations",
+          value: interviewStatusDetails.schedulesWithInvitations,
+          color: "#0ea5e9",
+        },
+      ]);
+      setSessionsData([
+        {
+          name: "Pending",
+          value:
+            interviewStatusDetails.totalSchedules -
+            interviewStatusDetails.completedSchedules,
+          color: "#6b46c1",
+        },
+        {
+          name: "Completed",
+          value: interviewStatusDetails.completedSchedules,
+          color: "#0ea5e9",
+        },
+      ]);
+    }
+  }, [interviewStatusDetails]);
 
   const sortTopCandidates = async (e) => {
     let data;
@@ -707,10 +776,12 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
-            } Successfully!`,
-          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
-            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } Successfully!`,
+          description: `The interview has been ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -886,6 +957,57 @@ export default function InterviewPreviewPage({ params }) {
     },
   };
 
+  const getStatusBadge = (startTime, endTime) => {
+    const currentDate = new Date();
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+    let status = "upcoming";
+
+    if (currentDate < startDate) {
+      status = "upcoming";
+    } else if (currentDate >= startDate && currentDate <= endDate) {
+      status = "ongoing";
+    } else if (currentDate > endDate) {
+      status = "completed";
+    }
+
+    switch (status) {
+      case "upcoming":
+        return (
+          <Badge
+            variant="outline"
+            className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/10"
+          >
+            Upcoming
+          </Badge>
+        );
+      case "ongoing":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-emerald-400 py-1 px-4 !border-emerald-400/30 !bg-emerald-400/10"
+          >
+            Ongoing
+          </Badge>
+        );
+      case "completed":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-green-600 !border-green-600/30 bg-green-600/10 py-1 px-4"
+          >
+            Completed
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const handleViewCandidates = () => {
+    setActiveTab("candidates");
+  };
+
   return (
     <div className=" w-full">
       <SidebarInset>
@@ -913,7 +1035,759 @@ export default function InterviewPreviewPage({ params }) {
         </header>
 
         <div className=" px-9 py-4  max-w-[1500px] bg-black w-full mx-auto">
-          <div className=" w-full flex flex-col md:flex-row justify-between md:items-center">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold">
+                {interviewDetail.jobTitle} - Interview
+              </h1>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
+                <Edit className="h-4 w-4" />
+                Edit
+              </Button>
+              {interviewDetail.status !== "ACTIVE" ? (
+                <AlertDialog>
+                  <AlertDialogTrigger
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-900 dark:text-neutral-50 dark:hover:bg-green-900/90`}
+                  >
+                    <LuCircleCheckBig className="h-4 w-4" />
+                    Publish
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you sure you want to publish this interview?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Once published, the job details will become visible to
+                        candidates.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handlePublishInterview("ACTIVE")}
+                        className="h-[40px] font-medium"
+                      >
+                        Publish
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                <AlertDialog>
+                  <AlertDialogTrigger
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Unpublish
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you sure you want to Unpublish this interview?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        If you unpublish your job post, its details will no
+                        longer be visible to candidates
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="h-9 font-medium">
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handlePublishInterview("ARCHIVED")}
+                        className="h-9 font-medium"
+                      >
+                        Unpublish
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            </div>
+          </div>
+
+          <Tabs
+            defaultValue="overview"
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="!bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6">
+              <TabsTrigger
+                value="overview"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger
+                value="insights"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Insights
+              </TabsTrigger>
+              <TabsTrigger
+                value="sessions"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Interview Sessions
+              </TabsTrigger>
+              <TabsTrigger
+                value="invitation"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Invitation
+              </TabsTrigger>
+              <TabsTrigger
+                value="candidates"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Candidates
+              </TabsTrigger>
+              <TabsTrigger
+                value="analyze"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Analyze
+              </TabsTrigger>
+              <TabsTrigger
+                value="settings"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Settings
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Overview Tab Content */}
+            <TabsContent value="overview" className="space-y-6 p-0 border-none">
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="!bg-[#1b1d23]">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-medium mb-4">Highest Mark</h3>
+                    <div className="flex items-baseline">
+                      <span className="text-5xl font-bold">
+                        {parseFloat(interviewOverview?.maxScore).toFixed(2) ||
+                          0}
+                      </span>
+                      <span className="ml-1 text-lg text-[#b3b3b3]">%</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="!bg-[#1b1d23]">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-medium mb-4">Total Sessions</h3>
+                    <div className="flex items-baseline">
+                      <span className="text-5xl font-bold">
+                        {interviewOverview?.total || 0}
+                      </span>
+                      <span className="ml-2 text-sm text-[#b3b3b3]">
+                        Sessions
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="!bg-[#1b1d23]">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-medium mb-4">
+                      Completed Sessions
+                    </h3>
+                    <div className="flex items-baseline">
+                      <span className="text-5xl font-bold">
+                        {interviewOverview?.totalCompletedInterviews || 0}
+                      </span>
+                      <span className="ml-2 text-sm text-[#b3b3b3]">
+                        Sessions
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Interview Details */}
+              <Card className="!bg-[#1b1d23]">
+                <CardHeader>
+                  <CardTitle>Interview Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-sm font-medium text-[#b3b3b3] mb-1">
+                          Position
+                        </h4>
+                        <p className="text-base">{interviewDetail.jobTitle}</p>
+                      </div>
+
+                      <div>
+                        <h4 className="text-sm font-medium text-[#b3b3b3] mb-1">
+                          Department
+                        </h4>
+                        <div className="flex items-center">
+                          <Building2 className="h-4 w-4 mr-2 text-[#b3b3b3]" />
+                          <p className="text-base">
+                            {interviewDetail.department || (
+                              <span className="text-sm text-[#b3b3b3]">
+                                no department specified
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="text-sm font-medium text-[#b3b3b3] mb-1">
+                          Interview Type
+                        </h4>
+                        <div className="flex items-center">
+                          <Briefcase className="h-4 w-4 mr-2 text-[#b3b3b3]" />
+                          <p className="text-base">
+                            {interviewDetail.interviewCategory}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-sm font-medium text-[#b3b3b3] mb-1">
+                          Start Date
+                        </h4>
+                        <div className="flex items-center">
+                          <CalendarIcon2 className="h-4 w-4 mr-2 text-[#b3b3b3]" />
+                          <p className="text-base">
+                            {new Date(scheduleList[0]?.date).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              }
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="text-sm font-medium text-[#b3b3b3] mb-1">
+                          End Date
+                        </h4>
+                        <div className="flex items-center">
+                          <CalendarIcon2 className="h-4 w-4 mr-2 text-[#b3b3b3]" />
+                          <p className="text-base">
+                            {new Date(
+                              scheduleList[scheduleList.length - 1]?.date
+                            ).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="text-sm font-medium text-[#b3b3b3] mb-1">
+                          Status
+                        </h4>
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-[#b3b3b3]" />
+                          {getStatusBadge(
+                            scheduleList[0]?.date,
+                            scheduleList[scheduleList.length - 1]?.date
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <Separator />
+
+                  <div>
+                    <h4 className="text-sm font-medium text-[#b3b3b3] mb-2">
+                      Description
+                    </h4>
+                    <p
+                      className="text-base text-[#b3b3b3] description line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: description }}
+                    ></p>
+                  </div> */}
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="text-sm font-medium text-[#b3b3b3] mb-2">
+                      Candidates
+                    </h4>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Users className="h-5 w-5 mr-2 text-[#b3b3b3]" />
+                        <p className="text-base">
+                          {interviewCandidates.length} candidates applied
+                        </p>
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-1"
+                        onClick={handleViewCandidates}
+                      >
+                        <span>View Candidates</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Charts Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="!bg-[#1b1d23]">
+                  <CardHeader>
+                    <CardTitle>Bookings Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ChartContainer
+                        config={{
+                          requests: { color: "#6b46c1" },
+                          invitations: { color: "#0ea5e9" },
+                        }}
+                      >
+                        <PieChart>
+                          <Pie
+                            data={bookingsData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={4}
+                            dataKey="value"
+                          >
+                            {bookingsData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <ChartLegend content={<ChartLegendContent />} />
+                        </PieChart>
+                      </ChartContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="!bg-[#1b1d23]">
+                  <CardHeader>
+                    <CardTitle>Sessions Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ChartContainer
+                        config={{
+                          pending: { color: "#6b46c1" },
+                          completed: { color: "#0ea5e9" },
+                        }}
+                      >
+                        <PieChart>
+                          <Pie
+                            data={sessionsData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={4}
+                            dataKey="value"
+                          >
+                            {sessionsData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <ChartLegend content={<ChartLegendContent />} />
+                        </PieChart>
+                      </ChartContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="insights" className="p-0 border-none">
+              <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+                <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 mb-5 rounded-lg">
+                  <button
+                    onClick={() => setQuestionTab("technical")}
+                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                      questionTab === "technical" ? "bg-gray-800" : ""
+                    } `}
+                  >
+                    Technical
+                  </button>
+                  {categoryList.length > 0 &&
+                    categoryList
+                      .filter(
+                        (category) =>
+                          category.catagory.toLowerCase() !== "technical"
+                      )
+                      .map((category, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleQuestionTabChange(category)}
+                          className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                            questionTab === category.catagory
+                              ? "bg-gray-800"
+                              : ""
+                          }`}
+                        >
+                          {category.catagory}
+                        </button>
+                      ))}
+                </div>
+                {questionTab === "technical" ? (
+                  <div>
+                    <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                      <h1 className=" text-2xl font-semibold text-left w-full">
+                        Technical Questions
+                      </h1>
+                      <div className=" w-full flex items-center justify-end">
+                        <button
+                          className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
+                          onClick={() => setGenerateModalOpen(true)}
+                        >
+                          Genarate questions
+                        </button>
+                        <button
+                          onClick={() => setCreateModalOpen(true)}
+                          className=" h-11 min-w-[160px] mt-5 md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center text-sm font-semibold"
+                        >
+                          {" "}
+                          + Add Question
+                        </button>
+                      </div>
+                    </div>
+                    {questionList?.length > 0 ? (
+                      questionList.map((question, index) => (
+                        <QuestionDisplayCard
+                          forSession={false}
+                          key={index}
+                          index={index}
+                          question={question}
+                          isQuestionEdit={isQuestionEdit}
+                          setIsQuestionEdit={setIsQuestionEdit}
+                        />
+                      ))
+                    ) : (
+                      <div className=" w-full min-h-[300px] flex items-center justify-center">
+                        <p>No questions available.</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <SubCategoryDisplayCard
+                      selectedSubAssignment={selectedSubAssignment}
+                    />
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="sessions" className="p-0 border-none">
+              <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+                <div>
+                  <h1 className=" text-2xl font-semibold">
+                    Interview sessions
+                  </h1>
+                  <div>
+                    {loading ? (
+                      <div>Loading interview sessions...</div>
+                    ) : (
+                      <DataTable
+                        columns={interviewSessionTableColumns}
+                        data={interviewSessionsSort}
+                      />
+                    )}
+                  </div>
+                </div>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePreviousPage()}
+                      />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink onClick={() => handlePage(page + 1)}>
+                        {page + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink onClick={() => handlePage(page + 2)}>
+                        {page + 2}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext onClick={() => handleNextPage()} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="invitation" className="p-0 border-none">
+              <>
+                <div className="w-full bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
+                  <div className=" w-full flex items-center justify-between">
+                    <div>
+                      <h1 className=" text-2xl font-semibold">
+                        Invite Candidate
+                      </h1>
+                      <p className=" text-sm text-gray-500 py-3">
+                        You can now invite the desired candidate by using their
+                        email address. Ensure the email is accurate before
+                        sending the invitation.
+                      </p>
+                    </div>
+
+                    <div
+                      onClick={() => setInviteModalOpen(true)}
+                      className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
+                    >
+                      Invite Candidates
+                    </div>
+                  </div>
+                </div>
+                <InvitedCandidates
+                  interviewId={interviewId}
+                  inviteModalOpen={inviteModalOpen}
+                />
+              </>
+            </TabsContent>
+
+            <TabsContent value="candidates" className="p-0 border-none">
+              <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+                <div>
+                  <h1 className=" text-2xl font-semibold">Candidates</h1>
+                  <div>
+                    {loading ? (
+                      <div>Loading interview sessions...</div>
+                    ) : (
+                      <CandidateDataTable
+                        columns={candidatesTableColumns}
+                        data={interviewCandidates}
+                      />
+                    )}
+                  </div>
+                </div>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePreviousPage()}
+                      />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink onClick={() => handlePage(page + 1)}>
+                        {page + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink onClick={() => handlePage(page + 2)}>
+                        {page + 2}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext onClick={() => handleNextPage()} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="analyze" className="p-0 border-none">
+              <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+                <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
+                  <h1 className=" text-2xl font-semibold text-left w-full">
+                    Candidate Analyze
+                  </h1>
+                  <div className=" w-full flex items-center justify-end gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                          variant="outline"
+                        >
+                          {selectedSortCategory === "overall"
+                            ? "Overall"
+                            : categoryList.find(
+                                (cat) => cat.key === selectedSortCategory
+                              )?.catagory || "Select Category"}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Category</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup
+                          value={selectedSortCategory}
+                          onValueChange={setSelectedSortCategory}
+                        >
+                          <DropdownMenuRadioItem value="overall">
+                            Overall
+                          </DropdownMenuRadioItem>
+                          {categoryList.map((category) => (
+                            <DropdownMenuRadioItem
+                              key={category.key}
+                              value={category.key}
+                            >
+                              {category.catagory}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <input
+                      type="number"
+                      placeholder="Limit (default 5)"
+                      value={sortLimit}
+                      onChange={(e) => setSortLimit(e.target.value)}
+                      className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2"
+                    />
+                    <button
+                      onClick={sortTopCandidates}
+                      className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
+                    >
+                      Sort Candidates
+                    </button>
+                  </div>
+                </div>
+                {candidates.length > 0 ? (
+                  <div className="mt-5 flex flex-col gap-4 ">
+                    {candidates.map((candidate, index) => (
+                      <div
+                        key={index}
+                        className=" flex justify-between items-center p-4 rounded-lg border-2 border-gray-500/30 bg-gray-700/10 shadow-md"
+                      >
+                        <div className=" w-[90%] flex items-center justify-between">
+                          <div>
+                            <h3 className="text-2xl font-semibold">
+                              {candidate.name}
+                            </h3>
+                            <p className="text-gray-600 text-sm">
+                              {candidate.email}
+                            </p>
+                          </div>
+                          <p className=" px-10 font-semibold text-3xl">
+                            {parseInt(candidate.score).toFixed(2)}%
+                          </p>
+                        </div>
+                        <div className="w-[5%]">
+                          {index === 0 && (
+                            <Image
+                              src={goldTrophy}
+                              alt="gold trophy"
+                              width={30}
+                              height={30}
+                              className="mr-3"
+                            />
+                          )}
+                          {index === 1 && (
+                            <Image
+                              src={silverTrophy}
+                              alt="silver trophy"
+                              width={30}
+                              height={30}
+                              className="mr-3"
+                            />
+                          )}
+                          {index === 2 && (
+                            <Image
+                              src={brownzeTrophy}
+                              alt="bronze trophy"
+                              width={30}
+                              height={30}
+                              className="mr-3"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No candidates available.</p>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="settings" className="p-0 border-none">
+              <div className="w-full bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
+                <div className=" w-full flex items-center justify-between">
+                  <div>
+                    <h1 className=" text-2xl font-semibold">
+                      Delete Interview
+                    </h1>
+                    <p className=" text-sm text-gray-500 py-3">
+                      Once this action is performed, your interview will be
+                      permanently deleted.
+                    </p>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <div className="h-11 min-w-[130px] w-[140px] mt-5 md:mt-0 cursor-pointer bg-red-700 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center">
+                        Delete
+                      </div>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you sure you want to delete this interview?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteInterview}
+                          className="h-[40px] font-medium"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+          {/* <div className=" w-full flex flex-col md:flex-row justify-between md:items-center">
             <h1 className=" text-4xl font-semibold">
               {interviewDetail.jobTitle} - Interview
             </h1>
@@ -984,70 +1858,78 @@ export default function InterviewPreviewPage({ params }) {
                 </AlertDialogContent>
               </AlertDialog>
             )}
-          </div>
-          <div className=" w-full mt-5">
+          </div> */}
+          {/* <div className=" w-full mt-5">
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("overview")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "overview" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "overview" ? "bg-gray-800" : ""
+                } `}
               >
                 Overview
               </button>
               <button
                 onClick={() => setTab("questions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "questions" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "questions" ? "bg-gray-800" : ""
+                } `}
               >
                 Insights
               </button>
               <button
                 onClick={() => setTab("sessions")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "sessions" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "sessions" ? "bg-gray-800" : ""
+                } `}
               >
                 Interview Sessions
               </button>
 
               <button
                 onClick={() => setTab("invitation")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "invitation" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "invitation" ? "bg-gray-800" : ""
+                } `}
               >
                 Invitation
               </button>
               <button
                 onClick={() => setTab("candidates")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidates" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "candidates" ? "bg-gray-800" : ""
+                } `}
               >
                 Candidates
               </button>
               <button
                 onClick={() => setTab("candidateAnalyze")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "candidateAnalyze" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "candidateAnalyze" ? "bg-gray-800" : ""
+                } `}
               >
                 Analyze
               </button>
               <button
                 onClick={() => setTab("edit")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "edit" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "edit" ? "bg-gray-800" : ""
+                } `}
               >
                 Edit
               </button>
               <button
                 onClick={() => setTab("settings")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${tab === "settings" ? "bg-gray-800" : ""
-                  } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                  tab === "settings" ? "bg-gray-800" : ""
+                } `}
               >
                 Settings
               </button>
             </div>
-          </div>
+          </div> */}
 
-          {tab === "overview" && (
+          {/* {tab === "overview" && (
             <div className=" w-full h-full md:p-9 md:pb-0 rounded-lg mt-5">
               <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5">
                 <div className=" bg-slate-600/10 rounded-lg px-6 py-5 w-full">
@@ -1108,9 +1990,9 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
 
-          {tab === "edit" && (
+          {/* {tab === "edit" && (
             <div className="w-full">
               {interviewDetail.status === "ACTIVE" &&
                 interviewSessions.length > 0 && (
@@ -1209,8 +2091,9 @@ export default function InterviewPreviewPage({ params }) {
                       readOnly={!editDetails}
                       value={title || ""}
                       onChange={(e) => setTitle(e.target.value)}
-                      className={` ${!editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
-                        } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
+                      className={` ${
+                        !editDetails ? "bg-transparent" : "bg-[#32353b] px-5"
+                      } font-normal rounded-lg focus:outline-none w-[400px] h-[45px]`}
                     />
                   </h1>
                   {interviewDetail.status !== "ACTIVE" &&
@@ -1218,8 +2101,9 @@ export default function InterviewPreviewPage({ params }) {
                       <div>
                         <button
                           onClick={() => setEditDetails(!editDetails)}
-                          className={` ${editDetails ? "hidden" : "block"
-                            } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
+                          className={` ${
+                            editDetails ? "hidden" : "block"
+                          } bg-gray-500/60 py-3 px-5 rounded-full text-sm font-normal ml-2 flex flex-row items-center`}
                         >
                           <MdEdit className=" text-xl mr-2 cursor-pointer text-white inline-block" />
                           Edit details
@@ -1227,18 +2111,20 @@ export default function InterviewPreviewPage({ params }) {
 
                         <button
                           onClick={handleSaveChanges}
-                          className={` ${editDetails && totalPercentage == 100
+                          className={` ${
+                            editDetails && totalPercentage == 100
                               ? "block"
                               : "hidden"
-                            } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                          } bg-darkred py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
                         <button
-                          className={` ${editDetails && totalPercentage != 100
+                          className={` ${
+                            editDetails && totalPercentage != 100
                               ? "block"
                               : "hidden"
-                            } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
+                          } bg-gray-600 py-3 px-6 text-center rounded-full text-sm font-normal ml-2 `}
                         >
                           Save Changes
                         </button>
@@ -1251,8 +2137,9 @@ export default function InterviewPreviewPage({ params }) {
                       Description
                     </h1>
                     <div
-                      className={` ${editDetails ? "hidden" : "block"
-                        } text-justify w-full bg-transparent rounded-lg description`}
+                      className={` ${
+                        editDetails ? "hidden" : "block"
+                      } text-justify w-full bg-transparent rounded-lg description`}
                       dangerouslySetInnerHTML={{ __html: description }}
                     />
 
@@ -1328,7 +2215,7 @@ export default function InterviewPreviewPage({ params }) {
                                       className={cn(
                                         "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
                                         !inputScheduleDate &&
-                                        "text-muted-foreground"
+                                          "text-muted-foreground"
                                       )}
                                     >
                                       <CalendarIcon />
@@ -1416,12 +2303,14 @@ export default function InterviewPreviewPage({ params }) {
                                   <>
                                     <IoCloseCircle
                                       onClick={handleDeleteSchedule(schedule)}
-                                      className={` ${schedule.isBooked ? "hidden" : "block"
-                                        } text-gray-500 text-2xl cursor-pointer`}
+                                      className={` ${
+                                        schedule.isBooked ? "hidden" : "block"
+                                      } text-gray-500 text-2xl cursor-pointer`}
                                     />
                                     <div
-                                      className={` ${schedule.isBooked ? "block" : "hidden"
-                                        } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                      className={` ${
+                                        schedule.isBooked ? "block" : "hidden"
+                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                     >
                                       <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                       <div className=" ml-2">Booked</div>
@@ -1429,8 +2318,9 @@ export default function InterviewPreviewPage({ params }) {
                                   </>
                                 ) : (
                                   <div
-                                    className={` ${schedule.isBooked ? "block" : "hidden"
-                                      } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
+                                    className={` ${
+                                      schedule.isBooked ? "block" : "hidden"
+                                    } text-xs px-3 py-1 text-green-500 bg-green-500/20 rounded-full flex justify-start items-center`}
                                   >
                                     <div className=" aspect-square h-[8px] rounded-full bg-green-400"></div>
                                     <div className=" ml-2">Booked</div>
@@ -1450,8 +2340,9 @@ export default function InterviewPreviewPage({ params }) {
                       </h1>
                       {editDetails && (
                         <p
-                          className={` text-red-500 text-xs py-2 ${totalPercentage !== 100 ? "block" : "hidden"
-                            }`}
+                          className={` text-red-500 text-xs py-2 ${
+                            totalPercentage !== 100 ? "block" : "hidden"
+                          }`}
                         >
                           *Please ensure the total percentage equals 100%. The
                           sum of all category percentages should not exceed or
@@ -1460,8 +2351,9 @@ export default function InterviewPreviewPage({ params }) {
                       )}
 
                       <div
-                        className={`flex w-full justify-between space-x-2 ${editDetails ? "block" : "hidden"
-                          }`}
+                        className={`flex w-full justify-between space-x-2 ${
+                          editDetails ? "block" : "hidden"
+                        }`}
                       >
                         <div className="w-[40%]">
                           <DropdownMenu>
@@ -1538,8 +2430,9 @@ export default function InterviewPreviewPage({ params }) {
                                   {catagory.percentage}
                                 </td>
                                 <td
-                                  className={` p-3 w-[20%] text-center ${editDetails ? "block" : "hidden"
-                                    }`}
+                                  className={` p-3 w-[20%] text-center ${
+                                    editDetails ? "block" : "hidden"
+                                  }`}
                                 >
                                   <IoCloseCircle
                                     onClick={handleDeleteCategory(catagory)}
@@ -1643,8 +2536,8 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               </div>
             </div>
-          )}
-          {tab === "candidates" && (
+          )} */}
+          {/* {tab === "candidates" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
               <div>
                 <h1 className=" text-2xl font-semibold">Candidates</h1>
@@ -1683,15 +2576,16 @@ export default function InterviewPreviewPage({ params }) {
                 </PaginationContent>
               </Pagination>
             </div>
-          )}
+          )} */}
 
-          {tab === "questions" && (
+          {/* {tab === "questions" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
               <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 mb-5 rounded-lg">
                 <button
                   onClick={() => setQuestionTab("technical")}
-                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${questionTab === "technical" ? "bg-gray-800" : ""
-                    } `}
+                  className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                    questionTab === "technical" ? "bg-gray-800" : ""
+                  } `}
                 >
                   Technical
                 </button>
@@ -1705,8 +2599,9 @@ export default function InterviewPreviewPage({ params }) {
                       <button
                         key={index}
                         onClick={() => handleQuestionTabChange(category)}
-                        className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${questionTab === category.catagory ? "bg-gray-800" : ""
-                          }`}
+                        className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
+                          questionTab === category.catagory ? "bg-gray-800" : ""
+                        }`}
                       >
                         {category.catagory}
                       </button>
@@ -1759,9 +2654,9 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               )}
             </div>
-          )}
+          )} */}
 
-          {tab === "sessions" && (
+          {/* {tab === "sessions" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
               <div>
                 <h1 className=" text-2xl font-semibold">Interview sessions</h1>
@@ -1800,9 +2695,9 @@ export default function InterviewPreviewPage({ params }) {
                 </PaginationContent>
               </Pagination>
             </div>
-          )}
+          )} */}
 
-          {tab === "settings" && (
+          {/* {tab === "settings" && (
             <div className="w-full bg-red-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-red-700">
               <div className=" w-full flex items-center justify-between">
                 <div>
@@ -1842,8 +2737,8 @@ export default function InterviewPreviewPage({ params }) {
                 </AlertDialog>
               </div>
             </div>
-          )}
-          {tab === "invitation" && (
+          )} */}
+          {/* {tab === "invitation" && (
             <>
               <div className="w-full bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
                 <div className=" w-full flex items-center justify-between">
@@ -1871,8 +2766,8 @@ export default function InterviewPreviewPage({ params }) {
                 inviteModalOpen={inviteModalOpen}
               />
             </>
-          )}
-          {tab === "candidateAnalyze" && (
+          )} */}
+          {/* {tab === "candidateAnalyze" && (
             <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
               <div className=" w-full  flex flex-col md:flex-row items-center justify-between">
                 <h1 className=" text-2xl font-semibold text-left w-full">
@@ -1888,8 +2783,8 @@ export default function InterviewPreviewPage({ params }) {
                         {selectedSortCategory === "overall"
                           ? "Overall"
                           : categoryList.find(
-                            (cat) => cat.key === selectedSortCategory
-                          )?.catagory || "Select Category"}
+                              (cat) => cat.key === selectedSortCategory
+                            )?.catagory || "Select Category"}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
@@ -1982,9 +2877,9 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
               ) : (
                 <p>No candidates available.</p>
-              )}
+              )} 
             </div>
-          )}
+          )}*/}
         </div>
       </SidebarInset>
       {inviteModalOpen && (
