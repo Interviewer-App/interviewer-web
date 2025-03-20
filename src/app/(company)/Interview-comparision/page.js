@@ -29,8 +29,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getInterviews } from "@/lib/api/interview";
 import { useSession, getSession } from "next-auth/react";
-import { getCompletedSessionComparision } from "@/lib/api/interview-session";
-import { Plus, LoaderCircle } from "lucide-react";
+import { getCompletedSessionComparision, getCompletedSessions } from "@/lib/api/interview-session";
+import { Plus, LoaderCircle, Info, BarChart3, LineChart, PieChart } from "lucide-react";
 
 import { Pie } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
@@ -45,6 +45,10 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import CandidateProfileCard from "@/components/CandidateProfileCard";
+import ComparisonCharts from "@/components/ComparisonCharts";
 
 // Register chart components
 ChartJS.register(
@@ -68,6 +72,7 @@ const InterviewComparision = () => {
   const [firstCandidateName, setFirstCandidateName] = useState("");
   const [secondCandidateName, setSecondCandidateName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [candidates, setCandidates] = useState([]);
 
   // Hardcoded comparison result
   // const hardcodedComparisonResult = {
@@ -252,6 +257,24 @@ const InterviewComparision = () => {
     fetchInterviews();
   }, []);
 
+  useEffect(() => {
+    const fetchCompletedSessions = async () => {
+      try {
+        const response = await getCompletedSessions(selectedInterview)
+
+        setCandidates(response.data)
+        console.log(response.data)
+      } catch (error) {
+        console.log("Error fetching completed sessions:", error)
+      }
+    }
+
+    if (selectedInterview) {
+      fetchCompletedSessions();
+    }
+
+  }, [selectedInterview])
+
   const handleCompareInterviews = async () => {
     if (firstSessionId && secondSessionId) {
       setIsLoading(true);
@@ -315,6 +338,8 @@ const InterviewComparision = () => {
   //   });
   // };
 
+
+
   return (
     <>
       <SidebarInset>
@@ -333,9 +358,110 @@ const InterviewComparision = () => {
         </header>
 
         <div className="w-[90%] max-w-[1500px] mx-auto p-6 relative">
-          <h1 className=" text-3xl font-semibold">Candidate comparision</h1>
-          <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
-            <div className="flex items-center justify-between gap-5 flex-col md:flex-row ">
+          <div className="flex items-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-100">Candidate Comparison</h1>
+            <div className="ml-4 px-3 py-1 bg-gray-800 rounded-full text-xs font-medium text-gray-300">
+              Find the best match
+            </div>
+          </div>
+          {/* <h1 className=" text-3xl font-semibold">Candidate comparision</h1> */}
+          <div className="bg-slate-600/10 w-full h-fit rounded-lg mt-5">
+
+            <Card className="mb-8 bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
+              <CardHeader className="px-6 pt-6">
+                <CardTitle className="text-xl text-gray-100">Compare Candidates</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid md:grid-cols-3 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Select Interview</label>
+                    <Select onValueChange={setSelectedInterview}>
+                      <SelectTrigger className="bg-gray-800 border-gray-700 text-gray-200">
+                        <SelectValue placeholder="Select a Interview" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectGroup>
+                          <SelectLabel>Select Interviews</SelectLabel>
+                          {interviews.map((interview) => (
+                            <SelectItem
+                              key={interview.interviewID}
+                              value={interview.interviewID}
+                            >
+                              {interview.jobTitle.replace(/<[^>]+>/g, "")}{" "}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">First Candidate</label>
+                    {/* <ComboboxDemo
+                      selectedInterview={selectedInterview}
+                      onSelect={(sessionId, candidateName) => {
+                        setFirstSessionId(sessionId);
+                        setFirstCandidateName(candidateName);
+                      }}
+                      disabledEmail={secondCandidateName}
+                    /> */}
+                    <Select
+                      value={firstCandidateName}
+                      onValueChange={setFirstCandidateName}
+                      disabled={!selectedInterview}
+                    >
+                      <SelectTrigger className="bg-gray-800 border-gray-700 text-gray-200">
+                        <SelectValue placeholder="Select candidate" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectGroup>
+                          <SelectLabel className="text-gray-400">Candidates</SelectLabel>
+                          {candidates?.map((candidate) => (
+                            <SelectItem key={candidate.sessionId} value={candidate.candidate.user.email} className="text-gray-200">
+                              ({candidate.candidate.user.email})
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Second Candidate</label>
+                    <Select
+                      value={secondCandidateName}
+                      onValueChange={setSecondCandidateName}
+                      disabled={!selectedInterview}
+                    >
+                      <SelectTrigger className="bg-gray-800 border-gray-700 text-gray-200">
+                        <SelectValue placeholder="Select candidate" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectGroup>
+                          <SelectLabel className="text-gray-400">Candidates</SelectLabel>
+                          {candidates?.map((candidate) => (
+                            <SelectItem key={candidate.sessionId} value={candidate.candidate.user.email} className="text-gray-200">
+                              ({candidate.candidate.user.email})
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleCompareInterviews}
+                    disabled={!firstCandidateName || !secondCandidateName}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                  >
+                    Compare Candidates
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            {/* <div className="flex items-center justify-between gap-5 flex-col md:flex-row ">
               <div className=" w-full md:w-1/4">
                 <Select onValueChange={setSelectedInterview}>
                   <SelectTrigger className=" w-full !bg-[#32353b]">
@@ -350,7 +476,6 @@ const InterviewComparision = () => {
                           value={interview.interviewID}
                         >
                           {interview.jobTitle.replace(/<[^>]+>/g, "")}{" "}
-                          {/* Remove HTML tags */}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -363,9 +488,9 @@ const InterviewComparision = () => {
                   selectedInterview={selectedInterview}
                   onSelect={(sessionId, candidateName) => {
                     setFirstSessionId(sessionId);
-                    setFirstCandidateName(candidateName); // Set the candidate name
+                    setFirstCandidateName(candidateName); 
                   }}
-                  disabledEmail={secondCandidateName} // Add this line
+                  disabledEmail={secondCandidateName}
                 />{" "}
               </div>
 
@@ -374,13 +499,12 @@ const InterviewComparision = () => {
                   selectedInterview={selectedInterview}
                   onSelect={(sessionId, candidateName) => {
                     setSecondSessionId(sessionId);
-                    setSecondCandidateName(candidateName); // Set the candidate name
+                    setSecondCandidateName(candidateName); 
                   }}
-                  disabledEmail={firstCandidateName} // Add this line
+                  disabledEmail={firstCandidateName} 
                 />
               </div>
 
-              {/* Add Category Button */}
               <div className=" w-full md:w-1/4">
                 <button
                   className="rounded-lg bg-white text-black font-bold px-2 py-2 w-full"
@@ -393,11 +517,33 @@ const InterviewComparision = () => {
                   )}
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* {isLoading && (
               <LoaderCircle className="mx-auto mt-10 animate-spin" size={48} />
               )} */}
+
+            {!isComparePressed && <EmptyStateCards />}
+
+            {isLoading && <LoadingStateCards />}
+
+
+            {!isLoading && isComparePressed && (
+            <div className="animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <CandidateProfileCard 
+                  candidate={comparisonResult} 
+                  colorTheme="indigo" 
+                />
+                <CandidateProfileCard 
+                  candidate={comparisonResult} 
+                  colorTheme="purple" 
+                />
+              </div>
+              
+              <ComparisonCharts comparisonData={comparisonResult} />
+            </div>
+          )}
 
             {isComparePressed && (
               <>
@@ -678,3 +824,153 @@ const InterviewComparision = () => {
 };
 
 export default InterviewComparision;
+
+
+
+
+const EmptyStateCards = () => (
+  <>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <Card className="border-gray-700 bg-gray-900/80 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="bg-gray-800/50">
+          <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+            <Info className="h-5 w-5 text-indigo-400" />
+            Candidate 1 Profile
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <p className="text-gray-300">Select candidates above to view detailed profiles including:</p>
+            <ul className="list-disc pl-5 text-gray-400 space-y-2">
+              <li>Overall interview scores</li>
+              <li>Time spent in the interview</li>
+              <li>Key strengths identified during assessment</li>
+              <li>Areas for improvement</li>
+            </ul>
+            <p className="text-sm text-gray-500 mt-4">The profile will appear here after comparison</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-gray-700 bg-gray-900/80 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="bg-gray-800/50">
+          <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+            <Info className="h-5 w-5 text-purple-400" />
+            Candidate 2 Profile
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <p className="text-gray-300">Select candidates above to view detailed profiles including:</p>
+            <ul className="list-disc pl-5 text-gray-400 space-y-2">
+              <li>Overall interview scores</li>
+              <li>Time spent in the interview</li>
+              <li>Key strengths identified during assessment</li>
+              <li>Areas for improvement</li>
+            </ul>
+            <p className="text-sm text-gray-500 mt-4">The profile will appear here after comparison</p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <Card className="mb-8 border-gray-700 bg-gray-900/80 backdrop-blur-sm">
+      <CardHeader className="bg-gray-800/50">
+        <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+          <BarChart3 className="h-5 w-5 text-indigo-400" />
+          Score Comparison
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="text-center py-10 space-y-4">
+          <PieChart className="h-16 w-16 text-gray-700 mx-auto" />
+          <h3 className="text-xl font-medium text-gray-300">Performance Score Visualization</h3>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            After comparing candidates, you'll see charts comparing their overall performance scores,
+            strengths vs. weaknesses ratio, and other key metrics to help you make an informed decision.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+
+    <Card className="mb-8 border-gray-700 bg-gray-900/80 backdrop-blur-sm">
+      <CardHeader className="bg-gray-800/50">
+        <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+          <LineChart className="h-5 w-5 text-indigo-400" />
+          Skills Assessment
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="text-center py-10 space-y-4">
+          <BarChart3 className="h-16 w-16 text-gray-700 mx-auto" />
+          <h3 className="text-xl font-medium text-gray-300">Skills Radar Chart</h3>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            The skills assessment radar chart will provide a visual comparison of both candidates across key
+            skill dimensions including technical abilities, problem-solving, communication, experience,
+            and team fit.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  </>
+);
+
+
+
+const LoadingStateCards = () => (
+  <>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <Card className="border-gray-700 bg-gray-900/80 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="bg-gray-800/50">
+          <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+            <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />
+            Loading Candidate 1 Profile...
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center py-10">
+            <div className="text-center space-y-4">
+              <Loader2 className="h-12 w-12 text-indigo-500 animate-spin mx-auto" />
+              <p className="text-gray-300">Retrieving candidate data...</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-gray-700 bg-gray-900/80 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="bg-gray-800/50">
+          <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+            <Loader2 className="h-5 w-5 text-purple-400 animate-spin" />
+            Loading Candidate 2 Profile...
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center py-10">
+            <div className="text-center space-y-4">
+              <Loader2 className="h-12 w-12 text-purple-500 animate-spin mx-auto" />
+              <p className="text-gray-300">Retrieving candidate data...</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <Card className="mb-8 border-gray-700 bg-gray-900/80 backdrop-blur-sm">
+      <CardHeader className="bg-gray-800/50">
+        <CardTitle className="text-xl text-gray-200 flex items-center gap-2">
+          <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />
+          Preparing Comparison
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="text-center py-10 space-y-4">
+          <Loader2 className="h-16 w-16 text-indigo-500 animate-spin mx-auto" />
+          <h3 className="text-xl font-medium text-gray-300">Analyzing Candidate Data</h3>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            We're comparing the candidates and preparing visual insights for you. This will only take a moment...
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  </>
+);
