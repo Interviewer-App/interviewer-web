@@ -395,10 +395,14 @@ body {
   color: #999;
 }
 
+.quill-editor{
+  background-color: #1b1d23;
+  border-color: #ff5100;
+}
 
 .ql-toolbar.ql-snow {
-  border: none !important;
-  background-color: #0000004d !important; 
+  border-color: #27282c !important;
+  background-color: #1f2128 !important; 
   border-top-left-radius: 8px  !important;
   border-top-right-radius: 8px  !important;
 }
@@ -416,7 +420,7 @@ body {
 }
 
 .ql-snow .ql-picker-options{
-  background-color: #1b1d22 !important;
+  background-color: #21221b !important;
 }
 
 .str-video__call-controls__button {
