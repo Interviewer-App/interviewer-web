@@ -276,6 +276,7 @@ const InterviewComparision = () => {
   }, [selectedInterview])
 
   const handleCompareInterviews = async () => {
+    debugger
     if (firstSessionId && secondSessionId) {
       setIsLoading(true);
       try {
@@ -407,7 +408,11 @@ const InterviewComparision = () => {
                     /> */}
                     <Select
                       value={firstCandidateName}
-                      onValueChange={setFirstCandidateName}
+                      onValueChange={(value) => {
+                        const selectedCandidate = candidates.find(candidate => candidate.candidate.user.email === value);
+                        setFirstCandidateName(value);
+                        setFirstSessionId(selectedCandidate?.sessionId || "");
+                      }}
                       disabled={!selectedInterview}
                     >
                       <SelectTrigger className="bg-gray-800 border-gray-700 text-gray-200">
@@ -430,7 +435,12 @@ const InterviewComparision = () => {
                     <label className="block text-sm font-medium mb-2 text-gray-300">Second Candidate</label>
                     <Select
                       value={secondCandidateName}
-                      onValueChange={setSecondCandidateName}
+                      onValueChange={(value) => {
+                        debugger
+                        const selectedCandidate = candidates.find(candidate => candidate.candidate.user.email === value);
+                        setSecondCandidateName(value);
+                        setSecondSessionId(selectedCandidate?.sessionId || "");
+                      }}
                       disabled={!selectedInterview}
                     >
                       <SelectTrigger className="bg-gray-800 border-gray-700 text-gray-200">
