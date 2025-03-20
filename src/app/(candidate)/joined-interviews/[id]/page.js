@@ -96,7 +96,7 @@ const JoinedInterviewsDetails = ({ params }) => {
       doc.text('Interview Results Certificate', 105, 20, { align: 'center' });
 
       doc.setFontSize(14);
-      doc.text('TechLead Position - Technical Interview', 105, 30, { align: 'center' });
+      doc.text(`${sessionDetails?.interview?.jobTitle} Position - ${sessionDetails?.interview?.interviewCategory} Interview`, 105, 30, { align: 'center' });
       doc.text(`Interview ID: ${sessionId || 'N/A'}`, 105, 40, { align: 'center' });
       doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, 50, { align: 'center' });
 
