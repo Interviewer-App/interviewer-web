@@ -30,7 +30,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { getInterviews } from "@/lib/api/interview";
 import { useSession, getSession } from "next-auth/react";
 import { getCompletedSessionComparision, getCompletedSessions } from "@/lib/api/interview-session";
-import { Plus, LoaderCircle, Info, BarChart3, LineChart, PieChart } from "lucide-react";
+import { Plus, LoaderCircle, Info, BarChart3, LineChart, PieChart, Loader2 } from "lucide-react";
 
 import { Pie } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
@@ -967,7 +967,7 @@ const LoadingStateCards = () => (
           <Loader2 className="h-16 w-16 text-indigo-500 animate-spin mx-auto" />
           <h3 className="text-xl font-medium text-gray-300">Analyzing Candidate Data</h3>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            We're comparing the candidates and preparing visual insights for you. This will only take a moment...
+            We&apos;re comparing the candidates and preparing visual insights for you. This will only take a moment...
           </p>
         </div>
       </CardContent>
