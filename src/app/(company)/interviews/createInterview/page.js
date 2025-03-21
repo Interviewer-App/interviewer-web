@@ -82,6 +82,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { createInterview } from "@/lib/api/interview";
 const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', '#8B5CF6'];
 
 
@@ -546,86 +547,93 @@ const CreateInterview = () => {
   };
 
   const handleSubmit = async (e) => {
-    // console.log('job description',jobDescription);
     e.preventDefault();
+    // Add debugging logs
+  console.log("Skills array:", skills);
+  console.log("Is skills an array?", Array.isArray(skills));
+  console.log("Skills length:", skills.length);
+  if (skills.length > 0) {
+    console.log("First skill object:", skills[0]);
+  }
+
+  if (schedules.length === 0) {
+    toast.error("Please add at least one schedule");
+    return;
+  }
+  
+    // Validate that schedules exist
+    if (schedules.length === 0) {
+      toast.error("Please add at least one schedule");
+      return;
+    }
+  
     try {
+      // Get session and company ID
       const session = await getSession();
       const companyId = session?.user?.companyID;
+  
+      // Calculate startDate and endDate from schedules
+      const allStartTimes = schedules.map((sch) => new Date(`${sch.date}T${sch.startTime}:00`));
+      const allEndTimes = schedules.map((sch) => new Date(`${sch.date}T${sch.endTime}:00`));
+      const startDate = new Date(Math.min(...allStartTimes));
+      const endDate = new Date(Math.max(...allEndTimes));
+  
+      // Prepare interview data
       const interviewData = {
         companyID: companyId,
-        jobTitle,
-        jobDescription,
-        interviewCategory,
-        requiredSkills: chipData.map((chip) => chip.label).join(", "),
-        startDate: new Date(date.from).toISOString(),
-        endDate: new Date(date.to).toISOString(),
+        jobTitle: jobTitle,
+        jobDescription: jobDescription,
+        requiredSkills: skills.map(String).join(", "),
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
         status: "DRAFT",
-        categoryAssignments: categoryList.map((catagory) => {
-          return {
-            categoryId: catagory.key,
-            percentage: parseFloat(catagory.percentage),
-          };
-        }),
-        schedules: scheduleList
-          .filter((schedule) => !schedule.isBooked)
+        categoryAssignments: categoryList.map((cat) => ({
+          categoryId: cat.key,
+          percentage: parseFloat(cat.percentage),
+        })),
+        schedules: schedules
+          .filter((schedule) => !schedule.isBooked) // Exclude booked schedules, if applicable
           .map((schedule) => {
-            const startDate = new Date(schedule.date);
-            const endDate = new Date(schedule.date);
-
-            const [startHours, startMinutes] = schedule.startTime
-              .split(":")
-              .map(Number);
-            const localStart = new Date(
-              startDate.setHours(startHours, startMinutes, 0, 0)
-            );
-
-            const [endHours, endMinutes] = schedule.endTime
-              .split(":")
-              .map(Number);
-            const localend = new Date(
-              endDate.setHours(endHours, endMinutes, 0, 0)
-            );
-
-            const startDateUtc = localStart.toISOString();
-            const endDateUtc = localend.toISOString();
-
+            const startDateObj = new Date(schedule.date);
+            const [startHours, startMinutes] = schedule.startTime.split(":").map(Number);
+            const localStart = new Date(startDateObj.setHours(startHours, startMinutes, 0, 0));
+  
+            const endDateObj = new Date(schedule.date);
+            const [endHours, endMinutes] = schedule.endTime.split(":").map(Number);
+            const localEnd = new Date(endDateObj.setHours(endHours, endMinutes, 0, 0));
+  
             return {
-              startTime: startDateUtc,
-              endTime: endDateUtc,
+              startTime: localStart.toISOString(),
+              endTime: localEnd.toISOString(),
             };
           }),
       };
-      console.log(interviewData);
+  
+      // Log data for debugging (optional)
+      console.log("Submitting interview data:", interviewData);
+  
+      // Call the API to create the interview
       const response = await createInterview(interviewData);
-
+  
       if (response) {
-        setModalOpen(false);
+        toast.success("Interview created successfully!");
+        // Optionally redirect, e.g., navigate('/company');
       }
     } catch (err) {
+      // Error handling
       if (err.response) {
         const { data } = err.response;
-
-        if (data && data.message) {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: `Interview create failed: ${data.message}`,
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "An unexpected error occurred. Please try again.",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `Interview creation failed: ${data?.message || "An unexpected error occurred."}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
       } else {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description:
-            "An unexpected error occurred. Please check your network and try again.",
+          description: "An unexpected error occurred. Please check your network and try again.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
@@ -639,7 +647,7 @@ const CreateInterview = () => {
         const session = await getSession();
         const companyId = session?.user?.companyID;
         const response = await getInterviewCategoryCompanyById(companyId);
-        console.log(response.data.categories);
+        // console.log(response.data.categories);
         if (response) {
           setInterviewCategories(response.data.categories);
           setFilteredCategories(response.data.categories);
@@ -1075,6 +1083,7 @@ const CreateInterview = () => {
                         </Button>
                         <Button
                           type="submit"
+                          onClick={() => setActiveTab("schedules")}
                         >
                           Continue to Schedules
                         </Button>
@@ -1411,7 +1420,7 @@ const CreateInterview = () => {
                         <Button
                           onClick={handleSubmit}
                           type="submit"
-                          disabled={schedules.length === 0}
+                          
                         >
                           Create Interview
                         </Button>
