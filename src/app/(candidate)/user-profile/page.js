@@ -448,20 +448,17 @@ const UserProfile = () => {
   const downloadPdf = () => {
     const input = pdfRef.current;
 
-    // Add loading state
     setIsLoading(true);
 
-    // Configure options for better rendering
     const options = {
-      scale: 2, // Increase for better resolution
-      useCORS: true, // Enable cross-origin images
-      logging: true, // Helpful for debugging
-      backgroundColor: null, // Keep original background
+      scale: 2,
+      useCORS: true,
+      logging: true,
+      backgroundColor: null,
       windowWidth: input.scrollWidth,
       windowHeight: input.scrollHeight,
     };
 
-    // Wait for fonts to load
     document.fonts.ready
       .then(() => {
         html2canvas(input, options).then((canvas) => {
@@ -755,7 +752,10 @@ const UserProfile = () => {
           </div>
         </header>
 
-        <div className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
+        <div
+          ref={pdfRef}
+          className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative"
+        >
           <Card className="border-border !bg-[#1b1d23] overflow-hidden mb-6">
             <div className="h-32 bg-gradient-to-r from-yellow-400/20 to-yellow-400/5"></div>
             <div className="px-6 pb-6 relative">
@@ -804,7 +804,10 @@ const UserProfile = () => {
                 </div>
 
                 <div className="ml-auto flex flex-col sm:flex-row gap-2 mt-4 md:mt-4">
-                  <Button className="flex items-center gap-2">
+                  <Button
+                    onClick={downloadPdf}
+                    className="flex items-center gap-2"
+                  >
                     <Download size={16} /> Download PDF
                   </Button>
                 </div>
@@ -872,64 +875,36 @@ const UserProfile = () => {
                                 : ""
                             }`}
                           >
-                            <div className="flex justify-between items-center gap-5 w-full">
-                              <div className="w-full ">
-                                <div className="flex justify-between w-full">
-                                  <h4 className="font-medium">
-                                    {experience.title}
-                                  </h4>
-                                  <span className="text-sm text-[#b3b3b3]">
-                                    {new Date(
-                                      experience.startDate
-                                    ).getFullYear()}{" "}
-                                    -{" "}
-                                    {experience.endDate === ""
-                                      ? "Present"
-                                      : new Date(
-                                          experience.endDate
-                                        ).getFullYear()}
-                                  </span>
-                                </div>
+                            <div className="flex justify-between w-full">
+                              <h4 className="font-medium">
+                                {experience.title}
+                              </h4>
+                              <span className="text-sm text-[#b3b3b3]">
+                                {new Date(experience.startDate).getFullYear()} -{" "}
+                                {experience.endDate === ""
+                                  ? "Present"
+                                  : new Date(experience.endDate).getFullYear()}
+                              </span>
+                            </div>
 
-                                <div className="flex justify-between w-full">
-                                  <p className="text-sm text-[#b3b3b3]">
-                                    {experience.company}
-                                  </p>
-                                  {/* {isExperienceEdit && (
-                                    <div
-                                      // onClick={(e) => handleDeleteSkill(index)}
-                                      className=" p-1 rounded-md flex justify-start items-center hover:bg-red-900/20 cursor-pointer text-red-800 text-xs "
-                                    >
-                                      <Trash2 className="h-4 w-4" /> Remove
-                                    </div>
-                                  )} */}
-                                </div>
+                            <div className="flex justify-between w-full">
+                              <p className="text-sm text-[#b3b3b3]">
+                                {experience.company}
+                              </p>
+                            </div>
 
-                                <div className="flex justify-between w-full">
-                                  <p className="text-sm mt-2">
-                                    {experience.description}
-                                  </p>
-                                  {isExperienceEdit && (
-                                    <div
-                                      onClick={(e) =>
-                                        handleDeleteExperience(index)
-                                      }
-                                      className=" p-1 rounded-md flex justify-start items-center hover:bg-red-900/20 cursor-pointer text-red-800 text-xs "
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* {isExperienceEdit && (
+                            <div className="flex justify-between w-full">
+                              <p className="text-sm mt-2">
+                                {experience.description}
+                              </p>
+                              {isExperienceEdit && (
                                 <div
-                                  // onClick={(e) => handleDeleteSkill(index)}
-                                  className=" p-1 rounded-md hover:bg-red-900/20 cursor-pointer"
+                                  onClick={(e) => handleDeleteExperience(index)}
+                                  className=" p-1 rounded-md flex justify-start items-center hover:bg-red-900/20 cursor-pointer text-red-800 text-xs "
                                 >
-                                  <Trash2 className="h-4 w-4 text-red-800" />
+                                  <Trash2 className="h-4 w-4" />
                                 </div>
-                              )} */}
+                              )}
                             </div>
                           </div>
                         ))}
@@ -1026,16 +1001,7 @@ const UserProfile = () => {
                         <h3 className="text-xl font-semibold">
                           Personal Details
                         </h3>
-                        {isPersonalDetailsEdit ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleSaveProfile}
-                            className="flex items-center !bg-green-700 gap-2"
-                          >
-                            <LucideCircleCheckBig size={16} /> Save
-                          </Button>
-                        ) : (
+                        {!isPersonalDetailsEdit && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -1214,6 +1180,18 @@ const UserProfile = () => {
                               )}
                             </div>
                           </div>
+                          {isPersonalDetailsEdit && (
+                            <div className=" w-full">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleSaveProfile}
+                                className="flex w-full items-center !bg-green-700 gap-2"
+                              >
+                                <LucideCircleCheckBig size={16} /> Save
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardContent>
@@ -1223,16 +1201,7 @@ const UserProfile = () => {
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold">Social Media</h3>
-                        {isSocialMediaEdit ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleSaveSocialMedia}
-                            className="flex items-center !bg-green-700 gap-2"
-                          >
-                            <LucideCircleCheckBig size={16} /> Save
-                          </Button>
-                        ) : (
+                        {!isSocialMediaEdit && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -1246,7 +1215,11 @@ const UserProfile = () => {
 
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 w-[80%]">
+                          <div
+                            className={`flex items-center gap-3 ${
+                              isSocialMediaEdit ? "w-full" : "w-[80%]"
+                            }`}
+                          >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <Linkedin size={16} />
                             </div>
@@ -1258,7 +1231,8 @@ const UserProfile = () => {
                                   onChange={(e) =>
                                     setLinkedinUrl(e.target.value)
                                   }
-                                  className="!text-xs w-full !h-7 outline-none focus:outline-none"
+                                  placeholder="your linkedin profile url"
+                                  className="!text-xs w-full outline-none focus:outline-none"
                                 />
                               ) : (
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1293,7 +1267,11 @@ const UserProfile = () => {
                           )}
                         </div>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 w-[80%]">
+                          <div
+                            className={`flex items-center gap-3 ${
+                              isSocialMediaEdit ? "w-full" : "w-[80%]"
+                            }`}
+                          >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <Github size={16} />
                             </div>
@@ -1303,7 +1281,8 @@ const UserProfile = () => {
                                 <Input
                                   value={githubUrl}
                                   onChange={(e) => setGithubUrl(e.target.value)}
-                                  className="!text-xs w-full !h-7 outline-none focus:outline-none"
+                                  placeholder="your github profile url"
+                                  className="!text-xs w-full outline-none focus:outline-none"
                                 />
                               ) : (
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1338,7 +1317,11 @@ const UserProfile = () => {
                           )}
                         </div>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 w-[80%]">
+                          <div
+                            className={`flex items-center gap-3 ${
+                              isSocialMediaEdit ? "w-full" : "w-[80%]"
+                            }`}
+                          >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <Facebook size={16} />
                             </div>
@@ -1350,7 +1333,8 @@ const UserProfile = () => {
                                   onChange={(e) =>
                                     setFacebookUrl(e.target.value)
                                   }
-                                  className="!text-xs w-full !h-7 outline-none focus:outline-none"
+                                  placeholder="your facebook profile url"
+                                  className="!text-xs w-full outline-none focus:outline-none"
                                 />
                               ) : (
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1385,7 +1369,11 @@ const UserProfile = () => {
                           )}
                         </div>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 w-[80%]">
+                          <div
+                            className={`flex items-center gap-3 ${
+                              isSocialMediaEdit ? "w-full" : "w-[80%]"
+                            }`}
+                          >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <FaXTwitter size={16} />
                             </div>
@@ -1397,7 +1385,8 @@ const UserProfile = () => {
                                   onChange={(e) =>
                                     setTwitterUrl(e.target.value)
                                   }
-                                  className="!text-xs w-full !h-7 outline-none focus:outline-none"
+                                  placeholder="your twitter profile url"
+                                  className="!text-xs w-full outline-none focus:outline-none"
                                 />
                               ) : (
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1432,7 +1421,11 @@ const UserProfile = () => {
                           )}
                         </div>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 w-[80%]">
+                          <div
+                            className={`flex items-center gap-3 ${
+                              isSocialMediaEdit ? "w-full" : "w-[80%]"
+                            }`}
+                          >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <FaDiscord size={16} />
                             </div>
@@ -1444,7 +1437,8 @@ const UserProfile = () => {
                                   onChange={(e) =>
                                     setDiscordUrl(e.target.value)
                                   }
-                                  className="!text-xs w-full !h-7 outline-none focus:outline-none"
+                                  placeholder="your discord profile url"
+                                  className="!text-xs w-full outline-none focus:outline-none"
                                 />
                               ) : (
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1479,6 +1473,18 @@ const UserProfile = () => {
                           )}
                         </div>
                       </div>
+                      {isSocialMediaEdit && (
+                        <div className=" mt-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleSaveSocialMedia}
+                            className="flex w-full items-center !bg-green-700 gap-2"
+                          >
+                            <LucideCircleCheckBig size={16} /> Save
+                          </Button>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -1563,6 +1569,7 @@ const UserProfile = () => {
                       <Button
                         variant="destructive"
                         size="sm"
+                        onClick={deleteAccountHandler}
                         className="min-w-[100px]"
                       >
                         Delete
@@ -1572,13 +1579,6 @@ const UserProfile = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-            {/* </div> */}
-
-            {/* <div className="space-y-6"> */}
-            {/* <ProfileDetailsSection />
-                <ProfileSocialSection /> */}
-            {/* </div>
-            </div> */}
           </Tabs>
 
           {/* <div
