@@ -404,9 +404,19 @@ const InterviewsPage = () => {
                   <div className="p-4 flex flex-col justify-between h-full">
                     <div>
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-lg font-semibold">
-                          {interview.jobTitle}
-                        </h3>
+                        <div className="flex items-center justify-start gap-2">
+                          {interview.interviewSessions.filter(
+                            (session) => session.interviewStatus === "ongoing"
+                          ).length > 0 && (
+                            <div className=" relative flex items-center justify-center h-full w-2.5 ">
+                              <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                              <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                            </div>
+                          )}
+                          <h3 className="text-lg font-semibold">
+                            {interview.jobTitle}
+                          </h3>
+                        </div>
                         {getStatusBadge(
                           interview.scheduling[0].startTime,
                           interview.scheduling[interview.scheduling.length - 1]
