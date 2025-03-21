@@ -1152,9 +1152,15 @@ export default function InterviewPreviewPage({ params }) {
               </TabsTrigger>
               <TabsTrigger
                 value="sessions"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+                className=" rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
               >
-                Interview Sessions
+                <div className="flex justify-start items-center gap-2">
+                  {interviewSessions.filter((session) => session.interviewStatus === "ongoing").length > 0 && (<div className=" relative flex items-center justify-center h-full w-2.5 ">
+                    <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                    <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                  </div>)}
+                  Interview Sessions
+                </div>
               </TabsTrigger>
               <TabsTrigger
                 value="invitation"
