@@ -141,7 +141,14 @@ const CreateInterview = () => {
   const [interviewCategories, setInterviewCategories] = React.useState([]);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
   const [inputCatagory, setInputCatagory] = React.useState("");
-  const [categoryList, setCatagoryList] = React.useState([]);
+  const [categoryList, setCategoryList] = useState([
+    {
+      key: "technical",
+      catagory: "Technical Skills",
+      percentage: "30", 
+    },
+  ]);
+  const [inputPercentage, setInputPercentage] = React.useState("");
 
 
   useEffect(() => {
@@ -155,15 +162,20 @@ const CreateInterview = () => {
         }
       ]);
     }
-  }, []);
+  }, [technicalPercentage]);
 
   const handleTechnicalPercentageChange = (value) => {
     setTechnicalPercentage(value);
-    setCategories(categories.map(cat =>
+    setCategories(categoryList.map(cat =>
       cat.id === 'technical'
         ? { ...cat, percentage: value }
         : cat
     ));
+    setCategoryList((prev) =>
+      prev.map((cat) =>
+        cat.key === "technical" ? { ...cat, percentage: value.toString() } : cat
+      )
+    );
   };
 
   const onSubmit = (values) => {
@@ -198,9 +210,9 @@ const CreateInterview = () => {
     form.setValue('description', description, { shouldValidate: true });
   };
 
-  const findPredefinedCategory = (name) => {
-    return PREDEFINED_CATEGORIES.find(cat => cat.name === name);
-  };
+  // const findPredefinedCategory = (name) => {
+  //   return PREDEFINED_CATEGORIES.find(cat => cat.name === name);
+  // };
 
   const resetPredefinedCategorySelection = () => {
     setSelectedPredefinedCategory('');
@@ -441,7 +453,7 @@ const CreateInterview = () => {
         companyId: companyId,
         categoryName: interviewCatName,
         description: interviewCatDesc,
-        color: newCategoryColor 
+        color: newCategoryColor
       });
 
       if (response) {
@@ -491,6 +503,51 @@ const CreateInterview = () => {
       }
     }
   };
+
+  const handleAddCatagoty = (e) => {
+    e.preventDefault();
+
+    const newPercentage = parseFloat(inputPercentage.trim());
+    // const currentTotal = categoryList.reduce((total, cat) => total + parseFloat(cat.percentage), 0);
+
+    if (inputCatagory.trim() === "" || inputPercentage.trim() === "") {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please provide both the category name and percentage to add to the list.",
+      });
+      return;
+    }
+
+    // if (currentTotal + newPercentage > 100) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Uh oh! Something went wrong.",
+    //     description: "The percentage cannot exceed 100%.",
+    //   });
+    //   return;
+    // }
+
+    {
+      setCategoryList((prev) => [
+        ...prev,
+        {
+          key: inputCatagory.trim(),
+          catagory: interviewCategories.find(
+            (cat) => cat.categoryId === inputCatagory.trim()
+          )?.categoryName,
+          percentage: inputPercentage.trim(),
+          color: interviewCategories.find(
+            (cat) => cat.categoryId === inputCatagory.trim()
+          )?.color,
+
+        },
+      ]);
+      setInputPercentage("");
+      setInputCatagory("");
+    }
+  };
+
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -689,22 +746,19 @@ const CreateInterview = () => {
                               <Badge variant="default" className="bg-primary text-primary-foreground">Mandatory</Badge>
                               <span>Technical Skills</span>
                             </h3>
-                            <div
-                              className="w-4 h-4 rounded-full"
-                              style={{ backgroundColor: COLORS[0] }}
-                            ></div>
+
                           </div>
                           <div className="flex items-center gap-4">
                             <div className="w-full">
-                              {/* <FormLabel>Percentage (%)</FormLabel> */}
                               <div className="flex items-center gap-2">
                                 <Input
+                                required
                                   type="number"
+                                  min={0}
+                                  max={100}
                                   placeholder="e.g. 30"
-                                  min="1"
-                                  max="100"
                                   value={technicalPercentage}
-                                  onChange={(e) => handleTechnicalPercentageChange(parseInt(e.target.value) || 0)}
+                                  onChange={(e) => handleTechnicalPercentageChange(parseInt(e.target.value))}
                                   className="w-full"
                                 />
                                 <Percent className="h-4 w-4 text-muted-foreground" />
@@ -755,23 +809,22 @@ const CreateInterview = () => {
                                 <div className="w-full">
                                   <label className="text-sm font-medium text-white">Percentage</label>
                                   <input
+                                    value={inputPercentage}
+                                    onChange={(e) => setInputPercentage(e.target.value)}
                                     placeholder="Percentage"
                                     type="number"
                                     className="h-10 w-full rounded-lg text-sm border-0 bg-black placeholder-[#737883]  text-center"
                                   />
                                 </div>
                               </div>
-
+                              {/* 
                               {selectedPredefinedCategory && (
                                 <>
                                   <div>
-                                    {/* <FormLabel>Percentage (%)</FormLabel> */}
                                     <div className="flex items-center gap-2">
                                       <Input
                                         type="number"
-                                        min={5}
-                                        max={50}
-                                        step={5}
+                                        min={0}
                                         value={predefinedCategoryPercentage}
                                         onChange={(e) => setPredefinedCategoryPercentage(parseInt(e.target.value) || 0)}
                                         className="w-full"
@@ -781,10 +834,6 @@ const CreateInterview = () => {
                                   </div>
 
                                   <div>
-                                    {/* <FormLabel className="flex items-center gap-2">
-                                    <Palette className="h-4 w-4" />
-                                    Color
-                                  </FormLabel> */}
                                     <div className="flex flex-wrap gap-2 mt-1">
                                       {COLORS.map((color, i) => (
                                         <div
@@ -797,11 +846,11 @@ const CreateInterview = () => {
                                     </div>
                                   </div>
                                 </>
-                              )}
+                              )} */}
 
                               <Button
                                 type="button"
-                                onClick={handleAddPredefinedCategory}
+                                onClick={handleAddCatagoty}
                                 className="w-full !mt-14"
                               >
                                 <Plus className="h-4 w-4 mr-1" />
@@ -871,48 +920,35 @@ const CreateInterview = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                           <div className="space-y-3">
                             <h3 className="text-sm font-medium">Your Categories</h3>
-                            {categories.length === 0 ? (
+                            {categoryList.length === 0 ? (
                               <p className="text-sm text-muted-foreground">No categories added yet</p>
                             ) : (
                               <div className="space-y-2">
-                                {categories.map((cat) => (
+                                {categoryList.map((catagory) => (
                                   <div
-                                    key={cat.id}
-                                    className={`flex items-center justify-between p-3 rounded-md ${cat.id === 'technical'
-                                      ? 'bg-primary/10 border border-primary/20'
-                                      : 'bg-secondary/20'
-                                      }`}
+                                    key={catagory.key}
+                                    className="flex items-center justify-between p-3 rounded-md bg-[#313338]"
                                   >
                                     <div className="flex items-center gap-2">
                                       <div
                                         className="w-3 h-3 rounded-full"
-                                        style={{ backgroundColor: cat.color }}
+                                        style={{ backgroundColor: catagory.color }}
                                       ></div>
-                                      <span>{cat.name}</span>
-                                      {cat.id === 'technical' && (
-                                        <Badge variant="outline" className="bg-primary/10 text-primary ml-1">
-                                          Mandatory
-                                        </Badge>
-                                      )}
+                                      <span>{catagory.catagory}</span>
+                                      {catagory.id === 'technical' && (
+                                      <Badge variant="outline" className="bg-primary/10 text-primary ml-1">
+                                        Mandatory
+                                      </Badge>
+                                    )}
                                     </div>
                                     <div className="flex items-center gap-3">
-                                      <Badge variant="outline">{cat.percentage}%</Badge>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => removeCategory(cat.id)}
-                                        className="h-6 w-6 p-0 text-destructive"
-                                        disabled={cat.id === 'technical'}
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                        <span className="sr-only">Remove</span>
-                                      </Button>
+                                      <Badge variant="outline">{catagory.percentage}%</Badge>
                                     </div>
                                   </div>
                                 ))}
                                 <div className="text-sm mt-2">
-                                  Total: {categories.reduce((sum, cat) => sum + cat.percentage, 0)}%
-                                  {categories.reduce((sum, cat) => sum + cat.percentage, 0) !== 100 && (
+                                  Total: {categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0)}%
+                                  {categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0) !== 100 && (
                                     <span className="text-destructive"> (should be 100%)</span>
                                   )}
                                 </div>
