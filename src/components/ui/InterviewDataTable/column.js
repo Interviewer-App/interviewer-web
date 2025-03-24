@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MousePointer2, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MoreHorizontal } from "lucide-react";
@@ -14,12 +14,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import socket from "@/lib/utils/socket";
+import { Badge } from "@/components/ui/badge";
+
 const ActionCell = ({ session }) => {
   const router = useRouter();
 
   const handleStartSession = () => {
     if (router && session?.sessionId) {
-      router.push(`/company-interview-session/${encodeURIComponent(session.sessionId)}`);
+      router.push(
+        `/company-interview-session/${encodeURIComponent(session.sessionId)}`
+      );
     }
   };
 
@@ -53,19 +57,82 @@ const ActionCell = ({ session }) => {
       <DropdownMenuContent align="end">
         <div className="bg-black bg-opacity-100 shadow-lg">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem className="cursor-pointer"
+          <DropdownMenuItem
+            className="cursor-pointer"
             onClick={() => navigator.clipboard.writeText(session.sessionId)}
           >
             Copy session ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          {session?.status != 'completed' && (<DropdownMenuItem className="cursor-pointer" onClick={handleStartSession}>Start Session</DropdownMenuItem>)}
-          {session?.status === 'completed' && (<DropdownMenuItem className="cursor-pointer" onClick={handleViewSessionHostory}>View Session History</DropdownMenuItem>)}
-          {session?.status != 'completed' && (<DropdownMenuItem className="cursor-pointer" onClick={handleCompleteInterviewSession}>Complete Session</DropdownMenuItem>)}
+          {session?.status != "completed" && (
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={handleStartSession}
+            >
+              Start Session
+            </DropdownMenuItem>
+          )}
+          {session?.status === "completed" && (
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={handleViewSessionHostory}
+            >
+              View Session History
+            </DropdownMenuItem>
+          )}
+          {session?.status != "completed" && (
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={handleCompleteInterviewSession}
+            >
+              Complete Session
+            </DropdownMenuItem>
+          )}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
+};
+
+const getStatusBadge = (status) => {
+  switch (status) {
+    case "toBeConducted":
+      return (
+        <Badge
+          variant="outline"
+          className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/10"
+        >
+          To Be Conducted
+        </Badge>
+      );
+    case "ongoing":
+      return (
+        <Badge
+          variant="outline"
+          className="!text-emerald-400 py-1 px-4 !border-emerald-400/30 !bg-emerald-400/10"
+        >
+          Ongoing
+        </Badge>
+      );
+    case "completed":
+      return (
+        <Badge
+          variant="outline"
+          className="!text-green-600 !border-green-600/30 bg-green-600/10 py-1 px-4"
+        >
+          Completed
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="outline"
+          className="!text-gray-500 !border-gray-500/30 bg-gray-500/10 py-1 px-4"
+        >
+          {status}
+        </Badge>
+      );
+  }
 };
 
 const GetStarted = ({ session }) => {
@@ -73,64 +140,34 @@ const GetStarted = ({ session }) => {
 
   const handleStartSession = () => {
     if (router && session?.sessionId) {
-      router.push(`/company-interview-session/${encodeURIComponent(session.sessionId)}`);
+      router.push(
+        `/company-interview-session/${encodeURIComponent(session.sessionId)}`
+      );
     }
   };
 
-
   return (
     <div className="flex items-center justify-center">
-      {session?.status != 'completed' && (
-         <button
-         onClick={handleStartSession}
-         className="
-     mx-auto md:mx-0 
-     text-xs
-     rounded-full 
-     bg-blue-500/50 
-     border-2 border-blue-700 
-     text-blue-300 
-     py-1 px-4 w-fit 
-     transition-all
-     duration-300
-     hover:scale-105
-     hover:bg-blue-500/70
-     hover:border-blue-600
-     hover:text-blue-200
-     active:scale-95
-     active:bg-blue-600/50
-     focus:outline-none
-     focus:ring-2
-     focus:ring-blue-300
-     focus:ring-opacity-50
-     animate-pulse-once
-     shadow-lg
-     shadow-blue-900/20
-     hover:shadow-blue-900/30
-   "
-       >
-         Get Started
-       </button>
-      ) }
-
-      
-
-      {session?.status === 'completed' ? 
-      (<>
-          <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-green-500/50 boeder-2 border-green-700 text-green-300 py-1 px-4 w-fit cursor-pointer">
-        Completed
-      </p>
-      </>) : 
-      
-      (<>
-  
-     
-      </>)}
-      
-
-      
+      {session?.status !== "completed" ? (
+        <div
+          onClick={handleStartSession}
+          className={` flex cursor-pointer items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
+        >
+          {session?.status === "ongoing" ? (
+            <>
+              <RefreshCcw className="h-4 w-4" />
+              Resume Meeting
+            </>
+          ) : (
+            <>
+              <MousePointer2 className="h-4 w-4" /> Get Started
+            </>
+          )}
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
-
   );
 };
 
@@ -176,26 +213,37 @@ export const interviewSessionTableColumns = [
   },
   {
     accessorKey: "startAt",
-    header: "Start At",
+    header: "Date",
+    cell: ({ row }) => {
+      const startAt = row.getValue("startAt");
+      return new Date(startAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        day: "numeric",
+        month: "long",
+      });
+    },
   },
   {
     accessorKey: "endAt",
-    header: "End At",
+    header: "Time",
   },
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status");
+      return getStatusBadge(status);
+    },
   },
   {
     accessorKey: "score",
     header: "Score",
     cell: ({ row }) => {
       const score = row.getValue("score");
-      const formattedScore = score ? `${score}%` : "N/A";  // Format score as percentage
+      const formattedScore = score > 0 ? `${score}%` : "N/A"; // Format score as percentage
       return formattedScore;
     },
   },
-
 
   {
     id: "startBtn",
