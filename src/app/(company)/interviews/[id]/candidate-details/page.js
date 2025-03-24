@@ -19,6 +19,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { CalendarIcon, Percent, WandSparkles, LoaderCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 function CandidateDetailsProfile() {
     const { data: session, status } = useSession();
@@ -30,13 +33,24 @@ function CandidateDetailsProfile() {
     const [documentUrl, setDocumentUrl] = useState("");
     const [age, setAge] = useState(0);
     const { toast } = useToast();
+    const [experiences, setExperiences] = useState([]);
+    const [skills, setSkills] = useState([]);
 
     useEffect(() => {
         const fetchCandidateDetails = async () => {
             try {
                 const response = await getCandidateById(candidateId);
                 if (response.data) {
+                    const parsedExperiences = response.data?.experience
+                        ? JSON.parse(response.data.experience)
+                        : [];
+
+                    const parsedSkills = response.data?.skillHighlights
+                        ? JSON.parse(response.data?.skillHighlights)
+                        : [];
                     setCandidateDetails(response.data);
+                    setExperiences(parsedExperiences);
+                    setSkills(parsedSkills)
                 }
             } catch (err) {
                 if (err.response) {
@@ -135,6 +149,21 @@ function CandidateDetailsProfile() {
         setAge(age);
     };
 
+    const getSkillColor = (level) => {
+        switch (level) {
+          case "Beginner":
+            return " !bg-yellow-400/10 !text-yellow-400 !border-yellow-400/20";
+          case "Intermediate":
+            return "!bg-blue-400/10 !text-blue-400 !border-blue-400/20";
+          case "Advanced":
+            return "!bg-purple-400/10 !text-purple-400 !border-purple-400/20";
+          case "Expert":
+            return "!bg-green-400/10 !text-green-400 !border-green-400/20";
+          default:
+            return "!bg-gray-400/10 !text-gray-400 !border-gray-400/20";
+        }
+      };
+
     return (
         <div className=" w-full">
             <SidebarInset>
@@ -198,7 +227,7 @@ function CandidateDetailsProfile() {
                     </div>
                     <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-8">
                         <div className=" w-full md:w-[70%] md:border-r-2 border-gray-500/20 md:pr-8">
-                            <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
+                            {/* <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
                                 <h1 className=" text-xl font-semibold">Experiences</h1>
                                 <div
                                     className="text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3"
@@ -206,8 +235,53 @@ function CandidateDetailsProfile() {
                                         __html: candidateDetails?.experience || "No Experiences",
                                     }}
                                 />
-                            </div>
-                            <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
+                            </div> */}
+                            <Card className=" border-2 !bg-[#1b1d23] !border-blue-600/30">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-xl font-semibold text-blue-600">
+                                                Experiences
+                                            </h3>
+
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        {experiences.map((experience, index) => (
+                                            <div
+                                                key={index}
+                                                className={`border-l-2 border-border pl-4 py-2 `}
+                                            >
+                                                <div className="flex justify-between w-full">
+                                                    <h4 className="font-medium">
+                                                        {experience.title}
+                                                    </h4>
+                                                    <span className="text-sm text-[#b3b3b3]">
+                                                        {new Date(experience.startDate).getFullYear()} -{" "}
+                                                        {experience.endDate === ""
+                                                            ? "Present"
+                                                            : new Date(experience.endDate).getFullYear()}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex justify-between w-full">
+                                                    <p className="text-sm text-[#b3b3b3]">
+                                                        {experience.company}
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex justify-between w-full">
+                                                    <p className="text-sm mt-2">
+                                                        {experience.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            {/* <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
                                 <h1 className=" text-xl font-semibold">Skill Highlights</h1>
                                 <div
                                     className="text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3"
@@ -216,7 +290,46 @@ function CandidateDetailsProfile() {
                                             candidateDetails?.skillHighlights || "No Skill Highlight",
                                     }}
                                 />
-                            </div>
+                            </div> */}
+                            <Card className="border-2 !bg-[#1b1d23] !border-orange-400/20 mt-5">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-xl font-semibold text-orange-400">
+                                                Skill Highlights
+                                            </h3>
+                                            
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                                        {skills.map((skill, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center justify-between p-2 rounded-md bg-[#b3b3b309]"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={`text-xs py-1 px-3 ${getSkillColor(
+                                                            skill.level
+                                                        )}`}
+                                                    >
+                                                        {skill.level}
+                                                    </Badge>
+                                                    <span className="text-sm font-medium">
+                                                        {skill.name}
+                                                    </span>
+                                                </div>
+                                                
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    
+                                </CardContent>
+                            </Card>
                             <div className=" w-full rounded-lg mt-5 px-8 py-5 bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
                                 <h2 className=" text-xl font-semibold">Resume</h2>
                                 {documentUrl.url ? (

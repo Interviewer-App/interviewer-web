@@ -1630,6 +1630,7 @@ export default function InterviewPreviewPage({ params }) {
                       <CandidateDataTable
                         columns={candidatesTableColumns}
                         data={interviewCandidates}
+                        interviewId={interviewId}
                       />
                     )}
                   </div>
