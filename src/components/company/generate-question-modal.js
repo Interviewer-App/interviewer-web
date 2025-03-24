@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Sparkles } from "lucide-react";
 import { generateInterviewQuestions, generateQuestions } from "@/lib/api/ai";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 
@@ -141,10 +141,16 @@ export default function GenerateQuestionModal({
   return (
     <div className=" w-full">
       <div className=" fixed  top-0 left-0 z-40 h-full w-full flex items-center justify-center bg-black/50">
-        <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
-          <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-5">
-            Genarate Questions
+        <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9  rounded-lg bg-[#09090b] border border-[#2d2f36]">
+          <div className="pb-5">
+          <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-1 flex items-center gap-2">
+          <Sparkles />
+           Genarate Questions
           </h1>
+          <span className="text-[#737883] text-sm !pb-5">
+          Our AI will generate high-quality technical interview questions based on your criteria.
+          </span>
+          </div>
           <button
             onClick={() => setGenerateModalOpen(false)}
             className=" absolute top-5 right-5 text-[#f3f3f3]"
@@ -159,14 +165,14 @@ export default function GenerateQuestionModal({
               name="jobRole"
               value={jobRole}
               required
-              className=" h-[45px] w-full rounded-lg text-sm border-0 text-gray-500 focus:outline-none bg-[#32353b] placeholder-[#3c3d41] px-6 py-2 mb-5"
+              className=" h-[45px] w-full rounded-lg text-sm border text-gray-500 focus:outline-none bg-[#09090b] placeholder-[#3c3d41] px-6 py-2 mb-5 border-[#2d2f36]"
             />
             <div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="w-full">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                      className={`!bg-[#09090b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
                       variant="outline"
                     >
                       {skillLevel}
@@ -193,7 +199,7 @@ export default function GenerateQuestionModal({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      className={`!bg-[#32353b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
+                      className={`!bg-[#09090b] w-full h-[45px] m-0 px-2 focus:outline-none outline-none`}
                       variant="outline"
                     >
                       {questionType}
@@ -216,13 +222,15 @@ export default function GenerateQuestionModal({
             </div>
             <Paper
               sx={{
+                border: "1px solid",
+                borderColor: "#2d2f36",
                 display: "flex",
                 justifyContent: "start",
                 flexWrap: "wrap",
                 listStyle: "none",
                 p: 0.5,
                 m: 0,
-                backgroundColor: "#32353b",
+                backgroundColor: "#09090b",
                 color: "white",
                 overflowY: "auto",
                 height: "100px",
@@ -249,7 +257,7 @@ export default function GenerateQuestionModal({
               })}
               <input
                 type="text"
-                placeholder="add keywords"
+                placeholder="Add some keywords"
                 name="keywords"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
@@ -266,7 +274,7 @@ export default function GenerateQuestionModal({
                 value={noOfQuestion}
                 onChange={(e) => setNoOfQuestion(e.target.value)}
                 required
-                className="py-3 my-4 w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-5 focus:outline-none "
+                className="py-3 my-4 w-full rounded-lg text-sm border  placeholder-[#737883] px-5 focus:outline-none bg-[#09090b] border-[#2d2f36]"
               />
             </div>
 
@@ -278,7 +286,10 @@ export default function GenerateQuestionModal({
                 {loading ? (
                   <LoaderCircle className="animate-spin" />
                 ) : (
-                  "Genarate"
+                  <>
+                  <Sparkles size={16} />
+                  Genarate
+                  </>
                 )}
               </button>
             </div>
