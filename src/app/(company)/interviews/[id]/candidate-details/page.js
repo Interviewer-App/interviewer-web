@@ -18,7 +18,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, Percent, WandSparkles, LoaderCircle } from "lucide-react";
+import { CalendarIcon, Percent, WandSparkles, LoaderCircle, User, Mail, Phone, Linkedin, Github, Facebook, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -151,18 +151,18 @@ function CandidateDetailsProfile() {
 
     const getSkillColor = (level) => {
         switch (level) {
-          case "Beginner":
-            return " !bg-yellow-400/10 !text-yellow-400 !border-yellow-400/20";
-          case "Intermediate":
-            return "!bg-blue-400/10 !text-blue-400 !border-blue-400/20";
-          case "Advanced":
-            return "!bg-purple-400/10 !text-purple-400 !border-purple-400/20";
-          case "Expert":
-            return "!bg-green-400/10 !text-green-400 !border-green-400/20";
-          default:
-            return "!bg-gray-400/10 !text-gray-400 !border-gray-400/20";
+            case "Beginner":
+                return " !bg-yellow-400/10 !text-yellow-400 !border-yellow-400/20";
+            case "Intermediate":
+                return "!bg-blue-400/10 !text-blue-400 !border-blue-400/20";
+            case "Advanced":
+                return "!bg-purple-400/10 !text-purple-400 !border-purple-400/20";
+            case "Expert":
+                return "!bg-green-400/10 !text-green-400 !border-green-400/20";
+            default:
+                return "!bg-gray-400/10 !text-gray-400 !border-gray-400/20";
         }
-      };
+    };
 
     return (
         <div className=" w-full">
@@ -298,9 +298,9 @@ function CandidateDetailsProfile() {
                                             <h3 className="text-xl font-semibold text-orange-400">
                                                 Skill Highlights
                                             </h3>
-                                            
+
                                         </div>
-                                        
+
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
@@ -322,12 +322,12 @@ function CandidateDetailsProfile() {
                                                         {skill.name}
                                                     </span>
                                                 </div>
-                                                
+
                                             </div>
                                         ))}
                                     </div>
 
-                                    
+
                                 </CardContent>
                             </Card>
                             <div className=" w-full rounded-lg mt-5 px-8 py-5 bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
@@ -396,7 +396,108 @@ function CandidateDetailsProfile() {
 
                         </div>
                         <div className=" w-full md:w-[40%] md:px-8 md:mt-0 mt-5">
-                            <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
+                            <Card className="border-border !bg-[#1b1d23]">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h3 className="text-xl font-semibold">
+                                            Personal Details
+                                        </h3>
+
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-start gap-3">
+                                            <User
+                                                size={16}
+                                                className="text-muted-foreground mt-0.5"
+                                            />
+                                            <div>
+                                                <p className="text-muted-foreground text-xs">
+                                                    Full Name
+                                                </p>
+                                                <p className="font-medium">
+                                                    {candidateDetails?.user?.firstName}{" "}
+                                                    {candidateDetails?.user?.lastName}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <Separator className="my-2" />
+
+                                        <div className="grid grid-cols-1 gap-4">
+                                            <div className="flex items-start gap-3">
+                                                <CalendarIcon
+                                                    size={16}
+                                                    className="text-muted-foreground mt-0.5"
+                                                />
+                                                <div className="w-full">
+                                                    <p className="text-muted-foreground text-xs">
+                                                        Date of Birth
+                                                    </p>
+                                                    <p>
+                                                        {new Date(candidateDetails?.user?.dob).toLocaleDateString("en-GB", {
+                                                            day: "numeric",
+                                                            month: "long",
+                                                            year: "numeric",
+                                                        })}
+                                                    </p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        ({age} years old)
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <User
+                                                    size={16}
+                                                    className="text-muted-foreground mt-0.5"
+                                                />
+                                                <div className="w-full">
+                                                    <p className="text-muted-foreground text-xs">
+                                                        Gender
+                                                    </p>
+                                                    <p>
+                                                        {candidateDetails?.user?.gender
+                                                            ? candidateDetails?.user?.gender.charAt(0).toUpperCase() +
+                                                            candidateDetails?.user?.gender.slice(1).toLowerCase()
+                                                            : "not specified"}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <Separator className="my-2" />
+
+                                            <div className="flex items-start gap-3">
+                                                <Mail
+                                                    size={16}
+                                                    className="text-muted-foreground mt-0.5"
+                                                />
+                                                <div>
+                                                    <p className="text-muted-foreground text-xs">
+                                                        Email
+                                                    </p>
+                                                    <p>{candidateDetails?.user?.email}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <Phone
+                                                    size={16}
+                                                    className="text-muted-foreground mt-0.5"
+                                                />
+                                                <div className=" w-full">
+                                                    <p className="text-muted-foreground text-xs">
+                                                        Phone
+                                                    </p>
+                                                    <p>{candidateDetails?.user?.contactNo}</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            {/* <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
                                 <h2 className=" text-xl font-semibold">Personal Details</h2>
                                 <div className=" w-full mt-5">
                                     <p className=" text-base text-gray-500">Full Name</p>
@@ -434,8 +535,216 @@ function CandidateDetailsProfile() {
                                     <p className=" text-base text-gray-500">Phone</p>
                                     <p className=" text-md">{candidateDetails?.user?.contactNo}</p>
                                 </div>
-                            </div>
-                            <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
+                            </div> */}
+
+                            <Card className="border-border !bg-[#1b1d23] mt-5">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h3 className="text-xl font-semibold">Social Media</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className={`flex items-center gap-3`}
+                                            >
+                                                <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                                    <Linkedin size={16} />
+                                                </div>
+                                                <div className="w-full">
+                                                    <p className="text-sm font-medium">LinkedIn</p>
+                                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {candidateDetails?.linkedInUrl
+                                                            ? candidateDetails?.linkedInUrl.replace(
+                                                                /^https?:\/\/(www\.)?/i,
+                                                                ""
+                                                            )
+                                                            : "linkedin.com/in/username"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {candidateDetails?.linkedInUrl && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-accent"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={candidateDetails?.linkedInUrl }
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <ExternalLink
+                                                            size={14}
+                                                            className=" text-yellow-400"
+                                                        />
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className={`flex items-center gap-3 w-[80%]`}
+                                            >
+                                                <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                                    <Github size={16} />
+                                                </div>
+                                                <div className="w-full">
+                                                    <p className="text-sm font-medium">Github</p>
+                                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {candidateDetails?.githubUrl
+                                                            ? candidateDetails?.githubUrl.replace(
+                                                                /^https?:\/\/(www\.)?/i,
+                                                                ""
+                                                            )
+                                                            : "github.com/username"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {candidateDetails?.githubUrl && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-accent"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={candidateDetails?.githubUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <ExternalLink
+                                                            size={14}
+                                                            className=" text-yellow-400"
+                                                        />
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className={`flex items-center gap-3 w-[80%]`}
+                                            >
+                                                <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                                    <Facebook size={16} />
+                                                </div>
+                                                <div className=" w-full">
+                                                    <p className="text-sm font-medium">Facebook</p>
+                                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {candidateDetails?.facebookUrl
+                                                            ? candidateDetails?.facebookUrl.replace(
+                                                                /^https?:\/\/(www\.)?/i,
+                                                                ""
+                                                            )
+                                                            : "facebook username"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {candidateDetails?.facebookUrl && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-accent"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={candidateDetails?.facebookUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <ExternalLink
+                                                            size={14}
+                                                            className=" text-yellow-400"
+                                                        />
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className={`flex items-center gap-3 w-[80%]`}
+                                            >
+                                                <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                                    <FaXTwitter size={16} />
+                                                </div>
+                                                <div className="w-full">
+                                                    <p className="text-sm font-medium">X</p>
+                                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {candidateDetails?.twitterUrl
+                                                            ? candidateDetails?.twitterUrl.replace(
+                                                                /^https?:\/\/(www\.)?/i,
+                                                                ""
+                                                            )
+                                                            : "x.com/username"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {candidateDetails?.twitterUrl && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-accent"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={candidateDetails?.twitterUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <ExternalLink
+                                                            size={14}
+                                                            className=" text-yellow-400"
+                                                        />
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className={`flex items-center gap-3 w-[80%]`}
+                                            >
+                                                <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                                    <FaDiscord size={16} />
+                                                </div>
+                                                <div className="w-full">
+                                                    <p className="text-sm font-medium">Discord</p>
+                                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {candidateDetails?.discordUrl
+                                                            ? candidateDetails?.discordUrl.replace(
+                                                                /^https?:\/\/(www\.)?/i,
+                                                                ""
+                                                            )
+                                                            : "discord.com/username"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {candidateDetails?.discordUrl && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-accent"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={candidateDetails?.discordUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <ExternalLink
+                                                            size={14}
+                                                            className=" text-yellow-400"
+                                                        />
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                </CardContent>
+                            </Card>
+
+                            {/* <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
                                 <h2 className=" text-xl font-semibold">Social Media</h2>
                                 <div className=" w-full mt-5 flex justify-start items-center gap-2">
                                     <FaLinkedin className=" text-3xl" />
@@ -482,7 +791,7 @@ function CandidateDetailsProfile() {
                                         {candidateDetails?.discordUrl}
                                     </p>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
