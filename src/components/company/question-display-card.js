@@ -43,6 +43,7 @@ import {
   updateQuestion,
 } from "@/lib/api/question";
 import { RiInformation2Line } from "react-icons/ri";
+import { Clock } from 'lucide-react';
 
 function QuestionDisplayCard({
   forSession,
@@ -163,17 +164,17 @@ function QuestionDisplayCard({
   return (
     <div
       key={index}
-      className="bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg"
+      className="group bg-[#09090b] hover:bg-[#141921] mt-5 text-gray-400 border-2 border-gray-700 rounded-lg"
     >
       <div className=" w-full py-2 px-4 rounded-t-lg relative">
         <div className=" flex items-center justify-start gap-x-2">
-          <h1 className=" text-xl font-semibold text-gray-400">
+          <h1 className=" text-sm font-semibold text-gray-400 bg-black p-1 rounded-3xl">
             Q{index + 1} : {question.estimatedTimeMinutes} min
           </h1>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className=" text-xs text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[120px] px-2 border-2 flex items-center justify-center ">
+                <span className=" text-xs text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[120px] px-1 border flex items-center justify-center bg-[#2b271f]">
                   <RiInformation2Line className=" text-sm mr-1" /> Explanation
                 </span>
               </TooltipTrigger>
@@ -219,27 +220,51 @@ function QuestionDisplayCard({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+         
+
+ 
+        </div>
+      </div>
+      <div className="w-full py-3 text-gray-400 px-6 rounded-b-lg">
+        <textarea
+          ref={textareaRef}
+          readOnly={!isEditing}
+          className={`text-base w-full rounded-md ${
+            isEditing ? "bg-gray-700 py-2 px-4" : "bg-transparent text-gray-500"
+          } focus:outline-none`}
+          value={questionText}
+          onChange={(e) => setQuestionText(e.target.value)}
+        />
+
+        {/* Bottom div now appears when the whole card is hovered */}
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-4 bg-[#19212f] h-12 rounded-lg flex items-center justify-end px-4 gap-4">
           {isEditing && (
             <button
               onClick={handleUpdateQuestion}
               className="text-green-500 hover:text-green-400 border-green-500 hover:bg-green-300/20 border-2 text-lg aspect-square h-7 rounded-sm flex items-center justify-center"
             >
               <LuCheck />
+            
             </button>
           )}
           {!isEditing && (
+            <>
             <button
               onClick={() => setIsEditing(true)}
-              className="text-gray-300 hover:text-gray-200 border-gray-300 hover:bg-gray-300/20 border-2  text-lg aspect-square h-7 rounded-sm flex items-center justify-center"
+              className="text-gray-300 hover:text-gray-200 border-gray-300 hover:bg-gray-300/20 border  text-lg aspect-square h-7 rounded-sm flex items-center justify-center p-2 gap-1"
             >
-              <MdEdit />
+              <MdEdit />  
+              <span className="text-base font-semibold">Edit</span>
             </button>
+     
+            </>
           )}
 
           <AlertDialog>
             <AlertDialogTrigger>
-              <div className="text-red-500 hover:text-red-400 border-red-500 border-2 hover:bg-red-500/20 text-lg aspect-square h-7 rounded-sm flex items-center justify-center">
+              <div className="text-red-500 hover:text-red-400 border-red-500 border hover:bg-red-500/20 text-lg aspect-square h-7 rounded-sm flex items-center justify-center p-2 gap-1">
                 <MdDelete />
+                <span className="text-base font-semibold">Delete</span>
               </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -264,17 +289,7 @@ function QuestionDisplayCard({
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </div>
-      <div className="w-full py-3 text-gray-400 px-6 rounded-b-lg">
-        <textarea
-          ref={textareaRef}
-          readOnly={!isEditing}
-          className={`text-base w-full rounded-md ${
-            isEditing ? "bg-gray-700 py-2 px-4" : "bg-transparent text-gray-500"
-          } focus:outline-none`}
-          value={questionText}
-          onChange={(e) => setQuestionText(e.target.value)}
-        />
+
       </div>
     </div>
   );
