@@ -36,7 +36,7 @@ import {
 import SortableLinks from "@/components/SortableLinks";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaDotCircle } from "react-icons/fa";
-
+import { Calendar1, CirclePlus, Clock, Sparkles } from 'lucide-react';
 //API
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import QuestionDisplayCard from "@/components/company/question-display-card";
@@ -48,6 +48,7 @@ import { useSession } from "next-auth/react";
 import { importQuestions } from "@/lib/api/question";
 import Link from "next/link";
 import { reorderInterviewFlow } from "@/lib/api/interview";
+import { Dot } from "lucide-react";
 
 function InterviewSessionPreviewPage({ params }) {
   const { data: session, status } = useSession();
@@ -110,11 +111,11 @@ function InterviewSessionPreviewPage({ params }) {
   useEffect(() => {
     if (!sessionDetails || !sessionDetails.CategoryScore) return;
     const tabData = sessionDetails.CategoryScore.sort((a, b) => a.order - b.order)
-    .map((category) => ({
-      name: category.categoryAssignment.category.categoryName,
-      id: category.categoryAssignment.category.categoryId,
-      color: category.categoryAssignment.category.color,
-    }));
+      .map((category) => ({
+        name: category.categoryAssignment.category.categoryName,
+        id: category.categoryAssignment.category.categoryId,
+        color: category.categoryAssignment.category.color,
+      }));
     setItems(tabData);
   }, [sessionDetails]);
 
@@ -181,7 +182,7 @@ function InterviewSessionPreviewPage({ params }) {
         const updatedArray = arrayMove(prevItems, oldIndex, newIndex);
 
         hanleChangeFlow(updatedArray);
-        
+
         return updatedArray;
       });
     }
@@ -265,103 +266,125 @@ function InterviewSessionPreviewPage({ params }) {
             </Breadcrumb>
           </div>
         </header>
-        <div className=" w-full">
+        <div className="w-full">
           <div className="px-9 py-4 w-full max-w-[1500px] bg-black mx-auto">
-            <h1 className=" text-4xl font-semibold">Session Preview</h1>
-            <div className=" flex flex-col md:flex-row items-center justify-start md:justify-between mt-5 w-full bg-gray-500/20 rounded-lg p-5">
-              <div className=" w-full md:w-[50%] ">
-                <div className=" flex justify-start items-center gap-3">
-                  <h1 className=" text-3xl font-semibold">
-                    {sessionDetails?.candidate?.user?.firstName || ""}{" "}
-                    {sessionDetails?.candidate?.user?.lastName || ""}
-                  </h1>
-                  <Link
-                    href={`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(
-                      sessionDetails?.candidateId
-                    )}`}
-                    className=" text-xs border-2 border-blue-600 hover:text-blue-500 hover:border-blue-500  text-blue-600 bg-blue-500/20 rounded-full px-5 py-1 cursor-pointer"
-                  >
-                    More about Candidatre
-                  </Link>
+            <h1 className="text-3xl font-bold tracking-tight">Session Preview</h1>
+
+            <div className="flex flex-col md:flex-col p-5 w-ful border-2 border-gray-700 rounded-lg mt-5">
+              <div className="flex flex-col md:flex-row justify-between md:justify-between  w-full !bg-[#140d20] rounded-lg h-48 md:h-24 p-4">
+                <div className="w-full md:w-[50%] ">
+                  <div className=" flex justify-start items-center gap-3">
+                    <div className="flex flex-col">
+                      <h1 className=" text-2xl font-semibold">
+                        {sessionDetails?.candidate?.user?.firstName || ""}{" "}
+                        {sessionDetails?.candidate?.user?.lastName || ""}
+                      </h1>
+                      <h1 className=" text-base font-semibold text-gray-500">
+                        {sessionDetails?.candidate?.user?.email || ""}
+                      </h1>
+                    </div>
+                    <Link
+                      href={`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(
+                        sessionDetails?.candidateId
+                      )}`}
+                      className=" text-xs border-2 border-black hover:text-blue-500 hover:border-blue-500 text-white bg-[#191e2b] rounded-xs py-1 px-1 cursor-pointer rounded-xl"
+                    >
+                      More about Candidatre
+                    </Link>
+                  </div>
                 </div>
-                <h1 className=" text-base text-gray-500">
-                  {sessionDetails?.candidate?.user?.email || ""}
-                </h1>
-                <p className=" text-base pt-5 text-gray-400">
-                  Scheduled Date:{" "}
-                  {new Date(sessionDetails?.scheduledDate).toLocaleDateString(
-                    "en-US",
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  ) || ""}
-                </p>
-                <p className=" text-base pt-1 text-gray-400">
-                  Scheduled Time:{" "}
-                  {new Date(sessionDetails?.scheduledAt).toLocaleTimeString() ||
-                    ""}
-                </p>
-                <p className=" text-base pt-1 text-gray-400">
-                  Type: {sessionDetails?.interviewCategory || ""} Interview
-                </p>
+                <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={interviewStart}
+                    className="h-12 min-w-[150px] md:w-[170px] w-full cursor-pointer rounded-lg text-center text-base text-black bg-darkred font-semibold bg-[#7b3aed]"
+                  >
+                    Start Interview
+                  </button>
+                </div>
               </div>
-              <div className=" w-full md:w-[50%] flex items-center justify-start md:justify-end mt-5 md:mt-0">
-                <button
-                  type="button"
-                  onClick={interviewStart}
-                  className=" h-12 min-w-[150px] w-[170px] cursor-pointer rounded-lg text-center text-base text-white bg-darkred font-semibold"
-                >
-                  Start Interview
-                </button>
+              <div className="p-4 flex flex-row w-full justify-between items-center mt-10  rounded-lg md:mt-0">
+                <div className="flex flex-row gap-2 items-center">
+                  <Calendar1 size={20} />
+                  <div className="flex flex-col">
+                    <p className=" text-base text-white">
+                      Scheduled Date:{" "}
+                    </p>
+                    <p className="text-gray-400">  {new Date(sessionDetails?.scheduledDate).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    ) || ""}</p>
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Clock size={20} />
+                  <div className="flex flex-col">
+                    <p className=" text-base text-white">
+                      Scheduled Time:{" "}
+                    </p>
+                    <p className="text-gray-400">   {new Date(sessionDetails?.scheduledAt).toLocaleTimeString() ||
+                      ""}</p>
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Dot size={38} />
+                  <div className="flex flex-col">
+                    <p className=" text-base text-white">
+                      Type:{" "}
+                    </p>
+                    <p className="text-gray-400">  {sessionDetails?.interviewCategory || ""}</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="mt-5 bg-slate-500/10 p-9 rounded-lg">
-              <div className=" w-full flex justify-between items-center">
-                <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
+
+            <div className="flex md:flex-row flex-col w-full justify-between">   
+            <div className=" bg-slate-500/10 p-5 rounded-lg w-full">
+              <div className="flex justify-between flex-col md:flex-row gap-3 w-full">
+                <div className="flex bg-slate-600/20 w-fit p-1 md:p-2 rounded-3xl align-center gap-2">
                   <button
                     onClick={() => setTab("technical")}
-                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                      tab === "technical" ? "bg-gray-800" : ""
-                    } `}
+                    className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-3xl ${tab === "technical" ? "bg-gray-800" : ""
+                      } `}
                   >
                     Technical
                   </button>
                   <button
                     onClick={() => setTab("others")}
-                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                      tab === "others" ? "bg-gray-800" : ""
-                    } `}
+                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-3xl ${tab === "others" ? "bg-gray-800" : ""
+                      } `}
                   >
                     Others
                   </button>
                 </div>
                 <div
-                  className={`${
-                    tab === "technical" ? "block" : "hidden"
-                  } w-full p-1 md:p-2 flex items-center justify-end`}
+                  className={`${tab === "technical" ? "block" : "hidden"} w-full p-1 md:p-2 flex items-center justify-end gap-3`}
                 >
                   <button
-                    className=" h-11 min-w-[160px] md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-black font-semibold"
+                    className="h-11 min-w-[160px] px-4 md:mt-0 cursor-pointer bg-white text-black rounded-lg font-semibold text-sm flex items-center justify-center"
                     onClick={() => setGenerateModalOpen(true)}
                   >
-                    Genarate questions
+                    <Sparkles className="mr-2" size={15} />
+                    Generate Questions
                   </button>
                   <button
                     onClick={() => setCreateModalOpen(true)}
-                    className=" h-11 min-w-[160px] md:mt-0 cursor-pointer bg-white text-black rounded-lg text-center font-semibold"
+                    className="h-11 min-w-[160px] px-4 md:mt-0 cursor-pointer bg-white text-black rounded-lg font-semibold text-sm flex items-center justify-center"
                   >
-                    {" "}
-                    + Add Question
+                    <CirclePlus className="mr-2" size={15} />
+                    Add Question
                   </button>
                 </div>
               </div>
-
+       
               <div className=" flex justify-between items-start">
                 {tab === "technical" ? (
-                  <div className=" w-[68%] mt-3 border-r-2 border-gray-700/20 pr-9">
+                  <div className=" w-full mt-3 border-gray-700/20">
                     <div className=" w-full flex flex-col md:flex-row items-center justify-between">
                       <h1 className=" text-2xl font-semibold text-left w-full">
                         Questions
@@ -426,35 +449,42 @@ function InterviewSessionPreviewPage({ params }) {
                     ))}
                   </div>
                 )}
-                <div className=" w-[30%] mt-3 px-5">
-                  <h1 className=" text-2xl font-semibold text-left w-full">
-                    Question arrangement
-                  </h1>
-                  <Card className="w-full !border-0 !bg-transparent md:max-w-lg">
-                    <CardContent className="grid gap-4 p-5 bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg">
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                        modifiers={[
-                          restrictToVerticalAxis,
-                          restrictToParentElement,
-                        ]}
-                      >
-                        <SortableContext
-                          items={items}
-                          strategy={verticalListSortingStrategy}
-                        >
-                          {items.map((item) => (
-                            <SortableLinks key={item.id} id={item} />
-                          ))}
-                        </SortableContext>
-                      </DndContext>
-                    </CardContent>
-                  </Card>
-                </div>
               </div>
-            </div>
+
+              </div>
+
+              <div className="md:w-1/3 w-full mt-3 border border-gray-800 rounded-lg p-4">
+                <h1 className=" text-2xl font-semibold text-left w-full">
+                  Question arrangement
+                </h1>
+                <h5 className="text-sm font-semibold text-left text-gray-300">Drag to reorder questions for the interview</h5>
+                <Card className="w-full !border-0 !bg-transparent md:max-w-lg">
+                  <CardContent className="grid gap-4 p-5 bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 rounded-lg">
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                      modifiers={[
+                        restrictToVerticalAxis,
+                        restrictToParentElement,
+                      ]}
+                    >
+                      <SortableContext
+                        items={items}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        {items.map((item) => (
+                          <SortableLinks key={item.id} id={item} />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
+                  </CardContent>
+                </Card>
+              </div>
+
+              </div>
+
+
           </div>
           {createModalOpen && (
             <CreateQuestionModal
