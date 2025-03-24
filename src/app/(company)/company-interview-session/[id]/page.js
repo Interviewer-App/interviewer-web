@@ -36,7 +36,7 @@ import {
 import SortableLinks from "@/components/SortableLinks";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaDotCircle } from "react-icons/fa";
-import { Calendar1, CirclePlus, Clock, Sparkles } from 'lucide-react';
+import { Calendar1, Check, CirclePlus, Clock, Mic, Sparkles, UserCircle2, Video, VideoIcon, Wifi, X } from 'lucide-react';
 //API
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import QuestionDisplayCard from "@/components/company/question-display-card";
@@ -49,6 +49,8 @@ import { importQuestions } from "@/lib/api/question";
 import Link from "next/link";
 import { reorderInterviewFlow } from "@/lib/api/interview";
 import { Dot } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 function InterviewSessionPreviewPage({ params }) {
   const { data: session, status } = useSession();
@@ -71,6 +73,28 @@ function InterviewSessionPreviewPage({ params }) {
 
   const { toast } = useToast();
   const router = useRouter();
+  const requirements = [
+      {
+        icon: <UserCircle2 className="h-5 w-5" />,
+        text: "Complete your profile information",
+        subtext: "Ensure your profile details are up-to-date",
+      },
+      {
+        icon: <Wifi className="h-5 w-5" />,
+        text: "Stable internet connection",
+        subtext: "Minimum 1Mbps upload and download speed",
+      },
+      {
+        icon: <Video className="h-5 w-5" />,
+        text: "Camera is ready",
+        subtext: "Find a well-lit, professional background",
+      },
+      {
+        icon: <Mic className="h-5 w-5" />,
+        text: "Microphone is working",
+        subtext: "Test your audio in a quiet environment",
+      },
+    ];
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -294,13 +318,79 @@ function InterviewSessionPreviewPage({ params }) {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={interviewStart}
                     className="h-12 min-w-[150px] md:w-[170px] w-full cursor-pointer rounded-lg text-center text-base text-black bg-darkred font-semibold bg-[#7b3aed]"
                   >
                     Start Interview
-                  </button>
+                  </button> */}
+                  <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="dark:bg-[#7b3aed] dark:hover:bg-[#7c3aeddc] dark:text-white"
+                      size="sm"
+                    >
+                      <VideoIcon className="h-4 w-4 mr-1" />
+                      {sessionDetails?.interviewStatus === "ongoing" ? "Re-Join Interview" : "Join Interview"}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-xl text-gray-100">
+                        Ready to Join the Interview?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-400">
+                        Please ensure you meet all requirements before joining
+                        the live interview session.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <div className="space-y-4 my-4">
+                      {requirements.map((req, index) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
+                        >
+                          <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
+                            {req.icon}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-medium text-gray-200">
+                              {req.text}
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              {req.subtext}
+                            </p>
+                          </div>
+                          <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                        </div>
+                      ))}
+                    </div>
+
+                    <AlertDialogFooter className="sm:space-x-2 justify-between">
+                      <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
+                        <X className="h-4 w-4 mr-2" />
+                        Not Ready Yet
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={interviewStart}
+                        className="bg-emerald-600 text-white hover:bg-emerald-500"
+                      >
+                        <Check className="h-4 w-4 mr-2" />
+                        Join Interview
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+
+                    <div className="mt-4 text-center">
+                      <p className="text-xs text-gray-500">
+                        By joining, you agree to our interview guidelines and
+                        code of conduct. Your session may be recorded for
+                        quality assurance.
+                      </p>
+                    </div>
+                  </AlertDialogContent>
+                </AlertDialog>
                 </div>
               </div>
               <div className="p-4 flex flex-row w-full justify-between items-center mt-10  rounded-lg md:mt-0">
