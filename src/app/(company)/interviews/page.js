@@ -348,7 +348,7 @@ const InterviewsPage = () => {
 
                 {interviews.length > 0 && (
                   <Button
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => {router.push('/interviews/createInterview')}}
                     className="flex items-center gap-2 transform hover:scale-105 transition-all animate-scale-in shadow-sm"
                   >
                     <Plus className="h-4 w-4" />
@@ -481,7 +481,7 @@ const InterviewsPage = () => {
                   <Button
                     size="lg"
                     className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium"
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => {router.push('/interviews/createInterview')}}
                   >
                     Create Interview <ArrowRight className="h-4 w-4" />
                   </Button>
