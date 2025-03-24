@@ -349,14 +349,14 @@ function InterviewSessionPreviewPage({ params }) {
                 <div className="flex bg-slate-600/20 w-fit p-1 md:p-2 rounded-3xl align-center gap-2">
                   <button
                     onClick={() => setTab("technical")}
-                    className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-3xl ${tab === "technical" ? "bg-gray-800" : ""
+                    className={`text-xs md:text-sm py-2 px-4 rounded-3xl ${tab === "technical" ? "bg-gray-800" : ""
                       } `}
                   >
                     Technical
                   </button>
                   <button
                     onClick={() => setTab("others")}
-                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-3xl ${tab === "others" ? "bg-gray-800" : ""
+                    className={` text-xs md:text-sm py-2 px-4  rounded-3xl ${tab === "others" ? "bg-gray-800" : ""
                       } `}
                   >
                     Others
