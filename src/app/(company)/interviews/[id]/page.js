@@ -384,7 +384,10 @@ export default function InterviewPreviewPage({ params }) {
       email: session.candidate.user.email,
       candidateName: session.candidate.user.firstName,
       startAt: new Date(session.scheduledDate).toLocaleDateString(),
-      endAt: new Date(session.scheduledAt).toLocaleTimeString(),
+      endAt: new Date(session.scheduledAt).toLocaleTimeString("en-GB", {
+        hour: "numeric",
+        minute: "numeric",
+      }),
       status: session.interviewStatus,
       score: session.score ? parseFloat(session.score).toFixed(2) : "N/A",
       userId: session.candidate.user.userID,
@@ -1064,7 +1067,7 @@ export default function InterviewPreviewPage({ params }) {
                   <AlertDialogTrigger
                     className={` ${
                       tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-900 dark:text-neutral-50 dark:hover:bg-green-900/90`}
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
                   >
                     <LuCircleCheckBig className="h-4 w-4" />
                     Publish
@@ -1155,10 +1158,14 @@ export default function InterviewPreviewPage({ params }) {
                 className=" rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
               >
                 <div className="flex justify-start items-center gap-2">
-                  {interviewSessions.filter((session) => session.interviewStatus === "ongoing").length > 0 && (<div className=" relative flex items-center justify-center h-full w-2.5 ">
-                    <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                    <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                  </div>)}
+                  {interviewSessions.filter(
+                    (session) => session.interviewStatus === "ongoing"
+                  ).length > 0 && (
+                    <div className=" relative flex items-center justify-center h-full w-2.5 ">
+                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                    </div>
+                  )}
                   Interview Sessions
                 </div>
               </TabsTrigger>
@@ -1545,9 +1552,9 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="sessions" className="p-0 border-none">
-              <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+              <div className=" w-full h-fit rounded-lg mt-5">
                 <div>
-                  <h1 className=" text-2xl font-semibold">
+                  <h1 className=" text-2xl font-semibold mb-5">
                     Interview sessions
                   </h1>
                   <div>
@@ -1620,7 +1627,7 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="candidates" className="p-0 border-none">
-              <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+              <div className=" !bg-[#1b1d23] w-full h-fit p-9 rounded-lg mt-5">
                 <div>
                   <h1 className=" text-2xl font-semibold">Candidates</h1>
                   <div>
