@@ -37,6 +37,13 @@ export const columns = [
     enableHiding: false,
   },
   {
+    accessorKey: "jobTitle",
+    header: 'Job Title',
+    cell: ({ row }) => {
+      return row.original.interview.jobTitle; 
+    },
+  },
+  {
     accessorKey: "interviewStatus",
     header: ({ column }) => (
       <Button
