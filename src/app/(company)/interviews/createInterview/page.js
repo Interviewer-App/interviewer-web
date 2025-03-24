@@ -83,6 +83,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createInterview } from "@/lib/api/interview";
+import { useRouter } from "next/navigation";
 const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', '#8B5CF6'];
 
 
@@ -144,7 +145,7 @@ const CreateInterview = () => {
   ]);
   const [inputPercentage, setInputPercentage] = React.useState("");
   const [date, setDate] = React.useState("");
-
+  const router = useRouter()
 
 
   useEffect(() => {
@@ -700,7 +701,7 @@ const CreateInterview = () => {
               <Button
                 variant="ghost"
                 size="sm"
-
+                onClick={() => {router.back()}}
                 className="mr-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
