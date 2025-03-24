@@ -30,9 +30,9 @@ import { columns } from "@/components/ui/InterviewCategory-DataTable/column";
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from 'next/navigation';
 import { useSession, getSession } from "next-auth/react"
-import { Calendar, Home, Inbox,Activity, Atom, Timer, UserPlus,MonitorCheck,SquarePen,plus, Plus   } from "lucide-react";
+import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, SquarePen, plus, Plus } from "lucide-react";
 import { Info } from 'lucide-react';
-          
+
 import {
   Tooltip,
   TooltipContent,
@@ -49,7 +49,7 @@ const InterviewCategoryPage = () => {
   const [limit, setLimit] = useState(10);
   const [modalOpen, setModalOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [isDelete,SetIsDelete]=useState(false);
+  const [isDelete, SetIsDelete] = useState(false);
 
   const handleNextPage = () => {
     if (page * limit < totalsessions) {
@@ -117,7 +117,7 @@ const InterviewCategoryPage = () => {
             </Breadcrumb>
           </div>
         </header>
- 
+
         <div className="px-9 py-4 w-full max-w-[1500px] bg-black mx-auto h-full">
           <div className="flex flex-row items-center space-x-2">
             <h1 className="text-3xl font-semibold">Insights</h1>
@@ -132,7 +132,7 @@ const InterviewCategoryPage = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
+          <div className="bg-[#1b1d22] w-full h-fit p-9 rounded-lg mt-5">
             <div className="flex items-center justify-between mb-5">
               <h1 className="text-2xl font-semibold">Interview Insights</h1>
               {/* Add Category Button */}
@@ -142,47 +142,47 @@ const InterviewCategoryPage = () => {
               >
                 <Plus />
               </button>
-    </div>
+            </div>
 
-    <div>
-      {loading ? (
-        <div>Loading interview sessions...</div>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={categories}
-        />
-      )}
-    </div>
+            <div>
+              {loading ? (
+                <div>Loading interview sessions...</div>
+              ) : (
+                <DataTable
+                  columns={columns}
+                  data={categories}
+                />
+              )}
+            </div>
 
-    {modalOpen && <InterviewCategoryModal setModalOpen={setModalOpen} isUpdated={false} />}
+            {modalOpen && <InterviewCategoryModal setModalOpen={setModalOpen} isUpdated={false} />}
 
-    {/* Pagination handle section start */}
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious onClick={() => handlePreviousPage()} />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink onClick={() => handlePage(page + 1)}>
-            {page + 1}
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink onClick={() => handlePage(page + 2)}>
-            {page + 2}
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext onClick={() => handleNextPage()} />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  </div>
-</div>
+            {/* Pagination handle section start */}
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious onClick={() => handlePreviousPage()} />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink onClick={() => handlePage(page + 1)}>
+                    {page + 1}
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink onClick={() => handlePage(page + 2)}>
+                    {page + 2}
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext onClick={() => handleNextPage()} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
 
 
       </SidebarInset>
