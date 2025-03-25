@@ -117,7 +117,7 @@ const CreateInterview = () => {
   const [technicalPercentage, setTechnicalPercentage] = useState(30);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [newCategoryColor, setNewCategoryColor] = useState(COLORS[1]);
-
+  const [interviewCategory, setInterviewCategory] = React.useState("Technical");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slotStartTime, setSlotStartTime] = useState('09:00');
   const [slotEndTime, setSlotEndTime] = useState('17:00');
@@ -136,29 +136,36 @@ const CreateInterview = () => {
   const [interviewCategories, setInterviewCategories] = React.useState([]);
   const [filteredCategories, setFilteredCategories] = React.useState([]);
   const [inputCatagory, setInputCatagory] = React.useState("");
-  const [categoryList, setCategoryList] = useState([
-    {
-      key: "technical",
-      catagory: "Technical Skills",
-      percentage: technicalPercentage,
-    },
-  ]);
+  const [technicalCategoryId, setTechnicalCategoryId] = useState(null);
+  const [categoryList, setCategoryList] = useState([]);
   const [inputPercentage, setInputPercentage] = React.useState("");
   const [date, setDate] = React.useState("");
   const router = useRouter()
 
-
   useEffect(() => {
-    if (categories.length === 0) {
-      setCategories([
+    if (technicalCategoryId && categoryList.length === 0) {
+      setCategoryList([
         {
-          id: 'technical',
-          name: 'Technical Skills',
+          key: technicalCategoryId,
+          catagory: "Technical Skills",
           percentage: technicalPercentage,
-        }
+        },
       ]);
     }
-  }, [technicalPercentage]);
+  }, [technicalCategoryId, technicalPercentage]);
+
+
+  // useEffect(() => {
+  //   if (categories.length === 0) {
+  //     setCategories([
+  //       {
+  //         id: 'technical',
+  //         name: 'Technical Skills',
+  //         percentage: technicalPercentage,
+  //       }
+  //     ]);
+  //   }
+  // }, [technicalPercentage]);
 
   const handleTechnicalPercentageChange = (value) => {
     setTechnicalPercentage(value);
@@ -174,37 +181,6 @@ const CreateInterview = () => {
     );
   };
 
-  const onSubmit = (values) => {
-    if (activeTab === "details") {
-      setActiveTab("categories");
-    } else if (activeTab === "categories") {
-      const totalPercentage = categories.reduce((sum, cat) => sum + cat.percentage, 0);
-      if (totalPercentage !== 100) {
-        toast.error("Total percentage must equal 100%");
-        return;
-      }
-      setActiveTab("schedules");
-    } else {
-      if (schedules.length === 0) {
-        toast.error("Please add at least one schedule");
-        return;
-      }
-
-      // toast.success("Interview created successfully!");
-      console.log("Form submitted:", {
-        ...values,
-        skills,
-        categories,
-        schedules
-      });
-
-      // navigate('/company');
-    }
-  };
-
-  const handleGeneratedDescription = (description) => {
-    form.setValue('description', description, { shouldValidate: true });
-  };
 
   // const findPredefinedCategory = (name) => {
   //   return PREDEFINED_CATEGORIES.find(cat => cat.name === name);
@@ -550,40 +526,41 @@ const CreateInterview = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add debugging logs
-  console.log("Skills array:", skills);
-  console.log("Is skills an array?", Array.isArray(skills));
-  console.log("Skills length:", skills.length);
-  if (skills.length > 0) {
-    console.log("First skill object:", skills[0]);
-  }
+    // console.log("Skills array:", skills);
+    // console.log("Is skills an array?", Array.isArray(skills));
+    // console.log("Skills length:", skills.length);
+    if (skills.length > 0) {
+      console.log("First skill object:", skills[0]);
+    }
 
-  if (schedules.length === 0) {
-    toast.error("Please add at least one schedule");
-    return;
-  }
-  
+    if (schedules.length === 0) {
+      toast.error("Please add at least one schedule");
+      return;
+    }
+
     // Validate that schedules exist
     if (schedules.length === 0) {
       toast.error("Please add at least one schedule");
       return;
     }
-  
+
     try {
       // Get session and company ID
       const session = await getSession();
       const companyId = session?.user?.companyID;
-  
+
       // Calculate startDate and endDate from schedules
       const allStartTimes = schedules.map((sch) => new Date(`${sch.date}T${sch.startTime}:00`));
       const allEndTimes = schedules.map((sch) => new Date(`${sch.date}T${sch.endTime}:00`));
       const startDate = new Date(Math.min(...allStartTimes));
       const endDate = new Date(Math.max(...allEndTimes));
-  
+
       // Prepare interview data
       const interviewData = {
         companyID: companyId,
         jobTitle: jobTitle,
         jobDescription: jobDescription,
+        interviewCategory,
         requiredSkills: skills.map(String).join(", "),
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
@@ -598,30 +575,33 @@ const CreateInterview = () => {
             const startDateObj = new Date(schedule.date);
             const [startHours, startMinutes] = schedule.startTime.split(":").map(Number);
             const localStart = new Date(startDateObj.setHours(startHours, startMinutes, 0, 0));
-  
+
             const endDateObj = new Date(schedule.date);
             const [endHours, endMinutes] = schedule.endTime.split(":").map(Number);
             const localEnd = new Date(endDateObj.setHours(endHours, endMinutes, 0, 0));
-  
+
             return {
               startTime: localStart.toISOString(),
               endTime: localEnd.toISOString(),
             };
           }),
       };
-  
+
       // Log data for debugging (optional)
       console.log("Submitting interview data:", interviewData);
-  
+
       // Call the API to create the interview
       const response = await createInterview(interviewData);
-  
+      console.log('interview sucessfully create response:',response)
+
       if (response) {
-        toast.success("Interview created successfully!");
-        // Optionally redirect, e.g., navigate('/company');
+        toast({
+          title: "Interview Created Successfully!",
+          description: "The interview has been successfully created.",
+        })
       }
     } catch (err) {
-      // Error handling
+
       if (err.response) {
         const { data } = err.response;
         toast({
@@ -652,6 +632,15 @@ const CreateInterview = () => {
         if (response) {
           setInterviewCategories(response.data.categories);
           setFilteredCategories(response.data.categories);
+          console.log('fectbhinbg categories::::;',response.data.categories)
+          // Find the "Technical Skills" category and store its ID
+          const technicalCategory = response.data.categories.find(
+            (cat) => cat.categoryName== "Technical"
+          );
+          if (technicalCategory) {
+            setTechnicalCategoryId(technicalCategory.categoryId); // New state for technical category ID
+            console.log('sdfsdfs',technicalCategoryId)
+          }
         }
       } catch (error) {
         toast({
@@ -664,6 +653,7 @@ const CreateInterview = () => {
     };
     fetchInterviewCategories();
   }, []);
+
 
   useEffect(() => {
     const filter = interviewCategories.filter((category) =>
@@ -701,7 +691,7 @@ const CreateInterview = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {router.back()}}
+                onClick={() => { router.back() }}
                 className="mr-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
@@ -961,7 +951,7 @@ const CreateInterview = () => {
                                   type="text"
                                   onChange={(e) => setInterviewCatName(e.target.value)}
                                   value={interviewCatName}
-                        
+
                                   placeholder="e.g. Team Collaboration"
 
                                 />
@@ -974,7 +964,7 @@ const CreateInterview = () => {
                                     placeholder="Category Description..."
                                     onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
                                     value={interviewCatDesc} // Binding input to state
-                                    
+
                                   />
 
                                 </div>
@@ -1050,28 +1040,28 @@ const CreateInterview = () => {
                           </div>
 
                           {categoryList.length > 0 && (
-  <div className="flex items-center justify-center">
-    <ResponsiveContainer width="100%" height={300}>
-      <PieChart>
-        <Pie
-          data={categoryList}
-          dataKey="percentage"
-          nameKey="catagory"
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          innerRadius={40}
-          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-        >
-          {categoryList.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Legend />
-      </PieChart>
-    </ResponsiveContainer>
-  </div>
-)}
+                            <div className="flex items-center justify-center">
+                              <ResponsiveContainer width="100%" height={300}>
+                                <PieChart>
+                                  <Pie
+                                    data={categoryList}
+                                    dataKey="percentage"
+                                    nameKey="catagory"
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={80}
+                                    innerRadius={40}
+                                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                  >
+                                    {categoryList.map((entry, index) => (
+                                      <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                                    ))}
+                                  </Pie>
+                                  <Legend />
+                                </PieChart>
+                              </ResponsiveContainer>
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                       <CardFooter className="flex justify-between">
@@ -1118,56 +1108,56 @@ const CreateInterview = () => {
                               <div>
                                 {/* <FormLabel>Select Date</FormLabel> */}
                                 <div className="mt-1">
-                                <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
-                            !date && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon />
-                          {date?.from ? (
-                            date.to ? (
-                              <>
-                                {date.from.toLocaleDateString("en-GB", {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                })}{" "}
-                                -{" "}
-                                {date.to.toLocaleDateString("en-GB", {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                })}
-                              </>
-                            ) : (
-                              date.from.toLocaleDateString("en-GB", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              })
-                            )
-                          ) : (
-                            <span>Pick Date Range</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="range"
-                          selected={date}
-                          onSelect={setDate}
-                          initialFocus
-                          numberOfMonths={2}
-                          disabled={(date) =>
-                            date < new Date().setHours(0, 0, 0, 0)
-                          }
-                        />
-                      </PopoverContent>
-                    </Popover>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                          "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                                          !date && "text-muted-foreground"
+                                        )}
+                                      >
+                                        <CalendarIcon />
+                                        {date?.from ? (
+                                          date.to ? (
+                                            <>
+                                              {date.from.toLocaleDateString("en-GB", {
+                                                day: "numeric",
+                                                month: "long",
+                                                year: "numeric",
+                                              })}{" "}
+                                              -{" "}
+                                              {date.to.toLocaleDateString("en-GB", {
+                                                day: "numeric",
+                                                month: "long",
+                                                year: "numeric",
+                                              })}
+                                            </>
+                                          ) : (
+                                            date.from.toLocaleDateString("en-GB", {
+                                              day: "numeric",
+                                              month: "long",
+                                              year: "numeric",
+                                            })
+                                          )
+                                        ) : (
+                                          <span>Pick Date Range</span>
+                                        )}
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                      <Calendar
+                                        mode="range"
+                                        selected={date}
+                                        onSelect={setDate}
+                                        initialFocus
+                                        numberOfMonths={2}
+                                        disabled={(date) =>
+                                          date < new Date().setHours(0, 0, 0, 0)
+                                        }
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
                                 </div>
                               </div>
 
@@ -1421,7 +1411,7 @@ const CreateInterview = () => {
                         <Button
                           onClick={handleSubmit}
                           type="submit"
-                          
+
                         >
                           Create Interview
                         </Button>

@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { AlertCircleIcon, BookIcon, LightbulbIcon } from "lucide-react";
+import { AlertCircleIcon, BookIcon, LightbulbIcon, Radius } from "lucide-react";
 import Editor from "@monaco-editor/react";
 
 function CodeEditor({
@@ -69,39 +69,39 @@ function CodeEditor({
   };
 
   return (
-    <div className="h-lvh w-[80%] max-w-[1500px] mx-auto py-9 bg-black">
-      <ResizablePanelGroup
-        direction="vertical"
-        className=" relative min-h-[calc-200vh-4rem-1px] bg-black text-white mx-auto"
+    <div className=" h-lvh pb-28 pt-10 w-[80%] max-w-[1500px] mx-auto bg-black">
+      <div
+        className=" relative bg-black text-white mx-auto"
       >
-        <div className=" absolute top-1 right-4 text-gray-400 text-2xl font-semibold">
-          <span className=" text-sm font-normal">Time Remaining</span>{" "}
-          <p className=" text-right">{time}</p>
-        </div>
         {/* QUESTION SECTION */}
-        <ResizablePanel
-          defaultSize={30}
+        <div 
+          
           className="flex flex-col justify-center items-center !rounded-lg"
         >
-          <Card className="w-full py-8  px-6 !bg-neutral-900 !rounded-lg">
+          <Card className="w-full relative py-8 px-6 !bg-[#0a0a0a] !border !rounded-lg">
             {" "}
-            {/* Add w-[80%] here */}
             <CardHeader className="flex flex-row items-center gap-2">
-              {/* <BookIcon className="h-5 w-5 text-primary/80" /> */}
-              <CardTitle>Coding Question</CardTitle>
+              <CardTitle className=" absolute top-4 left-4 text-[#b3b3b3]">Coding Question</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm leading-relaxed">
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <p className="whitespace-pre-line text-lg">{question}</p>
+            <CardContent className="text-sm leading-relaxed !p-0 !mx-0">
+              {isSubmitBtnAvailable && (<div className=" absolute top-1 right-4 text-gray-400 text-2xl font-semibold">
+                <span className=" text-sm font-normal">Time Remaining</span>{" "}
+                <p className=" text-right">{time}</p>
+              </div>)}
+              <div  className=" pb-10">
+                <p className="whitespace-pre-line text-base">{question.questionText}</p>
+              </div>
+              <div className=" absolute bottom-4 left-4 text-gray-600">
+                Estimated Time: {question.estimatedTimeMinutes} minutes
               </div>
             </CardContent>
           </Card>
-        </ResizablePanel>
+        </div>
 
         {/* <ResizableHandle withHandle className='!bg-black' /> */}
 
         {/* CODE EDITOR */}
-        <ResizablePanel defaultSize={70} className="!rounded-lg">
+        <div className="!rounded-lg">
           {isSubmitBtnAvailable ? (
             <>
               <div className="w-full max-w-[1500px] flex justify-end mb-5 mt-10 mx-auto !rounded-lg">
@@ -139,9 +139,9 @@ function CodeEditor({
                   </SelectContent>
                 </Select>
               </div>
-              <div>
+              <div className=" rounded-lg max-h-[250px] overflow-hidden border border-gray-700">
                 <Editor
-                  className="max-w-[1500px] min-h-[400px] mx-auto w-full !rounded-lg max-h-96"
+                  className="max-w-[1500px] min-h-[300px] mx-auto w-full !rounded-lg max-h-96"
                   defaultLanguage={language}
                   language={language}
                   theme="vs-dark"
@@ -168,7 +168,7 @@ function CodeEditor({
               <p className=" text-gray-500 text-xs">Analyzing your answer...</p>
             </div>
           )}
-        </ResizablePanel>
+        </div>
 
         <div
           className={`max-w-[1500px] flex justify-center mx-auto md:px-12 sm:px-12 `}
@@ -176,7 +176,7 @@ function CodeEditor({
           {isSubmitBtnAvailable && (
             <button
               onClick={submitCode}
-              className="mt-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg "
+              className="mt-5 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg "
             >
               Submit Answer
             </button>
@@ -184,7 +184,7 @@ function CodeEditor({
         </div>
 
         {/* <ResizableHandle withHandle /> */}
-      </ResizablePanelGroup>
+      </div>
     </div>
   );
 }

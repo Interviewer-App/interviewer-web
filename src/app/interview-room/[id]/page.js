@@ -45,6 +45,8 @@ import CirculerProgress from "@/components/interview-room-analiyzer/circuler-pro
 import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 import VideoCall from "@/components/video/video";
+import { Mic, Pause, RefreshCw } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -73,7 +75,7 @@ const InterviewRoomPage = ({ params }) => {
   const [isTechnicalOngoing, setIsTechnicalOngoing] = useState(false);
   const [technicalStatus, setTechnicalStatus] = useState("");
   const [isParticipantJoined, setIsParticipantJoined] = useState(false);
-  const boxRef = useRef(null);
+  // const boxRef = useRef(null);
 
   const {
     isListening,
@@ -86,34 +88,34 @@ const InterviewRoomPage = ({ params }) => {
 
   const [questionCountDown, setQuestionCountDown] = useState(0);
 
-  useEffect(() => {
-    const box = boxRef.current;
+  // useEffect(() => {
+  //   const box = boxRef.current;
 
-    const handleResize = () => {
-      const currentLeft = parseFloat(box.style.left) || 0;
-      const currentTop = parseFloat(box.style.top) || 0;
+  //   const handleResize = () => {
+  //     const currentLeft = parseFloat(box.style.left) || 0;
+  //     const currentTop = parseFloat(box.style.top) || 0;
 
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const boxWidth = box.offsetWidth;
-      const boxHeight = box.offsetHeight;
+  //     const screenWidth = window.innerWidth;
+  //     const screenHeight = window.innerHeight;
+  //     const boxWidth = box.offsetWidth;
+  //     const boxHeight = box.offsetHeight;
 
-      const maxLeft = screenWidth - boxWidth;
-      const maxTop = screenHeight - boxHeight;
+  //     const maxLeft = screenWidth - boxWidth;
+  //     const maxTop = screenHeight - boxHeight;
 
-      const newLeft = Math.max(0, Math.min(currentLeft, maxLeft));
-      const newTop = Math.max(0, Math.min(currentTop, maxTop));
+  //     const newLeft = Math.max(0, Math.min(currentLeft, maxLeft));
+  //     const newTop = Math.max(0, Math.min(currentTop, maxTop));
 
-      box.style.right = `${newLeft}px`;
-      box.style.bottom = `${newTop}px`;
-    };
+  //     box.style.right = `${newLeft}px`;
+  //     box.style.bottom = `${newTop}px`;
+  //   };
 
-    window.addEventListener("resize", handleResize);
+  //   window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (question?.estimatedTimeMinutes) {
@@ -295,40 +297,40 @@ const InterviewRoomPage = ({ params }) => {
     }
   }
 
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    const box = boxRef.current;
+  // const handleMouseDown = (e) => {
+  //   e.preventDefault();
+  //   const box = boxRef.current;
 
-    const offsetX = e.clientX - box.getBoundingClientRect().left;
-    const offsetY = e.clientY - box.getBoundingClientRect().top;
+  //   const offsetX = e.clientX - box.getBoundingClientRect().left;
+  //   const offsetY = e.clientY - box.getBoundingClientRect().top;
 
-    const handleMouseMove = (e) => {
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const boxWidth = box.offsetWidth;
-      const boxHeight = box.offsetHeight;
+  //   const handleMouseMove = (e) => {
+  //     const screenWidth = window.innerWidth;
+  //     const screenHeight = window.innerHeight;
+  //     const boxWidth = box.offsetWidth;
+  //     const boxHeight = box.offsetHeight;
 
-      const maxLeft = screenWidth - boxWidth;
-      const maxTop = screenHeight - boxHeight;
+  //     const maxLeft = screenWidth - boxWidth;
+  //     const maxTop = screenHeight - boxHeight;
 
-      let newLeft = e.clientX - offsetX;
-      let newTop = e.clientY - offsetY;
+  //     let newLeft = e.clientX - offsetX;
+  //     let newTop = e.clientY - offsetY;
 
-      newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-      newTop = Math.max(0, Math.min(newTop, maxTop));
+  //     newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+  //     newTop = Math.max(0, Math.min(newTop, maxTop));
 
-      box.style.left = `${newLeft}px`;
-      box.style.top = `${newTop}px`;
-    };
+  //     box.style.left = `${newLeft}px`;
+  //     box.style.top = `${newTop}px`;
+  //   };
 
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
+  //   const handleMouseUp = () => {
+  //     document.removeEventListener("mousemove", handleMouseMove);
+  //     document.removeEventListener("mouseup", handleMouseUp);
+  //   };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
+  //   document.addEventListener("mousemove", handleMouseMove);
+  //   document.addEventListener("mouseup", handleMouseUp);
+  // };
 
   return (
     // <>
@@ -915,7 +917,7 @@ const InterviewRoomPage = ({ params }) => {
     //   </ResizablePanelGroup>
     // </>
     <div className=" w-full relative h-lvh bg-black text-white">
-      <div
+      {/* <div
         ref={boxRef}
         onMouseDown={handleMouseDown}
         className={` ${
@@ -930,224 +932,261 @@ const InterviewRoomPage = ({ params }) => {
           senderId={userId}
           role="CANDIDATE"
         />
-      </div>
+      </div> */}
       {isParticipantJoined ? (
-        <>
-          {technicalStatus === "ongoing" ? (
-            <div className=" bg-black h-lvh w-full">
-              {questionType === "OPEN_ENDED" ? (
-                <div className="flex flex-col max-w-[1500px] mx-auto justify-center items-center w-full text-white bg-black">
-                  <div className="w-[80%] max-w-[1500px] mx-auto flex flex-col h-lvh py-3 justify-between relative">
-                    <div className=" w-full pt-9">
-                      <div className=" relative p-8 rounded-lg bg-neutral-900 text-white shadow-md flex flex-col justify-center">
-                        <div className=" absolute top-4 right-6 text-gray-400 text-2xl font-semibold">
-                          <span className=" text-sm font-normal">
-                            Time Remaining
-                          </span>{" "}
-                          <p className=" text-right">
-                            {formatTime(questionCountDown)}
+        <div className=" flex flex-row justify-between items-center w-full h-lvh ">
+          <div className=" w-[80%]">
+            {technicalStatus === "ongoing" ? (
+              <div className=" bg-black h-lvh w-full">
+                {questionType === "OPEN_ENDED" ? (
+                  <div className="flex flex-col max-w-[1500px] mx-auto justify-center items-center w-full text-white bg-black">
+                    <div className="w-[80%] max-w-[1500px] mx-auto flex flex-col h-lvh py-3 justify-between relative">
+                      <div className=" w-full pt-9">
+                        <div className=" relative p-8 rounded-lg bg-[#0a0a0a] py-8 px-6 border border-gray-700 text-white shadow-md flex flex-col justify-center">
+                          {isSubmitBtnAvailable && (
+                            <div className=" absolute top-3 right-6 text-gray-400 text-2xl font-semibold">
+                              <span className=" text-sm font-normal">
+                                Time Remaining
+                              </span>{" "}
+                              <p className=" text-right">
+                                {formatTime(questionCountDown)}
+                              </p>
+                            </div>
+                          )}
+                          <h1 className="text-2xl absolute top-4 left-6 font-semibold text-[#b3b3b3]">
+                            Question{" "}
+                          </h1>
+                          <p className="text-base text-white py-10 mt-5">
+                            {question.questionText}
+                          </p>
+                          <p className="text-sm absolute bottom-4 left-6 text-gray-600">
+                            Estimated Time: {question.estimatedTimeMinutes}{" "}
+                            minutes
                           </p>
                         </div>
-                        <h1 className="text-2xl font-semibold">Question </h1>
-                        <p className="text-lg text-white pt-5">
-                          {question.questionText}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Estimated Time: {question.estimatedTimeMinutes}{" "}
-                          minutes
-                        </p>
                       </div>
-                    </div>
 
-                    <div className="relative flex flex-col items-center justify-between w-full text-white pt-4">
-                      {isSubmitBtnAvailable ? (
-                        <div className="w-full">
-                          <h1 className="text-2xl font-semibold text-center w-full pb-5">
-                            What is Your Answer?
-                          </h1>
-                          <div className="relative w-full rounded-xl h-auto bg-neutral-900 text-white shadow-md">
-                            <div>
-                              <textarea
-                                onPaste={(e) => {
-                                  e.preventDefault();
-                                  return false;
-                                }}
-                                onCopy={(e) => {
-                                  e.preventDefault();
-                                  return false;
-                                }}
-                                value={transcript}
-                                onChange={handleAnswerChange}
-                                placeholder="your answer here..."
-                                className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
-                              />
+                      <div className="relative flex flex-col items-center justify-between w-full text-white pt-4">
+                        {isSubmitBtnAvailable ? (
+                          <div className="w-full">
+                            <h1 className="text-2xl font-semibold text-left w-full pb-5">
+                              What is Your Answer?
+                            </h1>
+                            <div className="relative w-full rounded-xl h-auto bg-[#2a2a2a] border border-gray-700 text-white shadow-md">
+                              <div>
+                                <textarea
+                                  onPaste={(e) => {
+                                    e.preventDefault();
+                                    return false;
+                                  }}
+                                  onCopy={(e) => {
+                                    e.preventDefault();
+                                    return false;
+                                  }}
+                                  value={transcript}
+                                  onChange={handleAnswerChange}
+                                  placeholder="Type your answer here..."
+                                  className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
+                                />
+                              </div>
+                              <div className="absolute bottom-2 right-2 flex items-center justify-center gap-3">
+                                {isListening ? (
+                                  <button
+                                    onClick={stopListening}
+                                    className="mt-2 cursor-pointer px-5 m-auto flex items-center justify-center bg-red-800/30 border border-red-600 hover:bg-red-800/40 rounded-full h-8 focus:outline-none"
+                                  >
+                                    {/* <svg
+                                      className="w-5 h-5"
+                                      viewBox="0 0 24 24"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        fill="white"
+                                        d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                                      />
+                                    </svg> */}
+                                    <Pause className="w-5 h-5 mr-2" />
+                                    <span className=" font-normal text-sm">
+                                      Stop Listening
+                                    </span>
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={startListening}
+                                    className="mt-2 cursor-pointer px-5 m-auto flex items-center justify-center bg-blue-800/30 border border-blue-600 hover:bg-blue-800/40 rounded-full h-8 focus:outline-none"
+                                  >
+                                    {/* <svg
+                                      viewBox="0 0 256 256"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5 text-white"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                                      />
+                                    </svg> */}
+                                    <Mic className="w-5 h-5 mr-2" />
+                                    <span className=" font-normal text-sm">
+                                      Voice Input
+                                    </span>
+                                  </button>
+                                )}
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={() => setTranscript("")}
+                                        className="mt-2 cursor-pointer m-auto flex items-center justify-center bg-green-800/30 border border-green-600 hover:bg-green-800/40 rounded-full h-8 aspect-square focus:outline-none"
+                                      >
+                                        <RefreshCw className="w-5 h-5" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                                      Clear Answer
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
                             </div>
-                            <div className="absolute bottom-2 right-2">
-                              {isListening ? (
+                            <div className="flex justify-center">
+                              {isSubmitBtnAvailable && (
                                 <button
-                                  onClick={stopListening}
-                                  className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-8 focus:outline-none"
+                                  onClick={handleSubmit}
+                                  disabled={!transcript}
+                                  className="mt-5 mb-10 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg"
                                 >
-                                  <svg
-                                    className="w-5 h-5"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      fill="white"
-                                      d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
-                                    />
-                                  </svg>
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={startListening}
-                                  className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-8 focus:outline-none"
-                                >
-                                  <svg
-                                    viewBox="0 0 256 256"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5 text-white"
-                                  >
-                                    <path
-                                      fill="currentColor"
-                                      d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
-                                    />
-                                  </svg>
+                                  Submit Answer
                                 </button>
                               )}
                             </div>
                           </div>
-                          <div className="flex justify-center">
-                            {isSubmitBtnAvailable && (
-                              <button
-                                onClick={handleSubmit}
-                                disabled={!transcript}
-                                className="my-5 bg-blue-400 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
-                              >
-                                Submit Answer
-                              </button>
-                            )}
+                        ) : (
+                          <div className=" flex min-h-[300px] justify-center flex-col items-center h-full">
+                            <p className=" text-xl font-semibold">
+                              Your answer has been submitted.
+                            </p>
+                            <p className=" text-gray-500 text-xs">
+                              Analyzing your answer...
+                            </p>
                           </div>
-                        </div>
-                      ) : (
-                        <div className=" flex min-h-[300px] justify-center flex-col items-center h-full">
-                          <p className=" text-xl font-semibold">
-                            Your answer has been submitted.
-                          </p>
-                          <p className=" text-gray-500 text-xs">
-                            Analyzing your answer...
-                          </p>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <CodeEditor
-                  question={question.questionText}
-                  handleSubmit={handleSubmit}
-                  setTranscript={setTranscript}
-                  isSubmitBtnAvailable={isSubmitBtnAvailable}
-                  sessionID={sessionId}
-                  socket={socket}
-                  time={formatTime(questionCountDown)}
-                />
-              )}
-            </div>
-          ) : technicalStatus === "completed" ? (
-            <div>
-              <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
-                <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">
-                  You have Successfully Completed Your Interview
-                </h1>
-                <div className="  text-gray-400 py-8 flex flex-col items-center justify-center w-full mt-5 rounded-lg">
-                  <h1 className=" text-2xl font-semibold text-center">
-                    Test Score
-                  </h1>
-                  <h2 className=" text-base text-gray-500 text-center">
-                    {" "}
-                    {numberOfAnswers}/{numberOfAnswers} Questions
-                  </h2>
-                  <CirculerProgress
-                    marks={totalScore}
-                    catorgory="Test score"
-                    titleSize="text-3xl"
-                    subTitleSize="text-sm"
+                ) : (
+                  <CodeEditor
+                    question={question}
+                    handleSubmit={handleSubmit}
+                    setTranscript={setTranscript}
+                    isSubmitBtnAvailable={isSubmitBtnAvailable}
+                    sessionID={sessionId}
+                    socket={socket}
+                    time={formatTime(questionCountDown)}
                   />
-                  <p className=" text-gray-300 text-center">
-                    {parseInt(totalScore || 0).toFixed(2)}% Accurate with
-                    expected answers
-                  </p>
-                  <p className=" text-sm text-gray-500 text-center">
-                    Showing Test Score for {numberOfAnswers} out of{" "}
-                    {numberOfAnswers} question
-                  </p>
-                </div>
-                <div className="flex items-center w-full">
-                  {isListening ? (
-                    <button
-                      onClick={stopListening}
-                      className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
-                    >
-                      <svg
-                        className="w-8 h-8"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill="white"
-                          d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
-                        />
-                      </svg>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={startListening}
-                      className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
-                    >
-                      <svg
-                        viewBox="0 0 256 256"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-8 h-8 text-white"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
-            </div>
-          ) : (
-            <div className=" w-full h-lvh flex flex-col justify-center items-center">
-              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-                <div className=" w-full flex flex-col justify-center items-center mb-14">
-                  <div className=" w-full flex flex-col justify-center items-center">
-                    <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
-                    <h1 className=" font-semibold text-3xl py-3">
-                      Time now: {timeNow}
+            ) : technicalStatus === "completed" ? (
+              <div>
+                <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
+                  <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">
+                    You have Successfully Completed Your Interview
+                  </h1>
+                  <div className="  text-gray-400 py-8 flex flex-col items-center justify-center w-full mt-5 rounded-lg">
+                    <h1 className=" text-2xl font-semibold text-center">
+                      Test Score
                     </h1>
+                    <h2 className=" text-base text-gray-500 text-center">
+                      {" "}
+                      {numberOfAnswers}/{numberOfAnswers} Questions
+                    </h2>
+                    <CirculerProgress
+                      marks={totalScore}
+                      catorgory="Test score"
+                      titleSize="text-3xl"
+                      subTitleSize="text-sm"
+                    />
+                    <p className=" text-gray-300 text-center">
+                      {parseInt(totalScore || 0).toFixed(2)}% Accurate with
+                      expected answers
+                    </p>
+                    <p className=" text-sm text-gray-500 text-center">
+                      Showing Test Score for {numberOfAnswers} out of{" "}
+                      {numberOfAnswers} question
+                    </p>
+                  </div>
+                  <div className="flex items-center w-full">
+                    {isListening ? (
+                      <button
+                        onClick={stopListening}
+                        className="mt-5 m-auto flex items-center justify-center bg-red-400 hover:bg-red-500 rounded-full aspect-square h-14 focus:outline-none"
+                      >
+                        <svg
+                          className="w-8 h-8"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill="white"
+                            d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+                          />
+                        </svg>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={startListening}
+                        className="mt-2 m-auto flex items-center justify-center bg-blue-400 hover:bg-blue-500 rounded-full aspect-square h-14 focus:outline-none"
+                      >
+                        <svg
+                          viewBox="0 0 256 256"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-8 h-8 text-white"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M128 176a48.05 48.05 0 0 0 48-48V64a48 48 0 0 0-96 0v64a48.05 48.05 0 0 0 48 48ZM96 64a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0Zm40 143.6V232a8 8 0 0 1-16 0v-24.4A80.11 80.11 0 0 1 48 128a8 8 0 0 1 16 0a64 64 0 0 0 128 0a8 8 0 0 1 16 0a80.11 80.11 0 0 1-72 79.6Z"
+                          />
+                        </svg>
+                      </button>
+                    )}
                   </div>
                 </div>
-                <div className=" w-full flex flex-col justify-center items-center mb-16">
-                  <PuffLoader color="#ffffff" />
-                </div>
-                <div className=" w-full flex flex-col justify-center] items-center">
-                  <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-                    Waiting for the company to start the interview session.
-                    Please hold on until the session begins.
-                  </p>
-                  <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-                    Generating interview questions. Please hold on...
-                  </p>
+              </div>
+            ) : (
+              <div className=" w-full h-lvh flex flex-col justify-center items-center">
+                <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+                  <div className=" w-full flex flex-col justify-center items-center mb-14">
+                    <div className=" w-full flex flex-col justify-center items-center">
+                      <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+                      <h1 className=" font-semibold text-3xl py-3">
+                        Time now: {timeNow}
+                      </h1>
+                    </div>
+                  </div>
+                  <div className=" w-full flex flex-col justify-center items-center mb-16">
+                    <PuffLoader color="#ffffff" />
+                  </div>
+                  <div className=" w-full flex flex-col justify-center] items-center">
+                    <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+                      Waiting for the company to start the interview session.
+                      Please hold on until the session begins.
+                    </p>
+                    <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+                      Generating interview questions. Please hold on...
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </>
+            )}
+          </div>
+          <div className=" w-[20%] max-w-[400px] px-3 h-lvh bg-black border-l-2 border-gray-700">
+            <VideoCall
+              sessionId={sessionId}
+              isCandidate={true}
+              senderId={userId}
+              role="CANDIDATE"
+            />
+          </div>
+        </div>
       ) : (
         <div className=" w-full h-lvh flex flex-col justify-center items-center">
           <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">

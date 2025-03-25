@@ -233,7 +233,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 </div>
               </ResizablePanel>
               <ResizableHandle />
-              <ResizablePanel defaultSize={40}>
+              <ResizablePanel defaultSize={40} className="bg-black px-3">
                 <VideoCall
                   sessionId={sessionId}
                   isCandidate={false}
