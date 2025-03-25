@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/pagination"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const UsersPage = () => {
+const UsersSearchPage = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -181,4 +181,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default UsersSearchPage;

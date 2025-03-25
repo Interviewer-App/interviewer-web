@@ -145,3 +145,15 @@ export const generatePdfPage = async (data) => {
     throw error;
   }
 };
+
+
+
+export const deleteUser = async (userId) => {
+  try {
+      const response = await axiosInstance.delete(`/users/${userId}`)
+      return response;
+  } catch (error) {
+      console.log(error);
+      throw error;  
+  }
+}
