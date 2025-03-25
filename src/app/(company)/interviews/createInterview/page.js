@@ -599,6 +599,8 @@ const CreateInterview = () => {
           title: "Interview Created Successfully!",
           description: "The interview has been successfully created.",
         })
+
+        router.push("/interviews");
       }
     } catch (err) {
 
