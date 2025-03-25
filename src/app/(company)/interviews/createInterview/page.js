@@ -809,7 +809,14 @@ const CreateInterview = () => {
                         </FormItem>
                       </CardContent>
                       <CardFooter className="flex justify-end">
-                        <Button type="submit" onClick={() => setActiveTab("categories")}  >Continue to Categories</Button>
+                        <Button
+                          type="submit"
+                          onClick={() => setActiveTab("categories")}
+                          disabled={!jobTitle || !jobDescription || skills.length === 0}
+                          className={!jobTitle || !jobDescription || skills.length === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                        >
+                          Continue to Categories
+                        </Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
@@ -1075,6 +1082,16 @@ const CreateInterview = () => {
                         <Button
                           type="submit"
                           onClick={() => setActiveTab("schedules")}
+                          disabled={
+                            technicalPercentage <= 0 ||
+                            categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0) !== 100
+                          }
+                          className={
+                            technicalPercentage <= 0 ||
+                              categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0) !== 100
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }
                         >
                           Continue to Schedules
                         </Button>
@@ -1411,6 +1428,8 @@ const CreateInterview = () => {
                         <Button
                           onClick={handleSubmit}
                           type="submit"
+                          disabled={schedules.length === 0}
+                          className={schedules.length === 0 ? "opacity-50 cursor-not-allowed" : ""}
 
                         >
                           Create Interview
