@@ -169,14 +169,9 @@ const CreateInterview = () => {
 
   const handleTechnicalPercentageChange = (value) => {
     setTechnicalPercentage(value);
-    setCategories(categoryList.map(cat =>
-      cat.id === 'technical'
-        ? { ...cat, percentage: value }
-        : cat
-    ));
     setCategoryList((prev) =>
       prev.map((cat) =>
-        cat.key === "technical" ? { ...cat, percentage: value } : cat
+        cat.key === technicalCategoryId ? { ...cat, percentage: value } : cat
       )
     );
   };
@@ -592,7 +587,7 @@ const CreateInterview = () => {
 
       // Call the API to create the interview
       const response = await createInterview(interviewData);
-      console.log('interview sucessfully create response:',response)
+      console.log('interview sucessfully create response:', response)
 
       if (response) {
         toast({
@@ -634,10 +629,10 @@ const CreateInterview = () => {
         if (response) {
           setInterviewCategories(response.data.categories);
           setFilteredCategories(response.data.categories);
-          console.log('fectbhinbg categories::::;',response.data.categories)
+          console.log('fectbhinbg categories::::;', response.data.categories)
           // Find the "Technical Skills" category and store its ID
           const technicalCategory = response.data.categories.find(
-            (cat) => cat.categoryName== "Technical"
+            (cat) => cat.categoryName == "Technical"
           );
           if (technicalCategory) {
             setTechnicalCategoryId(technicalCategory.categoryId); // New state for technical category ID
@@ -856,7 +851,11 @@ const CreateInterview = () => {
                                   max={100}
                                   placeholder="e.g. 30"
                                   value={technicalPercentage}
-                                  onChange={(e) => handleTechnicalPercentageChange(parseInt(e.target.value))}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const numValue = value === '' ? 0 : parseInt(value, 10);
+                                    handleTechnicalPercentageChange(numValue);
+                                  }}
                                   className="w-full"
                                 />
                                 <Percent className="h-4 w-4 text-muted-foreground" />
