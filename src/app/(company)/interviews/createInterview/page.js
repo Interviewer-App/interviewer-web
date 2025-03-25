@@ -656,13 +656,20 @@ const CreateInterview = () => {
   }, []);
 
 
+  // useEffect(() => {
+  //   const filter = interviewCategories.filter((category) =>
+  //     categoryList.every((item) => item.key !== category.categoryId)
+  //   );
+  //   setFilteredCategories(filter);
+  // }, []);
+
   useEffect(() => {
-    const filter = interviewCategories.filter((category) =>
+    // Filter out categories that are already in categoryList
+    const updatedFilteredCategories = interviewCategories.filter((category) =>
       categoryList.every((item) => item.key !== category.categoryId)
     );
-    setFilteredCategories(filter);
-  }, []);
-
+    setFilteredCategories(updatedFilteredCategories);
+  }, [categoryList, interviewCategories]); // Depend on categoryList and interviewCategories
 
   return (
     <>
@@ -1445,10 +1452,6 @@ const CreateInterview = () => {
                       </CardFooter>
                     </Card>
                   </TabsContent>
-
-
-
-
                 </form>
               </Form>
 
