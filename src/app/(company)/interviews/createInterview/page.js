@@ -639,7 +639,6 @@ const CreateInterview = () => {
           );
           if (technicalCategory) {
             setTechnicalCategoryId(technicalCategory.categoryId); // New state for technical category ID
-            console.log('sdfsdfs',technicalCategoryId)
           }
         }
       } catch (error) {
