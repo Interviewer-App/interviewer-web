@@ -526,9 +526,9 @@ const CreateInterview = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add debugging logs
-    console.log("Skills array:", skills);
-    console.log("Is skills an array?", Array.isArray(skills));
-    console.log("Skills length:", skills.length);
+    // console.log("Skills array:", skills);
+    // console.log("Is skills an array?", Array.isArray(skills));
+    // console.log("Skills length:", skills.length);
     if (skills.length > 0) {
       console.log("First skill object:", skills[0]);
     }
@@ -592,13 +592,16 @@ const CreateInterview = () => {
 
       // Call the API to create the interview
       const response = await createInterview(interviewData);
+      console.log('interview sucessfully create response:',response)
 
       if (response) {
-        toast.success("Interview created successfully!");
-        // Optionally redirect, e.g., navigate('/company');
+        toast({
+          title: "Interview Created Successfully!",
+          description: "The interview has been successfully created.",
+        })
       }
     } catch (err) {
-      // Error handling
+
       if (err.response) {
         const { data } = err.response;
         toast({
