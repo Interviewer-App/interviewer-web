@@ -11,8 +11,9 @@ const AuthCallback = () => {
   const redirectUrl = searchParams.get("redirect");
   useEffect(() => {
     if (status === "authenticated") {
+      debugger
       localStorage.setItem('accessToken', session.user.accessToken);
-      if(!session.user.isSurveyCompleted){
+      if(!session.user.isSurveyCompleted && session.user.role != 'ADMIN'){
         const surveyUrl = `/survey-form?redirect=${encodeURIComponent(redirectUrl)}`;
         router.push(surveyUrl);
       }else{
