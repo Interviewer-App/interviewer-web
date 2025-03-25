@@ -244,12 +244,12 @@ const CreateInterview = () => {
     setNewCategoryColor(COLORS[Math.floor(Math.random() * COLORS.length)]);
   };
 
-  const removeCategory = (id) => {
-    if (id === 'technical') {
-      toast.error("Technical Skills category is mandatory");
+  const removeCategory = (key) => {
+    if (key === technicalCategoryId) {
+      toast.error("Technical Skills category is mandatory and cannot be removed");
       return;
     }
-    setCategories(categories.filter(cat => cat.id !== id));
+    setCategoryList(categoryList.filter(cat => cat.key !== key));
   };
 
   const generateTimeSlots = () => {
@@ -1032,6 +1032,13 @@ const CreateInterview = () => {
                                     </div>
                                     <div className="flex items-center gap-3">
                                       <Badge variant="outline">{catagory.percentage}%</Badge>
+                                      {/* Delete Button */}
+                                      <button
+                                        onClick={() => removeCategory(catagory.key)}
+                                        className="text-red-800 hover:text-red-500 transition"
+                                      >
+                                        <Trash2 size={16} />
+                                      </button>
                                     </div>
                                   </div>
                                 ))}
