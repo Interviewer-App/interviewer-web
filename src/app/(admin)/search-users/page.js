@@ -17,6 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FilterForm } from "@/components/FilterForm";
 
 const UsersSearchPage = () => {
   const [payments, setPayments] = useState([]);
@@ -54,6 +55,23 @@ const UsersSearchPage = () => {
     }
   };
 
+  const [filters, setFilters] = useState({
+    email: "",
+    role: "",
+    createdFrom: undefined,
+    createdTo: undefined,
+  });
+
+  const handleFilterChange = (newFilters) => {
+    debugger
+    // Convert ALL_ROLES to empty string for the role filter
+    const processedFilters = {
+      ...newFilters,
+      role: newFilters.role === "ALL_ROLES" ? "" : newFilters.role,
+    };
+    setFilters(processedFilters);
+  };
+
   return (
     <>
       <SidebarInset>
@@ -68,85 +86,87 @@ const UsersSearchPage = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Users</BreadcrumbPage>
+                  <BreadcrumbPage>Filter Users</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
 
+
         <div className="px-9 py-4 w-full max-w-[1500px] mx-auto h-full text-white">
-        <h1 className="text-3xl font-semibold">Users</h1>
-        <div className=" bg-[#1b1d22] w-full h-fit  p-6 rounded-lg mt-7">
-          <div>
-          <div className="mb-3">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                All Users
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="w-4 h-4  rounded-full border flex items-center justify-center text-xs">?</span>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
-                      View the interviews you&apos;ve attended, along with your performance and scores.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-              </h2>
-            </div>
-        
+          {/* <h1 className="text-3xl font-semibold">Filter Users</h1> */}
+          <div className=" bg-[#1b1d22] w-full h-fit  p-6 rounded-lg mt-7">
             <div>
-              {loading ? (
-                <div>Loading interviews...</div>
-              ) : (
-                <DataTable columns={columns} data={payments} />
-              )}
+            
+              {/* <div className="mb-3">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                Filter Users
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="w-4 h-4  rounded-full border flex items-center justify-center text-xs">?</span>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                        View the interviews you&apos;ve attended, along with your performance and scores.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                </h2>
+              </div> */}
+              <FilterForm onFilterChange={handleFilterChange} />
+              <div>
+                {loading ? (
+                  <div>Loading interviews...</div>
+                ) : (
+                  <DataTable columns={columns} data={payments} />
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Pagination Section */}
-          <div className="mt-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={handlePreviousPage}
-                    disabled={page <= 1}
-                  />
-                </PaginationItem>
-
-                {/* Page Numbers */}
-                {[...Array(Math.ceil(totalUsers / limit)).keys()].map((pageNumber) => (
-                  <PaginationItem key={pageNumber + 1}>
-                    <PaginationLink
-                      onClick={() => setPage(pageNumber + 1)}
-                      className={
-                        page === pageNumber + 1
-                          ? "bg-[#000000] text-white" // Highlight current page
-                          : "text-gray-700 hover:bg-gray-100" // Default style
-                      }
-                    >
-                      {pageNumber + 1}
-                    </PaginationLink>
+            {/* Pagination Section */}
+            <div className="mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={handlePreviousPage}
+                      disabled={page <= 1}
+                    />
                   </PaginationItem>
-                ))}
 
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
+                  {/* Page Numbers */}
+                  {[...Array(Math.ceil(totalUsers / limit)).keys()].map((pageNumber) => (
+                    <PaginationItem key={pageNumber + 1}>
+                      <PaginationLink
+                        onClick={() => setPage(pageNumber + 1)}
+                        className={
+                          page === pageNumber + 1
+                            ? "bg-[#000000] text-white" // Highlight current page
+                            : "text-gray-700 hover:bg-gray-100" // Default style
+                        }
+                      >
+                        {pageNumber + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
 
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={handleNextPage}
-                    disabled={page * limit >= totalUsers}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={handleNextPage}
+                      disabled={page * limit >= totalUsers}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
           </div>
         </div>
-      </div>
 
         {/* <div className="px-20">
           {loading ? (
