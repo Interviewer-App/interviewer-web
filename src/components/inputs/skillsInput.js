@@ -37,14 +37,14 @@ const SkillsInput = ({ skills, onChange }) => {
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2 mb-2">
         {skills.map((skill, index) => (
-          <Badge key={index} variant="secondary" className="px-2 py-1 text-sm">
-            {skill}
+          <Badge key={index} variant="secondary" className="px-3 py-1 font-normal !text-[#3b82f6] !bg-blue-500/30 border !border-blue-500/20">
+            <span>{skill}</span>
             <button
               type="button"
               onClick={() => removeSkill(index)}
-              className="ml-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              className="ml-1.5 text-muted-foreground hover:text-foreground transition-colors "
             >
-              <X className="h-3 w-3" />
+              <X className="h-3 w-3 text-[#3b82f6]" />
               <span className="sr-only">Remove {skill}</span>
             </button>
           </Badge>
@@ -62,6 +62,7 @@ const SkillsInput = ({ skills, onChange }) => {
           type="button"
           size="icon"
           variant="outline"
+          className=" !bg-white !text-black"
           onClick={addSkill}
           disabled={!inputValue.trim()}
         >
