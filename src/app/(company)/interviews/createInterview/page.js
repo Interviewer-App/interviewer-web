@@ -70,7 +70,7 @@ const formSchema = z.object({
 
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/hooks/use-toast";
-import { generateInterviewJobDescription } from "@/lib/api/ai";
+import { generateInterviewJobDescription, generateInterviewSchedules } from "@/lib/api/ai";
 import { getSession } from "next-auth/react";
 import { createCategory, getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
 import {
@@ -618,6 +618,174 @@ const CreateInterview = () => {
     }
   };
 
+
+  const handleScheduleGenerate = async (e) => {
+    setIsLoading(true);
+    e.preventDefault();
+  
+    try {
+      // Validate inputs
+      if (!date?.from || !date?.to || !slotStartTime || !slotEndTime) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Please select a date range and time range.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+        setIsLoading(false);
+        return;
+      }
+  
+      // Get duration from selectedDuration or fallback to duration state
+      const durationValue = DURATION_PRESETS.find(d => d.id === selectedDuration)?.value || parseInt(duration, 10);
+      if (!durationValue || durationValue <= 0) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Please select a valid interview duration.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+        setIsLoading(false);
+        return;
+      }
+  
+      // Format startDate and endDate
+      const startDate = new Date(date.from);
+      const [startHours, startMinutes] = slotStartTime.split(':').map(Number);
+      startDate.setHours(startHours, startMinutes, 0, 0);
+  
+      const endDate = new Date(date.to);
+      const [endHours, endMinutes] = slotEndTime.split(':').map(Number);
+      endDate.setHours(endHours, endMinutes, 0, 0);
+  
+      if (isAfter(startDate, endDate)) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Start date/time must be before end date/time.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+        setIsLoading(false);
+        return;
+      }
+  
+      // Prepare the API payload
+      const data = {
+        duration: durationValue,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        dailySessions: [
+          {
+            startTime: slotStartTime,
+            endTime: slotEndTime,
+            intervalMinutes: parseInt(intervalMinutes, 10),
+          },
+        ],
+        nonWorkingDates: [],
+      };
+  
+      // Call the API
+      const response = await generateInterviewSchedules(data);
+      console.log('Generated schedules:', response.data.schedules);
+  
+      if (response && response.data && Array.isArray(response.data.schedules)) {
+        // Map the API response to the format expected by generatedSlots
+        const newSlots = response.data.schedules
+          .map((slot, index) => {
+            // Validate that date, startTime, and endTime exist and are strings
+            if (
+              !slot.date ||
+              !slot.startTime ||
+              !slot.endTime ||
+              typeof slot.date !== 'string' ||
+              typeof slot.startTime !== 'string' ||
+              typeof slot.endTime !== 'string'
+            ) {
+              console.warn(`Invalid schedule at index ${index}:`, slot);
+              return null;
+            }
+      
+            // Parse the date string (e.g., "2025-04-10") into a Date object
+            const slotDate = new Date(slot.date);
+            if (isNaN(slotDate.getTime())) {
+              console.warn(`Invalid date in schedule at index ${index}:`, slot.date);
+              return null;
+            }
+      
+            // Parse the time strings (HH:mm)
+            const [startHours, startMinutes] = slot.startTime.split(':').map(Number);
+            const [endHours, endMinutes] = slot.endTime.split(':').map(Number);
+      
+            // Create Date objects by combining the date with the start and end times
+            const slotStart = new Date(slot.date);
+            slotStart.setHours(startHours, startMinutes, 0, 0);
+      
+            const slotEnd = new Date(slot.date);
+            slotEnd.setHours(endHours, endMinutes, 0, 0);
+      
+            // Check if the dates are valid
+            if (isNaN(slotStart.getTime()) || isNaN(slotEnd.getTime())) {
+              console.warn(`Invalid date in schedule at index ${index}:`, {
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+              });
+              return null;
+            }
+      
+            return {
+              date: slotStart, // Date object for the start time
+              startTime: slot.startTime, // e.g., "08:00"
+              endTime: slot.endTime, // e.g., "10:00"
+            };
+          })
+          .filter(slot => slot !== null); // Remove invalid slots
+      
+        // Update the generatedSlots state
+        setGeneratedSlots(newSlots);
+      
+        if (newSlots.length === 0) {
+          toast({
+            variant: "destructive",
+            title: "No Valid Time Slots",
+            description: "The server returned schedules, but none could be parsed into valid time slots.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            title: "Success!",
+            description: `${newSlots.length} time slots generated successfully.`,
+          });
+        }
+      }else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "No schedules returned from the server.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      if (err.response) {
+        const { data } = err.response;
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `Schedule generation failed: ${data?.message || "An unexpected error occurred."}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -1266,7 +1434,7 @@ const CreateInterview = () => {
 
                               <Button
                                 type="button"
-                                onClick={generateTimeSlots}
+                                onClick={handleScheduleGenerate}
                                 className="w-full mt-2"
                               >
                                 <WandSparkles className="h-4 w-4 mr-2" />
@@ -1297,7 +1465,7 @@ const CreateInterview = () => {
                               <div className="max-h-[280px] overflow-y-auto space-y-2 pr-2">
                                 {generatedSlots.length === 0 ? (
                                   <div className="text-center py-8 text-muted-foreground text-sm">
-                                    <p>No time slots generated yet</p>
+                                    <p>No time slots generated yet</p>  
                                     <p className="mt-2">Use the controls to generate slots</p>
                                   </div>
                                 ) : (
@@ -1340,13 +1508,39 @@ const CreateInterview = () => {
                             <div>
                               {/* <FormLabel>Date</FormLabel> */}
                               <div className="relative">
-                                <Input
-                                  placeholder="Select date"
-                                  value={dateRange}
-                                  onChange={(e) => setDateRange(e.target.value)}
-                                  className="pl-9"
-                                />
-                                <CalendarIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      className={cn(
+                                        "w-full justify-start !bg-[#0a0a0a] h-[40px] text-left font-normal pl-9",
+                                        !dateRange && "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon className="h-4 w-4 mr-2" />
+                                      {dateRange ? (
+                                        format(new Date(dateRange), "PPP") // e.g., "Mar 26, 2025"
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                      mode="single"
+                                      selected={dateRange ? new Date(dateRange) : undefined}
+                                      onSelect={(selectedDate) => {
+                                        if (selectedDate) {
+                                          setDateRange(format(selectedDate, "yyyy-MM-dd"));
+                                        } else {
+                                          setDateRange(""); // Clear the date if the user deselects
+                                        }
+                                      }}
+                                      initialFocus
+                                      disabled={(date) => date < new Date().setHours(0, 0, 0, 0)} // Disable past dates
+                                    />
+                                  </PopoverContent>
+                                </Popover>
                               </div>
                             </div>
                             <div>
