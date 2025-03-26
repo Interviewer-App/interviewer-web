@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -9,23 +9,48 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
-import { format, addMinutes, parse, isBefore, isAfter, addDays } from "date-fns";
+import {
+  format,
+  addMinutes,
+  parse,
+  isBefore,
+  isAfter,
+  addDays,
+} from "date-fns";
 // import { Sidebar } from '@/components/layout/Sidebar';
 // import { Header } from '@/components/layout/Header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -44,8 +69,8 @@ import {
   SaveAll,
   LoaderCircle,
   AlertCircle,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 // import RichTextEditor from '@/components/editors/RichTextEditor';
 // import AIDescriptionGenerator from '@/components/generators/AIDescriptionGenerator';
 // import SkillsInput from '@/components/inputs/SkillsInput';
@@ -54,8 +79,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 import SkillsInput from "@/components/inputs/skillsInput";
 import dynamic from "next/dynamic";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
@@ -67,12 +92,17 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
 });
 
-
-import { ToastAction } from "@/components/ui/toast"
+import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
-import { generateInterviewJobDescription, generateInterviewSchedules } from "@/lib/api/ai";
+import {
+  generateInterviewJobDescription,
+  generateInterviewSchedules,
+} from "@/lib/api/ai";
 import { getSession } from "next-auth/react";
-import { createCategory, getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
+import {
+  createCategory,
+  getInterviewCategoryCompanyById,
+} from "@/lib/api/interview-category";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -84,48 +114,88 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { createInterview } from "@/lib/api/interview";
 import { useRouter } from "next/navigation";
-const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6', '#0EA5E9', '#8B5CF6'];
-
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { AlertDialogFooter } from "@/components/ui/alert-dialog";
+const COLORS = [
+  "#8B5CF6",
+  "#3B82F6",
+  "#10B981",
+  "#F59E0B",
+  "#EF4444",
+  "#EC4899",
+  "#6366F1",
+  "#14B8A6",
+  "#0EA5E9",
+  "#8B5CF6",
+];
 
 const DURATION_PRESETS = [
-  { id: 'short', label: 'Short', value: 30, description: '30 min interview' },
-  { id: 'standard', label: 'Standard', value: 60, description: '1 hour interview' },
-  { id: 'extended', label: 'Extended', value: 90, description: '1.5 hour interview' },
-  { id: 'comprehensive', label: 'Comprehensive', value: 120, description: '2 hour interview' },
+  { id: "short", label: "Short", value: 30, description: "30 min interview" },
+  {
+    id: "standard",
+    label: "Standard",
+    value: 60,
+    description: "1 hour interview",
+  },
+  {
+    id: "extended",
+    label: "Extended",
+    value: 90,
+    description: "1.5 hour interview",
+  },
+  {
+    id: "comprehensive",
+    label: "Comprehensive",
+    value: 120,
+    description: "2 hour interview",
+  },
 ];
 
 const INTERVAL_PRESETS = [
-  { value: 30, label: '30 min' },
-  { value: 60, label: '1 hour' },
-  { value: 120, label: '2 hours' },
-  { value: 240, label: '4 hours' },
+  { value: 30, label: "30 min" },
+  { value: 60, label: "1 hour" },
+  { value: 120, label: "2 hours" },
+  { value: 240, label: "4 hours" },
 ];
-
 
 const CreateInterview = () => {
   const [activeTab, setActiveTab] = useState("details");
   const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState({ name: '', percentage: 0 });
+  const [newCategory, setNewCategory] = useState({ name: "", percentage: 0 });
   const [schedules, setSchedules] = useState([]);
-  const [dateRange, setDateRange] = useState('');
-  const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
-  const [duration, setDuration] = useState('60');
+  const [dateRange, setDateRange] = useState("");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("17:00");
+  const [duration, setDuration] = useState("60");
   const [skills, setSkills] = useState([]);
-  const [selectedPredefinedCategory, setSelectedPredefinedCategory] = useState('');
-  const [predefinedCategoryPercentage, setPredefinedCategoryPercentage] = useState(20);
+  const [selectedPredefinedCategory, setSelectedPredefinedCategory] =
+    useState("");
+  const [predefinedCategoryPercentage, setPredefinedCategoryPercentage] =
+    useState(20);
   const [technicalPercentage, setTechnicalPercentage] = useState(30);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [newCategoryColor, setNewCategoryColor] = useState(COLORS[1]);
   const [interviewCategory, setInterviewCategory] = React.useState("Technical");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [slotStartTime, setSlotStartTime] = useState('09:00');
-  const [slotEndTime, setSlotEndTime] = useState('17:00');
-  const [selectedDuration, setSelectedDuration] = useState(DURATION_PRESETS[1].id);
+  const [slotStartTime, setSlotStartTime] = useState("09:00");
+  const [slotEndTime, setSlotEndTime] = useState("17:00");
+  const [selectedDuration, setSelectedDuration] = useState(
+    DURATION_PRESETS[1].id
+  );
   const [intervalMinutes, setIntervalMinutes] = useState(60);
   const [generatedSlots, setGeneratedSlots] = useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [descriptionPrompt, setDescriptionPrompt] = React.useState("");
   const [jobDescription, setJobDescription] = React.useState("");
   const [genJobDescription, setGenJobDescription] = React.useState();
@@ -140,7 +210,11 @@ const CreateInterview = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [inputPercentage, setInputPercentage] = React.useState("");
   const [date, setDate] = React.useState("");
-  const router = useRouter()
+  const router = useRouter();
+  const [interviewMedium, setInterviewMedium] = useState("virtual");
+  const [hasDevice, setHasDevice] = useState("with");
+  const [intervieweeType, setIntervieweeType] = useState("employee");
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
 
   useEffect(() => {
     if (technicalCategoryId && categoryList.length === 0) {
@@ -153,7 +227,6 @@ const CreateInterview = () => {
       ]);
     }
   }, [technicalCategoryId, technicalPercentage]);
-
 
   // useEffect(() => {
   //   if (categories.length === 0) {
@@ -176,13 +249,12 @@ const CreateInterview = () => {
     );
   };
 
-
   // const findPredefinedCategory = (name) => {
   //   return PREDEFINED_CATEGORIES.find(cat => cat.name === name);
   // };
 
   const resetPredefinedCategorySelection = () => {
-    setSelectedPredefinedCategory('');
+    setSelectedPredefinedCategory("");
     setPredefinedCategoryPercentage(20);
     setSelectedColor(COLORS[Math.floor(Math.random() * COLORS.length)]);
   };
@@ -193,12 +265,15 @@ const CreateInterview = () => {
     const categoryToAdd = findPredefinedCategory(selectedPredefinedCategory);
     if (!categoryToAdd) return;
 
-    if (categories.some(cat => cat.name === categoryToAdd.name)) {
+    if (categories.some((cat) => cat.name === categoryToAdd.name)) {
       toast.error(`${categoryToAdd.name} already added`);
       return;
     }
 
-    const totalPercentage = categories.reduce((sum, cat) => sum + cat.percentage, 0);
+    const totalPercentage = categories.reduce(
+      (sum, cat) => sum + cat.percentage,
+      0
+    );
     if (totalPercentage + predefinedCategoryPercentage > 100) {
       toast.error("Total percentage cannot exceed 100%");
       return;
@@ -208,7 +283,7 @@ const CreateInterview = () => {
       id: Date.now().toString(),
       name: categoryToAdd.name,
       percentage: predefinedCategoryPercentage,
-      color: selectedColor
+      color: selectedColor,
     };
 
     setCategories([...categories, newCategoryObj]);
@@ -221,7 +296,10 @@ const CreateInterview = () => {
       return;
     }
 
-    const totalPercentage = categories.reduce((sum, cat) => sum + cat.percentage, 0);
+    const totalPercentage = categories.reduce(
+      (sum, cat) => sum + cat.percentage,
+      0
+    );
     if (totalPercentage + newCategory.percentage > 100) {
       toast.error("Total percentage cannot exceed 100%");
       return;
@@ -231,20 +309,22 @@ const CreateInterview = () => {
       id: Date.now().toString(),
       name: newCategory.name,
       percentage: newCategory.percentage,
-      color: newCategoryColor
+      color: newCategoryColor,
     };
 
     setCategories([...categories, newCategoryObj]);
-    setNewCategory({ name: '', percentage: 0 });
+    setNewCategory({ name: "", percentage: 0 });
     setNewCategoryColor(COLORS[Math.floor(Math.random() * COLORS.length)]);
   };
 
   const removeCategory = (key) => {
     if (key === technicalCategoryId) {
-      toast.error("Technical Skills category is mandatory and cannot be removed");
+      toast.error(
+        "Technical Skills category is mandatory and cannot be removed"
+      );
       return;
     }
-    setCategoryList(categoryList.filter(cat => cat.key !== key));
+    setCategoryList(categoryList.filter((cat) => cat.key !== key));
   };
 
   const generateTimeSlots = () => {
@@ -253,14 +333,23 @@ const CreateInterview = () => {
       return;
     }
 
-    const durationValue = DURATION_PRESETS.find(d => d.id === selectedDuration)?.value || 60;
+    const durationValue =
+      DURATION_PRESETS.find((d) => d.id === selectedDuration)?.value || 60;
     setDuration(durationValue.toString());
 
     const startDate = new Date(selectedDate);
-    startDate.setHours(parseInt(slotStartTime.split(':')[0]), parseInt(slotStartTime.split(':')[1]), 0);
+    startDate.setHours(
+      parseInt(slotStartTime.split(":")[0]),
+      parseInt(slotStartTime.split(":")[1]),
+      0
+    );
 
     const endDate = new Date(selectedDate);
-    endDate.setHours(parseInt(slotEndTime.split(':')[0]), parseInt(slotEndTime.split(':')[1]), 0);
+    endDate.setHours(
+      parseInt(slotEndTime.split(":")[0]),
+      parseInt(slotEndTime.split(":")[1]),
+      0
+    );
 
     if (isAfter(startDate, endDate)) {
       toast.error("Start time must be before end time");
@@ -271,7 +360,10 @@ const CreateInterview = () => {
     let currentSlotStart = new Date(startDate);
 
     while (isBefore(currentSlotStart, endDate)) {
-      const currentSlotEnd = addMinutes(new Date(currentSlotStart), durationValue);
+      const currentSlotEnd = addMinutes(
+        new Date(currentSlotStart),
+        durationValue
+      );
 
       if (isAfter(currentSlotEnd, endDate)) {
         break;
@@ -279,8 +371,8 @@ const CreateInterview = () => {
 
       slots.push({
         date: new Date(currentSlotStart),
-        startTime: format(currentSlotStart, 'HH:mm'),
-        endTime: format(currentSlotEnd, 'HH:mm')
+        startTime: format(currentSlotStart, "HH:mm"),
+        endTime: format(currentSlotEnd, "HH:mm"),
       });
 
       currentSlotStart = addMinutes(currentSlotStart, intervalMinutes);
@@ -289,22 +381,22 @@ const CreateInterview = () => {
     setGeneratedSlots(slots);
 
     if (slots.length > 0) {
-      setDateRange(format(selectedDate, 'yyyy-MM-dd'));
+      setDateRange(format(selectedDate, "yyyy-MM-dd"));
     }
   };
 
   const addGeneratedSlot = (slot) => {
     const newSchedule = {
       id: Date.now().toString(),
-      date: format(slot.date, 'yyyy-MM-dd'),
+      date: format(slot.date, "yyyy-MM-dd"),
       startTime: slot.startTime,
-      endTime: slot.endTime
+      endTime: slot.endTime,
     };
 
     setSchedules([...schedules, newSchedule]);
     toast({
       description: "Time slot added to schedule",
-    })
+    });
   };
 
   const addSchedule = () => {
@@ -324,17 +416,19 @@ const CreateInterview = () => {
   };
 
   const removeSchedule = (id) => {
-    setSchedules(schedules.filter(sch => sch.id !== id));
+    setSchedules(schedules.filter((sch) => sch.id !== id));
   };
 
   const calculateEndTime = (start, durationMinutes) => {
-    const [hours, minutes] = start.split(':').map(Number);
+    const [hours, minutes] = start.split(":").map(Number);
     let totalMinutes = hours * 60 + minutes + durationMinutes;
 
     const newHours = Math.floor(totalMinutes / 60) % 24;
     const newMinutes = totalMinutes % 60;
 
-    return `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
+    return `${newHours.toString().padStart(2, "0")}:${newMinutes
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const addAllGeneratedSlots = () => {
@@ -343,11 +437,11 @@ const CreateInterview = () => {
       return;
     }
 
-    const newSchedules = generatedSlots.map(slot => ({
+    const newSchedules = generatedSlots.map((slot) => ({
       id: Date.now() + Math.random().toString(),
-      date: format(slot.date, 'yyyy-MM-dd'),
+      date: format(slot.date, "yyyy-MM-dd"),
       startTime: slot.startTime,
-      endTime: slot.endTime
+      endTime: slot.endTime,
     }));
 
     setSchedules([...schedules, ...newSchedules]);
@@ -369,7 +463,7 @@ const CreateInterview = () => {
   };
 
   const generateDescription = async (e) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     e.preventDefault();
     try {
       const data = {
@@ -380,10 +474,10 @@ const CreateInterview = () => {
       if (response) {
         setGenJobDescription(response.data.description);
         setJobDescription(response.data.description);
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     } catch (err) {
-      setIsLoading(false);
+      // setIsLoading(false);
       if (err.response) {
         const { data } = err.response;
 
@@ -411,9 +505,11 @@ const CreateInterview = () => {
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
+    } finally {
+      setIsPromptModalOpen(false);
+      // setIsLoading(false);
     }
   };
-
 
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
@@ -424,7 +520,7 @@ const CreateInterview = () => {
         companyId: companyId,
         categoryName: interviewCatName,
         description: interviewCatDesc,
-        color: newCategoryColor
+        color: newCategoryColor,
       });
 
       if (response) {
@@ -485,7 +581,8 @@ const CreateInterview = () => {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "Please provide both the category name and percentage to add to the list.",
+        description:
+          "Please provide both the category name and percentage to add to the list.",
       });
       return;
     }
@@ -504,13 +601,15 @@ const CreateInterview = () => {
         ...prev,
         {
           key: inputCatagory.trim(),
-          catagory: interviewCategories.find(
-            (cat) => cat.categoryId === inputCatagory.trim()
-          )?.categoryName || "Unknown Category",
+          catagory:
+            interviewCategories.find(
+              (cat) => cat.categoryId === inputCatagory.trim()
+            )?.categoryName || "Unknown Category",
           percentage: newPercentage, // Store as a number, not a string
-          color: interviewCategories.find(
-            (cat) => cat.categoryId === inputCatagory.trim()
-          )?.color || COLORS[prev.length % COLORS.length], // Default color if not found
+          color:
+            interviewCategories.find(
+              (cat) => cat.categoryId === inputCatagory.trim()
+            )?.color || COLORS[prev.length % COLORS.length], // Default color if not found
         },
       ]);
       setInputPercentage("");
@@ -545,8 +644,12 @@ const CreateInterview = () => {
       const companyId = session?.user?.companyID;
 
       // Calculate startDate and endDate from schedules
-      const allStartTimes = schedules.map((sch) => new Date(`${sch.date}T${sch.startTime}:00`));
-      const allEndTimes = schedules.map((sch) => new Date(`${sch.date}T${sch.endTime}:00`));
+      const allStartTimes = schedules.map(
+        (sch) => new Date(`${sch.date}T${sch.startTime}:00`)
+      );
+      const allEndTimes = schedules.map(
+        (sch) => new Date(`${sch.date}T${sch.endTime}:00`)
+      );
       const startDate = new Date(Math.min(...allStartTimes));
       const endDate = new Date(Math.max(...allEndTimes));
 
@@ -568,12 +671,20 @@ const CreateInterview = () => {
           .filter((schedule) => !schedule.isBooked) // Exclude booked schedules, if applicable
           .map((schedule) => {
             const startDateObj = new Date(schedule.date);
-            const [startHours, startMinutes] = schedule.startTime.split(":").map(Number);
-            const localStart = new Date(startDateObj.setHours(startHours, startMinutes, 0, 0));
+            const [startHours, startMinutes] = schedule.startTime
+              .split(":")
+              .map(Number);
+            const localStart = new Date(
+              startDateObj.setHours(startHours, startMinutes, 0, 0)
+            );
 
             const endDateObj = new Date(schedule.date);
-            const [endHours, endMinutes] = schedule.endTime.split(":").map(Number);
-            const localEnd = new Date(endDateObj.setHours(endHours, endMinutes, 0, 0));
+            const [endHours, endMinutes] = schedule.endTime
+              .split(":")
+              .map(Number);
+            const localEnd = new Date(
+              endDateObj.setHours(endHours, endMinutes, 0, 0)
+            );
 
             return {
               startTime: localStart.toISOString(),
@@ -587,42 +698,43 @@ const CreateInterview = () => {
 
       // Call the API to create the interview
       const response = await createInterview(interviewData);
-      console.log('interview sucessfully create response:', response)
+      console.log("interview sucessfully create response:", response);
 
       if (response) {
         toast({
           title: "Interview Created Successfully!",
           description: "The interview has been successfully created.",
-        })
+        });
 
         router.push("/interviews");
       }
     } catch (err) {
-
       if (err.response) {
         const { data } = err.response;
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: `Interview creation failed: ${data?.message || "An unexpected error occurred."}`,
+          description: `Interview creation failed: ${
+            data?.message || "An unexpected error occurred."
+          }`,
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       } else {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "An unexpected error occurred. Please check your network and try again.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
     }
   };
 
-
   const handleScheduleGenerate = async (e) => {
     setIsLoading(true);
     e.preventDefault();
-  
+
     try {
       // Validate inputs
       if (!date?.from || !date?.to || !slotStartTime || !slotEndTime) {
@@ -635,9 +747,11 @@ const CreateInterview = () => {
         setIsLoading(false);
         return;
       }
-  
+
       // Get duration from selectedDuration or fallback to duration state
-      const durationValue = DURATION_PRESETS.find(d => d.id === selectedDuration)?.value || parseInt(duration, 10);
+      const durationValue =
+        DURATION_PRESETS.find((d) => d.id === selectedDuration)?.value ||
+        parseInt(duration, 10);
       if (!durationValue || durationValue <= 0) {
         toast({
           variant: "destructive",
@@ -648,16 +762,16 @@ const CreateInterview = () => {
         setIsLoading(false);
         return;
       }
-  
+
       // Format startDate and endDate
       const startDate = new Date(date.from);
-      const [startHours, startMinutes] = slotStartTime.split(':').map(Number);
+      const [startHours, startMinutes] = slotStartTime.split(":").map(Number);
       startDate.setHours(startHours, startMinutes, 0, 0);
-  
+
       const endDate = new Date(date.to);
-      const [endHours, endMinutes] = slotEndTime.split(':').map(Number);
+      const [endHours, endMinutes] = slotEndTime.split(":").map(Number);
       endDate.setHours(endHours, endMinutes, 0, 0);
-  
+
       if (isAfter(startDate, endDate)) {
         toast({
           variant: "destructive",
@@ -668,7 +782,7 @@ const CreateInterview = () => {
         setIsLoading(false);
         return;
       }
-  
+
       // Prepare the API payload
       const data = {
         duration: durationValue,
@@ -683,11 +797,11 @@ const CreateInterview = () => {
         ],
         nonWorkingDates: [],
       };
-  
+
       // Call the API
       const response = await generateInterviewSchedules(data);
-      console.log('Generated schedules:', response.data.schedules);
-  
+      console.log("Generated schedules:", response.data.schedules);
+
       if (response && response.data && Array.isArray(response.data.schedules)) {
         // Map the API response to the format expected by generatedSlots
         const newSlots = response.data.schedules
@@ -697,32 +811,37 @@ const CreateInterview = () => {
               !slot.date ||
               !slot.startTime ||
               !slot.endTime ||
-              typeof slot.date !== 'string' ||
-              typeof slot.startTime !== 'string' ||
-              typeof slot.endTime !== 'string'
+              typeof slot.date !== "string" ||
+              typeof slot.startTime !== "string" ||
+              typeof slot.endTime !== "string"
             ) {
               console.warn(`Invalid schedule at index ${index}:`, slot);
               return null;
             }
-      
+
             // Parse the date string (e.g., "2025-04-10") into a Date object
             const slotDate = new Date(slot.date);
             if (isNaN(slotDate.getTime())) {
-              console.warn(`Invalid date in schedule at index ${index}:`, slot.date);
+              console.warn(
+                `Invalid date in schedule at index ${index}:`,
+                slot.date
+              );
               return null;
             }
-      
+
             // Parse the time strings (HH:mm)
-            const [startHours, startMinutes] = slot.startTime.split(':').map(Number);
-            const [endHours, endMinutes] = slot.endTime.split(':').map(Number);
-      
+            const [startHours, startMinutes] = slot.startTime
+              .split(":")
+              .map(Number);
+            const [endHours, endMinutes] = slot.endTime.split(":").map(Number);
+
             // Create Date objects by combining the date with the start and end times
             const slotStart = new Date(slot.date);
             slotStart.setHours(startHours, startMinutes, 0, 0);
-      
+
             const slotEnd = new Date(slot.date);
             slotEnd.setHours(endHours, endMinutes, 0, 0);
-      
+
             // Check if the dates are valid
             if (isNaN(slotStart.getTime()) || isNaN(slotEnd.getTime())) {
               console.warn(`Invalid date in schedule at index ${index}:`, {
@@ -731,23 +850,24 @@ const CreateInterview = () => {
               });
               return null;
             }
-      
+
             return {
               date: slotStart, // Date object for the start time
               startTime: slot.startTime, // e.g., "08:00"
               endTime: slot.endTime, // e.g., "10:00"
             };
           })
-          .filter(slot => slot !== null); // Remove invalid slots
-      
+          .filter((slot) => slot !== null); // Remove invalid slots
+
         // Update the generatedSlots state
         setGeneratedSlots(newSlots);
-      
+
         if (newSlots.length === 0) {
           toast({
             variant: "destructive",
             title: "No Valid Time Slots",
-            description: "The server returned schedules, but none could be parsed into valid time slots.",
+            description:
+              "The server returned schedules, but none could be parsed into valid time slots.",
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         } else {
@@ -756,7 +876,7 @@ const CreateInterview = () => {
             description: `${newSlots.length} time slots generated successfully.`,
           });
         }
-      }else {
+      } else {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
@@ -771,14 +891,17 @@ const CreateInterview = () => {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: `Schedule generation failed: ${data?.message || "An unexpected error occurred."}`,
+          description: `Schedule generation failed: ${
+            data?.message || "An unexpected error occurred."
+          }`,
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       } else {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "An unexpected error occurred. Please check your network and try again.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
@@ -797,7 +920,7 @@ const CreateInterview = () => {
         if (response) {
           setInterviewCategories(response.data.categories);
           setFilteredCategories(response.data.categories);
-          console.log('fectbhinbg categories::::;', response.data.categories)
+          console.log("fectbhinbg categories::::;", response.data.categories);
           // Find the "Technical Skills" category and store its ID
           const technicalCategory = response.data.categories.find(
             (cat) => cat.categoryName == "Technical"
@@ -817,7 +940,6 @@ const CreateInterview = () => {
     };
     fetchInterviewCategories();
   }, []);
-
 
   // useEffect(() => {
   //   const filter = interviewCategories.filter((category) =>
@@ -858,35 +980,44 @@ const CreateInterview = () => {
 
         <div>
           <main className="container mx-auto py-8 px-4 max-w-5xl">
-            <div className="flex items-center mb-6 ">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => { router.back() }}
-                className="mr-2"
-              >
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                Back
-              </Button>
-              <h1 className="text-2xl font-bold">Create New Interview</h1>
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold tracking-tight">
+                Create Interview
+              </h1>
+              <p className="text-muted-foreground">
+                Set up a new interview session for a candidate
+              </p>
             </div>
 
-
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="space-y-6"
+            >
               <TabsList className="grid grid-cols-3 w-full">
-                <TabsTrigger value="details" className="data-[state=active]:bg-primary/20">
+                <TabsTrigger
+                  value="details"
+                  className="data-[state=active]:bg-primary/20"
+                >
                   <div className="flex items-center gap-2">
                     <FileCheck className="h-4 w-4" />
                     <span>Interview Details</span>
                   </div>
                 </TabsTrigger>
-                <TabsTrigger value="categories" className="data-[state=active]:bg-primary/20">
+                <TabsTrigger
+                  value="categories"
+                  className="data-[state=active]:bg-primary/20"
+                >
                   <div className="flex items-center gap-2">
                     <Plus className="h-4 w-4" />
                     <span>Categories</span>
                   </div>
                 </TabsTrigger>
-                <TabsTrigger value="schedules" disabled={categories.length === 0} className="data-[state=active]:bg-primary/20">
+                <TabsTrigger
+                  value="schedules"
+                  disabled={categories.length === 0}
+                  className="data-[state=active]:bg-primary/20"
+                >
                   <div className="flex items-center gap-2">
                     <CalendarCheck className="h-4 w-4" />
                     <span>Schedules</span>
@@ -894,38 +1025,460 @@ const CreateInterview = () => {
                 </TabsTrigger>
               </TabsList>
 
-
-              <Form {...form}>
+              <Form {...form} className="!p-0">
                 <form className="space-y-6">
                   <TabsContent value="details" className="space-y-6">
-                    <Card className='!bg-[#1b1d23]'>
-                      <CardHeader>
+                    <Card className=" !bg-transparent border-0">
+                      {/* <CardHeader>
                         <CardTitle>Interview Details</CardTitle>
                         <CardDescription>
                           Enter the basic details for this interview
                         </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-6">
-                        <FormField
+                      </CardHeader> */}
+                      <CardContent className="space-y-6 !p-0">
+                        <div className="space-y-4">
+                          <h2 className="text-xl font-semibold">
+                            Interview Medium
+                          </h2>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Card
+                              className={`cursor-pointer transition-all ${
+                                interviewMedium === "virtual"
+                                  ? "border !border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  : "hover:!border-[#3b82f6]/50"
+                              }`}
+                              onClick={() => setInterviewMedium("virtual")}
+                            >
+                              <CardContent className="p-6 flex items-center gap-4">
+                                <div className="rounded-full bg-blue-500/20 p-3">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="text-blue-500"
+                                  >
+                                    <path d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14v-4z" />
+                                    <rect
+                                      x="3"
+                                      y="6"
+                                      width="12"
+                                      height="12"
+                                      rx="2"
+                                      ry="2"
+                                    />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <h3 className="font-medium">
+                                    Virtual Interview
+                                  </h3>
+                                  <p className="text-sm text-muted-foreground">
+                                    Conduct the interview online via video call
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            <Card
+                              className={`cursor-pointer transition-all ${
+                                interviewMedium === "physical"
+                                  ? "border !border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  : "hover:!border-[#3b82f6]/50"
+                              }`}
+                              onClick={() => setInterviewMedium("physical")}
+                            >
+                              <CardContent className="p-6 flex items-center gap-4">
+                                <div className="rounded-full bg-blue-500/20 p-3">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="text-blue-500"
+                                  >
+                                    <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                                    <line x1="6" y1="1" x2="6" y2="4" />
+                                    <line x1="10" y1="1" x2="10" y2="4" />
+                                    <line x1="14" y1="1" x2="14" y2="4" />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <h3 className="font-medium">
+                                    Physical Interview
+                                  </h3>
+                                  <p className="text-sm text-muted-foreground">
+                                    Conduct the interview in person
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+
+                        {interviewMedium === "physical" && (
+                          <div className="space-y-3 ml-4 pl-4 border-l border-muted">
+                            <h3 className="text-lg font-medium">
+                              Device Availability
+                            </h3>
+                            <RadioGroup
+                              value={hasDevice}
+                              onValueChange={(value) => setHasDevice(value)}
+                              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            >
+                              <div>
+                                <RadioGroupItem
+                                  value="with"
+                                  id="with-device"
+                                  className="peer sr-only"
+                                />
+                                <Label
+                                  htmlFor="with-device"
+                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:bg-accent/5 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:bg-blue-500/5 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="rounded-full bg-blue-500/10 p-2">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-blue-500"
+                                      >
+                                        <rect
+                                          x="4"
+                                          y="4"
+                                          width="16"
+                                          height="16"
+                                          rx="2"
+                                          ry="2"
+                                        />
+                                        <rect
+                                          x="9"
+                                          y="9"
+                                          width="6"
+                                          height="6"
+                                        />
+                                        <line x1="9" y1="2" x2="9" y2="4" />
+                                        <line x1="15" y1="2" x2="15" y2="4" />
+                                        <line x1="9" y1="20" x2="9" y2="22" />
+                                        <line x1="15" y1="20" x2="15" y2="22" />
+                                        <line x1="20" y1="9" x2="22" y2="9" />
+                                        <line x1="20" y1="14" x2="22" y2="14" />
+                                        <line x1="2" y1="9" x2="4" y2="9" />
+                                        <line x1="2" y1="14" x2="4" y2="14" />
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">
+                                        With Device
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        Candidate has a device to join the
+                                        interview
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Label>
+                              </div>
+                              <div>
+                                <RadioGroupItem
+                                  value="without"
+                                  id="without-device"
+                                  className="peer sr-only"
+                                />
+                                <Label
+                                  htmlFor="without-device"
+                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:bg-accent/5 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:bg-blue-500/5 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="rounded-full bg-blue-500/10 p-2">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-blue-500"
+                                      >
+                                        <line x1="2" y1="2" x2="22" y2="22" />
+                                        <rect
+                                          x="4"
+                                          y="4"
+                                          width="16"
+                                          height="16"
+                                          rx="2"
+                                          ry="2"
+                                        />
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">
+                                        Without Device
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        Candidate does not have a device
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Label>
+                              </div>
+                            </RadioGroup>
+                          </div>
+                        )}
+
+                        <div className="space-y-4">
+                          <h2 className="text-xl font-semibold">
+                            Interviewee Type
+                          </h2>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Card
+                              className={`cursor-pointer transition-all ${
+                                intervieweeType === "employee"
+                                  ? "border border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  : "hover:!border-[#3b82f6]/50"
+                              }`}
+                              onClick={() => setIntervieweeType("employee")}
+                            >
+                              <CardContent className="p-6 flex items-center gap-4">
+                                <div className="rounded-full bg-blue-500/20 p-3">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="text-blue-500"
+                                  >
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <h3 className="font-medium">Employee</h3>
+                                  <p className="text-sm text-muted-foreground">
+                                    Interviewing for an employee position
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            <Card
+                              className={`cursor-pointer transition-all ${
+                                intervieweeType === "investor"
+                                  ? "border border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  : "hover:!border-[#3b82f6]/50"
+                              }`}
+                              onClick={() => setIntervieweeType("investor")}
+                            >
+                              <CardContent className="p-6 flex items-center gap-4">
+                                <div className="rounded-full bg-blue-500/20 p-3">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="text-blue-500"
+                                  >
+                                    <line x1="12" y1="1" x2="12" y2="23" />
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <h3 className="font-medium">Investor</h3>
+                                  <p className="text-sm text-muted-foreground">
+                                    Interviewing a potential investor
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+
+                        <Card className="space-y-6 !bg-transparent p-6 rounded-lg">
+                          <h2 className="text-xl font-semibold">
+                            {intervieweeType === "employee"
+                              ? "Employee Details"
+                              : "Investor Details"}
+                          </h2>
+
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor="job-title">Job Title</Label>
+                                <Input
+                                  id="job-title"
+                                  placeholder="e.g. Senior Developer"
+                                />
+                                {/* <FormField
+                                  control={form.control}
+                                  name="title"
+                                  render={({ field }) => (
+                                     <FormItem>
+                                      <FormLabel>Job Title</FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="e.g. Senior Frontend Developer"
+                                          {...field}
+                                          type="text"
+                                          name="title"
+                                          value={jobTitle}
+                                          onChange={(e) =>
+                                            setJobTitle(e.target.value)
+                                          }
+                                          required
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                /> */}
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor="related-field">
+                                  Related Field
+                                </Label>
+                                <Select>
+                                  <SelectTrigger id="related-field">
+                                    <SelectValue placeholder="Select field" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="technology">
+                                      Technology
+                                    </SelectItem>
+                                    <SelectItem value="finance">
+                                      Finance
+                                    </SelectItem>
+                                    <SelectItem value="healthcare">
+                                      Healthcare
+                                    </SelectItem>
+                                    <SelectItem value="education">
+                                      Education
+                                    </SelectItem>
+                                    <SelectItem value="marketing">
+                                      Marketing
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <Label htmlFor="description">Description</Label>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setIsPromptModalOpen(true)}
+                                  className="flex items-center gap-1 !text-blue-500 !border-blue-500/50 hover:!bg-blue-500/10"
+                                >
+                                  <Sparkles className="h-4 w-4" />
+                                  <span>Generate with AI</span>
+                                </Button>
+                              </div>
+                              <FormControl>
+                                <QuillEditor
+                                  editorId={"jobDescription"}
+                                  placeholder="Job Description here..."
+                                  onChange={handleOnChange}
+                                  value={jobDescription}
+                                />
+                              </FormControl>
+                              {/* <Textarea
+                                id="description"
+                                placeholder="Describe the job role and responsibilities"
+                                className="min-h-[120px]"
+                              /> */}
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="proficiency">
+                                Proficiency Level
+                              </Label>
+                              <Select>
+                                <SelectTrigger id="proficiency">
+                                  <SelectValue placeholder="Select level" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="beginner">
+                                    Beginner
+                                  </SelectItem>
+                                  <SelectItem value="intermediate">
+                                    Intermediate
+                                  </SelectItem>
+                                  <SelectItem value="advanced">
+                                    Advanced
+                                  </SelectItem>
+                                  <SelectItem value="expert">Expert</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                              <FormItem>
+                                <Label htmlFor="skills">Skills</Label>
+                                <SkillsInput
+                                  skills={skills}
+                                  onChange={setSkills}
+                                />
+                              </FormItem>
+                            </div>
+                          </div>
+                        </Card>
+
+                        {/* <FormField
                           control={form.control}
                           name="title"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Job Title</FormLabel>
                               <FormControl>
-                                <Input placeholder="e.g. Senior Frontend Developer" {...field} type="text"
+                                <Input
+                                  placeholder="e.g. Senior Frontend Developer"
+                                  {...field}
+                                  type="text"
                                   name="title"
                                   value={jobTitle}
                                   onChange={(e) => setJobTitle(e.target.value)}
-                                  required />
+                                  required
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
-                        />
+                        /> */}
 
-
-                        <FormField
+                        {/* <FormField
                           control={form.control}
                           name="description"
                           render={({ field }) => (
@@ -941,7 +1494,6 @@ const CreateInterview = () => {
                                     type="text"
                                     placeholder="What are the primary objectives for this position?"
                                     name="prompt"
-
                                     onChange={(e) => {
                                       setDescriptionPrompt(e.target.value);
                                     }}
@@ -966,25 +1518,31 @@ const CreateInterview = () => {
                                   placeholder="Job Description here..."
                                   onChange={handleOnChange}
                                   value={jobDescription} //change this line to store the jobdescription when user go step forward and come back
-
                                 />
-                              </FormControl>
+                              </FormControl> 
                               <FormMessage />
                             </FormItem>
                           )}
-                        />
+                        /> */}
 
-                        <FormItem>
+                        {/* <FormItem>
                           <FormLabel>Required Skills</FormLabel>
                           <SkillsInput skills={skills} onChange={setSkills} />
-                        </FormItem>
+                        </FormItem> */}
                       </CardContent>
-                      <CardFooter className="flex justify-end">
+                      
+                      <CardFooter className="flex justify-end mt-6 !p-0">
                         <Button
                           type="submit"
                           onClick={() => setActiveTab("categories")}
-                          disabled={!jobTitle || !jobDescription || skills.length === 0}
-                          className={!jobTitle || !jobDescription || skills.length === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                          disabled={
+                            !jobTitle || !jobDescription || skills.length === 0
+                          }
+                          className={
+                            !jobTitle || !jobDescription || skills.length === 0
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }
                         >
                           Continue to Categories
                         </Button>
@@ -993,21 +1551,27 @@ const CreateInterview = () => {
                   </TabsContent>
 
                   <TabsContent value="categories" className="space-y-6">
-                    <Card className='!bg-[#1b1d23]'>
+                    <Card className="!bg-[#1b1d23]">
                       <CardHeader>
                         <CardTitle>Interview Categories</CardTitle>
                         <CardDescription>
-                          Technical Skills category is mandatory. Add more categories to evaluate candidates on. Total percentage must equal 100%.
+                          Technical Skills category is mandatory. Add more
+                          categories to evaluate candidates on. Total percentage
+                          must equal 100%.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-6">
                         <div className="bg-[#26282d] border-l-4 border-primary p-4 rounded-md mb-6 shadow-sm">
                           <div className="flex justify-between items-center mb-2">
                             <h3 className="text-base font-medium flex items-center gap-2">
-                              <Badge variant="default" className="bg-primary text-primary-foreground">Mandatory</Badge>
+                              <Badge
+                                variant="default"
+                                className="bg-primary text-primary-foreground"
+                              >
+                                Mandatory
+                              </Badge>
                               <span>Technical Skills</span>
                             </h3>
-
                           </div>
                           <div className="flex items-center gap-4">
                             <div className="w-full">
@@ -1021,7 +1585,8 @@ const CreateInterview = () => {
                                   value={technicalPercentage}
                                   onChange={(e) => {
                                     const value = e.target.value;
-                                    const numValue = value === '' ? 0 : parseInt(value, 10);
+                                    const numValue =
+                                      value === "" ? 0 : parseInt(value, 10);
                                     handleTechnicalPercentageChange(numValue);
                                   }}
                                   className="w-full"
@@ -1034,11 +1599,15 @@ const CreateInterview = () => {
 
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                           <div className="space-y-4">
-                            <h3 className="text-sm font-medium">Add Predefined Category</h3>
+                            <h3 className="text-sm font-medium">
+                              Add Predefined Category
+                            </h3>
                             <div className="space-y-4">
                               <div className="flex w-full justify-center md:flex-col flex-col  md:space-y-4 space-y-4 items-center">
                                 <div className="w-full">
-                                  <label className="text-sm font-medium text-white">Category</label>
+                                  <label className="text-sm font-medium text-white">
+                                    Category
+                                  </label>
                                   <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                       <Button
@@ -1046,7 +1615,8 @@ const CreateInterview = () => {
                                         variant="outline"
                                       >
                                         {interviewCategories.find(
-                                          (cat) => cat.categoryId === inputCatagory
+                                          (cat) =>
+                                            cat.categoryId === inputCatagory
                                         )?.categoryName || "Select Category"}
                                       </Button>
                                     </DropdownMenuTrigger>
@@ -1072,10 +1642,14 @@ const CreateInterview = () => {
                                   </DropdownMenu>
                                 </div>
                                 <div className="w-full">
-                                  <label className="text-sm font-medium text-white">Percentage</label>
+                                  <label className="text-sm font-medium text-white">
+                                    Percentage
+                                  </label>
                                   <input
                                     value={inputPercentage}
-                                    onChange={(e) => setInputPercentage(e.target.value)}
+                                    onChange={(e) =>
+                                      setInputPercentage(e.target.value)
+                                    }
                                     placeholder="Percentage"
                                     type="number"
                                     className="h-10 w-full rounded-lg text-sm border-0 bg-black placeholder-[#737883]  text-center"
@@ -1125,30 +1699,36 @@ const CreateInterview = () => {
                           </div>
 
                           <div className="space-y-4">
-                            <h3 className="text-sm font-medium">Add Custom Category</h3>
+                            <h3 className="text-sm font-medium">
+                              Add Custom Category
+                            </h3>
                             <div className="space-y-4">
                               <div>
-                                <label className="text-sm font-medium text-white">Category Name</label>
+                                <label className="text-sm font-medium text-white">
+                                  Category Name
+                                </label>
                                 <Input
                                   type="text"
-                                  onChange={(e) => setInterviewCatName(e.target.value)}
+                                  onChange={(e) =>
+                                    setInterviewCatName(e.target.value)
+                                  }
                                   value={interviewCatName}
-
                                   placeholder="e.g. Team Collaboration"
-
                                 />
                               </div>
                               <div>
-                                <label className="text-sm font-medium text-white">Category Description</label>
+                                <label className="text-sm font-medium text-white">
+                                  Category Description
+                                </label>
                                 <div className="flex items-center gap-2">
                                   <Input
                                     type="text"
                                     placeholder="Category Description..."
-                                    onChange={(e) => setInterviewCateDesc(e.target.value)} // Storing input value
+                                    onChange={(e) =>
+                                      setInterviewCateDesc(e.target.value)
+                                    } // Storing input value
                                     value={interviewCatDesc} // Binding input to state
-
                                   />
-
                                 </div>
                               </div>
 
@@ -1161,7 +1741,11 @@ const CreateInterview = () => {
                                   {COLORS.map((color, i) => (
                                     <div
                                       key={i}
-                                      className={`w-6 h-6 rounded-full cursor-pointer hover:scale-110 transition-transform ${color === newCategoryColor ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
+                                      className={`w-6 h-6 rounded-full cursor-pointer hover:scale-110 transition-transform ${
+                                        color === newCategoryColor
+                                          ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                                          : ""
+                                      }`}
                                       style={{ backgroundColor: color }}
                                       onClick={() => setNewCategoryColor(color)} // Update the selected color
                                     />
@@ -1173,7 +1757,9 @@ const CreateInterview = () => {
                                 type="button"
                                 onClick={handleCategorySubmit}
                                 className="w-full"
-                                disabled={!interviewCatName || !interviewCatDesc} // Disable button if input is empty
+                                disabled={
+                                  !interviewCatName || !interviewCatDesc
+                                } // Disable button if input is empty
                               >
                                 <Plus className="h-4 w-4 mr-1" />
                                 Add Custom Category
@@ -1184,9 +1770,13 @@ const CreateInterview = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                           <div className="space-y-3">
-                            <h3 className="text-sm font-medium">Your Categories</h3>
+                            <h3 className="text-sm font-medium">
+                              Your Categories
+                            </h3>
                             {categoryList.length === 0 ? (
-                              <p className="text-sm text-muted-foreground">No categories added yet</p>
+                              <p className="text-sm text-muted-foreground">
+                                No categories added yet
+                              </p>
                             ) : (
                               <div className="space-y-2">
                                 {categoryList.map((catagory) => (
@@ -1197,20 +1787,29 @@ const CreateInterview = () => {
                                     <div className="flex items-center gap-2">
                                       <div
                                         className="w-3 h-3 rounded-full"
-                                        style={{ backgroundColor: catagory.color }}
+                                        style={{
+                                          backgroundColor: catagory.color,
+                                        }}
                                       ></div>
                                       <span>{catagory.catagory}</span>
-                                      {catagory.id === 'technical' && (
-                                        <Badge variant="outline" className="bg-primary/10 text-primary ml-1">
+                                      {catagory.id === "technical" && (
+                                        <Badge
+                                          variant="outline"
+                                          className="bg-primary/10 text-primary ml-1"
+                                        >
                                           Mandatory
                                         </Badge>
                                       )}
                                     </div>
                                     <div className="flex items-center gap-3">
-                                      <Badge variant="outline">{catagory.percentage}%</Badge>
+                                      <Badge variant="outline">
+                                        {catagory.percentage}%
+                                      </Badge>
                                       {/* Delete Button */}
                                       <button
-                                        onClick={() => removeCategory(catagory.key)}
+                                        onClick={() =>
+                                          removeCategory(catagory.key)
+                                        }
                                         className="text-red-800 hover:text-red-500 transition"
                                       >
                                         <Trash2 size={16} />
@@ -1219,9 +1818,22 @@ const CreateInterview = () => {
                                   </div>
                                 ))}
                                 <div className="text-sm mt-2">
-                                  Total: {categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0)}%
-                                  {categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0) !== 100 && (
-                                    <span className="text-destructive"> (should be 100%)</span>
+                                  Total:{" "}
+                                  {categoryList.reduce(
+                                    (sum, cat) =>
+                                      sum + parseFloat(cat.percentage),
+                                    0
+                                  )}
+                                  %
+                                  {categoryList.reduce(
+                                    (sum, cat) =>
+                                      sum + parseFloat(cat.percentage),
+                                    0
+                                  ) !== 100 && (
+                                    <span className="text-destructive">
+                                      {" "}
+                                      (should be 100%)
+                                    </span>
                                   )}
                                 </div>
                               </div>
@@ -1240,10 +1852,18 @@ const CreateInterview = () => {
                                     cy="50%"
                                     outerRadius={80}
                                     innerRadius={40}
-                                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                    label={({ name, percent }) =>
+                                      `${name}: ${(percent * 100).toFixed(0)}%`
+                                    }
                                   >
                                     {categoryList.map((entry, index) => (
-                                      <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                                      <Cell
+                                        key={`cell-${index}`}
+                                        fill={
+                                          entry.color ||
+                                          COLORS[index % COLORS.length]
+                                        }
+                                      />
                                     ))}
                                   </Pie>
                                   <Legend />
@@ -1266,11 +1886,17 @@ const CreateInterview = () => {
                           onClick={() => setActiveTab("schedules")}
                           disabled={
                             technicalPercentage <= 0 ||
-                            categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0) !== 100
+                            categoryList.reduce(
+                              (sum, cat) => sum + parseFloat(cat.percentage),
+                              0
+                            ) !== 100
                           }
                           className={
                             technicalPercentage <= 0 ||
-                              categoryList.reduce((sum, cat) => sum + parseFloat(cat.percentage), 0) !== 100
+                            categoryList.reduce(
+                              (sum, cat) => sum + parseFloat(cat.percentage),
+                              0
+                            ) !== 100
                               ? "opacity-50 cursor-not-allowed"
                               : ""
                           }
@@ -1281,9 +1907,8 @@ const CreateInterview = () => {
                     </Card>
                   </TabsContent>
 
-
                   <TabsContent value="schedules" className="space-y-6">
-                    <Card className='!bg-[#1b1d23]'>
+                    <Card className="!bg-[#1b1d23]">
                       <CardHeader>
                         <CardTitle>Interview Schedules</CardTitle>
                         <CardDescription>
@@ -1298,7 +1923,9 @@ const CreateInterview = () => {
                               Generate Interview Schedules
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                              *If you&apos;re unsure about the appropriate time duration, we can assist you in selecting the most suitable one based on your needs.
+                              *If you&apos;re unsure about the appropriate time
+                              duration, we can assist you in selecting the most
+                              suitable one based on your needs.
                             </p>
                           </div>
 
@@ -1320,31 +1947,43 @@ const CreateInterview = () => {
                                         {date?.from ? (
                                           date.to ? (
                                             <>
-                                              {date.from.toLocaleDateString("en-GB", {
-                                                day: "numeric",
-                                                month: "long",
-                                                year: "numeric",
-                                              })}{" "}
+                                              {date.from.toLocaleDateString(
+                                                "en-GB",
+                                                {
+                                                  day: "numeric",
+                                                  month: "long",
+                                                  year: "numeric",
+                                                }
+                                              )}{" "}
                                               -{" "}
-                                              {date.to.toLocaleDateString("en-GB", {
-                                                day: "numeric",
-                                                month: "long",
-                                                year: "numeric",
-                                              })}
+                                              {date.to.toLocaleDateString(
+                                                "en-GB",
+                                                {
+                                                  day: "numeric",
+                                                  month: "long",
+                                                  year: "numeric",
+                                                }
+                                              )}
                                             </>
                                           ) : (
-                                            date.from.toLocaleDateString("en-GB", {
-                                              day: "numeric",
-                                              month: "long",
-                                              year: "numeric",
-                                            })
+                                            date.from.toLocaleDateString(
+                                              "en-GB",
+                                              {
+                                                day: "numeric",
+                                                month: "long",
+                                                year: "numeric",
+                                              }
+                                            )
                                           )
                                         ) : (
                                           <span>Pick Date Range</span>
                                         )}
                                       </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
+                                    <PopoverContent
+                                      className="w-auto p-0"
+                                      align="start"
+                                    >
                                       <Calendar
                                         mode="range"
                                         selected={date}
@@ -1367,7 +2006,9 @@ const CreateInterview = () => {
                                     <Input
                                       type="time"
                                       value={slotStartTime}
-                                      onChange={(e) => setSlotStartTime(e.target.value)}
+                                      onChange={(e) =>
+                                        setSlotStartTime(e.target.value)
+                                      }
                                       className="pl-9"
                                     />
                                     <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -1379,7 +2020,9 @@ const CreateInterview = () => {
                                     <Input
                                       type="time"
                                       value={slotEndTime}
-                                      onChange={(e) => setSlotEndTime(e.target.value)}
+                                      onChange={(e) =>
+                                        setSlotEndTime(e.target.value)
+                                      }
                                       className="pl-9"
                                     />
                                     <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -1394,16 +2037,28 @@ const CreateInterview = () => {
                                     <Button
                                       key={preset.id}
                                       type="button"
-                                      variant={selectedDuration === preset.id ? "default" : "outline"}
+                                      variant={
+                                        selectedDuration === preset.id
+                                          ? "default"
+                                          : "outline"
+                                      }
                                       className={cn(
                                         "justify-start text-left h-auto py-2",
-                                        selectedDuration === preset.id ? "border-primary" : ""
+                                        selectedDuration === preset.id
+                                          ? "border-primary"
+                                          : ""
                                       )}
-                                      onClick={() => setSelectedDuration(preset.id)}
+                                      onClick={() =>
+                                        setSelectedDuration(preset.id)
+                                      }
                                     >
                                       <div className="flex flex-col items-start">
-                                        <span className="font-medium">{preset.label}</span>
-                                        <span className="text-xs text-muted-foreground">{preset.description}</span>
+                                        <span className="font-medium">
+                                          {preset.label}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">
+                                          {preset.description}
+                                        </span>
                                       </div>
                                       {selectedDuration === preset.id && (
                                         <Check className="h-4 w-4 ml-auto" />
@@ -1417,14 +2072,19 @@ const CreateInterview = () => {
                                 <h6>Time Interval Between Slots</h6>
                                 <Select
                                   value={intervalMinutes.toString()}
-                                  onValueChange={(value) => setIntervalMinutes(parseInt(value))}
+                                  onValueChange={(value) =>
+                                    setIntervalMinutes(parseInt(value))
+                                  }
                                 >
                                   <SelectTrigger className="w-full mt-1">
                                     <SelectValue placeholder="Select interval" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {INTERVAL_PRESETS.map((interval) => (
-                                      <SelectItem key={interval.value} value={interval.value.toString()}>
+                                      <SelectItem
+                                        key={interval.value}
+                                        value={interval.value.toString()}
+                                      >
                                         {interval.label}
                                       </SelectItem>
                                     ))}
@@ -1465,8 +2125,10 @@ const CreateInterview = () => {
                               <div className="max-h-[280px] overflow-y-auto space-y-2 pr-2">
                                 {generatedSlots.length === 0 ? (
                                   <div className="text-center py-8 text-muted-foreground text-sm">
-                                    <p>No time slots generated yet</p>  
-                                    <p className="mt-2">Use the controls to generate slots</p>
+                                    <p>No time slots generated yet</p>
+                                    <p className="mt-2">
+                                      Use the controls to generate slots
+                                    </p>
                                   </div>
                                 ) : (
                                   generatedSlots.map((slot, index) => (
@@ -1476,7 +2138,9 @@ const CreateInterview = () => {
                                     >
                                       <div className="flex items-center">
                                         <div className="flex flex-col">
-                                          <span className="font-medium">{format(slot.date, 'MMM dd, yyyy')}</span>
+                                          <span className="font-medium">
+                                            {format(slot.date, "MMM dd, yyyy")}
+                                          </span>
                                           <span className="text-sm text-muted-foreground">
                                             {slot.startTime} - {slot.endTime}
                                           </span>
@@ -1525,19 +2189,30 @@ const CreateInterview = () => {
                                       )}
                                     </Button>
                                   </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0" align="start">
+                                  <PopoverContent
+                                    className="w-auto p-0"
+                                    align="start"
+                                  >
                                     <Calendar
                                       mode="single"
-                                      selected={dateRange ? new Date(dateRange) : undefined}
+                                      selected={
+                                        dateRange
+                                          ? new Date(dateRange)
+                                          : undefined
+                                      }
                                       onSelect={(selectedDate) => {
                                         if (selectedDate) {
-                                          setDateRange(format(selectedDate, "yyyy-MM-dd"));
+                                          setDateRange(
+                                            format(selectedDate, "yyyy-MM-dd")
+                                          );
                                         } else {
                                           setDateRange(""); // Clear the date if the user deselects
                                         }
                                       }}
                                       initialFocus
-                                      disabled={(date) => date < new Date().setHours(0, 0, 0, 0)} // Disable past dates
+                                      disabled={(date) =>
+                                        date < new Date().setHours(0, 0, 0, 0)
+                                      } // Disable past dates
                                     />
                                   </PopoverContent>
                                 </Popover>
@@ -1586,9 +2261,13 @@ const CreateInterview = () => {
                         </div>
 
                         <div className="space-y-3">
-                          <h3 className="text-sm font-medium">Your Schedules</h3>
+                          <h3 className="text-sm font-medium">
+                            Your Schedules
+                          </h3>
                           {schedules.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">No schedules added yet</p>
+                            <p className="text-sm text-muted-foreground">
+                              No schedules added yet
+                            </p>
                           ) : (
                             <div className="space-y-2">
                               {schedules.map((sch) => (
@@ -1637,8 +2316,11 @@ const CreateInterview = () => {
                           onClick={handleSubmit}
                           type="submit"
                           disabled={schedules.length === 0}
-                          className={schedules.length === 0 ? "opacity-50 cursor-not-allowed" : ""}
-
+                          className={
+                            schedules.length === 0
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }
                         >
                           Create Interview
                         </Button>
@@ -1647,15 +2329,51 @@ const CreateInterview = () => {
                   </TabsContent>
                 </form>
               </Form>
-
             </Tabs>
           </main>
         </div>
-
+        <Dialog open={isPromptModalOpen} onOpenChange={setIsPromptModalOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Generate Description with AI</DialogTitle>
+              <DialogDescription>
+                Enter a prompt to guide the AI in generating a description.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="ai-prompt">Prompt</Label>
+                <Textarea
+                  id="ai-prompt"
+                  placeholder="e.g. Write a detailed description for a senior developer role with 5+ years of experience in React and Node.js"
+                  value={descriptionPrompt}
+                  onChange={(e) => {
+                    setDescriptionPrompt(e.target.value);
+                  }}
+                  className="min-h-[120px]"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsPromptModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={generateDescription}
+                disabled={!descriptionPrompt.trim()}
+              >
+                Generate
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </SidebarInset>
-
     </>
-  )
-}
+  );
+};
 
-export default CreateInterview
+export default CreateInterview;
