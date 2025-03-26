@@ -636,6 +636,7 @@ export default function CreateInterviewModal({ setModalOpen }) {
   };
 
   const handleGenerateInterviewDuration = async (e) => {
+
     setDurationLoading(true);
     e.preventDefault();
     try {
@@ -654,8 +655,8 @@ export default function CreateInterviewModal({ setModalOpen }) {
         length: scheduleTiemDuration,
       };
       const response = await generateInterviewDuration(data);
-
       if (response) {
+
         setInterviewDuration(response.data.duration);
         setDurationLoading(false);
       }
