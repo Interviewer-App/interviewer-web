@@ -17,6 +17,9 @@ import { useState, useEffect } from "react";
 import { LayoutDashboard, Users, ArrowUpRight, ArrowDownRight, Filter, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import Loading from "@/app/loading";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 // Mock data for the dashboard
 const totalUsers = 560;
@@ -27,6 +30,8 @@ const isPositiveChange = true;
 export default function AdminDashboard() {
   const [assessmentProgress, setAssessmentProgress] = useState(0);
   const [interviewProgress, setInterviewProgress] = useState(0);
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
 
   // Simulate loading progress
   useEffect(() => {
@@ -38,6 +43,19 @@ export default function AdminDashboard() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  if (status === "loading") {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  } else {
+    if (session.user.role !== "CANDIDATE") {
+      const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
+      redirect(loginURL);
+    }
+  }
   return (
     <>
       <SidebarInset>

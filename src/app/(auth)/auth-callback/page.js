@@ -25,7 +25,7 @@ const AuthCallback = () => {
           } else if (userRole === 'CANDIDATE') {
             router.push('/my-interviews');
           } else if (userRole === 'ADMIN')  {
-            router.push('/users');
+            router.push('/dashboard');
           } else{
             router.push('/');
           }
