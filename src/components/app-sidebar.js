@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, MessageCircleQuestion , Warehouse, UserRound, CalendarFold, Swords, BookOpenText, Users, Filter } from "lucide-react";
+import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, MessageCircleQuestion , Warehouse, UserRound, CalendarFold, Swords, BookOpenText, Users, Filter, BellRing } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -19,6 +19,7 @@ import { NavUser } from "@/components/nav-user";
 import Link from "next/link";
 import { TeamSwitcher } from "./team-switcher";
 import { SiEclipsejetty } from "react-icons/si";
+import { Dashboard } from "@mui/icons-material";
 
 const commonItems = [
 
@@ -77,6 +78,11 @@ const candidateItems = [
 ];
 const adminItems = [
   {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Dashboard,
+  },
+  {
     title: "Users",
     url: "/users",
     icon: Users,
@@ -85,6 +91,11 @@ const adminItems = [
     title: "Filter Users",
     url: "/search-users",
     icon: Filter,
+  },
+  {
+    title: "Notification",
+    url: "/notifications",
+    icon: BellRing,
   },
 ];
 
