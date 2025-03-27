@@ -157,7 +157,7 @@ function InterviewSessionPreviewPage({ params }) {
       // });
       if(sessionDetails.interview.interviewMedium === 'PHYSICAL' && sessionDetails.interview.isWithDevice === false){
         router.push(
-          `/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
+          `/physical-interview/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
         );
       }else{
         router.push(
