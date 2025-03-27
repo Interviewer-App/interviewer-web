@@ -1015,7 +1015,6 @@ const CreateInterview = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="schedules"
-                  disabled={categories.length === 0}
                   className="data-[state=active]:bg-primary/20"
                 >
                   <div className="flex items-center gap-2">
