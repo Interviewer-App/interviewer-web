@@ -756,12 +756,11 @@ const UserProfile = () => {
           ref={pdfRef}
           className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative"
         >
-          <Card className="border-border !bg-[#1b1d23] overflow-hidden mb-6">
-            <div className="h-32 bg-gradient-to-r from-yellow-400/20 to-yellow-400/5"></div>
-            <div className="px-6 pb-6 relative">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
+          <Card className="border-border !bg-[#1b1d23]">
+            <div className="px-6 p-6 relative">
+              <div className="flex flex-col md:flex-row gap-4 items-start">
                 <div className=" w-fit relative">
-                  <Avatar className="h-24 w-24 border-4 border-black mt-[-3rem] bg-background">
+                  <Avatar className="h-24 w-24 border-4 border-black bg-background">
                     <AvatarFallback className="text-3xl">
                       {candidateDetails?.user?.firstName
                         ? candidateDetails?.user?.firstName.charAt(0)
@@ -815,7 +814,7 @@ const UserProfile = () => {
             </div>
           </Card>
 
-          <Tabs defaultValue="details" className="w-full">
+          <Tabs defaultValue="details" className="w-full my-4">
             <TabsList className="!bg-[#1b1d23] border border-border w-auto inline-flex mb-6">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
@@ -1227,7 +1226,7 @@ const UserProfile = () => {
                               <p className="text-sm font-medium">LinkedIn</p>
                               {isSocialMediaEdit ? (
                                 <Input
-                                  value={linkedinUrl}
+                                  value={linkedinUrl || ""}
                                   onChange={(e) =>
                                     setLinkedinUrl(e.target.value)
                                   }
@@ -1279,7 +1278,7 @@ const UserProfile = () => {
                               <p className="text-sm font-medium">Github</p>
                               {isSocialMediaEdit ? (
                                 <Input
-                                  value={githubUrl}
+                                  value={githubUrl || ""}
                                   onChange={(e) => setGithubUrl(e.target.value)}
                                   placeholder="your github profile url"
                                   className="!text-xs w-full outline-none focus:outline-none"
@@ -1329,7 +1328,7 @@ const UserProfile = () => {
                               <p className="text-sm font-medium">Facebook</p>
                               {isSocialMediaEdit ? (
                                 <Input
-                                  value={facebookUrl}
+                                  value={facebookUrl || ""}
                                   onChange={(e) =>
                                     setFacebookUrl(e.target.value)
                                   }
@@ -1381,7 +1380,7 @@ const UserProfile = () => {
                               <p className="text-sm font-medium">X</p>
                               {isSocialMediaEdit ? (
                                 <Input
-                                  value={twitterUrl}
+                                  value={twitterUrl || ""}
                                   onChange={(e) =>
                                     setTwitterUrl(e.target.value)
                                   }
@@ -1433,7 +1432,7 @@ const UserProfile = () => {
                               <p className="text-sm font-medium">Discord</p>
                               {isSocialMediaEdit ? (
                                 <Input
-                                  value={discordUrl}
+                                  value={discordUrl || ""}
                                   onChange={(e) =>
                                     setDiscordUrl(e.target.value)
                                   }
