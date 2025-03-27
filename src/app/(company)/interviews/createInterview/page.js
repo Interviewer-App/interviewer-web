@@ -216,9 +216,9 @@ const CreateInterview = () => {
   const [inputPercentage, setInputPercentage] = React.useState("");
   const [date, setDate] = React.useState("");
   const router = useRouter();
-  const [interviewMedium, setInterviewMedium] = useState("virtual");
-  const [hasDevice, setHasDevice] = useState("with");
-  const [intervieweeType, setIntervieweeType] = useState("employee");
+  const [interviewMedium, setInterviewMedium] = useState("VIRTUAL");
+  const [hasDevice, setHasDevice] = useState(true);
+  const [intervieweeType, setIntervieweeType] = useState("EMPLOYEE");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [technicalPercentage, setTechnicalPercentage] = useState(60);
   const [softSkillsPercentage, setSoftSkillsPercentage] = useState(40);
@@ -239,6 +239,8 @@ const CreateInterview = () => {
     name: "",
     description: "",
   });
+  const [proficiencyLevel, setProficiencyLevel] = useState(null);
+  const [relatedField, setRelatedField] = useState(null);
 
   const [isSubcategoryPromptOpen, setIsSubcategoryPromptOpen] = useState(false);
   const [subcategoryPrompt, setSubcategoryPrompt] = useState("");
@@ -762,6 +764,11 @@ const CreateInterview = () => {
           categoryId: cat.key,
           percentage: parseFloat(cat.percentage),
         })),
+        interviewMedium: interviewMedium,
+        isWithDevice: hasDevice,
+        industry: relatedField,
+        intervieweeType: intervieweeType,
+        proficiencyLevel: proficiencyLevel,
         schedules: schedules
           .filter((schedule) => !schedule.isBooked) // Exclude booked schedules, if applicable
           .map((schedule) => {
@@ -1155,11 +1162,11 @@ const CreateInterview = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Card
                               className={`cursor-pointer transition-all ${
-                                interviewMedium === "virtual"
+                                interviewMedium === "VIRTUAL"
                                   ? "border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
-                              onClick={() => setInterviewMedium("virtual")}
+                              onClick={() => setInterviewMedium("VIRTUAL")}
                             >
                               <CardContent className="p-6 flex items-center gap-4">
                                 <div className="rounded-full bg-blue-500/20 p-3">
@@ -1199,11 +1206,11 @@ const CreateInterview = () => {
 
                             <Card
                               className={`cursor-pointer transition-all ${
-                                interviewMedium === "physical"
+                                interviewMedium === "PHYSICAL"
                                   ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
-                              onClick={() => setInterviewMedium("physical")}
+                              onClick={() => setInterviewMedium("PHYSICAL")}
                             >
                               <CardContent className="p-6 flex items-center gap-4">
                                 <div className="rounded-full bg-blue-500/20 p-3">
@@ -1239,7 +1246,7 @@ const CreateInterview = () => {
                           </div>
                         </div>
 
-                        {interviewMedium === "physical" && (
+                        {interviewMedium === "PHYSICAL" && (
                           <div className="space-y-3 ml-4 pl-4 border-l border-muted">
                             <h3 className="text-lg font-medium">
                               Device Availability
@@ -1251,7 +1258,7 @@ const CreateInterview = () => {
                             >
                               <div>
                                 <RadioGroupItem
-                                  value="with"
+                                  value={true}
                                   id="with-device"
                                   className="peer sr-only"
                                 />
@@ -1311,7 +1318,7 @@ const CreateInterview = () => {
                               </div>
                               <div>
                                 <RadioGroupItem
-                                  value="without"
+                                  value={false}
                                   id="without-device"
                                   className="peer sr-only"
                                 />
@@ -1366,11 +1373,11 @@ const CreateInterview = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Card
                               className={`cursor-pointer transition-all ${
-                                intervieweeType === "employee"
+                                intervieweeType === "EMPLOYEE"
                                   ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
-                              onClick={() => setIntervieweeType("employee")}
+                              onClick={() => setIntervieweeType("EMPLOYEE")}
                             >
                               <CardContent className="p-6 flex items-center gap-4">
                                 <div className="rounded-full bg-blue-500/20 p-3">
@@ -1403,11 +1410,11 @@ const CreateInterview = () => {
 
                             <Card
                               className={`cursor-pointer transition-all ${
-                                intervieweeType === "investor"
+                                intervieweeType === "INVESTOR"
                                   ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
-                              onClick={() => setIntervieweeType("investor")}
+                              onClick={() => setIntervieweeType("INVESTOR")}
                             >
                               <CardContent className="p-6 flex items-center gap-4">
                                 <div className="rounded-full bg-blue-500/20 p-3">
@@ -1440,7 +1447,7 @@ const CreateInterview = () => {
 
                         <Card className="space-y-6 !bg-transparent p-6 rounded-lg">
                           <h2 className="text-xl font-semibold">
-                            {intervieweeType === "employee"
+                            {intervieweeType === "EMPLOYEE"
                               ? "Employee Details"
                               : "Investor Details"}
                           </h2>
@@ -1449,14 +1456,14 @@ const CreateInterview = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor="job-title">
-                                  {intervieweeType === "employee"
+                                  {intervieweeType === "EMPLOYEE"
                                     ? "Job Title"
                                     : "Title"}
                                 </Label>
                                 <Input
                                   id="job-title"
                                   placeholder={
-                                    intervieweeType === "employee"
+                                    intervieweeType === "EMPLOYEE"
                                       ? "e.g. Senior Developer"
                                       : "e.g. Angel Investor"
                                   }
@@ -1491,7 +1498,7 @@ const CreateInterview = () => {
                                 <Label htmlFor="related-field">
                                   Related Field
                                 </Label>
-                                <Select>
+                                <Select onValueChange={setRelatedField}>
                                   <SelectTrigger id="related-field">
                                     <SelectValue placeholder="Select field" />
                                   </SelectTrigger>
@@ -1550,21 +1557,21 @@ const CreateInterview = () => {
                               <Label htmlFor="proficiency">
                                 Proficiency Level
                               </Label>
-                              <Select>
+                              <Select onValueChange={setProficiencyLevel}>
                                 <SelectTrigger id="proficiency">
                                   <SelectValue placeholder="Select level" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="beginner">
+                                  <SelectItem value="BEGINNER">
                                     Beginner
                                   </SelectItem>
-                                  <SelectItem value="intermediate">
+                                  <SelectItem value="INTERMEDIATE">
                                     Intermediate
                                   </SelectItem>
-                                  <SelectItem value="advanced">
+                                  <SelectItem value="ADVANCED">
                                     Advanced
                                   </SelectItem>
-                                  <SelectItem value="expert">Expert</SelectItem>
+                                  {/* <SelectItem value="expert">Expert</SelectItem> */}
                                 </SelectContent>
                               </Select>
                             </div>
