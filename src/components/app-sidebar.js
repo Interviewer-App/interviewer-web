@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, MessageCircleQuestion , Warehouse, UserRound, CalendarFold, Swords, BookOpenText, Users, Filter, BellRing } from "lucide-react";
+import { Calendar, Home, Inbox, Activity, Atom, Timer, UserPlus, MonitorCheck, MessageCircleQuestion , Warehouse, UserRound, CalendarFold, Swords, BookOpenText, Users, Filter, BellRing, ListCheck } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation"; //use next/navigation insted of next/router(ref:stackoverflow)
 import {
@@ -63,7 +63,7 @@ const candidateItems = [
   {
     title: "Joined Interviews",
     url: "/joined-interviews",
-    icon: UserPlus,
+    icon: ListCheck,
   },
   {
     title: "user profile",
@@ -147,7 +147,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel></SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

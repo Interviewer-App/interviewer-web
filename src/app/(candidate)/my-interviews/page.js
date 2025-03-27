@@ -129,7 +129,7 @@ const MyInterviews = () => {
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
   const [expandedInterviewIds, setExpandedInterviewIds] = useState(new Set());
-  
+
   const requirements = [
     {
       icon: <UserCircle2 className="h-5 w-5" />,
@@ -610,115 +610,162 @@ const MyInterviews = () => {
                               {formatTime(interview.startTime)}
                             </p>
                           </div>
-                          {interview.interviewSession?.interviewStatus !==
-                            "completed" &&
-                            new Date(interview.startTime) > new Date() && (
-                              <>
-                                {interview.invitation?.status === "APPROVED" ||
-                                  interview.invitation === null ? (
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
+                          {interview.interviewSession?.interviewStatus !== "completed" && new Date(interview.startTime) > new Date() && (
+                            <>
+                              {interview.interview.interviewMedium === 'PHYSICAL' && interview.interview.isWithDevice === false ? (
+                                <>
+                                  {interview.invitation?.status === "APPROVED" || interview.invitation === null ? (
+                                    <Badge
+                                    variant="secondary"
+                                    className="bg-cyan-900 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400"
+                                  >
+                                    {interview.interview.interviewMedium} INTERVIEW
+                                  </Badge>
+                                  ) : (
+                                    <div className="flex justify-start gap-3 items-center">
                                       <Button
-                                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                        onClick={() =>
+                                          handleInterviewStatus(
+                                            interview.interview.interviewID,
+                                            "REJECTED"
+                                          )
+                                        }
+                                        variant="outline"
                                         size="sm"
+                                        className="text-destructive border-destructive/50"
                                       >
-                                        <VideoIcon className="h-4 w-4 mr-2" />
-                                        Join Interview
+                                        <XCircle className="h-4 w-4 mr-2" />
+                                        Reject
                                       </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle className="text-xl text-gray-100">
-                                          Ready to Join the Interview?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription className="text-gray-400">
-                                          Please ensure you meet all requirements
-                                          before joining the live interview session.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
+                                      <Button
+                                        onClick={() =>
+                                          handleInterviewStatus(
+                                            interview.interview.interviewID,
+                                            "APPROVED"
+                                          )
+                                        }
+                                        variant="outline"
+                                        size="sm"
+                                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                      >
+                                        <LuCircleCheck className="h-4 w-4 mr-2" />
+                                        Accept
+                                      </Button>
+                                    </div>
+                                  )}
 
-                                      <div className="space-y-4 my-4">
-                                        {requirements.map((req, index) => (
-                                          <div
-                                            key={index}
-                                            className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
-                                          >
-                                            <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
-                                              {req.icon}
-                                            </div>
-                                            <div className="flex-1">
-                                              <h4 className="text-sm font-medium text-gray-200">
-                                                {req.text}
-                                              </h4>
-                                              <p className="text-xs text-gray-400 mt-0.5">
-                                                {req.subtext}
-                                              </p>
-                                            </div>
-                                            <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                                          </div>
-                                        ))}
-                                      </div>
+                                </>
 
-                                      <AlertDialogFooter className="sm:space-x-2 justify-between">
-                                        <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
-                                          <X className="h-4 w-4 mr-2" />
-                                          Not Ready Yet
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() => {
-                                            joinInterviewSession(interview);
-                                          }}
-                                          className="bg-emerald-600 text-white hover:bg-emerald-500"
+                              ) : (
+                                <>
+                                  {interview.invitation?.status === "APPROVED" || interview.invitation === null ? (
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                          className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                          size="sm"
                                         >
-                                          <Check className="h-4 w-4 mr-2" />
+                                          <VideoIcon className="h-4 w-4 mr-2" />
                                           Join Interview
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle className="text-xl text-gray-100">
+                                            Ready to Join the Interview?
+                                          </AlertDialogTitle>
+                                          <AlertDialogDescription className="text-gray-400">
+                                            Please ensure you meet all requirements
+                                            before joining the live interview session.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
 
-                                      <div className="mt-4 text-center">
-                                        <p className="text-xs text-gray-500">
-                                          By joining, you agree to our interview
-                                          guidelines and code of conduct. Your
-                                          session may be recorded for quality
-                                          assurance.
-                                        </p>
-                                      </div>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                ) : (
-                                  <div className="flex justify-start gap-3 items-center">
-                                    <Button
-                                      onClick={() =>
-                                        handleInterviewStatus(
-                                          interview.interview.interviewID,
-                                          "REJECTED"
-                                        )
-                                      }
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-destructive border-destructive/50"
-                                    >
-                                      <XCircle className="h-4 w-4 mr-2" />
-                                      Reject
-                                    </Button>
-                                    <Button
-                                      onClick={() =>
-                                        handleInterviewStatus(
-                                          interview.interview.interviewID,
-                                          "APPROVED"
-                                        )
-                                      }
-                                      variant="outline"
-                                      size="sm"
-                                      className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                                    >
-                                      <LuCircleCheck className="h-4 w-4 mr-2" />
-                                      Accept
-                                    </Button>
-                                  </div>
-                                )}
-                              </>
-                            )}
+                                        <div className="space-y-4 my-4">
+                                          {requirements.map((req, index) => (
+                                            <div
+                                              key={index}
+                                              className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
+                                            >
+                                              <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
+                                                {req.icon}
+                                              </div>
+                                              <div className="flex-1">
+                                                <h4 className="text-sm font-medium text-gray-200">
+                                                  {req.text}
+                                                </h4>
+                                                <p className="text-xs text-gray-400 mt-0.5">
+                                                  {req.subtext}
+                                                </p>
+                                              </div>
+                                              <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                                            </div>
+                                          ))}
+                                        </div>
+
+                                        <AlertDialogFooter className="sm:space-x-2 justify-between">
+                                          <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
+                                            <X className="h-4 w-4 mr-2" />
+                                            Not Ready Yet
+                                          </AlertDialogCancel>
+                                          <AlertDialogAction
+                                            onClick={() => {
+                                              joinInterviewSession(interview);
+                                            }}
+                                            className="bg-emerald-600 text-white hover:bg-emerald-500"
+                                          >
+                                            <Check className="h-4 w-4 mr-2" />
+                                            Join Interview
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+
+                                        <div className="mt-4 text-center">
+                                          <p className="text-xs text-gray-500">
+                                            By joining, you agree to our interview
+                                            guidelines and code of conduct. Your
+                                            session may be recorded for quality
+                                            assurance.
+                                          </p>
+                                        </div>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  ) : (
+                                    <div className="flex justify-start gap-3 items-center">
+                                      <Button
+                                        onClick={() =>
+                                          handleInterviewStatus(
+                                            interview.interview.interviewID,
+                                            "REJECTED"
+                                          )
+                                        }
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-destructive border-destructive/50"
+                                      >
+                                        <XCircle className="h-4 w-4 mr-2" />
+                                        Reject
+                                      </Button>
+                                      <Button
+                                        onClick={() =>
+                                          handleInterviewStatus(
+                                            interview.interview.interviewID,
+                                            "APPROVED"
+                                          )
+                                        }
+                                        variant="outline"
+                                        size="sm"
+                                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                      >
+                                        <LuCircleCheck className="h-4 w-4 mr-2" />
+                                        Accept
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                </>
+                              )}
+
+                            </>
+                          )}
                         </div>
                         <Collapsible
                           open={isExpanded}
