@@ -36,8 +36,8 @@ import { getCompanyTeams } from "@/lib/api/user-team";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getCompanyById, updateCompanyById } from "@/lib/api/users";
-import { Building2, Facebook, Github, Info, Mail, Phone, Save } from 'lucide-react';
-          
+import { Building2, ExternalLink, Facebook, Github, Info, Mail, Phone, Save } from 'lucide-react';
+
 import {
   Tooltip,
   TooltipContent,
@@ -305,7 +305,7 @@ const InterviewCategoryPage = () => {
                 {companyDetails?.companyName || "Company"}{" "}
               </p>
               <p className=" text-lg md:text-xl md:text-left text-center text-gray-500 flex items-center ">
-              <Mail size={16} className="mr-1" />
+                <Mail size={16} className="mr-1" />
                 {email}
               </p>
               <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-[#262626] boeder text-white py-1 px-4 w-fit border-gray-500/20">
@@ -317,17 +317,15 @@ const InterviewCategoryPage = () => {
             <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 rounded-lg">
               <button
                 onClick={() => setTab("Details")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "Details" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "Details" ? "bg-gray-800" : ""
+                  } `}
               >
                 Details
               </button>
               <button
                 onClick={() => setTab("Team")}
-                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                  Tab === "Team" ? "bg-gray-800" : ""
-                } `}
+                className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${Tab === "Team" ? "bg-gray-800" : ""
+                  } `}
               >
                 Team
               </button>
@@ -335,22 +333,20 @@ const InterviewCategoryPage = () => {
             <div className={` ${Tab !== "Details" ? "hidden" : "block"} `}>
               <button
                 onClick={() => setIsEdit(true)}
-                className={` ${
-                  isEdit ? "hidden" : "block"
-                } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
+                className={` ${isEdit ? "hidden" : "block"
+                  } rounded-lg text-sm font-semibold bg-white flex justify-start items-center text-black h-11 px-5`}
               >
                 <MdEdit className=" text-base mr-2" />{" "}
                 <span className=" inline-block">Edit Profile</span>
               </button>
               <button
                 onClick={handleSaveChanges}
-                className={` ${
-                  isEdit ? "block" : "hidden"
-                } rounded-lg text-sm font-semibold bg-darkred text-black h-11 px-5 bg-white border border-black`}
+                className={` ${isEdit ? "block" : "hidden"
+                  } rounded-lg text-sm font-semibold bg-darkred text-black h-11 px-5 bg-white border border-black`}
               >
                 <div className="flex flex-row items-center space-x-2">
-                <Save />
-                Save Changes
+                  <Save />
+                  Save Changes
                 </div>
               </button>
             </div>
@@ -411,7 +407,7 @@ const InterviewCategoryPage = () => {
             ) : (
               <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-8">
                 <div className=" w-full md:w-[70%] md:border-r-2 border-gray-500/20 md:pr-8">
-                  <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
+                  <div className="bg-[#1b1d23] text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
                     <div className="flex flex-row items-center space-x-2">
                       <h1 className=" text-xl font-semibold">Description</h1>
                       <TooltipProvider>
@@ -426,17 +422,15 @@ const InterviewCategoryPage = () => {
                       </TooltipProvider>
                     </div>
                     <div
-                      className={` ${
-                        isEdit ? "hidden" : "block"
-                      } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-1 py-2 description`}
+                      className={` ${isEdit ? "hidden" : "block"
+                        } text-justify w-full text-gray-500 bg-transparent rounded-lg mt-1 py-2 description`}
                       dangerouslySetInnerHTML={{
                         __html: description || "Not Available",
                       }}
                     />
                     <div
-                      className={`${
-                        isEdit ? "block" : "hidden"
-                      } mt-2 text-gray-500`}
+                      className={`${isEdit ? "block" : "hidden"
+                        } mt-2 text-gray-500`}
                     >
                       <QuillEditor
                         editorId={"description"}
@@ -451,79 +445,88 @@ const InterviewCategoryPage = () => {
                   <div className="bg-[#1b1d23] text-gray-400 border-2 border-gray-700 px-6 py-5 rounded-lg">
                     <h2 className=" text-xl font-semibold text-white">Company Details</h2>
                     <div className=" w-full mt-5 flex flex-row gap-2">
-                    <Building2 />
-                    <div>
-                      <p className=" text-base text-muted-foreground mb-1">Company Name</p>
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                            value={companyName || ""}
-                            placeholder="Company Name"
-                            onChange={(e) => setCompanyName(e.target.value)}
-                            className={` focus:outline-none rounded-lg text-white ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
-                              } w-full text-sm `}
-                          />
-                        </div>
-                      </div>
-                      <div className="w-full mt-5 flex flex-col">
-                        <div className="flex flex-row gap-2">
-                        <Mail />
-                        <p className=" text-base text-muted-foreground">Email</p>
-                        </div>
-                        <p className=" text-md ml-8 text-white">{email}</p>
-                      </div>
-                      <div className=" w-full mt-5 flex flex-col">
-                        <div className="flex flex-row gap-2">
-                      <Phone size={18}/>
-                        <p className=" text-base text-muted-foreground mb-1">Contact No</p>
-                        </div>
+                      <Building2 />
+                      <div>
+                        <p className=" text-base text-muted-foreground mb-1">Company Name</p>
                         <input
                           type="text"
                           readOnly={!isEdit}
-                          value={contactNo || "not available"}
-                          onChange={(e) => setContactNo(e.target.value)}
-                          className={` ml-8 !text-white focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
-                            } text-sm text-w`}
+                          value={companyName || ""}
+                          placeholder="Company Name"
+                          onChange={(e) => setCompanyName(e.target.value)}
+                          className={` focus:outline-none rounded-lg text-white ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       </div>
                     </div>
-                    <div className="bg-[#1b1d23] text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
-                      <h2 className=" text-xl font-semibold text-white">Social Media</h2>
-                      <div className=" w-full mt-5 flex justify-start items-center gap-2">
-
+                    <Separator className="my-2" />
+                    <div className="w-full mt-5 flex flex-col">
+                      <div className="flex flex-row gap-2">
+                        <Mail />
+                        <p className=" text-base text-muted-foreground">Email</p>
+                      </div>
+                      <p className=" text-md ml-8 text-white">{email}</p>
+                    </div>
+                    <Separator className="my-2" />
+                    <div className=" w-full mt-5 flex flex-col">
+                      <div className="flex flex-row gap-2">
+                        <Phone size={18} />
+                        <p className=" text-base text-muted-foreground mb-1">Contact No</p>
+                      </div>
+                      <input
+                        type="text"
+                        readOnly={!isEdit}
+                        placeholder="Contact No"
+                        value={contactNo}
+                        onChange={(e) => setContactNo(e.target.value)}
+                        className={` ml-8 !text-white focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                          } text-sm text-w`}
+                      />
+                    </div>
+                  </div>
+                  <div className="bg-[#1b1d23] text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
+                    <h2 className=" text-xl font-semibold text-white">Social Media</h2>
+                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
                       <div className="bg-[#b3b3b31a] rounded-md p-2">
-                      <TbWorldWww className=" text-3xl" />
-                            </div>
-                   
-                        {isEdit ? (
-                          <input
-                            type="text"
-                            readOnly={!isEdit}
+                        <TbWorldWww className=" text-3xl" />
+                      </div>
+
+                      {isEdit ? (
+                        <input
+                          type="text"
+                          readOnly={!isEdit}
                           value={websiteUrl || ""}
                           placeholder="Website URL"
                           onChange={(e) => setWebsiteUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg placeholder:text-white ${
-                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg placeholder:text-white ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
-                        <a
-                          href={websiteUrl || "#"}
-                          target="_blank"
-                          className={` text-sm ${
-                            !websiteUrl
-                              ? "text-gray-400 pointer-events-none"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {websiteUrl || "Website URL"}
-                        </a>
+                        <div className="flex justify-between items-center w-full">
+                          <a
+                            href={websiteUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm ${!websiteUrl ? "text-gray-400 pointer-events-none" : "text-blue-500"
+                              }`}
+                          >
+                            {websiteUrl ? new URL(websiteUrl).hostname + "..." : "Website URL"}
+                          </a>
+                          {websiteUrl && (
+                            <ExternalLink
+                              size={20}  // Icon size set to 20
+                              className="text-yellow-400 inline-block mr-1 cursor-pointer"
+                              onClick={() => window.open(websiteUrl, "_blank")}
+                            />
+                          )}
+                        </div>
+
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                    <div className="bg-[#b3b3b31a] rounded-md p-2">
-                    <Linkedin />
-                            </div>
+                      <div className="bg-[#b3b3b31a] rounded-md p-2">
+                        <Linkedin />
+                      </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -531,28 +534,34 @@ const InterviewCategoryPage = () => {
                           value={linkedinUrl || ""}
                           placeholder="Linkedin URL"
                           onChange={(e) => setLinkedinUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
-                        <a
-                          href={linkedinUrl || "#"}
-                          target="_blank"
-                          className={` text-sm ${
-                            !linkedinUrl
-                              ? "text-gray-400 pointer-events-none"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {linkedinUrl || "Linkedin URL"}
-                        </a>
+                        <div className="flex justify-between items-center w-full">
+                          <a
+                            href={linkedinUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm ${!linkedinUrl ? "text-gray-400 pointer-events-none" : "text-blue-500"}`}
+                          >
+                            {linkedinUrl ? new URL(linkedinUrl).hostname + "..." : "Linkedin URL"}
+                          </a>
+                          {linkedinUrl && (
+                            <ExternalLink
+                              size={20}
+                              className="text-yellow-400 inline-block mr-1 cursor-pointer"
+                              onClick={() => window.open(linkedinUrl, "_blank")}
+                            />
+                          )}
+                        </div>
+
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                    <div className="bg-[#b3b3b31a] rounded-md p-2">
-                    <Github />
-                            </div>
+                      <div className="bg-[#b3b3b31a] rounded-md p-2">
+                        <Github />
+                      </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -560,29 +569,35 @@ const InterviewCategoryPage = () => {
                           value={githubUrl || ""}
                           placeholder="Github URL"
                           onChange={(e) => setGithubUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
-                        <a
-                          href={githubUrl || "#"}
-                          target="_blank"
-                          className={` text-sm ${
-                            !githubUrl
-                              ? "text-gray-400 pointer-events-none"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {githubUrl || "Github URL"}
-                        </a>
+                        <div className="flex justify-between items-center w-full">
+                          <a
+                            href={githubUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm ${!githubUrl ? "text-gray-400 pointer-events-none" : "text-blue-500"
+                              }`}
+                          >
+                            {githubUrl ? new URL(githubUrl).hostname + "..." : "Github URL"}
+                          </a>
+                          {githubUrl && (
+                            <ExternalLink
+                              size={20}
+                              className="text-yellow-400 inline-block mr-1 cursor-pointer"
+                              onClick={() => window.open(githubUrl, "_blank")}
+                            />
+                          )}
+                        </div>
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                    <div className="bg-[#b3b3b31a] rounded-md p-2">
-                    <Facebook />
+                      <div className="bg-[#b3b3b31a] rounded-md p-2">
+                        <Facebook />
 
-                            </div>
+                      </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -590,29 +605,36 @@ const InterviewCategoryPage = () => {
                           value={facebookUrl || ""}
                           placeholder="Facebook URL"
                           onChange={(e) => setFacebookUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
-                        <a
-                          href={facebookUrl || "#"}
-                          target="_blank"
-                          className={` text-sm ${
-                            !facebookUrl
-                              ? "text-gray-400 pointer-events-none"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {facebookUrl || "Facebook URL"}
-                        </a>
+                        <div className="flex justify-between items-center w-full">
+                          <a
+                            href={facebookUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm ${!facebookUrl ? "text-gray-400 pointer-events-none" : "text-blue-500"
+                              }`}
+                          >
+                            {facebookUrl ? new URL(facebookUrl).hostname + "..." : "Facebook URL"}
+                          </a>
+                          {facebookUrl && (
+                            <ExternalLink
+                              size={20}
+                              className="text-yellow-400 inline-block mr-1 cursor-pointer"
+                              onClick={() => window.open(facebookUrl, "_blank")}
+                            />
+                          )}
+                        </div>
+
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                    <div className="bg-[#b3b3b31a] rounded-md p-2">
-                    <FaXTwitter className=" text-3xl" />
-                            </div>
-                      
+                      <div className="bg-[#b3b3b31a] rounded-md p-2">
+                        <FaXTwitter className=" text-3xl" />
+                      </div>
+
                       {isEdit ? (
                         <input
                           type="text"
@@ -620,28 +642,35 @@ const InterviewCategoryPage = () => {
                           value={twitterUrl || ""}
                           placeholder="X URL"
                           onChange={(e) => setTwitterUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
-                        <a
-                          href={twitterUrl || "#"}
-                          target="_blank"
-                          className={` text-sm ${
-                            !twitterUrl
-                              ? "text-gray-400 pointer-events-none"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {twitterUrl || "X URL"}
-                        </a>
+                        <div className="flex justify-between items-center w-full">
+                          <a
+                            href={twitterUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm ${!twitterUrl ? "text-gray-400 pointer-events-none" : "text-blue-500"
+                              }`}
+                          >
+                            {twitterUrl ? new URL(twitterUrl).hostname + "..." : "X URL"}
+                          </a>
+                          {twitterUrl && (
+                            <ExternalLink
+                              size={20}  // Set icon size to 20
+                              className="text-yellow-400 inline-block mr-1 cursor-pointer"
+                              onClick={() => window.open(twitterUrl, "_blank")}
+                            />
+                          )}
+                        </div>
+
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                    <div className="bg-[#b3b3b31a] rounded-md p-2">
-                    <FaDiscord className=" text-3xl" />
-                            </div>
+                      <div className="bg-[#b3b3b31a] rounded-md p-2">
+                        <FaDiscord className=" text-3xl" />
+                      </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -649,22 +678,29 @@ const InterviewCategoryPage = () => {
                           value={discordUrl || ""}
                           placeholder="Discord URL"
                           onChange={(e) => setDiscordUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
-                          } w-full text-sm `}
+                          className={` focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
+                            } w-full text-sm `}
                         />
                       ) : (
-                        <a
-                          href={discordUrl || "#"}
-                          target="_blank"
-                          className={` text-sm ${
-                            !discordUrl
-                              ? "text-gray-400 pointer-events-none"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {discordUrl || "Discord URL"}
-                        </a>
+                        <div className="flex justify-between items-center w-full">
+                          <a
+                            href={twitterUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm ${!twitterUrl ? "text-gray-400 pointer-events-none" : "text-blue-500"
+                              }`}
+                          >
+                            {twitterUrl ? new URL(twitterUrl).hostname + "..." : "X URL"}
+                          </a>
+                          {twitterUrl && (
+                            <ExternalLink
+                              size={20}  // Icon size set to 20
+                              className="text-yellow-400 inline-block mr-1 cursor-pointer"
+                              onClick={() => window.open(twitterUrl, "_blank")}
+                            />
+                          )}
+                        </div>
+
                       )}
                     </div>
                   </div>
