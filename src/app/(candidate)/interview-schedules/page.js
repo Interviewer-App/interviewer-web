@@ -304,13 +304,18 @@ const InterviewSchedulePage = () => {
             <div className=" relative flex justify-center items-center h-full w-full">
               <div className=" w-full">
                 <Image
-                  src={NoData}
+                  src='/nodata.png'
                   alt="No data"
+                  width={150}
+                  height={150}
                   className=" mx-auto h-[150px] w-[200px]"
                 />
-                <h1 className="text-3xl py-2 text-gray-500 w-full text-center">
+                <h1 className="text-3xl py-2 text-gray-500 w-full text-center font-bold">
                   No interviews found
                 </h1>
+                <p className="text-gray-500 mb-8 text-center">
+              You don't have any scheduled interviews at the moment. <br/>Schedule an interview or check back later.
+            </p>
               </div>
             </div>
           )}
