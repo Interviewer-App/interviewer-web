@@ -502,7 +502,7 @@ const InterviewCategoryPage = () => {
                           value={websiteUrl || ""}
                           placeholder="Website URL"
                           onChange={(e) => setWebsiteUrl(e.target.value)}
-                          className={` focus:outline-none rounded-lg ${
+                          className={` focus:outline-none rounded-lg placeholder:text-white ${
                             isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
@@ -532,7 +532,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Linkedin URL"
                           onChange={(e) => setLinkedinUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -561,7 +561,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Github URL"
                           onChange={(e) => setGithubUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -591,7 +591,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Facebook URL"
                           onChange={(e) => setFacebookUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -621,7 +621,7 @@ const InterviewCategoryPage = () => {
                           placeholder="X URL"
                           onChange={(e) => setTwitterUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -650,7 +650,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Discord URL"
                           onChange={(e) => setDiscordUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4 placeholder:text-white" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
