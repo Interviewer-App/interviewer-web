@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 
-const SkillsInput = ({ skills, onChange }) => {
+const SkillsInput = ({ skills, onChange, intervieweeType }) => {
   const [inputValue, setInputValue] = useState('');
 
   const addSkill = () => {
@@ -55,7 +55,7 @@ const SkillsInput = ({ skills, onChange }) => {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Add skill and press Enter"
+          placeholder={intervieweeType === "employee" ? 'e.g. JavaScript, React, Node.js' : 'e.g. Investment Analysis, Financial Modeling'}
           className="flex-1"
         />
         <Button
