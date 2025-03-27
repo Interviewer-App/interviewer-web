@@ -102,7 +102,7 @@ const InterviewCategoryPage = () => {
     };
 
     if (Tab === "Team") fetchTeamData();
-  }, [page, limit, modalOpen, teams, Tab]);
+  }, [Tab, page, limit]);
 
   const handleNextPage = () => {
     if (page * limit < totalTeams) {
