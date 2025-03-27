@@ -100,7 +100,7 @@ const CreateTeamModal = ({ setModalOpen, isUpdate, companyTeam }) => {
   return (
     <div className="fixed top-0 left-0 z-50 h-full w-full bg-black/50">
       <div className=" flex items-center justify-center h-full w-full ">
-        <div className="relative max-w-[700px] h-fit max-h-[670px] w-[90%] md:w-[50%] p-9 bg-gradient-to-br from-[#1f2126] to-[#17191d] rounded-lg">
+        <div className="relative max-w-[700px] h-fit max-h-[670px] w-[90%] md:w-[50%] p-9 bg-[#09090b] rounded-lg border border-[#2d2f36]">
           <h1 className="text-2xl font-semibold text-[#f3f3f3] pb-5">
             {isUpdate ? "Update" : "Create"} Team
           </h1>
@@ -119,7 +119,7 @@ const CreateTeamModal = ({ setModalOpen, isUpdate, companyTeam }) => {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
-                className="h-[45px] w-full md:w-[48%] rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] mt-5 px-6 py-2 mb-5"
+                className="h-[45px] w-full md:w-[48%] rounded-lg text-sm  placeholder-[#737883] mt-5 px-6 py-2 mb-5 bg-[#09090b] border border-[#2d2f36]"
               />
               <input
                 type="text"
@@ -128,7 +128,7 @@ const CreateTeamModal = ({ setModalOpen, isUpdate, companyTeam }) => {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
-                className="h-[45px] w-full md:w-[48%] rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] mt-5 px-6 py-2 mb-5"
+                className="h-[45px] w-full md:w-[48%] rounded-lg text-sm bg-[#09090b] border border-[#2d2f36] placeholder-[#737883] mt-5 px-6 py-2 mb-5"
               />
             </div>
             <input
@@ -138,12 +138,12 @@ const CreateTeamModal = ({ setModalOpen, isUpdate, companyTeam }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-[45px] w-full rounded-lg text-sm border-0 bg-[#32353b] placeholder-[#737883] px-6 py-2 mb-5"
+              className="h-[45px] w-full rounded-lg text-sm bg-[#09090b] border border-[#2d2f36] placeholder-[#737883] px-6 py-2 mb-5"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  className={`!bg-[#32353b] w-full h-[45px] !m-0 px-2 focus:outline-none outline-none`}
+                  className={`bg-[#09090b] border border-[#2d2f36] w-full h-[45px] !m-0 px-2 focus:outline-none outline-none`}
                   variant="outline"
                 >
                   {role || "Select Role"}
