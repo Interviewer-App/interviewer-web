@@ -69,6 +69,8 @@ import {
   SaveAll,
   LoaderCircle,
   AlertCircle,
+  AlertCircleIcon,
+  Edit,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 // import RichTextEditor from '@/components/editors/RichTextEditor';
@@ -126,6 +128,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AlertDialogFooter } from "@/components/ui/alert-dialog";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 const COLORS = [
   "#8B5CF6",
   "#3B82F6",
@@ -182,7 +187,7 @@ const CreateInterview = () => {
     useState("");
   const [predefinedCategoryPercentage, setPredefinedCategoryPercentage] =
     useState(20);
-  const [technicalPercentage, setTechnicalPercentage] = useState(30);
+  // const [technicalPercentage, setTechnicalPercentage] = useState(30);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [newCategoryColor, setNewCategoryColor] = useState(COLORS[1]);
   const [interviewCategory, setInterviewCategory] = React.useState("Technical");
@@ -215,6 +220,96 @@ const CreateInterview = () => {
   const [hasDevice, setHasDevice] = useState("with");
   const [intervieweeType, setIntervieweeType] = useState("employee");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [technicalPercentage, setTechnicalPercentage] = useState(60);
+  const [softSkillsPercentage, setSoftSkillsPercentage] = useState(40);
+  const [useQuestionnaire, setUseQuestionnaire] = useState(true);
+  const [newSoftSkill, setNewSoftSkill] = useState({
+    name: "",
+    description: "",
+    percentage: 0,
+    subcategories: [],
+  });
+  const [isSoftSkillPromptOpen, setIsSoftSkillPromptOpen] = useState(false);
+  const [softSkillPrompt, setSoftSkillPrompt] = useState("");
+  const [editingSoftSkill, setEditingSoftSkill] = useState(null);
+
+  // Add new state for subcategory management
+  const [newSubcategory, setNewSubcategory] = useState({
+    skillId: null,
+    name: "",
+    description: "",
+  });
+
+  const [isSubcategoryPromptOpen, setIsSubcategoryPromptOpen] = useState(false);
+  const [subcategoryPrompt, setSubcategoryPrompt] = useState("");
+  const [currentSkillForSubcategories, setCurrentSkillForSubcategories] =
+    useState(null);
+  const [editingSubcategory, setEditingSubcategory] = useState(null);
+  const [softSkills, setSoftSkills] = useState([
+    {
+      id: "s1",
+      name: "Communication",
+      description: "Ability to clearly articulate ideas and listen effectively",
+      expanded: false,
+      percentage: 33,
+      subcategories: [
+        {
+          id: "sub1-1",
+          name: "Verbal Communication",
+          description: "Ability to speak clearly and effectively",
+          percentage: 50,
+        },
+        {
+          id: "sub1-2",
+          name: "Active Listening",
+          description: "Ability to listen attentively and respond appropriately",
+          percentage: 50,
+        },
+      ],
+    },
+    {
+      id: "s2",
+      name: "Teamwork",
+      description: "Collaborates well with others and contributes to team goals",
+      expanded: false,
+      percentage: 33,
+      subcategories: [
+        {
+          id: "sub2-1",
+          name: "Collaboration",
+          description: "Works effectively with others to achieve common goals",
+          percentage: 60,
+        },
+        {
+          id: "sub2-2",
+          name: "Conflict Resolution",
+          description: "Ability to address and resolve disagreements constructively",
+          percentage: 40,
+        },
+      ],
+    },
+    {
+      id: "s3",
+      name: "Problem Solving",
+      description: "Approaches challenges with creative solutions",
+      expanded: false,
+      percentage: 34,
+      subcategories: [
+        {
+          id: "sub3-1",
+          name: "Critical Thinking",
+          description: "Ability to analyze situations and make sound judgments",
+          percentage: 50,
+        },
+        {
+          id: "sub3-2",
+          name: "Creativity",
+          description: "Ability to generate innovative solutions",
+          percentage: 50,
+        },
+      ],
+    },
+  ])
 
   useEffect(() => {
     if (technicalCategoryId && categoryList.length === 0) {
@@ -240,7 +335,7 @@ const CreateInterview = () => {
   //   }
   // }, [technicalPercentage]);
 
-  const handleTechnicalPercentageChange = (value) => {
+  const handleTechnicalPercentageValueChange = (value) => {
     setTechnicalPercentage(value);
     setCategoryList((prev) =>
       prev.map((cat) =>
@@ -956,6 +1051,24 @@ const CreateInterview = () => {
     setFilteredCategories(updatedFilteredCategories);
   }, [categoryList, interviewCategories]); // Depend on categoryList and interviewCategories
 
+  // Handle percentage changes
+  const handleTechnicalPercentageChange = (value) => {
+    const newValue = value[0];
+    setTechnicalPercentage(newValue);
+    setSoftSkillsPercentage(100 - newValue);
+  };
+
+  const handleSoftSkillsPercentageChange = (value) => {
+    const newValue = value[0];
+    setSoftSkillsPercentage(newValue);
+    setTechnicalPercentage(100 - newValue);
+  };
+
+  const handleToggleExpand = (e, skillId) => {
+    e.preventDefault();
+    setSoftSkills(softSkills.map((skill) => (skill.id === skillId ? { ...skill, expanded: !skill.expanded } : skill)))
+  }
+
   return (
     <>
       <SidebarInset>
@@ -979,7 +1092,7 @@ const CreateInterview = () => {
         </header>
 
         <div>
-          <main className="container mx-auto py-8 px-4 max-w-5xl">
+          <main className="container mx-auto py-8 px-4 max-w-[1500px]">
             <div className="mb-6">
               <h1 className="text-3xl font-bold tracking-tight">
                 Create Interview
@@ -1010,7 +1123,7 @@ const CreateInterview = () => {
                 >
                   <div className="flex items-center gap-2">
                     <Plus className="h-4 w-4" />
-                    <span>Categories</span>
+                    <span>Expertise</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger
@@ -1043,7 +1156,7 @@ const CreateInterview = () => {
                             <Card
                               className={`cursor-pointer transition-all ${
                                 interviewMedium === "virtual"
-                                  ? "border !border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  ? "border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
                               onClick={() => setInterviewMedium("virtual")}
@@ -1087,7 +1200,7 @@ const CreateInterview = () => {
                             <Card
                               className={`cursor-pointer transition-all ${
                                 interviewMedium === "physical"
-                                  ? "border !border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
                               onClick={() => setInterviewMedium("physical")}
@@ -1144,7 +1257,7 @@ const CreateInterview = () => {
                                 />
                                 <Label
                                   htmlFor="with-device"
-                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:bg-accent/5 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:bg-blue-500/5 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
+                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:bg-blue-500/10 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:!bg-blue-500/10 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
                                 >
                                   <div className="flex items-center gap-3">
                                     <div className="rounded-full bg-blue-500/10 p-2">
@@ -1204,7 +1317,7 @@ const CreateInterview = () => {
                                 />
                                 <Label
                                   htmlFor="without-device"
-                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:bg-accent/5 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:bg-blue-500/5 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
+                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:!bg-blue-500/10 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:!bg-blue-500/10 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
                                 >
                                   <div className="flex items-center gap-3">
                                     <div className="rounded-full bg-blue-500/10 p-2">
@@ -1254,7 +1367,7 @@ const CreateInterview = () => {
                             <Card
                               className={`cursor-pointer transition-all ${
                                 intervieweeType === "employee"
-                                  ? "border border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
                               onClick={() => setIntervieweeType("employee")}
@@ -1291,7 +1404,7 @@ const CreateInterview = () => {
                             <Card
                               className={`cursor-pointer transition-all ${
                                 intervieweeType === "investor"
-                                  ? "border border-[#3b82f6] shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                  ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
                                   : "hover:!border-[#3b82f6]/50"
                               }`}
                               onClick={() => setIntervieweeType("investor")}
@@ -1335,10 +1448,20 @@ const CreateInterview = () => {
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="space-y-2">
-                                <Label htmlFor="job-title">Job Title</Label>
+                                <Label htmlFor="job-title">
+                                  {intervieweeType === "employee"
+                                    ? "Job Title"
+                                    : "Title"}
+                                </Label>
                                 <Input
                                   id="job-title"
-                                  placeholder="e.g. Senior Developer"
+                                  placeholder={
+                                    intervieweeType === "employee"
+                                      ? "e.g. Senior Developer"
+                                      : "e.g. Angel Investor"
+                                  }
+                                  value={jobTitle}
+                                  onChange={(e) => setJobTitle(e.target.value)}
                                 />
                                 {/* <FormField
                                   control={form.control}
@@ -1399,8 +1522,11 @@ const CreateInterview = () => {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => setIsPromptModalOpen(true)}
-                                  className="flex items-center gap-1 !text-blue-500 !border-blue-500/50 hover:!bg-blue-500/10"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsPromptModalOpen(true);
+                                  }}
+                                  className="flex items-center gap-1 !text-blue-500 !border-blue-500/50 hover:!bg-blue-500/20 hover:!text-blue-400"
                                 >
                                   <Sparkles className="h-4 w-4" />
                                   <span>Generate with AI</span>
@@ -1449,6 +1575,7 @@ const CreateInterview = () => {
                                 <SkillsInput
                                   skills={skills}
                                   onChange={setSkills}
+                                  intervieweeType={intervieweeType}
                                 />
                               </FormItem>
                             </div>
@@ -1529,7 +1656,7 @@ const CreateInterview = () => {
                           <SkillsInput skills={skills} onChange={setSkills} />
                         </FormItem> */}
                       </CardContent>
-                      
+
                       <CardFooter className="flex justify-end mt-6 !p-0">
                         <Button
                           type="submit"
@@ -1550,6 +1677,902 @@ const CreateInterview = () => {
                   </TabsContent>
 
                   <TabsContent value="categories" className="space-y-6">
+                    <div className="space-y-8">
+                      {/* Percentage Allocation */}
+                      <div className="space-y-4">
+                        <h2 className="text-xl font-semibold">
+                          Assessment Weighting
+                        </h2>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Adjust the percentage allocation between technical
+                          expertise and soft skills assessment. The total must
+                          equal 100%.
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card
+                          className={`overflow-hidden border-2 transition-all ${
+                            technicalPercentage >= 50
+                              ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                              : "border-muted"
+                          }`}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-center gap-4 mb-6">
+                              <div className="rounded-full bg-blue-500/20 p-3">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="text-blue-500"
+                                >
+                                  <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" />
+                                  <path d="M17.92 12.62A5 5 0 0 0 15 8.5" />
+                                  <path d="M5.5 12.55a5 5 0 0 1 8.34 5.24" />
+                                  <path d="M14.5 9.5 20 8l-1.5 5.5" />
+                                  <path d="m4 15 1.5-5.5L11 11" />
+                                </svg>
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-medium">
+                                  Technical Expertise
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  Field-related knowledge and skills
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="space-y-6">
+                              {/* Prominent percentage indicator */}
+                              <div className="flex justify-center">
+                                <div className="relative w-32 h-32">
+                                  <svg
+                                    className="w-full h-full"
+                                    viewBox="0 0 100 100"
+                                  >
+                                    {/* Background circle */}
+                                    <circle
+                                      cx="50"
+                                      cy="50"
+                                      r="45"
+                                      fill="none"
+                                      stroke="hsl(var(--muted))"
+                                      strokeWidth="10"
+                                    />
+                                    {/* Progress circle */}
+                                    <circle
+                                      cx="50"
+                                      cy="50"
+                                      r="45"
+                                      fill="none"
+                                      stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
+                                      strokeWidth="10"
+                                      strokeDasharray={`${
+                                        (2 *
+                                          Math.PI *
+                                          45 *
+                                          technicalPercentage) /
+                                        100
+                                      } ${
+                                        2 *
+                                        Math.PI *
+                                        45 *
+                                        (1 - technicalPercentage / 100)
+                                      }`}
+                                      strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                                      transform="rotate(-90 50 50)"
+                                      strokeLinecap="round"
+                                      className="text-blue-500"
+                                      style={{ stroke: "#3b82f6" }}
+                                    />
+                                    {/* Percentage text */}
+                                    <text
+                                      x="50"
+                                      y="50"
+                                      dominantBaseline="middle"
+                                      textAnchor="middle"
+                                      fontSize="24"
+                                      fontWeight="bold"
+                                      fill="currentColor"
+                                      className="text-blue-500"
+                                      style={{ fill: "#3b82f6" }}
+                                    >
+                                      {technicalPercentage}%
+                                    </text>
+                                  </svg>
+                                </div>
+                              </div>
+
+                              {/* Less prominent slider */}
+                              <div className="space-y-2">
+                                <p className="text-sm text-center text-muted-foreground mb-2">
+                                  Adjust percentage
+                                </p>
+                                <Slider
+                                  id="technical-percentage"
+                                  min={0}
+                                  max={100}
+                                  step={5}
+                                  enableColor={false}
+                                  value={[technicalPercentage]}
+                                  onValueChange={
+                                    handleTechnicalPercentageChange
+                                  }
+                                  className="w-full"
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card
+                          className={`overflow-hidden border-2 transition-all ${
+                            softSkillsPercentage >= 50
+                              ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                              : "border-muted"
+                          }`}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-center gap-4 mb-6">
+                              <div className="rounded-full bg-blue-500/20 p-3">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="text-blue-500"
+                                >
+                                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                  <circle cx="9" cy="7" r="4" />
+                                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-medium">
+                                  Soft Skills
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  Human qualities and attributes
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="space-y-6">
+                              {/* Prominent percentage indicator */}
+                              <div className="flex justify-center">
+                                <div className="relative w-32 h-32">
+                                  <svg
+                                    className="w-full h-full"
+                                    viewBox="0 0 100 100"
+                                  >
+                                    {/* Background circle */}
+                                    <circle
+                                      cx="50"
+                                      cy="50"
+                                      r="45"
+                                      fill="none"
+                                      stroke="hsl(var(--muted))"
+                                      strokeWidth="10"
+                                    />
+                                    {/* Progress circle */}
+                                    <circle
+                                      cx="50"
+                                      cy="50"
+                                      r="45"
+                                      fill="none"
+                                      stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
+                                      strokeWidth="10"
+                                      strokeDasharray={`${
+                                        (2 *
+                                          Math.PI *
+                                          45 *
+                                          softSkillsPercentage) /
+                                        100
+                                      } ${
+                                        2 *
+                                        Math.PI *
+                                        45 *
+                                        (1 - softSkillsPercentage / 100)
+                                      }`}
+                                      strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                                      transform="rotate(-90 50 50)"
+                                      strokeLinecap="round"
+                                      className="text-blue-500"
+                                      style={{ stroke: "#3b82f6" }}
+                                    />
+                                    {/* Percentage text */}
+                                    <text
+                                      x="50"
+                                      y="50"
+                                      dominantBaseline="middle"
+                                      textAnchor="middle"
+                                      fontSize="24"
+                                      fontWeight="bold"
+                                      fill="currentColor"
+                                      className="text-blue-500"
+                                      style={{ fill: "#3b82f6" }}
+                                    >
+                                      {softSkillsPercentage}%
+                                    </text>
+                                  </svg>
+                                </div>
+                              </div>
+
+                              {/* Less prominent slider */}
+                              <div className="space-y-2">
+                                <p className="text-sm text-center text-muted-foreground mb-2">
+                                  Adjust percentage
+                                </p>
+                                <Slider
+                                  id="soft-skills-percentage"
+                                  min={0}
+                                  max={100}
+                                  step={5}
+                                  value={[softSkillsPercentage]}
+                                  onValueChange={
+                                    handleSoftSkillsPercentageChange
+                                  }
+                                  className="w-full"
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+
+                    {/* Technical Expertise (Cat 1) */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-semibold">
+                          Technical Expertise
+                        </h2>
+                        <Badge className="!bg-blue-500/20 !text-blue-600 px-4 py-1 border !border-blue-600">
+                          {technicalPercentage}%
+                        </Badge>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="use-questionnaire"
+                          checked={useQuestionnaire}
+                          onCheckedChange={setUseQuestionnaire}
+                        />
+                        <Label htmlFor="use-questionnaire">
+                          Use questionnaire for assessment
+                        </Label>
+                      </div>
+
+                      {useQuestionnaire ? (
+                        // <div className="space-y-4">
+                        //   <div className="flex items-center justify-between">
+                        //     <h3 className="text-lg font-medium">Questions</h3>
+                        //     <div className="flex space-x-2">
+                        //       <Button
+                        //         variant="outline"
+                        //         size="sm"
+                        //         onClick={() => setIsQuestionPromptOpen(true)}
+                        //         className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                        //       >
+                        //         <Sparkles className="h-4 w-4" />
+                        //         <span>Generate with AI</span>
+                        //       </Button>
+                        //       <Button
+                        //         variant="outline"
+                        //         size="sm"
+                        //         onClick={() => setNewQuestion("What is your experience with...")}
+                        //         className="flex items-center gap-1"
+                        //       >
+                        //         <Plus className="h-4 w-4" />
+                        //         <span>Add Question</span>
+                        //       </Button>
+                        //     </div>
+                        //   </div>
+
+                        // {newQuestion && (
+                        //   <div className="space-y-2 p-4 border rounded-md bg-card">
+                        //     <Label htmlFor="new-question">New Question</Label>
+                        //     <Textarea
+                        //       id="new-question"
+                        //       value={newQuestion}
+                        //       onChange={(e) => setNewQuestion(e.target.value)}
+                        //       placeholder="Enter your question here"
+                        //       className="min-h-[80px]"
+                        //     />
+                        //     <div className="flex justify-end space-x-2 mt-2">
+                        //       <Button variant="outline" onClick={() => setNewQuestion("")}>
+                        //         Cancel
+                        //       </Button>
+                        //       <Button onClick={handleAddQuestion} className="bg-blue-600 hover:bg-blue-700">
+                        //         Add Question
+                        //       </Button>
+                        //     </div>
+                        //   </div>
+                        // )}
+
+                        // <div className="space-y-3">
+                        //   {questions.map((question) => (
+                        //     <Card key={question.id} className="overflow-hidden">
+                        //       <CardContent className="p-4">
+                        //         {editingQuestion === question.id ? (
+                        //           <div className="space-y-3">
+                        //             <Textarea
+                        //               value={question.text}
+                        //               onChange={(e) => handleEditQuestion(question.id, e.target.value, question.marks)}
+                        //               className="min-h-[80px]"
+                        //             />
+                        //             <div className="flex items-center space-x-2">
+                        //               <Label htmlFor={`marks-${question.id}`}>Marks:</Label>
+                        //               <Input
+                        //                 id={`marks-${question.id}`}
+                        //                 type="number"
+                        //                 value={question.marks}
+                        //                 onChange={(e) =>
+                        //                   handleEditQuestion(question.id, question.text, Number.parseInt(e.target.value) || 0)
+                        //                 }
+                        //                 className="w-20"
+                        //               />
+                        //             </div>
+                        //             <div className="flex justify-end space-x-2">
+                        //               <Button variant="outline" onClick={() => setEditingQuestion(null)}>
+                        //                 Cancel
+                        //               </Button>
+                        //               <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setEditingQuestion(null)}>
+                        //                 Save
+                        //               </Button>
+                        //             </div>
+                        //           </div>
+                        //         ) : (
+                        //           <div className="flex justify-between items-start">
+                        //             <div>
+                        //               <p>{question.text}</p>
+                        //               <Badge variant="outline" className="mt-2">
+                        //                 {question.marks} marks
+                        //               </Badge>
+                        //             </div>
+                        //             <div className="flex space-x-1">
+                        //               <Button
+                        //                 variant="ghost"
+                        //                 size="icon"
+                        //                 onClick={() => setEditingQuestion(question.id)}
+                        //                 className="h-8 w-8"
+                        //               >
+                        //                 <Edit className="h-4 w-4" />
+                        //                 <span className="sr-only">Edit</span>
+                        //               </Button>
+                        //               <Button
+                        //                 variant="ghost"
+                        //                 size="icon"
+                        //                 onClick={() => handleDeleteQuestion(question.id)}
+                        //                 className="h-8 w-8 text-destructive hover:text-destructive/90"
+                        //               >
+                        //                 <Trash2 className="h-4 w-4" />
+                        //                 <span className="sr-only">Delete</span>
+                        //               </Button>
+                        //             </div>
+                        //           </div>
+                        //         )}
+                        //       </CardContent>
+                        //     </Card>
+                        //   ))}
+
+                        // {questions.length === 0 && (
+                        //   <div className="text-center p-4 border border-dashed rounded-md">
+                        //     <p className="text-muted-foreground">No questions added yet. Add questions or generate with AI.</p>
+                        //   </div>
+                        // )}
+                        // </div>
+                        // </div>
+                        <Alert>
+                          <AlertCircleIcon className="h-4 w-4" />
+                          <AlertTitle>Flexible Assessment</AlertTitle>
+                          <AlertDescription>
+                            You can generate technical test questions once the
+                            interview session has been created.
+                          </AlertDescription>
+                        </Alert>
+                      ) : (
+                        <Alert>
+                          <AlertCircleIcon className="h-4 w-4" />
+                          <AlertTitle>Manual Assessment</AlertTitle>
+                          <AlertDescription>
+                            You've chosen to assess technical expertise manually
+                            during the interview. Prepare your own questions and
+                            evaluation criteria based on the candidate's field.
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-semibold">Soft Skills</h2>
+                        <Badge className="!bg-blue-500/20 !text-blue-600 px-4 py-1 border !border-blue-600">
+                          {softSkillsPercentage}%
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-medium">
+                          Qualities to Assess
+                        </h3>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setIsSoftSkillPromptOpen(true);
+                            }}
+                            className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                          >
+                            <Sparkles className="h-4 w-4" />
+                            <span>Generate with AI</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setNewSoftSkill({
+                                name: "",
+                                description: "",
+                                subcategories: [],
+                              })
+                            }
+                            className="flex items-center gap-1"
+                          >
+                            <Plus className="h-4 w-4" />
+                            <span>Add Quality</span>
+                          </Button>
+                        </div>
+                      </div>
+                      {/* New soft skill input */}
+                      {(newSoftSkill.name !== "" ||
+                        newSoftSkill.description !== "") && (
+                        <div className="space-y-3 p-4 border rounded-md bg-card">
+                          <div className="space-y-2">
+                            <Label htmlFor="new-skill-name">Quality Name</Label>
+                            <Input
+                              id="new-skill-name"
+                              value={newSoftSkill.name}
+                              onChange={(e) =>
+                                setNewSoftSkill({
+                                  ...newSoftSkill,
+                                  name: e.target.value,
+                                })
+                              }
+                              placeholder="e.g. Critical Thinking"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="new-skill-description">
+                              Description
+                            </Label>
+                            <Textarea
+                              id="new-skill-description"
+                              value={newSoftSkill.description}
+                              onChange={(e) =>
+                                setNewSoftSkill({
+                                  ...newSoftSkill,
+                                  description: e.target.value,
+                                })
+                              }
+                              placeholder="Describe what you're looking for in this quality"
+                              className="min-h-[80px]"
+                            />
+                          </div>
+                          <div className="flex justify-end space-x-2 mt-2">
+                            <Button
+                              variant="outline"
+                              onClick={() =>
+                                setNewSoftSkill({
+                                  name: "",
+                                  description: "",
+                                  subcategories: [],
+                                })
+                              }
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleAddSoftSkill}
+                              className="bg-blue-600 hover:bg-blue-700"
+                            >
+                              Add Quality
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+<div className="space-y-3">
+          {softSkills.map((skill) => (
+            <Card key={skill.id} className="overflow-hidden !bg-transparent">
+              <CardContent className="p-4">
+                {editingSoftSkill === skill.id ? (
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <Label htmlFor={`edit-name-${skill.id}`}>Quality Name</Label>
+                      <Input
+                        id={`edit-name-${skill.id}`}
+                        value={skill.name}
+                        onChange={(e) => handleEditSoftSkill(skill.id, e.target.value, skill.description)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`edit-desc-${skill.id}`}>Description</Label>
+                      <Textarea
+                        id={`edit-desc-${skill.id}`}
+                        value={skill.description}
+                        onChange={(e) => handleEditSoftSkill(skill.id, skill.name, e.target.value)}
+                        className="min-h-[80px]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor={`edit-percentage-${skill.id}`}>Percentage of Soft Skills</Label>
+                        <Badge variant="outline" className="text-blue-500">
+                          {Math.round(skill.percentage)}%
+                        </Badge>
+                      </div>
+                      <Slider
+                        id={`edit-percentage-${skill.id}`}
+                        min={5}
+                        max={100}
+                        step={5}
+                        value={[skill.percentage]}
+                        onChange={(value) => handleSoftSkillPercentageChange(skill.id, value[0])}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setEditingSoftSkill(null)}>
+                        Cancel
+                      </Button>
+                      <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setEditingSoftSkill(null)}>
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center">
+                          <h4 className="font-medium">{skill.name}</h4>
+                          <Badge variant="outline" className="ml-2 !text-xs !bg-blue-500/20 !text-blue-600 px-3 py-0.5 border !border-blue-600">
+                            {Math.round(skill.percentage)}%
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">{skill.description}</p>
+
+                        {/* Add percentage slider for each skill */}
+                        <div className="mt-2 space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Percentage of Soft Skills</span>
+                            <span className="font-medium">{Math.round(skill.percentage)}%</span>
+                          </div>
+                          <Slider
+                            min={5}
+                            max={100}
+                            step={5}
+                            value={[skill.percentage]}
+                            onValueChange={(value) => handleSoftSkillPercentageChange(skill.id, value[0])}
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex space-x-1 ml-4">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => handleToggleExpand(e, skill.id)}
+                          className="h-8 w-8"
+                        >
+                          {skill.expanded ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4"
+                            >
+                              <path d="m18 15-6-6-6 6" />
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4"
+                            >
+                              <path d="m6 9 6 6 6-6" />
+                            </svg>
+                          )}
+                          <span className="sr-only">{skill.expanded ? "Collapse" : "Expand"}</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditingSoftSkill(skill.id)}
+                          className="h-8 w-8"
+                        >
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteSoftSkill(skill.id)}
+                          className="h-8 w-8 text-destructive hover:text-destructive/90"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete</span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {skill.expanded && (
+                      <div className="mt-4 space-y-4 border-t border-gray-500/40 pt-4">
+                        <div className="flex items-center justify-between">
+                          <h5 className="text-sm font-medium">Subcategories</h5>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                setCurrentSkillForSubcategories(skill.id)
+                                setIsSubcategoryPromptOpen(true)
+                              }}
+                              className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10 text-xs h-7"
+                            >
+                              <Sparkles className="h-3 w-3" />
+                              <span>Generate with AI</span>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setNewSubcategory({ skillId: skill.id, name: "", description: "" })}
+                              className="flex items-center gap-1 text-xs h-7"
+                            >
+                              <Plus className="h-3 w-3" />
+                              <span>Add Subcategory</span>
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* New subcategory input */}
+                        {newSubcategory.skillId === skill.id && (
+                          <div className="space-y-3 p-3 border rounded-md bg-muted/30">
+                            <div className="space-y-2">
+                              <Label htmlFor="new-subcategory-name" className="text-xs">
+                                Name
+                              </Label>
+                              <Input
+                                id="new-subcategory-name"
+                                value={newSubcategory.name}
+                                onChange={(e) => setNewSubcategory({ ...newSubcategory, name: e.target.value })}
+                                placeholder="e.g. Active Listening"
+                                className="h-8 text-sm"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="new-subcategory-description" className="text-xs">
+                                Description
+                              </Label>
+                              <Textarea
+                                id="new-subcategory-description"
+                                value={newSubcategory.description}
+                                onChange={(e) => setNewSubcategory({ ...newSubcategory, description: e.target.value })}
+                                placeholder="Describe what you're looking for in this subcategory"
+                                className="min-h-[60px] text-sm"
+                              />
+                            </div>
+                            <div className="flex justify-end space-x-2 mt-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setNewSubcategory({ skillId: null, name: "", description: "" })}
+                                className="h-7 text-xs"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={handleAddSubcategory}
+                                className="bg-blue-600 hover:bg-blue-700 h-7 text-xs"
+                                size="sm"
+                              >
+                                Add
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Subcategories list */}
+                        <div className="space-y-2">
+                          {skill.subcategories.map((subcategory) => (
+                            <div key={subcategory.id} className="border border-gray-500/40 rounded-md p-3 bg-transparent">
+                              {editingSubcategory &&
+                              editingSubcategory.skillId === skill.id &&
+                              editingSubcategory.subcategoryId === subcategory.id ? (
+                                <div className="space-y-3">
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`edit-sub-name-${subcategory.id}`} className="text-xs">
+                                      Name
+                                    </Label>
+                                    <Input
+                                      id={`edit-sub-name-${subcategory.id}`}
+                                      value={subcategory.name}
+                                      onChange={(e) =>
+                                        handleEditSubcategory(
+                                          skill.id,
+                                          subcategory.id,
+                                          e.target.value,
+                                          subcategory.description,
+                                          subcategory.percentage,
+                                        )
+                                      }
+                                      className="h-8 text-sm"
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`edit-sub-desc-${subcategory.id}`} className="text-xs">
+                                      Description
+                                    </Label>
+                                    <Textarea
+                                      id={`edit-sub-desc-${subcategory.id}`}
+                                      value={subcategory.description}
+                                      onChange={(e) =>
+                                        handleEditSubcategory(
+                                          skill.id,
+                                          subcategory.id,
+                                          subcategory.name,
+                                          e.target.value,
+                                          subcategory.percentage,
+                                        )
+                                      }
+                                      className="min-h-[60px] text-sm"
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                      <Label htmlFor={`edit-sub-percentage-${subcategory.id}`} className="text-xs">
+                                        Percentage
+                                      </Label>
+                                      <Badge variant="outline" className="text-blue-500 text-xs">
+                                        {Math.round(subcategory.percentage)}%
+                                      </Badge>
+                                    </div>
+                                    <Slider
+                                      id={`edit-sub-percentage-${subcategory.id}`}
+                                      min={5}
+                                      max={100}
+                                      step={5}
+                                      value={[subcategory.percentage]}
+                                      onChange={(value) =>
+                                        handleEditSubcategory(
+                                          skill.id,
+                                          subcategory.id,
+                                          subcategory.name,
+                                          subcategory.description,
+                                          value[0],
+                                        )
+                                      }
+                                      className="w-full"
+                                    />
+                                  </div>
+                                  <div className="flex justify-end space-x-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setEditingSubcategory(null)}
+                                      className="h-7 text-xs"
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      className="bg-blue-600 hover:bg-blue-700 h-7 text-xs"
+                                      onClick={() => setEditingSubcategory(null)}
+                                      size="sm"
+                                    >
+                                      Save
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex justify-between items-start">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center">
+                                      <h6 className="font-medium text-sm">{subcategory.name}</h6>
+                                      <Badge variant="outline" className="ml-2 !bg-blue-500/20 !text-blue-600 px-2 py-[1px] border !border-blue-600 text-[10px]">
+                                        {Math.round(subcategory.percentage)}%
+                                      </Badge>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">{subcategory.description}</p>
+                                    <div className="w-full max-w-[200px] h-1.5 bg-muted rounded-full overflow-hidden mt-1">
+                                      <div
+                                        className="h-full bg-white rounded-full"
+                                        style={{ width: `${subcategory.percentage}%` }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                  <div className="flex space-x-1">
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() =>
+                                        setEditingSubcategory({
+                                          skillId: skill.id,
+                                          subcategoryId: subcategory.id,
+                                        })
+                                      }
+                                      className="h-6 w-6"
+                                    >
+                                      <Edit className="h-3 w-3" />
+                                      <span className="sr-only">Edit</span>
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => handleDeleteSubcategory(skill.id, subcategory.id)}
+                                      className="h-6 w-6 text-destructive hover:text-destructive/90"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                      <span className="sr-only">Delete</span>
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+
+                          {skill.subcategories.length === 0 && (
+                            <div className="text-center p-3 border border-dashed rounded-md">
+                              <p className="text-xs text-muted-foreground">
+                                No subcategories added yet. Add subcategories or generate with AI.
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+
+          {softSkills.length === 0 && (
+            <div className="text-center p-4 border border-dashed rounded-md">
+              <p className="text-muted-foreground">No soft skills added yet. Add qualities or generate with AI.</p>
+            </div>
+          )}
+        </div>
+
+                    </div>
                     <Card className="!bg-[#1b1d23]">
                       <CardHeader>
                         <CardTitle>Interview Categories</CardTitle>
@@ -1586,7 +2609,9 @@ const CreateInterview = () => {
                                     const value = e.target.value;
                                     const numValue =
                                       value === "" ? 0 : parseInt(value, 10);
-                                    handleTechnicalPercentageChange(numValue);
+                                    handleTechnicalPercentageValueChange(
+                                      numValue
+                                    );
                                   }}
                                   className="w-full"
                                 />
@@ -2331,46 +3356,135 @@ const CreateInterview = () => {
             </Tabs>
           </main>
         </div>
-        <Dialog open={isPromptModalOpen} onOpenChange={setIsPromptModalOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Generate Description with AI</DialogTitle>
-              <DialogDescription>
-                Enter a prompt to guide the AI in generating a description.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="ai-prompt">Prompt</Label>
-                <Textarea
-                  id="ai-prompt"
-                  placeholder="e.g. Write a detailed description for a senior developer role with 5+ years of experience in React and Node.js"
-                  value={descriptionPrompt}
-                  onChange={(e) => {
-                    setDescriptionPrompt(e.target.value);
-                  }}
-                  className="min-h-[120px]"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsPromptModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="bg-blue-600 hover:bg-blue-700"
-                onClick={generateDescription}
-                disabled={!descriptionPrompt.trim()}
-              >
-                Generate
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </SidebarInset>
+      <Dialog open={isPromptModalOpen} onOpenChange={setIsPromptModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Generate Description with AI</DialogTitle>
+            <DialogDescription>
+              Enter a prompt to guide the AI in generating a description.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="ai-prompt">Prompt</Label>
+              <Textarea
+                id="ai-prompt"
+                placeholder="e.g. Write a detailed description for a senior developer role with 5+ years of experience in React and Node.js"
+                value={descriptionPrompt}
+                onChange={(e) => {
+                  setDescriptionPrompt(e.target.value);
+                }}
+                className="min-h-[120px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsPromptModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={generateDescription}
+              disabled={!descriptionPrompt.trim()}
+            >
+              Generate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Soft Skills Generation Modal */}
+      <Dialog
+        open={isSoftSkillPromptOpen}
+        onOpenChange={setIsSoftSkillPromptOpen}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Generate Soft Skills with AI</DialogTitle>
+            <DialogDescription>
+              Enter details about the role and industry to generate relevant
+              soft skills to assess.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="soft-skill-prompt">Prompt</Label>
+              <Textarea
+                id="soft-skill-prompt"
+                placeholder="e.g. Generate 4 key soft skills to assess for a product manager in a fast-paced tech startup"
+                value={softSkillPrompt}
+                onChange={(e) => setSoftSkillPrompt(e.target.value)}
+                className="min-h-[120px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsSoftSkillPromptOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700"
+              // onClick={handleGenerateSoftSkills}
+              disabled={!softSkillPrompt.trim()}
+            >
+              Generate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Subcategory Generation Modal */}
+      <Dialog
+        open={isSubcategoryPromptOpen}
+        onOpenChange={setIsSubcategoryPromptOpen}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Generate Subcategories with AI</DialogTitle>
+            <DialogDescription>
+              Enter details to generate relevant subcategories for this soft
+              skill.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="subcategory-prompt">Prompt</Label>
+              <Textarea
+                id="subcategory-prompt"
+                placeholder="e.g. Generate 3 subcategories for assessing communication skills in a technical interview"
+                value={subcategoryPrompt}
+                onChange={(e) => setSubcategoryPrompt(e.target.value)}
+                className="min-h-[120px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsSubcategoryPromptOpen(false);
+                setCurrentSkillForSubcategories(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700"
+              // onClick={handleGenerateSubcategories}
+              disabled={!subcategoryPrompt.trim()}
+            >
+              Generate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
