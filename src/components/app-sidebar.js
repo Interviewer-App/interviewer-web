@@ -38,14 +38,14 @@ const companyItems = [
     icon: MessageCircleQuestion ,
   },
   {
-    title: "Comapny Profile",
-    url: "/company-profile",
-    icon: Warehouse,
-  },
-  {
     title: "Interview-comparision",
     url: "/Interview-comparision",
     icon: Swords,
+  },
+  {
+    title: "Comapny Profile",
+    url: "/company-profile",
+    icon: Warehouse,
   },
 ];
 

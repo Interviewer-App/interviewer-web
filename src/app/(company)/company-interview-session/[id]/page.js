@@ -155,9 +155,16 @@ function InterviewSessionPreviewPage({ params }) {
       //   userId: userId,
       //   role: role,
       // });
-      router.push(
-        `/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
-      );
+      if(sessionDetails.interview.interviewMedium === 'PHYSICAL' && sessionDetails.interview.isWithDevice === false){
+        router.push(
+          `/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
+        );
+      }else{
+        router.push(
+          `/interview-room-analiyzer/${sessionId}?companyID=${userId}&sessionID=${sessionId}`
+        );
+      }
+      
     }
   };
 
