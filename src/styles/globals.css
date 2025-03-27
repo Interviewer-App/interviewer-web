@@ -396,13 +396,13 @@ body {
 }
 
 .quill-editor{
-  background-color: #1b1d23;
+  background-color: #0c0c0c;
   border-color: #ff5100;
 }
 
 .ql-toolbar.ql-snow {
   border-color: #27282c !important;
-  background-color: #1f2128 !important; 
+  background-color: #0c0c0c !important; 
   border-top-left-radius: 8px  !important;
   border-top-right-radius: 8px  !important;
 }
