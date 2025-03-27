@@ -61,3 +61,13 @@ export const generateInterviewDuration = async (data) => {
     throw error;
   }
 };
+
+export const generateSoftSkills = async (data) => {
+  try {
+    const response = await axiosInstance.post(`/ai/generate-softskills`, data);
+    return response;
+  } catch (error) {
+    console.log("Error generate soft skills:", error);
+    throw error;
+  }
+};
