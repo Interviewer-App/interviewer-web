@@ -1510,11 +1510,19 @@ const UserProfile = () => {
                       </p>
                     </div>
                   </div>
-                  <Button className=" mt-4 w-[40%] max-w-[250px] mx-auto">
+                  <Button className=" mt-4 w-[40%] max-w-[250px] mx-auto"
+                  onClick={() => setModalOpen(true)}>
                     Upload Document
                   </Button>
                 </CardContent>
               </Card>
+
+              {modalOpen && (
+                  <UploadDocumentModal
+                    setModalOpen={setModalOpen}
+                    isUpdated={false}
+                  />
+                )}
             </TabsContent>
 
             <TabsContent value="settings" className="mt-0">
