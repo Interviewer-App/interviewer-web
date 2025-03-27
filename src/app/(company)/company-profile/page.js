@@ -36,7 +36,7 @@ import { getCompanyTeams } from "@/lib/api/user-team";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { getCompanyById, updateCompanyById } from "@/lib/api/users";
-import { Info } from 'lucide-react';
+import { Building2, Facebook, Github, Info, Mail, Phone, Save } from 'lucide-react';
           
 import {
   Tooltip,
@@ -44,6 +44,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Linkedin } from "react-feather";
 const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
   ssr: false,
 });
@@ -287,8 +288,8 @@ const InterviewCategoryPage = () => {
         </header>
 
         <div className="w-[90%] max-w-[1500px] mx-auto h-full p-6 relative">
-          <h1 className=" text-3xl font-semibold">Company Profile</h1>
-          <div className=" w-full flex flex-col md:flex-row justify-center md:justify-start items-center mt-9">
+          {/* <h1 className=" text-3xl font-semibold">Company Profile</h1> */}
+          <div className=" w-full flex flex-col md:flex-row justify-center md:justify-start items-center mt-9 bg-[#1b1d23] p-6 rounded-2xl">
             <Avatar className=" h-28 w-28 md:h-40 md:w-40 ">
               <AvatarFallback className="text-4xl md:text-6xl">
                 {companyDetails?.companyName
@@ -299,14 +300,15 @@ const InterviewCategoryPage = () => {
                   : ""}
               </AvatarFallback>
             </Avatar>
-            <div className=" ml-5 mt-5 md:mt-0">
-              <p className=" text-2xl md:text-5xl md:text-left text-center py-1">
+            <div className=" md:ml-5 md:mt-5 ml-0 mt-0">
+              <p className=" text-2xl md:text-5xl md:text-left text-center py-1 font-semibold">
                 {companyDetails?.companyName || "Company"}{" "}
               </p>
-              <p className=" text-lg md:text-xl md:text-left text-center text-gray-500">
+              <p className=" text-lg md:text-xl md:text-left text-center text-gray-500 flex items-center ">
+              <Mail size={16} className="mr-1" />
                 {email}
               </p>
-              <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
+              <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-[#262626] boeder text-white py-1 px-4 w-fit border-gray-500/20">
                 {companyDetails?.adminUser?.[0]?.role || "Candidate"}
               </p>
             </div>
@@ -344,9 +346,12 @@ const InterviewCategoryPage = () => {
                 onClick={handleSaveChanges}
                 className={` ${
                   isEdit ? "block" : "hidden"
-                } rounded-lg text-sm font-semibold bg-darkred text-white h-11 px-5`}
+                } rounded-lg text-sm font-semibold bg-darkred text-black h-11 px-5 bg-white border border-black`}
               >
+                <div className="flex flex-row items-center space-x-2">
+                <Save />
                 Save Changes
+                </div>
               </button>
             </div>
           </div>
@@ -443,52 +448,62 @@ const InterviewCategoryPage = () => {
                   </div>
                 </div>
                 <div className=" w-full md:w-[40%] md:px-8 md:mt-0 mt-5">
-                  <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg">
-                    <h2 className=" text-xl font-semibold">Company Details</h2>
-                    <div className=" w-full mt-5">
-                      <p className=" text-base text-gray-500">Company Name</p>
+                  <div className="bg-[#1b1d23] text-gray-400 border-2 border-gray-700 px-6 py-5 rounded-lg">
+                    <h2 className=" text-xl font-semibold text-white">Company Details</h2>
+                    <div className=" w-full mt-5 flex flex-row gap-2">
+                    <Building2 />
+                    <div>
+                      <p className=" text-base text-muted-foreground mb-1">Company Name</p>
                       <input
                         type="text"
                         readOnly={!isEdit}
-                        value={companyName || ""}
-                        placeholder="Company Name"
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
-                    </div>
-                    <div className=" w-full mt-5">
-                      <p className=" text-base text-gray-500">Email</p>
-                      <p className=" text-md">{email}</p>
-                    </div>
-                    <div className=" w-full mt-5">
-                      <p className=" text-base text-gray-500">Contact No</p>
-                      <input
-                        type="text"
-                        readOnly={!isEdit}
-                        value={contactNo || ""}
-                        placeholder="not available"
-                        onChange={(e) => setContactNo(e.target.value)}
-                        className={` focus:outline-none rounded-lg ${
-                          isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
-                        } w-full text-sm `}
-                      />
-                    </div>
-                  </div>
-                  <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
-                    <h2 className=" text-xl font-semibold">Social Media</h2>
-                    <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <TbWorldWww className=" text-3xl" />
-                      {isEdit ? (
+                            value={companyName || ""}
+                            placeholder="Company Name"
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            className={` focus:outline-none rounded-lg text-white ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                              } w-full text-sm `}
+                          />
+                        </div>
+                      </div>
+                      <div className="w-full mt-5 flex flex-col">
+                        <div className="flex flex-row gap-2">
+                        <Mail />
+                        <p className=" text-base text-muted-foreground">Email</p>
+                        </div>
+                        <p className=" text-md ml-8 text-white">{email}</p>
+                      </div>
+                      <div className=" w-full mt-5 flex flex-col">
+                        <div className="flex flex-row gap-2">
+                      <Phone size={18}/>
+                        <p className=" text-base text-muted-foreground mb-1">Contact No</p>
+                        </div>
                         <input
                           type="text"
                           readOnly={!isEdit}
+                          value={contactNo || "not available"}
+                          onChange={(e) => setContactNo(e.target.value)}
+                          className={` ml-8 !text-white focus:outline-none rounded-lg ${isEdit ? "bg-black py-3 px-4" : "bg-transparent"
+                            } text-sm text-w`}
+                        />
+                      </div>
+                    </div>
+                    <div className="bg-[#1b1d23] text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
+                      <h2 className=" text-xl font-semibold text-white">Social Media</h2>
+                      <div className=" w-full mt-5 flex justify-start items-center gap-2">
+
+                      <div className="bg-[#b3b3b31a] rounded-md p-2">
+                      <TbWorldWww className=" text-3xl" />
+                            </div>
+                   
+                        {isEdit ? (
+                          <input
+                            type="text"
+                            readOnly={!isEdit}
                           value={websiteUrl || ""}
                           placeholder="Website URL"
                           onChange={(e) => setWebsiteUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -506,7 +521,9 @@ const InterviewCategoryPage = () => {
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaLinkedin className=" text-3xl" />
+                    <div className="bg-[#b3b3b31a] rounded-md p-2">
+                    <Linkedin />
+                            </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -515,7 +532,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Linkedin URL"
                           onChange={(e) => setLinkedinUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -533,7 +550,9 @@ const InterviewCategoryPage = () => {
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaGithub className=" text-3xl" />
+                    <div className="bg-[#b3b3b31a] rounded-md p-2">
+                    <Github />
+                            </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -542,7 +561,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Github URL"
                           onChange={(e) => setGithubUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -560,7 +579,10 @@ const InterviewCategoryPage = () => {
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaFacebookSquare className=" text-3xl" />
+                    <div className="bg-[#b3b3b31a] rounded-md p-2">
+                    <Facebook />
+
+                            </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -569,7 +591,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Facebook URL"
                           onChange={(e) => setFacebookUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -587,7 +609,10 @@ const InterviewCategoryPage = () => {
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaXTwitter className=" text-3xl" />
+                    <div className="bg-[#b3b3b31a] rounded-md p-2">
+                    <FaXTwitter className=" text-3xl" />
+                            </div>
+                      
                       {isEdit ? (
                         <input
                           type="text"
@@ -596,7 +621,7 @@ const InterviewCategoryPage = () => {
                           placeholder="X URL"
                           onChange={(e) => setTwitterUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
@@ -614,7 +639,9 @@ const InterviewCategoryPage = () => {
                       )}
                     </div>
                     <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                      <FaDiscord className=" text-3xl" />
+                    <div className="bg-[#b3b3b31a] rounded-md p-2">
+                    <FaDiscord className=" text-3xl" />
+                            </div>
                       {isEdit ? (
                         <input
                           type="text"
@@ -623,7 +650,7 @@ const InterviewCategoryPage = () => {
                           placeholder="Discord URL"
                           onChange={(e) => setDiscordUrl(e.target.value)}
                           className={` focus:outline-none rounded-lg ${
-                            isEdit ? "bg-[#32353b] py-3 px-4" : "bg-transparent"
+                            isEdit ? "bg-black py-3 px-4" : "bg-transparent"
                           } w-full text-sm `}
                         />
                       ) : (
