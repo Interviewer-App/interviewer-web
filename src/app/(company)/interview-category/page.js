@@ -159,7 +159,7 @@ const InterviewCategoryPage = () => {
 
             {/* Pagination handle section start */}
             <Pagination>
-              <PaginationContent>
+              <PaginationContent className="cursor-pointer">
                 <PaginationItem>
                   <PaginationPrevious onClick={() => handlePreviousPage()} />
                 </PaginationItem>

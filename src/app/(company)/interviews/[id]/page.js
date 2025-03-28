@@ -1568,8 +1568,8 @@ export default function InterviewPreviewPage({ params }) {
                     )}
                   </div>
                 </div>
-                <Pagination>
-                  <PaginationContent>
+                <Pagination >
+                  <PaginationContent className="cursor-pointer">
                     <PaginationItem>
                       <PaginationPrevious
                         onClick={() => handlePreviousPage()}
@@ -1643,7 +1643,7 @@ export default function InterviewPreviewPage({ params }) {
                   </div>
                 </div>
                 <Pagination>
-                  <PaginationContent>
+                  <PaginationContent className="cursor-pointer">
                     <PaginationItem>
                       <PaginationPrevious
                         onClick={() => handlePreviousPage()}
