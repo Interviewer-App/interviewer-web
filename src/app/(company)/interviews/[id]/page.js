@@ -36,6 +36,7 @@ import {
   Copy,
   X,
   Check,
+  Loader2,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -4002,14 +4003,23 @@ export default function InterviewPreviewPage({ params }) {
                     Cancel
                   </Button> */}
                   {interviewInviteTab === "email" ? (
-                    <Button
-                      className="bg-blue-600 hover:bg-blue-700"
-                      onClick={handleInvitationSubmit}
-                      // disabled={!inviteEmails.trim()}
-                    >
-                      <Mail className="h-4 w-4 mr-2" />
-                      Send Invitations
-                    </Button>
+                   <Button
+                   className="bg-blue-600 hover:bg-blue-700"
+                   onClick={handleInvitationSubmit}
+                   disabled={loading} // Disable the button when loading
+                 >
+                   {loading ? (
+                     <>
+                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                       Sending...
+                     </>
+                   ) : (
+                     <>
+                       <Mail className="h-4 w-4 mr-2" />
+                       Send Invitations
+                     </>
+                   )}
+                 </Button>
                   ) : (
                     <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleCopyLink}>
                       <Copy className="h-4 w-4 mr-2" />
