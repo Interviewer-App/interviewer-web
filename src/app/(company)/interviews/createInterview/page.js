@@ -101,6 +101,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   generateInterviewJobDescription,
   generateInterviewSchedules,
+  generateRecommondations,
   generateSoftSkills,
 } from "@/lib/api/ai";
 import { getSession } from "next-auth/react";
@@ -255,23 +256,11 @@ const CreateInterview = () => {
   const [softSkills, setSoftSkills] = useState([]);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState({
-    technicalPercentage: 50,
-    softSkillsPercentage: 50,
-    addedQuestions: [
-      { text: "Describe your experience with CI/CD pipelines", marks: 15 },
-    ],
-    addedSoftSkills: [
-      {
-        name: "Adaptability",
-        description: "Ability to adjust to new conditions and requirements",
-      },
-    ],
-    removedQuestionIds: [],
-    removedSoftSkillIds: [],
   });
   const [isAddingSoftSkill, setIsAddingSoftSkill] = useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [softSkillsLoading, setSoftSkillsLoading] = useState(false);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
 
   useEffect(() => {
     if (technicalCategoryId && categoryList.length === 0) {
@@ -338,6 +327,68 @@ const CreateInterview = () => {
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
             description: `Soft Skill generation failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
+
+  const handleGenerateAISuggestioins = async (e) => {
+    e.preventDefault();
+    setSuggestionsLoading(true);
+    try {
+      const data = {
+        position: jobTitle,
+        qualifications: jobDescription,
+        industry: relatedField,
+        experience_level: proficiencyLevel,
+        technicalPercentage: technicalPercentage,
+        softSkillsPercentage:softSkillsPercentage,
+        flexibleAssessment: true,
+        softSkills: softSkills,
+        questions: []
+      };
+      const response = await generateRecommondations(data);
+      if (response) {
+        setShowAnalysis(true);
+        setAiSuggestions(response.data.recommendation);
+        // const data = response.data.skills;
+        // setSoftSkills(
+        //   response.data.softskills.map((skill, index) => ({
+        //     ...skill,
+        //     expanded: false,
+        //     id: `s${index + 1}`,
+        //   }))
+        // );
+        setSuggestionsLoading(false);
+      }
+    } catch (err) {
+      setSuggestionsLoading(false);
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Recommondation generation failed: ${data.message}`,
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
         } else {
@@ -1503,8 +1554,8 @@ const CreateInterview = () => {
 
   const handleAcceptSuggestions = () => {
     // Update percentages
-    setTechnicalPercentage(aiSuggestions.technicalPercentage);
-    setSoftSkillsPercentage(aiSuggestions.softSkillsPercentage);
+    setTechnicalPercentage(aiSuggestions.summary.recommended_weighting.technical_expertise);
+    setSoftSkillsPercentage(aiSuggestions.summary.recommended_weighting.soft_skills);
 
     // // Add suggested questions
     // const newQuestions = [
@@ -1518,38 +1569,38 @@ const CreateInterview = () => {
     // setQuestions(newQuestions)
 
     // Calculate how much percentage to allocate to new skills
-    const remainingSkills = softSkills.filter(
-      (s) => !aiSuggestions.removedSoftSkillIds.includes(s.id)
-    );
-    const newSkillsCount = aiSuggestions.addedSoftSkills.length;
-    const totalNewSkills = remainingSkills.length + newSkillsCount;
+    // const remainingSkills = softSkills.filter(
+    //   (s) => !aiSuggestions.removedSoftSkillIds.includes(s.id)
+    // );
+    const newSkillsCount = aiSuggestions.suggested_soft_skills.length;
+    // const totalNewSkills = remainingSkills.length + newSkillsCount;
 
     // If we're adding new skills, adjust percentages
     if (newSkillsCount > 0) {
       // Adjust existing skills
-      const percentagePerSkill = 100 / totalNewSkills;
-      const adjustedSkills = remainingSkills.map((skill) => ({
-        ...skill,
-        percentage: percentagePerSkill,
-      }));
+      // const percentagePerSkill = 100 / totalNewSkills;
+      // const adjustedSkills = remainingSkills.map((skill) => ({
+      //   ...skill,
+      //   percentage: percentagePerSkill,
+      // }));
 
       // Add new skills with calculated percentage
       const newSoftSkills = [
-        ...adjustedSkills,
-        ...aiSuggestions.addedSoftSkills.map((s) => ({
+        // ...adjustedSkills,
+        ...aiSuggestions.suggested_soft_skills.map((s) => ({
           id: `s${Date.now() + Math.random()}`,
           name: s.name,
           description: s.description,
           expanded: false,
-          percentage: percentagePerSkill,
-          subcategories: [
-            {
-              id: `sub${Date.now()}`,
-              name: "General Assessment",
-              description: "Overall evaluation of this quality",
-              percentage: 100,
-            },
-          ],
+          percentage: s.percentage,
+          // subcategories: [
+          //   {
+          //     id: `sub${Date.now()}`,
+          //     name: "General Assessment",
+          //     description: "Overall evaluation of this quality",
+          //     percentage: 100,
+          //   },
+          // ],
         })),
       ];
 
@@ -3541,12 +3592,19 @@ const CreateInterview = () => {
                         <h2 className="text-xl font-semibold">AI Analysis</h2>
                         <Button
                           type="button"
-                          onClick={handleAnalyze}
+                          onClick={handleGenerateAISuggestioins}
                           className="flex items-center gap-1 !bg-transparent !text-blue-500 border !border-blue-500/50 hover:!bg-blue-500/20 hover:!text-blue-400"
                           disabled={showAnalysis}
                         >
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          Analyze & Suggest Improvements
+                          {suggestionsLoading ? (
+                              <LoaderCircle className="animate-spin" />
+                            ) : (
+                              <>
+                                <Sparkles className="h-4 w-4 text-blue-500" />
+                                <span>Analyze & Suggest Improvements</span>
+                              </>
+                            )}
+                          
                         </Button>
                       </div>
 
@@ -3572,14 +3630,14 @@ const CreateInterview = () => {
                                       className="!text-blue-500 !font-bold"
                                     >
                                       Technical:{" "}
-                                      {aiSuggestions.technicalPercentage}%
+                                      {aiSuggestions.summary.recommended_weighting.technical_expertise}%
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
-                                      {aiSuggestions.technicalPercentage >
+                                      {aiSuggestions.summary.recommended_weighting.technical_expertise >
                                       technicalPercentage
                                         ? "+"
                                         : ""}
-                                      {aiSuggestions.technicalPercentage -
+                                      {aiSuggestions.summary.recommended_weighting.technical_expertise -
                                         technicalPercentage}
                                       %
                                     </span>
@@ -3590,14 +3648,14 @@ const CreateInterview = () => {
                                       className="!text-blue-500 !font-bold"
                                     >
                                       Soft Skills:{" "}
-                                      {aiSuggestions.softSkillsPercentage}%
+                                      {aiSuggestions.summary.recommended_weighting.soft_skills}%
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
-                                      {aiSuggestions.softSkillsPercentage >
+                                      {aiSuggestions.summary.recommended_weighting.soft_skills >
                                       softSkillsPercentage
                                         ? "+"
                                         : ""}
-                                      {aiSuggestions.softSkillsPercentage -
+                                      {aiSuggestions.summary.recommended_weighting.soft_skills -
                                         softSkillsPercentage}
                                       %
                                     </span>
@@ -3634,13 +3692,13 @@ const CreateInterview = () => {
                                 </div>
                               )} */}
 
-                              {aiSuggestions.addedSoftSkills.length > 0 && (
+                              {aiSuggestions.suggested_soft_skills.length > 0 && (
                                 <div>
                                   <h4 className="font-medium">
                                     Suggested Soft Skills to Add
                                   </h4>
                                   <ul className="mt-2 space-y-2">
-                                    {aiSuggestions.addedSoftSkills.map(
+                                    {aiSuggestions.suggested_soft_skills.map(
                                       (s, i) => (
                                         <li
                                           key={i}
@@ -3653,6 +3711,9 @@ const CreateInterview = () => {
                                             </p>
                                             <p className="text-sm text-muted-foreground">
                                               {s.description}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                              {s.percentage}%
                                             </p>
                                           </div>
                                         </li>

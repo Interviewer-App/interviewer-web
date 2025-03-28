@@ -276,7 +276,6 @@ const InterviewComparision = () => {
   }, [selectedInterview])
 
   const handleCompareInterviews = async () => {
-    debugger
     if (firstSessionId && secondSessionId) {
       setIsLoading(true);
       try {
@@ -436,7 +435,6 @@ const InterviewComparision = () => {
                     <Select
                       value={secondCandidateName}
                       onValueChange={(value) => {
-                        debugger
                         const selectedCandidate = candidates.find(candidate => candidate.candidate.user.email === value);
                         setSecondCandidateName(value);
                         setSecondSessionId(selectedCandidate?.sessionId || "");

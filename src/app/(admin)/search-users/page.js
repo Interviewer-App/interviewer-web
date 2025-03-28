@@ -63,7 +63,6 @@ const UsersSearchPage = () => {
   });
 
   const handleFilterChange = (newFilters) => {
-    debugger
     // Convert ALL_ROLES to empty string for the role filter
     const processedFilters = {
       ...newFilters,
