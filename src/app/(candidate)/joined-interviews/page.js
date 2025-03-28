@@ -170,7 +170,7 @@ const JoinedInterviews = () => {
           {/* Pagination Section */}
           <div className="mt-4">
             <Pagination>
-              <PaginationContent>
+              <PaginationContent className="cursor-pointer">
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={handlePreviousPage}
