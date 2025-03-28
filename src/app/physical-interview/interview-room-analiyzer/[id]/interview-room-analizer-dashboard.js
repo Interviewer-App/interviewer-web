@@ -142,8 +142,166 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       setTypingAnswer("typing...");
     };
 
-    const openTestOnnewTab = (question) => {
-
+    const openTestOnNewTab = () => {
+      // Define the hardcoded questions
+      const questions = [
+        {
+          id: 1,
+          questionText: "Explain the difference between let, const, and var in JavaScript.",
+          estimatedTimeMinutes: 5,
+          explanation: "This question tests the candidate's understanding of variable declaration and scoping in JavaScript.",
+          isAnswered: false
+        },
+        {
+          id: 2,
+          questionText: "What is the Virtual DOM in React and how does it improve performance?",
+          estimatedTimeMinutes: 7,
+          explanation: "This evaluates the candidate's knowledge of React's core optimization mechanism.",
+          isAnswered: false
+        },
+        {
+          id: 3,
+          questionText: "Describe how you would implement a debounce function in JavaScript.",
+          estimatedTimeMinutes: 10,
+          explanation: "Tests understanding of event handling and performance optimization techniques.",
+          isAnswered: false
+        },
+        {
+          id: 4,
+          questionText: "What are React hooks and how do they differ from class components?",
+          estimatedTimeMinutes: 8,
+          explanation: "Assesses knowledge of modern React patterns and state management.",
+          isAnswered: false
+        },
+        {
+          id: 5,
+          questionText: "Explain the concept of closures in JavaScript with an example.",
+          estimatedTimeMinutes: 6,
+          explanation: "Tests fundamental JavaScript knowledge and scoping understanding.",
+          isAnswered: false
+        }
+      ];
+    
+      // Create HTML content with navigation logic
+      const htmlContent = 
+        '<html>' +
+          '<head>' +
+            '<title>Interview Questions</title>' +
+            '<style>' +
+              'body {' +
+                'font-family: Arial, sans-serif;' +
+                'background-color: #1a1a1a;' +
+                'color: #d1d5db;' +
+                'padding: 20px;' +
+                'margin: 0;' +
+                'display: flex;' +
+                'flex-direction: column;' +
+                'align-items: center;' +
+                'justify-content: center;' +
+                'height: 100vh;' +
+              '}' +
+              'h1 {' +
+                'color: #ffffff;' +
+                'font-size: 24px;' +
+                'margin-bottom: 20px;' +
+              '}' +
+              '.question-container {' +
+                'background-color: #2d2d2d;' +
+                'padding: 20px;' +
+                'border-radius: 8px;' +
+                'border: 1px solid #4b5563;' +
+                'width: 80%;' +
+                'max-width: 600px;' +
+              '}' +
+              '.question-text {' +
+                'font-size: 18px;' +
+                'margin-bottom: 15px;' +
+              '}' +
+              '.details {' +
+                'font-size: 14px;' +
+                'color: #9ca3af;' +
+              '}' +
+              '.navigation {' +
+                'margin-top: 20px;' +
+                'display: flex;' +
+                'justify-content: space-between;' +
+                'width: 80%;' +
+                'max-width: 600px;' +
+              '}' +
+              'button {' +
+                'padding: 10px 20px;' +
+                'background-color: #3b82f6;' +
+                'color: white;' +
+                'border: none;' +
+                'border-radius: 5px;' +
+                'cursor: pointer;' +
+                'font-size: 14px;' +
+              '}' +
+              'button:disabled {' +
+                'background-color: #6b7280;' +
+                'cursor: not-allowed;' +
+              '}' +
+              'button:hover:not(:disabled) {' +
+                'background-color: #2563eb;' +
+              '}' +
+            '</style>' +
+          '</head>' +
+          '<body>' +
+          '<h1>Interview Questions</h1>' +
+          '<div id="questionCounter" style="font-size: 16px; color: #9ca3af; margin-bottom: 20px;"></div>' + // Add this line
+          '<div class="question-container" id="questionContainer"></div>' +
+            '<div class="navigation">' +
+              '<button id="prevBtn">Previous</button>' +
+              '<button id="nextBtn">Next</button>' +
+            '</div>' +
+            '<script>' +
+              'const questions = ' + JSON.stringify(questions) + ';' +
+              'let currentIndex = 0;' +
+              
+              'function displayQuestion(index) {' +
+              'const question = questions[index];' +
+              'const container = document.getElementById("questionContainer");' +
+              'const counter = document.getElementById("questionCounter");' + // Add this line
+              'counter.innerHTML = "Question " + (index + 1) + " of " + questions.length;' + // Add this line
+              'container.innerHTML = ' +
+              '"<div class=\\"question-text\\">" + question.questionText + "</div>" + ' +
+              '"<div class=\\"details\\">" + ' +
+              '"Estimated Time: " + question.estimatedTimeMinutes + " minutes<br>" + ' +
+              '"Explanation: " + question.explanation + ' +
+              '"</div>";' +
+              'const prevBtn = document.getElementById("prevBtn");' +
+              'const nextBtn = document.getElementById("nextBtn");' +
+              'prevBtn.disabled = index === 0;' +
+              'nextBtn.disabled = index === questions.length - 1;' +
+              '}' +
+          
+              'displayQuestion(currentIndex);' +
+              
+              'document.getElementById("prevBtn").addEventListener("click", () => {' +
+                'if (currentIndex > 0) {' +
+                  'currentIndex--;' +
+                  'displayQuestion(currentIndex);' +
+                '}' +
+              '});' +
+              
+              'document.getElementById("nextBtn").addEventListener("click", () => {' +
+                'if (currentIndex < questions.length - 1) {' +
+                  'currentIndex++;' +
+                  'displayQuestion(currentIndex);' +
+                '}' +
+              '});' +
+            '</script>' +
+          '</body>' +
+        '</html>';
+    
+      // Open a new window with the questions
+      const newWindow = window.open("", "InterviewQuestions", "width=800,height=600,scrollbars=yes,resizable=yes");
+      if (newWindow) {
+        newWindow.document.write(htmlContent);
+        newWindow.document.close();
+      } else {
+        alert("Popup blocked! Please allow popups for this site.");
+      }
     };
 
 
@@ -172,7 +330,6 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   >
                     Start Technical Test
                   </button>)}
-
                  
 
 
@@ -189,17 +346,17 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     <button
                     variant="secondary"
                     className="absolute top-0 right-48 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
-                    onClick={openTestOnnewTab}
+                    onClick={openTestOnNewTab}
                   >
                     Share <ArrowUpRight className="inline-block" width={15} />
                   </button>
                     </>
                     
                 
-                
-                )}
 
-                  
+                  )}
+
+
 
                   <h1 className=" text-3xl font-semibold">Question List</h1>
                   {technicalStatus === "ongoing" && (<div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] p-4 rounded-lg">
@@ -253,6 +410,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     ))}
                   </div>
                 </div>
+               
               </ResizablePanel>
               <ResizableHandle />
               {/* <ResizablePanel defaultSize={40} className="bg-black px-3">
