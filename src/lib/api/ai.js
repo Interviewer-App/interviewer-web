@@ -71,3 +71,15 @@ export const generateSoftSkills = async (data) => {
     throw error;
   }
 };
+
+
+
+export const generateRecommondations = async (data) => {
+  try {
+    const response = await axiosInstance.post(`/ai/generate-recommendation`, data);
+    return response;
+  } catch (error) {
+    console.log("Error generate recommondations:", error);
+    throw error;
+  }
+};
