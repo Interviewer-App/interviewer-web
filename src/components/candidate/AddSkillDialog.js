@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/form';
 
 export const AddSkillDialog = ({ onAddSkill }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const form = useForm({defaultValues: {
     name: '',
     level: ''
@@ -34,11 +35,12 @@ export const AddSkillDialog = ({ onAddSkill }) => {
   const onSubmit = (data) => {
     onAddSkill(data);
     form.reset();
+    setIsOpen(false); // Close the modal
     
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className='w-full flex justify-center items-center'>
         <Button variant="outline" size="sm" className="w-[40%] mx-auto mt-4">
           Add New Skill
