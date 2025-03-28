@@ -72,6 +72,7 @@ import {
   AlertCircleIcon,
   Edit,
   X,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 // import RichTextEditor from '@/components/editors/RichTextEditor';
@@ -235,6 +236,7 @@ const CreateInterview = () => {
   const [isSoftSkillPromptOpen, setIsSoftSkillPromptOpen] = useState(false);
   const [softSkillPrompt, setSoftSkillPrompt] = useState("");
   const [editingSoftSkill, setEditingSoftSkill] = useState(null);
+  const [isGeneratingSchedule, setIsGeneratingSchedule] = useState(false);
 
   // Add new state for subcategory management
   const [newSubcategory, setNewSubcategory] = useState({
@@ -255,9 +257,9 @@ const CreateInterview = () => {
   const [aiSuggestions, setAiSuggestions] = useState({
     technicalPercentage: 50,
     softSkillsPercentage: 50,
-    // addedQuestions: [
-    //   { text: "Describe your experience with CI/CD pipelines", marks: 15 },
-    // ],
+    addedQuestions: [
+      { text: "Describe your experience with CI/CD pipelines", marks: 15 },
+    ],
     addedSoftSkills: [
       {
         name: "Adaptability",
@@ -318,7 +320,7 @@ const CreateInterview = () => {
       if (response) {
         // const data = response.data.skills;
         setSoftSkills(
-          response.data.softskills.map((skill,index) => ({
+          response.data.softskills.map((skill, index) => ({
             ...skill,
             expanded: false,
             id: `s${index + 1}`,
@@ -800,11 +802,11 @@ const CreateInterview = () => {
             percentage: softSkillsPercentage,
             subAssignments: softSkills.map((skill) => ({
               name: skill.name,
-              percentage: String(skill.percentage),
+              percentage: parseInt(skill.percentage, 10),
               color: getRandomHexColor(),
               subcategoryParameters: skill.subcategories.map((sub) => ({
                 name: sub.name,
-                percentage: String(sub.percentage),
+                percentage: parseInt(sub.percentage, 10),
               })),
             })),
           },
@@ -879,7 +881,7 @@ const CreateInterview = () => {
   };
 
   const handleScheduleGenerate = async (e) => {
-    setIsLoading(true);
+    setIsGeneratingSchedule(true);
     e.preventDefault();
 
     try {
@@ -891,7 +893,7 @@ const CreateInterview = () => {
           description: "Please select a date range and time range.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
-        setIsLoading(false);
+        setIsGeneratingSchedule(false);
         return;
       }
 
@@ -906,7 +908,7 @@ const CreateInterview = () => {
           description: "Please select a valid interview duration.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
-        setIsLoading(false);
+        setIsGeneratingSchedule(false);
         return;
       }
 
@@ -926,7 +928,7 @@ const CreateInterview = () => {
           description: "Start date/time must be before end date/time.",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
-        setIsLoading(false);
+        setIsGeneratingSchedule(false);
         return;
       }
 
@@ -1032,7 +1034,7 @@ const CreateInterview = () => {
         });
       }
     } catch (err) {
-      setIsLoading(false);
+      setIsGeneratingSchedule(false);
       if (err.response) {
         const { data } = err.response;
         toast({
@@ -1053,7 +1055,7 @@ const CreateInterview = () => {
         });
       }
     } finally {
-      setIsLoading(false);
+      setIsGeneratingSchedule(false);
     }
   };
 
@@ -2580,9 +2582,9 @@ const CreateInterview = () => {
                           <AlertCircleIcon className="h-4 w-4" />
                           <AlertTitle>Manual Assessment</AlertTitle>
                           <AlertDescription>
-                            You&apos;ve chosen to assess technical expertise manually
+                            You've chosen to assess technical expertise manually
                             during the interview. Prepare your own questions and
-                            evaluation criteria based on the candidate&apos;s field.
+                            evaluation criteria based on the candidate's field.
                           </AlertDescription>
                         </Alert>
                       )}
@@ -2986,9 +2988,9 @@ const CreateInterview = () => {
                                             </Button>
                                           </div>
                                         </div>
-                                        <div className="w-full bg-muted/30 h-1 mt-1 rounded-full overflow-hidden">
+                                        <div className="w-full bg-muted/90 h-1 mt-1 rounded-full overflow-hidden">
                                           <div
-                                            className="bg-white/40 h-full rounded-full"
+                                            className="bg-white/50 h-full rounded-full"
                                             style={{
                                               width: `${skill.percentage}%`,
                                             }}
@@ -2997,7 +2999,7 @@ const CreateInterview = () => {
                                       </div>
                                     </div>
                                     <div className="flex space-x-1 ml-4">
-                                      {/* <Button
+                                      <Button
                                         type="button"
                                         variant="ghost"
                                         size="icon"
@@ -3042,7 +3044,7 @@ const CreateInterview = () => {
                                             ? "Collapse"
                                             : "Expand"}
                                         </span>
-                                      </Button> */}
+                                      </Button>
                                       <Button
                                         variant="ghost"
                                         size="icon"
@@ -3074,7 +3076,7 @@ const CreateInterview = () => {
                                         <h5 className="text-sm font-medium">
                                           Subcategories
                                         </h5>
-                                        <div className="flex space-x-2">
+                                        {/* <div className="flex space-x-2">
                                           <Button
                                             variant="outline"
                                             size="sm"
@@ -3107,7 +3109,7 @@ const CreateInterview = () => {
                                             <Plus className="h-3 w-3" />
                                             <span>Add Subcategory</span>
                                           </Button>
-                                        </div>
+                                        </div> */}
                                       </div>
 
                                       {/* New subcategory input */}
@@ -3261,9 +3263,9 @@ const CreateInterview = () => {
                                       {/* Subcategories list */}
                                       <div className="space-y-2">
                                         {skill.subcategories.map(
-                                          (subcategory) => (
+                                          (subcategory, index) => (
                                             <div
-                                              key={subcategory.id}
+                                              key={index}
                                               className="border border-gray-500/40 rounded-md p-3 bg-muted/10"
                                             >
                                               {editingSubcategory &&
@@ -3451,7 +3453,7 @@ const CreateInterview = () => {
                                                         }
                                                       </p>
                                                     </div>
-                                                    <div className="flex space-x-1">
+                                                    {/* <div className="flex space-x-1">
                                                       <Button
                                                         variant="ghost"
                                                         size="icon"
@@ -3488,14 +3490,14 @@ const CreateInterview = () => {
                                                           Delete
                                                         </span>
                                                       </Button>
-                                                    </div>
+                                                    </div> */}
                                                   </div>
 
                                                   {/* Display percentage as a progress bar */}
                                                   <div className="mt-2">
-                                                    <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                                                    <div className="w-full bg-muted/90 h-1 rounded-full overflow-hidden">
                                                       <div
-                                                        className="bg-white h-full rounded-full"
+                                                        className="bg-gray-500/80 h-full rounded-full"
                                                         style={{
                                                           width: `${subcategory.percentage}%`,
                                                         }}
@@ -4017,14 +4019,14 @@ const CreateInterview = () => {
                           type="submit"
                           onClick={() => setActiveTab("schedules")}
                           disabled={
-                            technicalPercentage <= 0 
+                            technicalPercentage <= 0
                             // categoryList.reduce(
                             //   (sum, cat) => sum + parseFloat(cat.percentage),
                             //   0
                             // ) !== 100
                           }
                           // className={
-                          //   technicalPercentage <= 0 
+                          //   technicalPercentage <= 0
                           //   categoryList.reduce(
                           //     (sum, cat) => sum + parseFloat(cat.percentage),
                           //     0
@@ -4040,18 +4042,18 @@ const CreateInterview = () => {
                   </TabsContent>
 
                   <TabsContent value="schedules" className="space-y-6">
-                    <Card className="!bg-[#1b1d23]">
-                      <CardHeader>
+                    <Card className=" !bg-transparent !border-0">
+                      <CardHeader className="p-0">
                         <CardTitle>Interview Schedules</CardTitle>
                         <CardDescription>
                           Set up available time slots for this interview
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-8">
-                        <div className="border rounded-lg p-4 bg-muted/5">
+                      <CardContent className="space-y-8 px-0 mt-5">
+                        <div className="border border-gray-500/40 rounded-lg p-4 bg-muted/5">
                           <div className="mb-4">
                             <h3 className="text-lg font-medium flex items-center gap-2 mb-2">
-                              <WandSparkles className="h-5 w-5 text-primary" />
+                              <Sparkles className="h-5 w-5 text-primary" />
                               Generate Interview Schedules
                             </h3>
                             <p className="text-sm text-muted-foreground">
@@ -4071,7 +4073,7 @@ const CreateInterview = () => {
                                       <Button
                                         variant={"outline"}
                                         className={cn(
-                                          "w-full justify-start !bg-[#32353b] h-[45px] text-left font-normal",
+                                          "w-full justify-start h-[45px] text-left font-normal",
                                           !date && "text-muted-foreground"
                                         )}
                                       >
@@ -4169,17 +4171,12 @@ const CreateInterview = () => {
                                     <Button
                                       key={preset.id}
                                       type="button"
-                                      variant={
+                                      variant={"outline"}
+                                      className={`cursor-pointer transition-all hover:!bg-blue-500/10 h-16 ${
                                         selectedDuration === preset.id
-                                          ? "default"
-                                          : "outline"
-                                      }
-                                      className={cn(
-                                        "justify-start text-left h-auto py-2",
-                                        selectedDuration === preset.id
-                                          ? "border-primary"
-                                          : ""
-                                      )}
+                                          ? "!border !border-[#3b82f6] !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6] bg-transparent"
+                                          : "hover:!border-[#3b82f6]/50"
+                                      }`}
                                       onClick={() =>
                                         setSelectedDuration(preset.id)
                                       }
@@ -4193,7 +4190,9 @@ const CreateInterview = () => {
                                         </span>
                                       </div>
                                       {selectedDuration === preset.id && (
-                                        <Check className="h-4 w-4 ml-auto" />
+                                        <div className="flex items-center ml-auto bg-blue-500/20 p-3 text-blue-400 rounded-full">
+                                          <Check className="h-4 w-4 ml-auto" />
+                                        </div>
                                       )}
                                     </Button>
                                   ))}
@@ -4226,15 +4225,22 @@ const CreateInterview = () => {
 
                               <Button
                                 type="button"
+                                variant="outline"
                                 onClick={handleScheduleGenerate}
-                                className="w-full mt-2"
+                                className="flex items-center gap-1 w-full !text-blue-500 !border-blue-500/50 hover:!bg-blue-500/20 hover:!text-blue-400"
                               >
-                                <WandSparkles className="h-4 w-4 mr-2" />
-                                Generate Time Slots
+                                {isGeneratingSchedule ? (
+                                  <LoaderCircle className="animate-spin" />
+                                ) : (
+                                  <>
+                                    <Sparkles className="h-4 w-4" />
+                                    Generate Time Slots
+                                  </>
+                                )}
                               </Button>
                             </div>
 
-                            <div className="border-l pl-6 space-y-3">
+                            <div className="border-l border-gray-500/40 pl-6 space-y-3">
                               <div className="flex items-center justify-between">
                                 <h4 className="font-medium flex items-center gap-2">
                                   <GanttChartSquare className="h-4 w-4" />
@@ -4254,11 +4260,12 @@ const CreateInterview = () => {
                                 )}
                               </div>
 
-                              <div className="max-h-[280px] overflow-y-auto space-y-2 pr-2">
+                              <div className="max-h-[380px] h-full overflow-y-auto space-y-2 pr-2">
                                 {generatedSlots.length === 0 ? (
-                                  <div className="text-center py-8 text-muted-foreground text-sm">
-                                    <p>No time slots generated yet</p>
-                                    <p className="mt-2">
+                                  <div className="text-center flex flex-col justify-center items-center h-full text-muted-foreground text-sm">
+                                    <p>
+                                      No time slots generated yet
+                                      <br />
                                       Use the controls to generate slots
                                     </p>
                                   </div>
@@ -4393,8 +4400,9 @@ const CreateInterview = () => {
                         </div>
 
                         <div className="space-y-3">
-                          <h3 className="text-sm font-medium">
-                            Your Schedules
+                          <h3 className="text-sm font-medium flex items-center gap-2">
+                            <CalendarDays className="h-4 w-4" />
+                            <span> Your Schedules</span>
                           </h3>
                           {schedules.length === 0 ? (
                             <p className="text-sm text-muted-foreground">
@@ -4402,9 +4410,9 @@ const CreateInterview = () => {
                             </p>
                           ) : (
                             <div className="space-y-2">
-                              {schedules.map((sch) => (
+                              {schedules.map((sch, index) => (
                                 <div
-                                  key={sch.id}
+                                  key={index}
                                   className="flex items-center justify-between p-3 bg-secondary/20 rounded-md"
                                 >
                                   <div className="grid grid-cols-3 gap-4 flex-1">
@@ -4436,7 +4444,7 @@ const CreateInterview = () => {
                           )}
                         </div>
                       </CardContent>
-                      <CardFooter className="flex justify-between">
+                      <CardFooter className="flex justify-between px-0">
                         <Button
                           type="button"
                           variant="outline"
