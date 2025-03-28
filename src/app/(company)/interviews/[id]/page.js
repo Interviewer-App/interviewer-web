@@ -27,6 +27,10 @@ import {
   Trash2,
   Users,
   Calendar as CalendarIcon2,
+  UserPlus,
+  Share2,
+  Mail,
+  Copy,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -131,7 +135,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { LuCircleCheckBig } from "react-icons/lu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   ChartContainer,
   ChartLegend,
@@ -139,6 +155,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Input } from "@/components/ui/input"
+
 import { Calendar } from "@/components/ui/calendar";
 import {
   PieChart,
@@ -154,7 +172,6 @@ import {
   Legend,
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
-
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -207,6 +224,25 @@ export default function InterviewPreviewPage({ params }) {
   const [activeTab, setActiveTab] = useState("overview");
   const [bookingsData, setBookingsData] = useState([]);
   const [sessionsData, setSessionsData] = useState([]);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
+  const [inviteEmails, setInviteEmails] = useState("")
+  const [inviteLink, setInviteLink] = useState("https://interviews.skillchecker.ai/i/cm8qzz3bi0015lf4gaOil6auh")
+  const [interviewInviteTab,setInterviewInviteTab]=useState("email")
+
+  
+  const handleInvite = () => {
+    // In a real app, this would send invitations to the provided emails
+    // toast.success(`Invitations sent to ${inviteEmails.split("\n").length} candidates`)
+    setInviteEmails("")
+    setIsInviteDialogOpen(false)
+  }
+
+  const handleCopyLink = () => {
+    // navigator.clipboard.writeText(inviteLink)
+    toast.success("Invitation link copied to clipboard")
+  }
+
+
   const [chartData, setChartData] = useState({
     labels: ["Requests", "Invitations"],
     datasets: [
@@ -533,7 +569,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-                interviewStatusDetails.completedSchedules,
+              interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -787,12 +823,10 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } Successfully!`,
-          description: `The interview has been ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
+            } Successfully!`,
+          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
+            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -1065,9 +1099,8 @@ export default function InterviewPreviewPage({ params }) {
               {interviewDetail.status !== "ACTIVE" ? (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
                   >
                     <LuCircleCheckBig className="h-4 w-4" />
                     Publish
@@ -1098,9 +1131,8 @@ export default function InterviewPreviewPage({ params }) {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
                   >
                     <Trash2 className="h-4 w-4" />
                     Unpublish
@@ -1161,11 +1193,11 @@ export default function InterviewPreviewPage({ params }) {
                   {interviewSessions.filter(
                     (session) => session.interviewStatus === "ongoing"
                   ).length > 0 && (
-                    <div className=" relative flex items-center justify-center h-full w-2.5 ">
-                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                    </div>
-                  )}
+                      <div className=" relative flex items-center justify-center h-full w-2.5 ">
+                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                      </div>
+                    )}
                   Interview Sessions
                 </div>
               </TabsTrigger>
@@ -1476,9 +1508,8 @@ export default function InterviewPreviewPage({ params }) {
                 <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 mb-5 rounded-lg">
                   <button
                     onClick={() => setQuestionTab("technical")}
-                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                      questionTab === "technical" ? "bg-gray-800" : ""
-                    } `}
+                    className={` text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${questionTab === "technical" ? "bg-gray-800" : ""
+                      } `}
                   >
                     Technical
                   </button>
@@ -1492,11 +1523,10 @@ export default function InterviewPreviewPage({ params }) {
                         <button
                           key={index}
                           onClick={() => handleQuestionTabChange(category)}
-                          className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${
-                            questionTab === category.catagory
+                          className={`text-xs md:text-sm py-2 px-4 md:px-6 rounded-lg ${questionTab === category.catagory
                               ? "bg-gray-800"
                               : ""
-                          }`}
+                            }`}
                         >
                           {category.catagory}
                         </button>
@@ -1598,27 +1628,194 @@ export default function InterviewPreviewPage({ params }) {
 
             <TabsContent value="invitation" className="p-0 border-none">
               <>
-                <div className="w-full bg-yellow-900/10 py-5 px-7 rounded-lg mt-5 border-2 border-yellow-600">
-                  <div className=" w-full flex items-center justify-between">
-                    <div>
-                      <h1 className=" text-2xl font-semibold">
-                        Invite Candidate
-                      </h1>
-                      <p className=" text-sm text-gray-500 py-3">
-                        You can now invite the desired candidate by using their
-                        email address. Ensure the email is accurate before
-                        sending the invitation.
+
+              <Card className="border-blue-500/20 overflow-hidden"    onClick={() => setInviteModalOpen(true)}>
+        <CardHeader className="bg-blue-500/5 border-b border-blue-500/20 pb-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="text-xl">Invite Candidates</CardTitle>
+              <CardDescription className="mt-1">
+                Send interview invitations to candidates via email or shareable link
+              </CardDescription>
+            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="bg-blue-600 hover:bg-blue-700" >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Invite Candidates
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>Invite Candidates</DialogTitle>
+                  <DialogDescription>
+                    Send interview invitations to candidates for the Software Engineer position
+                  </DialogDescription>
+                </DialogHeader>
+
+                <Tabs defaultValue="email" className="mt-4"   onValueChange={(value) => setInterviewInviteTab(value)} >
+                  <TabsList className="grid grid-cols-2 mb-4">
+                    <TabsTrigger value="email" className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      <span>Email Invitation</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="link" className="flex items-center gap-2">
+                      <Share2 className="h-4 w-4" />
+                      <span>Shareable Link</span>
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="email" className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="emails">Candidate Emails</Label>
+                      <Textarea
+                        id="emails"
+                        placeholder="Enter email address"
+                        value={inviteEmails}
+                        onChange={(e) => setInviteEmails(e.target.value)}
+                        className="h-1"
+                      />
+                      {/* <p className="text-xs text-muted-foreground">
+                        Enter multiple email addresses separated by line breaks
+                      </p> */}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="schedule">Interview Schedule</Label>
+                      <Select defaultValue="default">
+                        <SelectTrigger id="schedule">
+                          <SelectValue placeholder="Select schedule" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">Default Schedule (May 3, 2025)</SelectItem>
+                          <SelectItem value="morning">Morning Sessions (10:00 AM - 12:00 PM)</SelectItem>
+                          <SelectItem value="afternoon">Afternoon Sessions (2:00 PM - 4:00 PM)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="link" className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-link">Shareable Invitation Link</Label>
+                      <div className="flex gap-2">
+                        <Input id="invite-link" value={inviteLink} readOnly className="flex-1" />
+                        <Button variant="outline" onClick={handleCopyLink} className="flex-shrink-0">
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copy
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Share this link with candidates to allow them to schedule their interview
                       </p>
                     </div>
 
-                    <div
-                      onClick={() => setInviteModalOpen(true)}
-                      className="h-11 min-w-[150px] w-[170px] mt-5 md:mt-0 cursor-pointer bg-yellow-600 rounded-lg text-center text-sm text-white font-semibold flex items-center justify-center"
-                    >
-                      Invite Candidates
+                    <div className="space-y-2">
+                      <Label htmlFor="link-schedule">Available Time Slots</Label>
+                      <Select defaultValue="all">
+                        <SelectTrigger id="link-schedule">
+                          <SelectValue placeholder="Select available slots" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Available Slots</SelectItem>
+                          <SelectItem value="may3">May 3, 2025 (12:00 PM - 2:00 PM)</SelectItem>
+                          <SelectItem value="may5">May 5, 2025 (10:00 AM - 11:30 AM)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                  </div>
+                  </TabsContent>
+                </Tabs> 
+
+                <DialogFooter className="mt-6">
+                  {/* <Button variant="outline">
+                    Cancel
+                  </Button> */}
+                  {interviewInviteTab === "email" ? (
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={handleInvite}
+                      disabled={!inviteEmails.trim()}
+                    >
+                      <Mail className="h-4 w-4 mr-2" />
+                      Send Invitations
+                    </Button>
+                  ) : (
+                    <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleCopyLink}>
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copy Link
+                    </Button>
+                  )}
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <Mail className="h-5 w-5 text-blue-500" />
                 </div>
+                <div>
+                  <h3 className="font-medium">Email Invitation</h3>
+                  <p className="text-sm text-muted-foreground">Send personalized email invitations to candidates</p>
+                </div>
+              </div>
+              <ul className="space-y-2 text-sm pl-12">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                  <span>Candidates receive email with interview details</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                  <span>Automatic reminders before the interview</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                  <span>Track when invitations are viewed</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <Share2 className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="font-medium">Shareable Link</h3>
+                  <p className="text-sm text-muted-foreground">Create a link that candidates can use to schedule</p>
+                </div>
+              </div>
+              <ul className="space-y-2 text-sm pl-12">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                  <span>Candidates can select from available time slots</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                  <span>Share via messaging apps or social media</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                  <span>No account required for candidates</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="bg-blue-500/5 border-t border-blue-500/20 p-4">
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Users className="h-4 w-4 mr-2" />
+            <span>Ensure candidate email addresses are accurate before sending invitations</span>
+          </div>
+        </CardFooter>
+      </Card>
+
+
+
+
                 <InvitedCandidates
                   interviewId={interviewId}
                   inviteModalOpen={inviteModalOpen}
@@ -1686,8 +1883,8 @@ export default function InterviewPreviewPage({ params }) {
                           {selectedSortCategory === "overall"
                             ? "Overall"
                             : categoryList.find(
-                                (cat) => cat.key === selectedSortCategory
-                              )?.catagory || "Select Category"}
+                              (cat) => cat.key === selectedSortCategory
+                            )?.catagory || "Select Category"}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56">
