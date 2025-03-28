@@ -246,15 +246,17 @@ const MyInterviews = () => {
     return new Date(date).toLocaleTimeString("en-US", options); // e.g., '4:45 PM'
   };
 
-  const handleInterviewStatus = async (interviewId, status) => {
+  const handleInterviewStatus = async (interview, status) => {
     const session = await getSession();
     const candidateId = session?.user?.candidateID;
     try {
       const response = await updateInterviewInvitaionStatus(
-        interviewId,
+        interview.interview.interviewID,
         candidateId,
         {
           status: status,
+          scheduledDate: interview.startTime,
+          scheduledAt: interview.startTime,
         }
       );
       if (response) {
@@ -615,18 +617,21 @@ const MyInterviews = () => {
                               {interview.interview.interviewMedium === 'PHYSICAL' && interview.interview.isWithDevice === false ? (
                                 <>
                                   {interview.invitation?.status === "APPROVED" || interview.invitation === null ? (
+                                    <>
                                     <Badge
                                     variant="secondary"
                                     className="bg-cyan-900 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400"
                                   >
                                     {interview.interview.interviewMedium} INTERVIEW
                                   </Badge>
+                                  
+                                  </>
                                   ) : (
                                     <div className="flex justify-start gap-3 items-center">
                                       <Button
                                         onClick={() =>
                                           handleInterviewStatus(
-                                            interview.interview.interviewID,
+                                            interview,
                                             "REJECTED"
                                           )
                                         }
@@ -640,7 +645,7 @@ const MyInterviews = () => {
                                       <Button
                                         onClick={() =>
                                           handleInterviewStatus(
-                                            interview.interview.interviewID,
+                                            interview,
                                             "APPROVED"
                                           )
                                         }
@@ -733,7 +738,7 @@ const MyInterviews = () => {
                                       <Button
                                         onClick={() =>
                                           handleInterviewStatus(
-                                            interview.interview.interviewID,
+                                            interview,
                                             "REJECTED"
                                           )
                                         }
@@ -747,7 +752,7 @@ const MyInterviews = () => {
                                       <Button
                                         onClick={() =>
                                           handleInterviewStatus(
-                                            interview.interview.interviewID,
+                                            interview,
                                             "APPROVED"
                                           )
                                         }
