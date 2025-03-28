@@ -1,7 +1,6 @@
 "use client";
 import { use, useEffect, useRef, useState } from "react";
 import socket from "../../../../lib/utils/socket";
-
 //Breadcrumbs
 import {
   Breadcrumb,
@@ -35,6 +34,8 @@ import {
   Share2,
   Mail,
   Copy,
+  X,
+  Check,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -160,7 +161,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input"
-
 import { Calendar } from "@/components/ui/calendar";
 import {
   PieChart,
@@ -192,6 +192,7 @@ import {
 import { RiInformation2Line } from "react-icons/ri";
 import { generateInterviewQuestions, generateSoftSkills } from "@/lib/api/ai";
 
+import { getInterviewTimeSlotsInterviewById, sendInvitaionForCandidates } from "@/lib/api/interview-invitation";
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -248,8 +249,18 @@ export default function InterviewPreviewPage({ params }) {
   const [inviteEmails, setInviteEmails] = useState("")
   const [inviteLink, setInviteLink] = useState("https://interviews.skillchecker.ai/i/cm8qzz3bi0015lf4gaOil6auh")
   const [interviewInviteTab,setInterviewInviteTab]=useState("email")
+  const dotenv = require('dotenv')
+  const [email, setEmail] = useState("");
+  const [interviewTimeSlots, setInterviewTimeSlots] = useState({});
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [interviewTimeSlotsDates, setInterviewTimeSlotsDates] = useState([]);
+  const [filterInterviewTimeSlots, setFilterInterviewTimeSlots] = useState([]);
 
+  // useEffect(() => {
+  //   console.log('interviewIddddd',)
+  // }, [interviewId])
 
+  
   const handleInvite = () => {
     // In a real app, this would send invitations to the provided emails
     // toast.success(`Invitations sent to ${inviteEmails.split("\n").length} candidates`)
@@ -258,8 +269,20 @@ export default function InterviewPreviewPage({ params }) {
   }
 
   const handleCopyLink = () => {
-    // navigator.clipboard.writeText(inviteLink)
-    toast.success("Invitation link copied to clipboard")
+    try {
+          navigator.clipboard.writeText(inviteLink);
+      toast({
+        title: "Success!",
+        description: "Invitation link copied to clipboard",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to copy link to clipboard",
+      });
+      console.error('Failed to copy: ', err);
+    }
   }
 
 
@@ -622,6 +645,59 @@ export default function InterviewPreviewPage({ params }) {
     if (interviewId) {
       fetchInterviewStatus();
     }
+
+      const fetchInterviewTimeSlots = async () => {
+        try {
+          // const session = await getSession();
+          // const companyId = session?.user?.companyID;
+          const response = await getInterviewTimeSlotsInterviewById(interviewId);
+          console.log('aneansehjik',response)
+          if (response) {
+            const scheduleData = response.data.schedulesByDate || [];
+
+            // Process dates and time slots
+            const dates = Array.from(
+              new Set(
+                scheduleData.map(
+                  (group) => new Date(group.date).toISOString().split("T")[0]
+                )
+              )
+            ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+            const timeSlotsMap = scheduleData.reduce((acc, group) => {
+              const dateKey = new Date(group.date).toISOString().split("T")[0];
+              acc[dateKey] = group.schedules.map((slot) => ({
+                scheduleID: slot.id,
+                startTime: new Date(slot.start).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                }),
+                endTime: new Date(slot.end).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                }),
+                isBooked: slot.isBooked,
+              }));
+              return acc;
+            }, {});
+
+            setInterviewTimeSlotsDates(dates);
+            setInterviewTimeSlots(timeSlotsMap);
+            setFilterInterviewTimeSlots(timeSlotsMap);
+          }
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Error fetching interviews: ${error}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      };
+      fetchInterviewTimeSlots();
+
   }, [interviewId]);
 
   useEffect(() => {
@@ -737,6 +813,68 @@ export default function InterviewPreviewPage({ params }) {
       ]);
     }
   }, [interviewStatusDetails]);
+
+  const handleInvitationSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const invitaionData = {
+        to: email,
+        interviewId: interviewId,
+        scheduleId: selectedTimeSlot,
+      };
+      const response = await sendInvitaionForCandidates(invitaionData);
+
+      if (response) {
+        // setInviteModalOpen(false);
+
+        setIsInviteDialogOpen(false); // Closes the modal
+        setEmail("");
+        toast({
+          title: "Invitation sent!",
+          description: "The invitation has been sent successfully.",
+        });
+      }
+      setLoading(false);
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Question create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (interviewId) {
+      const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PORT // Fallback if env var is missing
+      console.log('baseUrl',baseUrl)
+      setInviteLink(`${baseUrl}/interview-schedules/${interviewId}`);
+    }
+  }, [interviewId]);
+
 
   const sortTopCandidates = async (e) => {
     let data;
@@ -2501,9 +2639,9 @@ export default function InterviewPreviewPage({ params }) {
                     <AlertCircleIcon className="h-4 w-4" />
                     <AlertTitle>Manual Assessment</AlertTitle>
                     <AlertDescription>
-                      You've chosen to assess technical expertise manually
+                      You&apos;ve chosen to assess technical expertise manually
                       during the interview. Prepare your own questions and
-                      evaluation criteria based on the candidate's field.
+                      evaluation criteria based on the candidate&apos;s field.
                     </AlertDescription>
                   </Alert>
                 )}
@@ -3674,7 +3812,9 @@ export default function InterviewPreviewPage({ params }) {
             <TabsContent value="invitation" className="p-0 border-none">
               <>
 
-              <Card className="border-blue-500/20 overflow-hidden"    onClick={() => setInviteModalOpen(true)}>
+              <Card className="border-blue-500/20 overflow-hidden"
+              //  onClick={() => setInviteModalOpen(true)}
+               >
         <CardHeader className="bg-blue-500/5 border-b border-blue-500/20 pb-4">
           <div className="flex justify-between items-center">
             <div>
@@ -3683,7 +3823,7 @@ export default function InterviewPreviewPage({ params }) {
                 Send interview invitations to candidates via email or shareable link
               </CardDescription>
             </div>
-            <Dialog>
+            <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-blue-600 hover:bg-blue-700" >
                   <UserPlus className="h-4 w-4 mr-2" />
@@ -3714,10 +3854,12 @@ export default function InterviewPreviewPage({ params }) {
                     <div className="space-y-2">
                       <Label htmlFor="emails">Candidate Emails</Label>
                       <Textarea
-                        id="emails"
-                        placeholder="Enter email address"
-                        value={inviteEmails}
-                        onChange={(e) => setInviteEmails(e.target.value)}
+                         type="email"
+                         placeholder="Canadidate's Email"
+                         name="email"
+                         value={email}
+                         onChange={(e) => setEmail(e.target.value)}
+                         required
                         className="h-1"
                       />
                       {/* <p className="text-xs text-muted-foreground">
@@ -3727,16 +3869,58 @@ export default function InterviewPreviewPage({ params }) {
 
                     <div className="space-y-2">
                       <Label htmlFor="schedule">Interview Schedule</Label>
-                      <Select defaultValue="default">
-                        <SelectTrigger id="schedule">
-                          <SelectValue placeholder="Select schedule" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="default">Default Schedule (May 3, 2025)</SelectItem>
-                          <SelectItem value="morning">Morning Sessions (10:00 AM - 12:00 PM)</SelectItem>
-                          <SelectItem value="afternoon">Afternoon Sessions (2:00 PM - 4:00 PM)</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      className="!bg-black w-full h-[45px] m-0 px-2 focus:outline-none outline-none"
+                      variant="outline"
+                    >
+                      {Object.values(interviewTimeSlots)
+                        .flat()
+                        .find((slot) => slot.scheduleID === selectedTimeSlot)
+                        ?.startTime || "Select Time Slot"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Available Time Slots</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup
+                      value={selectedTimeSlot}
+                      onValueChange={setSelectedTimeSlot}
+                    >
+                      {interviewTimeSlotsDates?.map((date) => (
+                        <div key={date}>
+                          <DropdownMenuLabel className="text-xs text-gray-400">
+                            {new Date(date).toLocaleDateString(undefined, {
+                              weekday: "short",
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </DropdownMenuLabel>
+                          {interviewTimeSlots[date]?.map((slot) => (
+                            <DropdownMenuRadioItem
+                              key={slot.scheduleID}
+                              value={slot.scheduleID}
+                              disabled={slot.isBooked}
+                            >
+                              <div className="flex justify-between items-center w-full">
+                                <span>
+                                  {slot.startTime} - {slot.endTime}
+                                </span>
+                                {slot.isBooked && (
+                                  <span className="text-red-500 text-xs ml-2">
+                                    Booked
+                                  </span>
+                                )}
+                              </div>
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </div>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                     </div>
                   </TabsContent>
 
@@ -3745,29 +3929,71 @@ export default function InterviewPreviewPage({ params }) {
                       <Label htmlFor="invite-link">Shareable Invitation Link</Label>
                       <div className="flex gap-2">
                         <Input id="invite-link" value={inviteLink} readOnly className="flex-1" />
-                        <Button variant="outline" onClick={handleCopyLink} className="flex-shrink-0">
+                        {/* <Button variant="outline" onClick={handleCopyLink} className="flex-shrink-0">
                           <Copy className="h-4 w-4 mr-2" />
                           Copy
-                        </Button>
+                        </Button> */}
                       </div>
                       <p className="text-xs text-muted-foreground">
                         Share this link with candidates to allow them to schedule their interview
                       </p>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="link-schedule">Available Time Slots</Label>
-                      <Select defaultValue="all">
-                        <SelectTrigger id="link-schedule">
-                          <SelectValue placeholder="Select available slots" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Available Slots</SelectItem>
-                          <SelectItem value="may3">May 3, 2025 (12:00 PM - 2:00 PM)</SelectItem>
-                          <SelectItem value="may5">May 5, 2025 (10:00 AM - 11:30 AM)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    {/* <div className="space-y-2">
+                      <Label htmlFor="link-schedule">Available Time Slots</Label> */}
+                      {/* <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      className="!bg-black w-full h-[45px] m-0 px-2 focus:outline-none outline-none"
+                      variant="outline"
+                    >
+                      {Object.values(interviewTimeSlots)
+                        .flat()
+                        .find((slot) => slot.scheduleID === selectedTimeSlot)
+                        ?.startTime || "Select Time Slot"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Available Time Slots</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup
+                      value={selectedTimeSlot}
+                      onValueChange={setSelectedTimeSlot}
+                    >
+                      {interviewTimeSlotsDates?.map((date) => (
+                        <div key={date}>
+                          <DropdownMenuLabel className="text-xs text-gray-400">
+                            {new Date(date).toLocaleDateString(undefined, {
+                              weekday: "short",
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </DropdownMenuLabel>
+                          {interviewTimeSlots[date]?.map((slot) => (
+                            <DropdownMenuRadioItem
+                              key={slot.scheduleID}
+                              value={slot.scheduleID}
+                              disabled={slot.isBooked}
+                            >
+                              <div className="flex justify-between items-center w-full">
+                                <span>
+                                  {slot.startTime} - {slot.endTime}
+                                </span>
+                                {slot.isBooked && (
+                                  <span className="text-red-500 text-xs ml-2">
+                                    Booked
+                                  </span>
+                                )}
+                              </div>
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </div>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu> */}
+                    {/* </div> */}
                   </TabsContent>
                 </Tabs>
 
@@ -3778,8 +4004,8 @@ export default function InterviewPreviewPage({ params }) {
                   {interviewInviteTab === "email" ? (
                     <Button
                       className="bg-blue-600 hover:bg-blue-700"
-                      onClick={handleInvite}
-                      disabled={!inviteEmails.trim()}
+                      onClick={handleInvitationSubmit}
+                      // disabled={!inviteEmails.trim()}
                     >
                       <Mail className="h-4 w-4 mr-2" />
                       Send Invitations
