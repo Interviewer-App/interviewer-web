@@ -865,7 +865,8 @@ const UserProfile = () => {
                       </div>
 
                       <div className="space-y-6">
-                        {experiences.map((experience, index) => (
+                        {experiences.length > 0 ? (
+                        experiences.map((experience, index) => (
                           <div
                             key={index}
                             className={`border-l-2 border-border pl-4 py-2 ${
@@ -906,7 +907,7 @@ const UserProfile = () => {
                               )}
                             </div>
                           </div>
-                        ))}
+                        ))): <div className="text-[#b3b3b3]">No experiences added yet</div>}
                       </div>
 
                       {isExperienceEdit && (
@@ -957,7 +958,8 @@ const UserProfile = () => {
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                        {skills.map((skill, index) => (
+                        {skills.length > 0 ? (
+                        skills.map((skill, index) => (
                           <div
                             key={index}
                             className="flex items-center justify-between p-2 rounded-md bg-[#b3b3b309]"
@@ -984,7 +986,7 @@ const UserProfile = () => {
                               </div>
                             )}
                           </div>
-                        ))}
+                        ))): <div className="text-[#b3b3b3]">No skills added yet</div>}
                       </div>
 
                       {isSkillEdit && (
