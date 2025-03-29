@@ -697,7 +697,8 @@ export default function InterviewPreviewPage({ params }) {
         });
       }
     };
-    fetchInterviewTimeSlots();
+    if (interviewId) fetchInterviewTimeSlots();
+    
 
   }, [interviewId]);
 
