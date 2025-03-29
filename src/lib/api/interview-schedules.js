@@ -14,7 +14,7 @@ export const getAllInterviewSchedules =async(companyId) =>{
 export const bookSchedule =async(data) =>{
 
     try {
-        const response=await axiosInstance.post(`/interview/book-schedule/`, data);
+        const response=await axiosInstance.post(`/interview/book-schedule`, data);
         return response;
     } catch (error) {
         console.log(error);
