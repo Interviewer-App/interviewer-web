@@ -4146,7 +4146,7 @@ export default function InterviewPreviewPage({ params }) {
             <TabsContent value="analyze" className="p-0 border-none">
               <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-1">
                 <div className=" w-full ">
-                  <CandidateAnalysisTab />
+                  <CandidateAnalysisTab categoryList={categoryList} candidates={candidates}/>
 
                 </div>
                 <div className=" w-full  flex flex-col md:flex-row items-center justify-between mt-4">

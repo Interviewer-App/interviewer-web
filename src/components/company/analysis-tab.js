@@ -217,17 +217,17 @@ const sampleCandidates = [
 // Helper function to calculate average score for a specific skill type
 const calculateAverageScore = (candidates, skillType) => {
   if (candidates.length === 0) return 0
-
-  const totalScore = candidates.reduce((sum, candidate) => {
-    const skills = candidate[skillType]
-    const candidateAvg = skills.reduce((skillSum, skill) => skillSum + skill.score, 0) / skills.length
-    return sum + candidateAvg
-  }, 0)
+  const totalScore = ''
+//   const totalScore = candidates.reduce((sum, candidate) => {
+//     const skills = candidate[skillType]
+//     const candidateAvg = skills.reduce((skillSum, skill) => skillSum + skill.score, 0) / skills.length
+//     return sum + candidateAvg
+//   }, 0)
 
   return Math.round((totalScore / candidates.length) * 10) / 10
 }
 
-export default function CandidateAnalysisTab() {
+export default function CandidateAnalysisTab({ categoryList , candidates}) {
   // State for sorting and filtering
   const [sortCriteria, setSortCriteria] = useState("overall")
   const [sortDirection, setSortDirection] = useState("desc")
@@ -240,15 +240,16 @@ export default function CandidateAnalysisTab() {
   const [showDetailedView, setShowDetailedView] = useState(false)
 
   // Calculate average scores
-  const avgTechnicalScore = calculateAverageScore(sampleCandidates, "technicalSkills")
-  const avgSoftScore = calculateAverageScore(sampleCandidates, "softSkills")
-  const avgOverallScore =
-    sampleCandidates.reduce((sum, candidate) => sum + candidate.overallScore, 0) / sampleCandidates.length
+  const avgTechnicalScore = calculateAverageScore(candidates, "technicalSkills")
+  const avgSoftScore = calculateAverageScore(candidates, "softSkills")
+//   const avgOverallScore =
+//   candidates.reduce((sum, candidate) => sum + candidate.overallScore, 0) / candidates.length
+const avgOverallScore = 0
 
   // Sort and filter candidates
   const sortedAndFilteredCandidates = useMemo(() => {
     // First apply search filter
-    let filtered = sampleCandidates.filter(
+    let filtered = candidates.filter(
       (candidate) =>
         candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         candidate.email.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -263,20 +264,20 @@ export default function CandidateAnalysisTab() {
     return [...filtered].sort((a, b) => {
       let aValue, bValue
 
-      if (sortCriteria === "technical") {
-        aValue = a.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / a.technicalSkills.length
-        bValue = b.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / b.technicalSkills.length
-      } else if (sortCriteria === "soft") {
-        aValue = a.softSkills.reduce((sum, skill) => sum + skill.score, 0) / a.softSkills.length
-        bValue = b.softSkills.reduce((sum, skill) => sum + skill.score, 0) / b.softSkills.length
-      } else {
-        aValue = a.overallScore
-        bValue = b.overallScore
-      }
+    //   if (sortCriteria === "technical") {
+    //     aValue = a.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / a.technicalSkills.length
+    //     bValue = b.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / b.technicalSkills.length
+    //   } else if (sortCriteria === "soft") {
+    //     aValue = a.softSkills.reduce((sum, skill) => sum + skill.score, 0) / a.softSkills.length
+    //     bValue = b.softSkills.reduce((sum, skill) => sum + skill.score, 0) / b.softSkills.length
+    //   } else {
+    //     aValue = a.overallScore
+    //     bValue = b.overallScore
+    //   }
 
       return sortDirection === "desc" ? bValue - aValue : aValue - bValue
     })
-  }, [sampleCandidates, sortCriteria, sortDirection, searchQuery, statusFilter])
+  }, [candidates, sortCriteria, sortDirection, searchQuery, statusFilter])
 
   // Get top candidates
   const topCandidates = useMemo(() => {
@@ -300,7 +301,7 @@ export default function CandidateAnalysisTab() {
 
   // Get candidates for comparison
   const candidatesForComparison = useMemo(() => {
-    return sampleCandidates.filter((candidate) => candidatesToCompare.includes(candidate.id))
+    return candidates.filter((candidate) => candidatesToCompare.includes(candidate.id))
   }, [candidatesToCompare])
 
   // Prepare data for the comparison chart
@@ -636,9 +637,9 @@ export default function CandidateAnalysisTab() {
                       <TableRow>
                         <TableCell className="font-medium">Technical Skills (Avg)</TableCell>
                         {candidatesForComparison.map((candidate) => {
-                          const avgTech =
-                            candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            candidate.technicalSkills.length
+                        //   const avgTech =
+                        //     candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                        //     candidate.technicalSkills.length
                           return (
                             <TableCell key={`${candidate.id}-tech`} className="text-center">
                               <span className={`font-bold ${getScoreColor(avgTech)}`}>{avgTech.toFixed(1)}</span>
@@ -649,9 +650,9 @@ export default function CandidateAnalysisTab() {
                       <TableRow>
                         <TableCell className="font-medium">Soft Skills (Avg)</TableCell>
                         {candidatesForComparison.map((candidate) => {
-                          const avgSoft =
-                            candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            candidate.softSkills.length
+                        //   const avgSoft =
+                        //     candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                        //     candidate.softSkills.length
                           return (
                             <TableCell key={`${candidate.id}-soft`} className="text-center">
                               <span className={`font-bold ${getScoreColor(avgSoft)}`}>{avgSoft.toFixed(1)}</span>
@@ -829,24 +830,25 @@ export default function CandidateAnalysisTab() {
                             <span className="text-sm">Technical Skills</span>
                             <span
                               className={`text-sm font-medium ${getScoreColor(
-                                candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                  candidate.technicalSkills.length,
+                                // candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                                //   candidate.technicalSkills.length,
                               )}`}
                             >
-                              {(
+                              {/* {(
                                 candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
                                 candidate.technicalSkills.length
-                              ).toFixed(1)}
+                              ).toFixed(1)
+                              } */}
                             </span>
                           </div>
                           <div className="w-full bg-muted h-2 rounded-full">
                             <div
                               className="bg-blue-500 h-full rounded-full"
                               style={{
-                                width: `${
-                                  candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                  candidate.technicalSkills.length
-                                }%`,
+                                // width: `${
+                                //   candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                                //   candidate.technicalSkills.length
+                                // }%`,
                               }}
                             />
                           </div>
@@ -857,24 +859,24 @@ export default function CandidateAnalysisTab() {
                             <span className="text-sm">Soft Skills</span>
                             <span
                               className={`text-sm font-medium ${getScoreColor(
-                                candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                  candidate.softSkills.length,
+                                // candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                                //   candidate.softSkills.length,
                               )}`}
                             >
-                              {(
+                              {/* {(
                                 candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
                                 candidate.softSkills.length
-                              ).toFixed(1)}
+                              ).toFixed(1)} */}
                             </span>
                           </div>
                           <div className="w-full bg-muted h-2 rounded-full">
                             <div
                               className="bg-purple-500 h-full rounded-full"
                               style={{
-                                width: `${
-                                  candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                  candidate.softSkills.length
-                                }%`,
+                                // width: `${
+                                //   candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                                //   candidate.softSkills.length
+                                // }%`,
                               }}
                             />
                           </div>
@@ -960,23 +962,23 @@ export default function CandidateAnalysisTab() {
                       <div className="flex flex-col items-center">
                         <span
                           className={`font-medium ${getScoreColor(
-                            candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                              candidate.technicalSkills.length,
+                            // candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                            //   candidate.technicalSkills.length,
                           )}`}
                         >
-                          {(
+                          {/* {(
                             candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
                             candidate.technicalSkills.length
-                          ).toFixed(1)}
+                          ).toFixed(1)} */}
                         </span>
                         <div className="w-24 bg-muted h-1.5 rounded-full mt-1">
                           <div
                             className="bg-blue-500 h-full rounded-full"
                             style={{
-                              width: `${
-                                candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                candidate.technicalSkills.length
-                              }%`,
+                            //   width: `${
+                            //     candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                            //     candidate.technicalSkills.length
+                            //   }%`,
                             }}
                           />
                         </div>
@@ -986,23 +988,23 @@ export default function CandidateAnalysisTab() {
                       <div className="flex flex-col items-center">
                         <span
                           className={`font-medium ${getScoreColor(
-                            candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                              candidate.softSkills.length,
+                            // candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                            //   candidate.softSkills.length,
                           )}`}
                         >
-                          {(
+                          {/* {(
                             candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
                             candidate.softSkills.length
-                          ).toFixed(1)}
+                          ).toFixed(1)} */}
                         </span>
                         <div className="w-24 bg-muted h-1.5 rounded-full mt-1">
                           <div
                             className="bg-purple-500 h-full rounded-full"
                             style={{
-                              width: `${
-                                candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                candidate.softSkills.length
-                              }%`,
+                            //   width: `${
+                            //     candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                            //     candidate.softSkills.length
+                            //   }%`,
                             }}
                           />
                         </div>
@@ -1097,14 +1099,14 @@ export default function CandidateAnalysisTab() {
                         Average:{" "}
                         <span
                           className={`font-bold ${getScoreColor(
-                            selectedCandidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                              selectedCandidate.technicalSkills.length,
+                            // selectedCandidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                            //   selectedCandidate.technicalSkills.length,
                           )}`}
                         >
-                          {(
+                          {/* {(
                             selectedCandidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
                             selectedCandidate.technicalSkills.length
-                          ).toFixed(1)}
+                          ).toFixed(1)} */}
                         </span>
                       </div>
                     </div>
@@ -1136,14 +1138,14 @@ export default function CandidateAnalysisTab() {
                         Average:{" "}
                         <span
                           className={`font-bold ${getScoreColor(
-                            selectedCandidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                              selectedCandidate.softSkills.length,
+                            // selectedCandidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
+                            //   selectedCandidate.softSkills.length,
                           )}`}
                         >
-                          {(
+                          {/* {(
                             selectedCandidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
                             selectedCandidate.softSkills.length
-                          ).toFixed(1)}
+                          ).toFixed(1)} */}
                         </span>
                       </div>
                     </div>
