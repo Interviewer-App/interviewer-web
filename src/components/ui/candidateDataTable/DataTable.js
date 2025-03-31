@@ -150,6 +150,7 @@ export function CandidateDataTable({ columns, data , interviewId}) {
           </TableBody>
         </Table>
       </div>
+      
     </div>
   );
 }
