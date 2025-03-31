@@ -37,6 +37,7 @@ import {
   X,
   Check,
   Loader2,
+  Save,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -141,7 +142,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { LuCircleCheckBig } from "react-icons/lu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -150,10 +158,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ChartContainer,
   ChartLegend,
@@ -161,7 +175,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import {
   PieChart,
@@ -191,10 +205,19 @@ import {
   Tooltip,
 } from "@/components/ui/tooltip";
 import { RiInformation2Line } from "react-icons/ri";
-import { generateInterviewQuestions, generateSoftSkills } from "@/lib/api/ai";
+import {
+  generateInterviewQuestions,
+  generateRecommondations,
+  generateSoftSkills,
+} from "@/lib/api/ai";
 
-import { getInterviewTimeSlotsInterviewById, sendInvitaionForCandidates } from "@/lib/api/interview-invitation";
+import {
+  getInterviewTimeSlotsInterviewById,
+  sendInvitaionForCandidates,
+} from "@/lib/api/interview-invitation";
 import CandidateAnalysisTab from "@/components/company/analysis-tab";
+import SkillsInput from "@/components/inputs/skillsInput";
+
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -247,15 +270,18 @@ export default function InterviewPreviewPage({ params }) {
   const [activeTab, setActiveTab] = useState("overview");
   const [bookingsData, setBookingsData] = useState([]);
   const [sessionsData, setSessionsData] = useState([]);
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
-  const [inviteEmails, setInviteEmails] = useState("")
-  const [inviteLink, setInviteLink] = useState("https://interviews.skillchecker.ai/i/cm8qzz3bi0015lf4gaOil6auh")
-  const [interviewInviteTab, setInterviewInviteTab] = useState("email")
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [inviteEmails, setInviteEmails] = useState("");
+  const [inviteLink, setInviteLink] = useState(
+    "https://interviews.skillchecker.ai/i/cm8qzz3bi0015lf4gaOil6auh"
+  );
+  const [interviewInviteTab, setInterviewInviteTab] = useState("email");
   const [email, setEmail] = useState("");
   const [interviewTimeSlots, setInterviewTimeSlots] = useState({});
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [interviewTimeSlotsDates, setInterviewTimeSlotsDates] = useState([]);
   const [filterInterviewTimeSlots, setFilterInterviewTimeSlots] = useState([]);
+  const [noOfQuestions, setNoOfQuestions] = useState(0);
   const [isCopied, setIsCopied] = useState(false);
   const [todayCandidates, setTodayCandidates] = useState(0);
 
@@ -263,13 +289,12 @@ export default function InterviewPreviewPage({ params }) {
   //   console.log('interviewIddddd',)
   // }, [interviewId])
 
-
   const handleInvite = () => {
     // In a real app, this would send invitations to the provided emails
     // toast.success(`Invitations sent to ${inviteEmails.split("\n").length} candidates`)
-    setInviteEmails("")
-    setIsInviteDialogOpen(false)
-  }
+    setInviteEmails("");
+    setIsInviteDialogOpen(false);
+  };
 
   const handleCopyLink = () => {
     try {
@@ -284,14 +309,13 @@ export default function InterviewPreviewPage({ params }) {
         title: "Error",
         description: "Failed to copy link to clipboard",
       });
-      console.error('Failed to copy: ', err);
+      console.error("Failed to copy: ", err);
     }
     setIsCopied(true);
-    
+
     // Reset after 2 seconds
     setTimeout(() => setIsCopied(false), 2000);
-  }
-
+  };
 
   const [chartData, setChartData] = useState({
     labels: ["Requests", "Invitations"],
@@ -348,27 +372,17 @@ export default function InterviewPreviewPage({ params }) {
   const [editingSubcategory, setEditingSubcategory] = useState(null);
   const [softSkills, setSoftSkills] = useState([]);
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState({
-    technicalPercentage: 50,
-    softSkillsPercentage: 50,
-    // addedQuestions: [
-    //   { text: "Describe your experience with CI/CD pipelines", marks: 15 },
-    // ],
-    addedSoftSkills: [
-      {
-        name: "Adaptability",
-        description: "Ability to adjust to new conditions and requirements",
-      },
-    ],
-    removedQuestionIds: [],
-    removedSoftSkillIds: [],
-  });
+  const [aiSuggestions, setAiSuggestions] = useState({});
   const [isAddingSoftSkill, setIsAddingSoftSkill] = useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [softSkillsLoading, setSoftSkillsLoading] = useState(false);
   const [newQuestion, setNewQuestion] = useState("");
   const [newQuestionTimeDuration, setNewQuestionTimeDuration] = useState(0);
   const [newQuestionType, setNewQuestionType] = useState("OPEN_ENDED");
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [isQuestionPromptOpen, setIsQuestionPromptOpen] = useState(false);
+  const [questionGenerationLoading, setQuestionGenerationLoading] =
+    useState(false);
   const [questions, setQuestions] = useState([
     {
       id: "q1",
@@ -626,6 +640,7 @@ export default function InterviewPreviewPage({ params }) {
     interviewCategories,
     generateModalOpen,
     createModalOpen,
+    questionGenerationLoading,
   ]);
 
   useEffect(() => {
@@ -678,7 +693,6 @@ export default function InterviewPreviewPage({ params }) {
         // const session = await getSession();
         // const companyId = session?.user?.companyID;
         const response = await getInterviewTimeSlotsInterviewById(interviewId);
-        console.log('aneansehjik', response)
         if (response) {
           const scheduleData = response.data.schedulesByDate || [];
 
@@ -724,8 +738,6 @@ export default function InterviewPreviewPage({ params }) {
       }
     };
     if (interviewId) fetchInterviewTimeSlots();
-    
-
   }, [interviewId]);
 
   useEffect(() => {
@@ -763,7 +775,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-              interviewStatusDetails.completedSchedules,
+                interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -792,9 +804,13 @@ export default function InterviewPreviewPage({ params }) {
 
   useEffect(() => {
     console.log("interviewDetail", interviewDetail);
-    const softSkillId = interviewCategories.find((category) => category.categoryName === "Soft")?.categoryId;
+    const softSkillId = interviewCategories.find(
+      (category) => category.categoryName === "Soft"
+    )?.categoryId;
     if (softSkillId) {
-      const softSkill = interviewDetail.CategoryAssignment.find((assignment) => assignment.categoryId === softSkillId);
+      const softSkill = interviewDetail.CategoryAssignment.find(
+        (assignment) => assignment.categoryId === softSkillId
+      );
       if (softSkill) {
         setSoftSkills(softSkill.SubCategoryAssignment);
         setSoftSkillsPercentage(softSkill.percentage);
@@ -904,12 +920,11 @@ export default function InterviewPreviewPage({ params }) {
 
   useEffect(() => {
     if (interviewId) {
-      const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PORT // Fallback if env var is missing
-      console.log('baseUrl', baseUrl)
+      const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PORT; // Fallback if env var is missing
+      console.log("baseUrl", baseUrl);
       setInviteLink(`${baseUrl}/interview-schedules/${interviewId}`);
     }
   }, [interviewId]);
-
 
   const sortTopCandidates = async (e) => {
     let data;
@@ -3810,7 +3825,7 @@ export default function InterviewPreviewPage({ params }) {
                     )}
                   </div>
                 </div>
-                <Pagination >
+                <Pagination>
                   <PaginationContent className="cursor-pointer">
                     <PaginationItem>
                       <PaginationPrevious
@@ -3840,21 +3855,27 @@ export default function InterviewPreviewPage({ params }) {
 
             <TabsContent value="invitation" className="p-0 border-none">
               <>
-
-                <Card className="border-blue-500/20 overflow-hidden"
-                //  onClick={() => setInviteModalOpen(true)}
+                <Card
+                  className="border-blue-500/20 overflow-hidden"
+                  //  onClick={() => setInviteModalOpen(true)}
                 >
                   <CardHeader className="bg-blue-500/5 border-b border-blue-500/20 pb-4">
                     <div className="flex justify-between items-center">
                       <div>
-                        <CardTitle className="text-xl">Invite Candidates</CardTitle>
+                        <CardTitle className="text-xl">
+                          Invite Candidates
+                        </CardTitle>
                         <CardDescription className="mt-1">
-                          Send interview invitations to candidates via email or shareable link
+                          Send interview invitations to candidates via email or
+                          shareable link
                         </CardDescription>
                       </div>
-                      <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+                      <Dialog
+                        open={isInviteDialogOpen}
+                        onOpenChange={setIsInviteDialogOpen}
+                      >
                         <DialogTrigger asChild>
-                          <Button className="bg-blue-600 hover:bg-blue-700" >
+                          <Button className="bg-blue-600 hover:bg-blue-700">
                             <UserPlus className="h-4 w-4 mr-2" />
                             Invite Candidates
                           </Button>
@@ -3863,17 +3884,30 @@ export default function InterviewPreviewPage({ params }) {
                           <DialogHeader>
                             <DialogTitle>Invite Candidates</DialogTitle>
                             <DialogDescription>
-                              Send interview invitations to candidates for the Software Engineer position
+                              Send interview invitations to candidates for the
+                              Software Engineer position
                             </DialogDescription>
                           </DialogHeader>
 
-                          <Tabs defaultValue="email" className="mt-4" onValueChange={(value) => setInterviewInviteTab(value)} >
+                          <Tabs
+                            defaultValue="email"
+                            className="mt-4"
+                            onValueChange={(value) =>
+                              setInterviewInviteTab(value)
+                            }
+                          >
                             <TabsList className="grid grid-cols-2 mb-4">
-                              <TabsTrigger value="email" className="flex items-center gap-2">
+                              <TabsTrigger
+                                value="email"
+                                className="flex items-center gap-2"
+                              >
                                 <Mail className="h-4 w-4" />
                                 <span>Email Invitation</span>
                               </TabsTrigger>
-                              <TabsTrigger value="link" className="flex items-center gap-2">
+                              <TabsTrigger
+                                value="link"
+                                className="flex items-center gap-2"
+                              >
                                 <Share2 className="h-4 w-4" />
                                 <span>Shareable Link</span>
                               </TabsTrigger>
@@ -3894,7 +3928,9 @@ export default function InterviewPreviewPage({ params }) {
                               </div>
 
                               <div className="space-y-2">
-                                <Label htmlFor="schedule">Interview Schedule</Label>
+                                <Label htmlFor="schedule">
+                                  Interview Schedule
+                                </Label>
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <Button
@@ -3903,12 +3939,16 @@ export default function InterviewPreviewPage({ params }) {
                                     >
                                       {Object.values(interviewTimeSlots)
                                         .flat()
-                                        .find((slot) => slot.scheduleID === selectedTimeSlot)
-                                        ?.startTime || "Select Time Slot"}
+                                        .find(
+                                          (slot) =>
+                                            slot.scheduleID === selectedTimeSlot
+                                        )?.startTime || "Select Time Slot"}
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent className="w-56">
-                                    <DropdownMenuLabel>Available Time Slots</DropdownMenuLabel>
+                                    <DropdownMenuLabel>
+                                      Available Time Slots
+                                    </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuRadioGroup
                                       value={selectedTimeSlot}
@@ -3917,31 +3957,37 @@ export default function InterviewPreviewPage({ params }) {
                                       {interviewTimeSlotsDates?.map((date) => (
                                         <div key={date}>
                                           <DropdownMenuLabel className="text-xs text-gray-400">
-                                            {new Date(date).toLocaleDateString(undefined, {
-                                              weekday: "short",
-                                              year: "numeric",
-                                              month: "short",
-                                              day: "numeric",
-                                            })}
+                                            {new Date(date).toLocaleDateString(
+                                              undefined,
+                                              {
+                                                weekday: "short",
+                                                year: "numeric",
+                                                month: "short",
+                                                day: "numeric",
+                                              }
+                                            )}
                                           </DropdownMenuLabel>
-                                          {interviewTimeSlots[date]?.map((slot) => (
-                                            <DropdownMenuRadioItem
-                                              key={slot.scheduleID}
-                                              value={slot.scheduleID}
-                                              disabled={slot.isBooked}
-                                            >
-                                              <div className="flex justify-between items-center w-full">
-                                                <span>
-                                                  {slot.startTime} - {slot.endTime}
-                                                </span>
-                                                {slot.isBooked && (
-                                                  <span className="text-red-500 text-xs ml-2">
-                                                    Booked
+                                          {interviewTimeSlots[date]?.map(
+                                            (slot) => (
+                                              <DropdownMenuRadioItem
+                                                key={slot.scheduleID}
+                                                value={slot.scheduleID}
+                                                disabled={slot.isBooked}
+                                              >
+                                                <div className="flex justify-between items-center w-full">
+                                                  <span>
+                                                    {slot.startTime} -{" "}
+                                                    {slot.endTime}
                                                   </span>
-                                                )}
-                                              </div>
-                                            </DropdownMenuRadioItem>
-                                          ))}
+                                                  {slot.isBooked && (
+                                                    <span className="text-red-500 text-xs ml-2">
+                                                      Booked
+                                                    </span>
+                                                  )}
+                                                </div>
+                                              </DropdownMenuRadioItem>
+                                            )
+                                          )}
                                         </div>
                                       ))}
                                     </DropdownMenuRadioGroup>
@@ -3952,12 +3998,15 @@ export default function InterviewPreviewPage({ params }) {
 
                             <TabsContent value="link" className="space-y-4">
                               <div className="space-y-2">
-                                <Label htmlFor="invite-link">Shareable Invitation Link</Label>
+                                <Label htmlFor="invite-link">
+                                  Shareable Invitation Link
+                                </Label>
                                 <div className="flex gap-2">
                                   <Input id="invite-link" value={inviteLink} readOnly className="flex-1" />
                                 </div>
                                 <p className="text-xs text-muted-foreground">
-                                  Share this link with candidates to allow them to schedule their interview
+                                  Share this link with candidates to allow them
+                                  to schedule their interview
                                 </p>
                               </div>
                             </TabsContent>
@@ -3982,8 +4031,8 @@ export default function InterviewPreviewPage({ params }) {
                                 )}
                               </Button>
                             ) : (
-                              <Button 
-                              className="bg-blue-600 hover:bg-blue-700" 
+                              <Button
+                              className="bg-blue-600 hover:bg-blue-700"
                               onClick={handleCopyLink}
                             >
                               {isCopied ? (
@@ -4013,17 +4062,23 @@ export default function InterviewPreviewPage({ params }) {
                           </div>
                           <div>
                             <h3 className="font-medium">Email Invitation</h3>
-                            <p className="text-sm text-muted-foreground">Send personalized email invitations to candidates</p>
+                            <p className="text-sm text-muted-foreground">
+                              Send personalized email invitations to candidates
+                            </p>
                           </div>
                         </div>
                         <ul className="space-y-2 text-sm pl-12">
                           <li className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                            <span>Candidates receive email with interview details</span>
+                            <span>
+                              Candidates receive email with interview details
+                            </span>
                           </li>
                           <li className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                            <span>Automatic reminders before the interview</span>
+                            <span>
+                              Automatic reminders before the interview
+                            </span>
                           </li>
                           <li className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
@@ -4039,17 +4094,23 @@ export default function InterviewPreviewPage({ params }) {
                           </div>
                           <div>
                             <h3 className="font-medium">Shareable Link</h3>
-                            <p className="text-sm text-muted-foreground">Create a link that candidates can use to schedule</p>
+                            <p className="text-sm text-muted-foreground">
+                              Create a link that candidates can use to schedule
+                            </p>
                           </div>
                         </div>
                         <ul className="space-y-2 text-sm pl-12">
                           <li className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                            <span>Candidates can select from available time slots</span>
+                            <span>
+                              Candidates can select from available time slots
+                            </span>
                           </li>
                           <li className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                            <span>Share via messaging apps or social media</span>
+                            <span>
+                              Share via messaging apps or social media
+                            </span>
                           </li>
                           <li className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
@@ -4062,13 +4123,13 @@ export default function InterviewPreviewPage({ params }) {
                   <CardFooter className="bg-blue-500/5 border-t border-blue-500/20 p-4">
                     <div className="flex items-center text-sm text-muted-foreground">
                       <Users className="h-4 w-4 mr-2" />
-                      <span>Ensure candidate email addresses are accurate before sending invitations</span>
+                      <span>
+                        Ensure candidate email addresses are accurate before
+                        sending invitations
+                      </span>
                     </div>
                   </CardFooter>
                 </Card>
-
-
-
 
                 <InvitedCandidates
                   interviewId={interviewId}
@@ -4170,8 +4231,10 @@ export default function InterviewPreviewPage({ params }) {
             <TabsContent value="analyze" className="p-0 border-none">
               <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-1">
                 <div className=" w-full ">
-                  <CandidateAnalysisTab categoryList={categoryList} candidates={candidates}/>
-
+                  <CandidateAnalysisTab
+                    categoryList={categoryList}
+                    candidates={candidates}
+                  />
                 </div>
                 <div className=" w-full  flex flex-col md:flex-row items-center justify-between mt-4">
                   <h1 className=" text-2xl font-semibold text-left w-full">
@@ -4187,8 +4250,8 @@ export default function InterviewPreviewPage({ params }) {
                           {selectedSortCategory === "overall"
                             ? "Overall"
                             : categoryList.find(
-                              (cat) => cat.key === selectedSortCategory
-                            )?.catagory || "Select Category"}
+                                (cat) => cat.key === selectedSortCategory
+                              )?.catagory || "Select Category"}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56">
