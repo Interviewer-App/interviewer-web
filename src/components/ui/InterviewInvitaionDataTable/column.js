@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button"; 
@@ -12,6 +13,47 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+const getStatusBadge = (status) => {
+  switch (status) {
+    case "PENDING":
+      return (
+        <Badge
+          variant="outline"
+          className="!text-orange-500 bg-amber-500/20  hover:bg-amber-500/30"
+        >
+          {status}
+        </Badge>
+      );
+    case "APPROVED":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-green-300/20 text-green-500 hover:bg-green-500/30"
+        >
+          APPROVED
+        </Badge>
+      );
+    case "REJECTED":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-yellow-700 text-yellow-500 hover:bg-yellow-500/30"
+        >
+          REJECTED
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="outline"
+          className="bg-black tetx-white hover:bg-gray-800/30"
+        >
+          {status}
+        </Badge>
+      );
+  }
+};
 
 export const columns = [
   {
@@ -99,6 +141,10 @@ export const columns = [
   {
     accessorKey: "status",  
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status");
+      return getStatusBadge(status);
+    },
   },
   // {
   //   accessorKey: "interviewCategory",  
