@@ -57,38 +57,19 @@ const ActionCell = ({ session }) => {
 
 // Table Columns
 export const candidatesTableColumns = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
-    accessorKey: "candidateId",
+    id: "candidateId",
+    accessorFn: (row) => row.candidate.candidateId,
     header: "Candidate ID",
     cell: ({ row }) => {
-      const id = row.original.candidate.candidateId
+      const id = row.original.candidate.candidateId;
       return id;
     },
+    enableColumnFilter: true,
   },
   {
-    accessorKey: "email",
+    id: "email", // Changed from accessorKey to id with accessorFn
+    accessorFn: (row) => row.candidate.email, // Access nested email
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -98,8 +79,9 @@ export const candidatesTableColumns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    enableColumnFilter: true,
     cell: ({ row }) => {
-      const candidateEmail = row.original.candidate.email
+      const candidateEmail = row.original.candidate.email;
       return candidateEmail;
     },
   },
@@ -107,33 +89,17 @@ export const candidatesTableColumns = [
     accessorKey: "candidateName",
     header: "Candidate Name",
     cell: ({ row }) => {
-      const candidateName = row.original.candidate.fullName
+      const candidateName = row.original.candidate.fullName;
       return candidateName;
     },
   },
-  //   {
-  //     accessorKey: "candidateEmail",
-  //     header: "Candidate Email",
-  //     cell: ({ row }) => {
-  //         const candidateEmail = row.original.candidate.email
-  //         return candidateEmail; 
-  //       },
-  //   },
-  // {
-  //   accessorKey: "candidatePhoneNumber",
-  //   header: "Candidate Number",
-  //   cell: ({ row }) => {
-  //     const candidateNumber = row.original.candidate.phoneNumber
-  //     return candidateNumber;
-  //   },
-  // },
   {
     accessorKey: "startDate",
     header: "Interview Date",
     cell: ({ row }) => {
-      const startDate = new Date(row.original.startTime); // Parse the date string
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return startDate.toLocaleDateString('en-US', options); // Formats it to "January 16, 2025"
+      const startDate = new Date(row.original.startTime);
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return startDate.toLocaleDateString("en-US", options);
     },
   },
   {
@@ -141,36 +107,11 @@ export const candidatesTableColumns = [
     header: "Start Time",
     cell: ({ row }) => {
       const startTime = new Date(row.original.startTime);
-      return startTime.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      }); // Formats to "4:00 PM"
+      return startTime.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
     },
   },
-
-  
-  //   {
-  //     accessorKey: "startAt",
-  //     header: "Start At",
-  //   },
-  //   {
-  //     accessorKey: "endAt",
-  //     header: "End At",
-  //   },
-  //   {
-  //     accessorKey: "status",
-  //     header: "Status",
-  //   },
-  //   {
-  //     accessorKey: "score",
-  //     header: "Score",
-  //   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const session = row.original; 
-  //       return <ActionCell session={session} />;
-  //     },
-  //   },
 ];
