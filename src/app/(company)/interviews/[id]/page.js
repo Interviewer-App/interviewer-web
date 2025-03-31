@@ -257,7 +257,7 @@ export default function InterviewPreviewPage({ params }) {
   const [interviewTimeSlotsDates, setInterviewTimeSlotsDates] = useState([]);
   const [filterInterviewTimeSlots, setFilterInterviewTimeSlots] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
-
+  const [todayCandidates, setTodayCandidates] = useState(0);
 
   // useEffect(() => {
   //   console.log('interviewIddddd',)
@@ -473,6 +473,15 @@ export default function InterviewPreviewPage({ params }) {
           setInterviewCandidates,
           setTotalCandidates
         );
+        setTotalCandidates(response.total);
+
+              // Count today's candidates
+      const todayCount = response.data.filter(schedule => 
+        isToday(schedule.startTime)
+      ).length;
+
+      setTodayCandidates(todayCount);
+
       } catch (error) {
         console.log("Error fetching interviews:", error);
       } finally {
@@ -482,6 +491,17 @@ export default function InterviewPreviewPage({ params }) {
 
     if (interviewId) fetchCandidatesData();
   }, [interviewId, page, limit, inviteModalOpen]);
+
+  const isToday = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
 
   const hexToRgba = (hex, opacity = 0.2) => {
     // Remove the hash symbol if it exists
@@ -4063,7 +4083,7 @@ export default function InterviewPreviewPage({ params }) {
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
                       <p className="text-sm text-muted-foreground">Total Candidates</p>
-                      <p className="text-3xl font-bold">{12}</p>
+                      <p className="text-3xl font-bold">{totalCandidates}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -4099,12 +4119,12 @@ export default function InterviewPreviewPage({ params }) {
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
                       <p className="text-sm text-muted-foreground">Today</p>
-                      <p className="text-3xl font-bold text-purple-500">{6}</p>
+                      <p className="text-3xl font-bold text-purple-500">{todayCandidates}</p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
-              <div className=" !bg-[#1b1d23] w-full h-fit p-9 rounded-lg mt-5">
+              <div className=" !bg-[#0a0a0a] w-full h-fit p-9 rounded-lg mt-5 border border-gray-500/30">
                 <div>
                   <h1 className=" text-2xl font-semibold">Candidates</h1>
                   <div>
