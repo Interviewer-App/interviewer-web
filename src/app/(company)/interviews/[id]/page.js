@@ -1765,7 +1765,7 @@ export default function InterviewPreviewPage({ params }) {
                 value="insights"
                 className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
               >
-                Insights
+                Experties
               </TabsTrigger>
               <TabsTrigger
                 value="sessions"
