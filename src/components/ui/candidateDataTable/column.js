@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-
+import { Badge } from "@/components/ui/badge";
 const ActionCell = ({ session }) => {
   const router = useRouter();
 
@@ -55,18 +55,51 @@ const ActionCell = ({ session }) => {
   );
 };
 
+
+const getStatusBadge = (status) => {
+  switch (status) {
+    case "PENDING":
+      return (
+        <Badge
+          variant="outline"
+          className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/10"
+        >
+          PENDING
+        </Badge>
+      );
+    case "APPROVED":
+      return (
+        <Badge
+          variant="outline"
+          className=" !text-green-400 !border-green-400/30 py-1 px-4 bg-green-400/10"
+        >
+          APPROVED
+        </Badge>
+      );
+    case "REJECTED":
+      return (
+        <Badge
+          variant="outline"
+          className=" !text-red-400 !border-red-400/30 py-1 px-4 bg-red-400/10"
+        >
+          REJECTED
+        </Badge>
+      );
+  }
+};
+
 // Table Columns
 export const candidatesTableColumns = [
-  {
-    id: "candidateId",
-    accessorFn: (row) => row.candidate.candidateId,
-    header: "Candidate ID",
-    cell: ({ row }) => {
-      const id = row.original.candidate.candidateId;
-      return id;
-    },
-    enableColumnFilter: true,
-  },
+  // {
+  //   id: "candidateId",
+  //   accessorFn: (row) => row.candidate.candidateId,
+  //   header: "Candidate ID",
+  //   cell: ({ row }) => {
+  //     const id = row.original.candidate.candidateId;
+  //     return id;
+  //   },
+  //   enableColumnFilter: true,
+  // },
   {
     id: "email", // Changed from accessorKey to id with accessorFn
     accessorFn: (row) => row.candidate.email, // Access nested email
@@ -112,6 +145,30 @@ export const candidatesTableColumns = [
         minute: "2-digit",
         hour12: true,
       });
+    },
+  },
+  {
+    accessorKey: "EndTime",
+    header: "End Time",
+    cell: ({ row }) => {
+      const startTime = new Date(row.original.endTime);
+      return startTime.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Interview Status",
+    // cell: ({ row }) => {
+    //   const interviewStatus = row.original.invitationStatus.status;
+    //   return interviewStatus;
+    // },
+    cell: ({ row }) => {
+      const status = row.original.invitationStatus.status;
+      return getStatusBadge(status);
     },
   },
 ];
