@@ -256,6 +256,8 @@ export default function InterviewPreviewPage({ params }) {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [interviewTimeSlotsDates, setInterviewTimeSlotsDates] = useState([]);
   const [filterInterviewTimeSlots, setFilterInterviewTimeSlots] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
+
 
   // useEffect(() => {
   //   console.log('interviewIddddd',)
@@ -284,6 +286,10 @@ export default function InterviewPreviewPage({ params }) {
       });
       console.error('Failed to copy: ', err);
     }
+    setIsCopied(true);
+    
+    // Reset after 2 seconds
+    setTimeout(() => setIsCopied(false), 2000);
   }
 
 
@@ -815,6 +821,13 @@ export default function InterviewPreviewPage({ params }) {
       ]);
     }
   }, [interviewStatusDetails]);
+
+  useEffect(() => {
+    // Reset the tab to 'email' when the modal is closed
+    if (!isInviteDialogOpen) {
+      setInterviewInviteTab("email");
+    }
+  }, [isInviteDialogOpen]);
 
   const handleInvitationSubmit = async (e) => {
     e.preventDefault();
@@ -3858,9 +3871,6 @@ export default function InterviewPreviewPage({ params }) {
                                   required
                                   className="h-1"
                                 />
-                                {/* <p className="text-xs text-muted-foreground">
-                        Enter multiple email addresses separated by line breaks
-                      </p> */}
                               </div>
 
                               <div className="space-y-2">
@@ -3925,78 +3935,14 @@ export default function InterviewPreviewPage({ params }) {
                                 <Label htmlFor="invite-link">Shareable Invitation Link</Label>
                                 <div className="flex gap-2">
                                   <Input id="invite-link" value={inviteLink} readOnly className="flex-1" />
-                                  {/* <Button variant="outline" onClick={handleCopyLink} className="flex-shrink-0">
-                          <Copy className="h-4 w-4 mr-2" />
-                          Copy
-                        </Button> */}
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                   Share this link with candidates to allow them to schedule their interview
                                 </p>
                               </div>
-
-                              {/* <div className="space-y-2">
-                      <Label htmlFor="link-schedule">Available Time Slots</Label> */}
-                              {/* <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      className="!bg-black w-full h-[45px] m-0 px-2 focus:outline-none outline-none"
-                      variant="outline"
-                    >
-                      {Object.values(interviewTimeSlots)
-                        .flat()
-                        .find((slot) => slot.scheduleID === selectedTimeSlot)
-                        ?.startTime || "Select Time Slot"}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Available Time Slots</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuRadioGroup
-                      value={selectedTimeSlot}
-                      onValueChange={setSelectedTimeSlot}
-                    >
-                      {interviewTimeSlotsDates?.map((date) => (
-                        <div key={date}>
-                          <DropdownMenuLabel className="text-xs text-gray-400">
-                            {new Date(date).toLocaleDateString(undefined, {
-                              weekday: "short",
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </DropdownMenuLabel>
-                          {interviewTimeSlots[date]?.map((slot) => (
-                            <DropdownMenuRadioItem
-                              key={slot.scheduleID}
-                              value={slot.scheduleID}
-                              disabled={slot.isBooked}
-                            >
-                              <div className="flex justify-between items-center w-full">
-                                <span>
-                                  {slot.startTime} - {slot.endTime}
-                                </span>
-                                {slot.isBooked && (
-                                  <span className="text-red-500 text-xs ml-2">
-                                    Booked
-                                  </span>
-                                )}
-                              </div>
-                            </DropdownMenuRadioItem>
-                          ))}
-                        </div>
-                      ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu> */}
-                              {/* </div> */}
                             </TabsContent>
                           </Tabs>
-
                           <DialogFooter className="mt-6">
-                            {/* <Button variant="outline">
-                    Cancel
-                  </Button> */}
                             {interviewInviteTab === "email" ? (
                               <Button
                                 className="bg-blue-600 hover:bg-blue-700"
@@ -4016,10 +3962,22 @@ export default function InterviewPreviewPage({ params }) {
                                 )}
                               </Button>
                             ) : (
-                              <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleCopyLink}>
-                                <Copy className="h-4 w-4 mr-2" />
-                                Copy Link
-                              </Button>
+                              <Button 
+                              className="bg-blue-600 hover:bg-blue-700" 
+                              onClick={handleCopyLink}
+                            >
+                              {isCopied ? (
+                                <>
+                                  <Check className="h-4 w-4 mr-2" />
+                                  Copied
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="h-4 w-4 mr-2" />
+                                  Copy Link
+                                </>
+                              )}
+                            </Button>
                             )}
                           </DialogFooter>
                         </DialogContent>
