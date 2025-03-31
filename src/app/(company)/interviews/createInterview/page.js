@@ -2084,11 +2084,6 @@ const CreateInterview = () => {
                                   value={jobDescription}
                                 />
                               </FormControl>
-                              {/* <Textarea
-                                id="description"
-                                placeholder="Describe the job role and responsibilities"
-                                className="min-h-[120px]"
-                              /> */}
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="proficiency">
