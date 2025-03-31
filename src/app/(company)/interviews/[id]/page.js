@@ -4058,6 +4058,52 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="candidates" className="p-0 border-none">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <Card className="bg-card/50 border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="text-sm text-muted-foreground">Total Candidates</p>
+                      <p className="text-3xl font-bold">{12}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-card/50 border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="text-sm text-muted-foreground">Completed</p>
+                      <p className="text-3xl font-bold text-green-500">{4}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-card/50 border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="text-sm text-muted-foreground">Ongoing</p>
+                      <p className="text-3xl font-bold text-blue-500">{1}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-card/50 border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="text-sm text-muted-foreground">Scheduled</p>
+                      <p className="text-3xl font-bold text-amber-500">{5}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-card/50 border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="text-sm text-muted-foreground">Today</p>
+                      <p className="text-3xl font-bold text-purple-500">{6}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
               <div className=" !bg-[#1b1d23] w-full h-fit p-9 rounded-lg mt-5">
                 <div>
                   <h1 className=" text-2xl font-semibold">Candidates</h1>
