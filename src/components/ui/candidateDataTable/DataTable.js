@@ -60,10 +60,10 @@ export function CandidateDataTable({ columns, data , interviewId}) {
     <div className="px-6">
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="Filter emails..."
-          value={table.getColumn("candidateId")?.getFilterValue() ?? ""}
+          placeholder="Filter candidate by their email..."
+          value={table.getColumn("email")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("candidateId")?.setFilterValue(event.target.value)
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
