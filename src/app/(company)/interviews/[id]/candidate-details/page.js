@@ -44,6 +44,7 @@ import {
   FlaskConical,
   NotebookPen,
   ShieldQuestion,
+  Ghost,
 } from "lucide-react";
 import {
   Card,
@@ -99,41 +100,41 @@ function CandidateDetailsProfile() {
   const [sessionhistory, setSessionHistory] = useState([]);
   const [categoryMarks, setCategoryMarks] = useState([
     {
-      "id": "cm8sb9c4p0005u7mo3zc1wyfb",
-      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
-      "name": "Communication",
-      "color": "#641B44",
-      "percentage": 30,
-      "createdAt": "2025-03-28T04:57:13.129Z",
-      "updatedAt": "2025-03-28T04:57:13.129Z"
-  },
-  {
-      "id": "cm8sb9c4q0009u7momffp4uu6",
-      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
-      "name": "Problem-Solving",
-      "color": "#CBB271",
-      "percentage": 35,
-      "createdAt": "2025-03-28T04:57:13.129Z",
-      "updatedAt": "2025-03-28T04:57:13.129Z"
-  },
-  {
-      "id": "cm8sb9c4q000du7motwsztbfa",
-      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
-      "name": "Collaboration",
-      "color": "#D63A85",
-      "percentage": 25,
-      "createdAt": "2025-03-28T04:57:13.129Z",
-      "updatedAt": "2025-03-28T04:57:13.129Z"
-  },
-  {
-      "id": "cm8sb9c4q000hu7moodkuc7u7",
-      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
-      "name": "Adaptability",
-      "color": "#19EA0B",
-      "percentage": 10,
-      "createdAt": "2025-03-28T04:57:13.129Z",
-      "updatedAt": "2025-03-28T04:57:13.129Z"
-  }
+      id: "cm8sb9c4p0005u7mo3zc1wyfb",
+      parentAssignmentId: "cm8sb9c4p0004u7mo01t5suh0",
+      name: "Communication",
+      color: "#641B44",
+      percentage: 30,
+      createdAt: "2025-03-28T04:57:13.129Z",
+      updatedAt: "2025-03-28T04:57:13.129Z",
+    },
+    {
+      id: "cm8sb9c4q0009u7momffp4uu6",
+      parentAssignmentId: "cm8sb9c4p0004u7mo01t5suh0",
+      name: "Problem-Solving",
+      color: "#CBB271",
+      percentage: 35,
+      createdAt: "2025-03-28T04:57:13.129Z",
+      updatedAt: "2025-03-28T04:57:13.129Z",
+    },
+    {
+      id: "cm8sb9c4q000du7motwsztbfa",
+      parentAssignmentId: "cm8sb9c4p0004u7mo01t5suh0",
+      name: "Collaboration",
+      color: "#D63A85",
+      percentage: 25,
+      createdAt: "2025-03-28T04:57:13.129Z",
+      updatedAt: "2025-03-28T04:57:13.129Z",
+    },
+    {
+      id: "cm8sb9c4q000hu7moodkuc7u7",
+      parentAssignmentId: "cm8sb9c4p0004u7mo01t5suh0",
+      name: "Adaptability",
+      color: "#19EA0B",
+      percentage: 10,
+      createdAt: "2025-03-28T04:57:13.129Z",
+      updatedAt: "2025-03-28T04:57:13.129Z",
+    },
   ]);
 
   useEffect(() => {
@@ -1673,44 +1674,44 @@ function CandidateDetailsProfile() {
                                     )}
                                   />
                                   <div className=" mt-5 w-full">
-                                    {categoryMarks.map(
-                                      (category) => (
-                                        <Card key={category.id} className="!bg-transparent mt-3">
-                                          <CardContent>
-                                            <div className="my-2">
-                                              <div className="flex justify-between items-center">
-                                                <h3 className="font-medium">
-                                                  {category.name}
-                                                </h3>
-                                                <span
-                                                  className={`font-bold ${getScoreColor(
-                                                    (
-                                                      category.percentage ?? 0
-                                                    ).toFixed(2)
-                                                  )}`}
-                                                >
-                                                  {(
-                                                    category.percentage ?? 0
-                                             
-                                                  ).toFixed(2)}
-                                                </span>
-                                              </div>
-                                              <Progress
-                                                value={(
-                                                  category.percentage ?? 0
-                                                ).toFixed(2)}
-                                                className="h-2"
-                                                indicatorclassName={getScoreBgColor(
+                                    {categoryMarks.map((category) => (
+                                      <Card
+                                        key={category.id}
+                                        className="!bg-transparent mt-3"
+                                      >
+                                        <CardContent>
+                                          <div className="my-2">
+                                            <div className="flex justify-between items-center">
+                                              <h3 className="font-medium">
+                                                {category.name}
+                                              </h3>
+                                              <span
+                                                className={`font-bold ${getScoreColor(
                                                   (
                                                     category.percentage ?? 0
                                                   ).toFixed(2)
-                                                )}
-                                              />
+                                                )}`}
+                                              >
+                                                {(
+                                                  category.percentage ?? 0
+                                                ).toFixed(2)}
+                                              </span>
                                             </div>
-                                          </CardContent>
-                                        </Card>
-                                      )
-                                    )}
+                                            <Progress
+                                              value={(
+                                                category.percentage ?? 0
+                                              ).toFixed(2)}
+                                              className="h-2"
+                                              indicatorclassName={getScoreBgColor(
+                                                (
+                                                  category.percentage ?? 0
+                                                ).toFixed(2)
+                                              )}
+                                            />
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    ))}
                                   </div>
                                 </CardContent>
                               </Card>
@@ -1871,370 +1872,369 @@ function CandidateDetailsProfile() {
                         </div>
                       ) : (
                         <div className="space-y-6">
-                          <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-medium">
-                              Resume Analyze
-                            </h3>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="gap-2"
-                            >
-                              <Download className="h-4 w-4" />
-                              Download
-                            </Button>
-                          </div>
-
-                          {sessionDetails?.candidate?.resumeURL ? (<div className="border border-border rounded-lg overflow-hidden">
-                            <div className="bg-muted p-4 flex justify-between items-center border-b border-border">
-                              <div className="flex items-center gap-2">
-                                <FileText className="h-5 w-5" />
-                                <span>
-                                  {candidateDetails?.user?.firstName}_resume.pdf
-                                </span>
+                          {sessionDetails?.candidate?.resumeURL ? (
+                            <>
+                              <div className="flex justify-between items-center">
+                                <h3 className="text-lg font-medium">
+                                  Resume Analyze
+                                </h3>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="gap-2"
+                                >
+                                  <Download className="h-4 w-4" />
+                                  Download
+                                </Button>
                               </div>
-                            </div>
-                            <div className="aspect-[3/4] bg-black/90 flex items-center justify-center p-4">
-                              {sessionDetails?.candidate?.resumeURL  && (
-                                <iframe
-                                  src={`${sessionDetails?.candidate?.resumeURL}`}
-                                  className=" overflow-x-hidden rounded-lg mt-5"
-                                  width="100%"
-                                  height="500px"
-                                  style={{ border: "none" }}
-                                  title="PDF Viewer"
-                                />
-                              )}
-                            </div>
-                          </div>) : (
-                            <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
-                            <h3 className="text-xl font-medium mb-2">
-                              Interview Not Yet Completed
-                            </h3>
-                            <p className="text-muted-foreground max-w-md">
-                              The assessment results will be available once the
-                              interview is completed. The interview is scheduled
-                              for{" "}
-                              {candidateDetails.interviewDate?.toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              )}{" "}
-                              at {candidateDetails.startTime}.
-                            </p>
-                          </div>
-                          )}
-
-                          <Card className="!bg-purple-500/5 !border-purple-500/30">
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-purple-400 flex items-center gap-2">
-                                <Wand2 className="h-5 w-5" />
-                                Resume Analysis
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                              <div>
-                                <h4 className="text-lg font-medium mb-2">
-                                  Summary
-                                </h4>
-                                <p className="text-muted-foreground">
-                                  {candidateData.resumeSummary}
-                                </p>
-                              </div>
-
-                              <div>
-                                <h4 className="text-lg font-medium mb-2">
-                                  Education
-                                </h4>
-                                <div className="space-y-2">
-                                  {candidateData.education.map((edu, index) => (
-                                    <div
-                                      key={index}
-                                      className="flex items-start gap-3"
-                                    >
-                                      <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                      <div>
-                                        <div className="font-medium">
-                                          {edu.degree}: {edu.institution}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">
-                                          {edu.period}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-
-                              <div>
-                                <h4 className="text-lg font-medium mb-2">
-                                  Experience
-                                </h4>
-                                <div className="space-y-3">
-                                  {candidateData.experience
-                                    .slice(0, 5)
-                                    .map((exp, index) => (
-                                      <div
-                                        key={index}
-                                        className="flex items-start gap-3"
-                                      >
-                                        <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <div className="font-medium">
-                                            {exp.project}
-                                          </div>
-                                          <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                            <span>{exp.company}</span>
-                                            {exp.role && (
-                                              <>
-                                                <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
-                                                <span>{exp.role}</span>
-                                              </>
-                                            )}
-                                            <Badge
-                                              variant="outline"
-                                              className={
-                                                exp.status === "Ongoing"
-                                                  ? "!text-blue-400 !border-blue-400"
-                                                  : "!text-green-400 !border-green-400"
-                                              }
-                                            >
-                                              {exp.status}
-                                            </Badge>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    ))}
-                                </div>
-                              </div>
-
-                              <div>
-                                <h4 className="text-lg font-medium mb-2">
-                                  Skills
-                                </h4>
-                                <div className="flex flex-wrap gap-2">
-                                  {candidateData.skills.map((skill, index) => (
-                                    <Badge
-                                      key={index}
-                                      variant="secondary"
-                                      className="px-3 py-1 text-sm"
-                                    >
-                                      {skill}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          {!questionsGenerated ? (
-                            <div className="flex justify-center">
-                              <Button
-                                variant="outline"
-                                onClick={handleGenerateQuestions}
-                                disabled={isGenerating}
-                                className="flex items-center gap-1  text-blue-500 !border-blue-500/50 hover:!text-blue-400 hover:!bg-blue-500/20"
-                              >
-                                {isGenerating ? (
-                                  <>
-                                    <LoaderCircle className="animate-spin" />
-                                  </>
-                                ) : (
-                                  <>
-                                    <Sparkles className="h-4 w-4 text-blue-500" />
-                                    Generate Interview Questions
-                                  </>
-                                )}
-                              </Button>
-                            </div>
-                          ) : (
-                            <Card className="mt-8 border-purple-500/20">
-                              <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                  <Wand2 className="h-5 w-5 text-purple-400" />
-                                  AI-Generated Interview Questions
-                                </CardTitle>
-                                <CardDescription>
-                                  Questions tailored to the candidate's profile
-                                  based on their resume
-                                </CardDescription>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="space-y-8">
-                                  {generatedQuestions.map((category, index) => (
-                                    <div key={index} className="space-y-4">
-                                      <h3 className="text-lg font-medium flex items-center gap-2">
-                                        {index === 0 && (
-                                          <Star className="h-5 w-5 text-blue-400" />
-                                        )}
-                                        {index === 1 && (
-                                          <Briefcase className="h-5 w-5 text-green-400" />
-                                        )}
-                                        {index === 2 && (
-                                          <User className="h-5 w-5 text-amber-400" />
-                                        )}
-                                        {index === 3 && (
-                                          <GraduationCap className="h-5 w-5 text-purple-400" />
-                                        )}
-                                        {category.category}
-                                      </h3>
-                                      <div className="space-y-3 pl-7">
-                                        {category.questions.map(
-                                          (question, qIndex) => (
-                                            <div key={qIndex} className="group">
-                                              <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
-                                                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                                                  {qIndex + 1}
-                                                </div>
-                                                <div className="flex-1">
-                                                  <p>{question}</p>
-                                                </div>
-                                                <Dialog>
-                                                  <DialogTrigger asChild>
-                                                    <Button
-                                                      variant="ghost"
-                                                      size="icon"
-                                                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    >
-                                                      <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="16"
-                                                        height="16"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth="2"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-pencil"
-                                                      >
-                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                        <path d="m15 5 4 4" />
-                                                      </svg>
-                                                    </Button>
-                                                  </DialogTrigger>
-                                                  <DialogContent>
-                                                    <DialogHeader>
-                                                      <DialogTitle>
-                                                        Edit Question
-                                                      </DialogTitle>
-                                                      <DialogDescription>
-                                                        Modify this question to
-                                                        better suit your
-                                                        interview needs.
-                                                      </DialogDescription>
-                                                    </DialogHeader>
-                                                    <div className="space-y-4 py-4">
-                                                      <div className="space-y-2">
-                                                        <Label htmlFor="question">
-                                                          Question
-                                                        </Label>
-                                                        <Textarea
-                                                          id="question"
-                                                          defaultValue={
-                                                            question
-                                                          }
-                                                          rows={4}
-                                                        />
-                                                      </div>
-                                                      <div className="space-y-2">
-                                                        <Label htmlFor="notes">
-                                                          Notes (for interviewer
-                                                          only)
-                                                        </Label>
-                                                        <Textarea
-                                                          id="notes"
-                                                          placeholder="Add any notes or expected answers here..."
-                                                          rows={3}
-                                                        />
-                                                      </div>
-                                                    </div>
-                                                    <DialogFooter>
-                                                      <Button type="submit">
-                                                        Save Changes
-                                                      </Button>
-                                                    </DialogFooter>
-                                                  </DialogContent>
-                                                </Dialog>
-                                              </div>
-                                            </div>
-                                          )
-                                        )}
-                                      </div>
-                                    </div>
-                                  ))}
-
-                                  <div className="flex justify-between pt-4 border-t">
-                                    <Button variant="outline" className="gap-2">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="lucide lucide-plus"
-                                      >
-                                        <path d="M5 12h14" />
-                                        <path d="M12 5v14" />
-                                      </svg>
-                                      Add Custom Question
-                                    </Button>
-                                    <div className="flex gap-2">
-                                      <Button
-                                        variant="outline"
-                                        className="gap-2"
-                                      >
-                                        <Download className="h-4 w-4" />
-                                        Export Questions
-                                      </Button>
-                                      <Button className="gap-2">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="16"
-                                          height="16"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          className="lucide lucide-save"
-                                        >
-                                          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                                          <polyline points="17 21 17 13 7 13 7 21" />
-                                          <polyline points="7 3 7 8 15 8" />
-                                        </svg>
-                                        Save to Interview
-                                      </Button>
-                                    </div>
+                              <div className="border border-border rounded-lg overflow-hidden">
+                                <div className="bg-muted p-4 flex justify-between items-center border-b border-border">
+                                  <div className="flex items-center gap-2">
+                                    <FileText className="h-5 w-5" />
+                                    <span>
+                                      {candidateDetails?.user?.firstName}
+                                      _resume.pdf
+                                    </span>
                                   </div>
                                 </div>
-                              </CardContent>
-                            </Card>
+                                <div className="aspect-[3/4] bg-black/90 flex items-center justify-center p-4">
+                                  <iframe
+                                    src={`${sessionDetails?.candidate?.resumeURL}`}
+                                    className=" overflow-x-hidden rounded-lg mt-5"
+                                    width="100%"
+                                    height="500px"
+                                    style={{ border: "none" }}
+                                    title="PDF Viewer"
+                                  />
+                                </div>
+                              </div>
+                              <Card className="!bg-purple-500/5 !border-purple-500/30">
+                                <CardHeader className="pb-2">
+                                  <CardTitle className="text-purple-400 flex items-center gap-2">
+                                    <Wand2 className="h-5 w-5" />
+                                    Resume Analysis
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Summary
+                                    </h4>
+                                    <p className="text-muted-foreground">
+                                      {candidateData.resumeSummary}
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Education
+                                    </h4>
+                                    <div className="space-y-2">
+                                      {candidateData.education.map(
+                                        (edu, index) => (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3"
+                                          >
+                                            <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div>
+                                              <div className="font-medium">
+                                                {edu.degree}: {edu.institution}
+                                              </div>
+                                              <div className="text-sm text-muted-foreground">
+                                                {edu.period}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Experience
+                                    </h4>
+                                    <div className="space-y-3">
+                                      {candidateData.experience
+                                        .slice(0, 5)
+                                        .map((exp, index) => (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3"
+                                          >
+                                            <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div>
+                                              <div className="font-medium">
+                                                {exp.project}
+                                              </div>
+                                              <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                                <span>{exp.company}</span>
+                                                {exp.role && (
+                                                  <>
+                                                    <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
+                                                    <span>{exp.role}</span>
+                                                  </>
+                                                )}
+                                                <Badge
+                                                  variant="outline"
+                                                  className={
+                                                    exp.status === "Ongoing"
+                                                      ? "!text-blue-400 !border-blue-400"
+                                                      : "!text-green-400 !border-green-400"
+                                                  }
+                                                >
+                                                  {exp.status}
+                                                </Badge>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ))}
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Skills
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2">
+                                      {candidateData.skills.map(
+                                        (skill, index) => (
+                                          <Badge
+                                            key={index}
+                                            variant="secondary"
+                                            className="px-3 py-1 text-sm"
+                                          >
+                                            {skill}
+                                          </Badge>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+
+                              {!questionsGenerated ? (
+                                <div className="flex justify-center">
+                                  <Button
+                                    variant="outline"
+                                    onClick={handleGenerateQuestions}
+                                    disabled={isGenerating}
+                                    className="flex items-center gap-1  text-blue-500 !border-blue-500/50 hover:!text-blue-400 hover:!bg-blue-500/20"
+                                  >
+                                    {isGenerating ? (
+                                      <>
+                                        <LoaderCircle className="animate-spin" />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Sparkles className="h-4 w-4 text-blue-500" />
+                                        Generate Interview Questions
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
+                              ) : (
+                                <Card className="mt-8 border-purple-500/20">
+                                  <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                      <Wand2 className="h-5 w-5 text-purple-400" />
+                                      AI-Generated Interview Questions
+                                    </CardTitle>
+                                    <CardDescription>
+                                      Questions tailored to the candidate's
+                                      profile based on their resume
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent>
+                                    <div className="space-y-8">
+                                      {generatedQuestions.map(
+                                        (category, index) => (
+                                          <div
+                                            key={index}
+                                            className="space-y-4"
+                                          >
+                                            <h3 className="text-lg font-medium flex items-center gap-2">
+                                              {index === 0 && (
+                                                <Star className="h-5 w-5 text-blue-400" />
+                                              )}
+                                              {index === 1 && (
+                                                <Briefcase className="h-5 w-5 text-green-400" />
+                                              )}
+                                              {index === 2 && (
+                                                <User className="h-5 w-5 text-amber-400" />
+                                              )}
+                                              {index === 3 && (
+                                                <GraduationCap className="h-5 w-5 text-purple-400" />
+                                              )}
+                                              {category.category}
+                                            </h3>
+                                            <div className="space-y-3 pl-7">
+                                              {category.questions.map(
+                                                (question, qIndex) => (
+                                                  <div
+                                                    key={qIndex}
+                                                    className="group"
+                                                  >
+                                                    <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
+                                                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                                                        {qIndex + 1}
+                                                      </div>
+                                                      <div className="flex-1">
+                                                        <p>{question}</p>
+                                                      </div>
+                                                      <Dialog>
+                                                        <DialogTrigger asChild>
+                                                          <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                                          >
+                                                            <svg
+                                                              xmlns="http://www.w3.org/2000/svg"
+                                                              width="16"
+                                                              height="16"
+                                                              viewBox="0 0 24 24"
+                                                              fill="none"
+                                                              stroke="currentColor"
+                                                              strokeWidth="2"
+                                                              strokeLinecap="round"
+                                                              strokeLinejoin="round"
+                                                              className="lucide lucide-pencil"
+                                                            >
+                                                              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                              <path d="m15 5 4 4" />
+                                                            </svg>
+                                                          </Button>
+                                                        </DialogTrigger>
+                                                        <DialogContent>
+                                                          <DialogHeader>
+                                                            <DialogTitle>
+                                                              Edit Question
+                                                            </DialogTitle>
+                                                            <DialogDescription>
+                                                              Modify this
+                                                              question to better
+                                                              suit your
+                                                              interview needs.
+                                                            </DialogDescription>
+                                                          </DialogHeader>
+                                                          <div className="space-y-4 py-4">
+                                                            <div className="space-y-2">
+                                                              <Label htmlFor="question">
+                                                                Question
+                                                              </Label>
+                                                              <Textarea
+                                                                id="question"
+                                                                defaultValue={
+                                                                  question
+                                                                }
+                                                                rows={4}
+                                                              />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                              <Label htmlFor="notes">
+                                                                Notes (for
+                                                                interviewer
+                                                                only)
+                                                              </Label>
+                                                              <Textarea
+                                                                id="notes"
+                                                                placeholder="Add any notes or expected answers here..."
+                                                                rows={3}
+                                                              />
+                                                            </div>
+                                                          </div>
+                                                          <DialogFooter>
+                                                            <Button type="submit">
+                                                              Save Changes
+                                                            </Button>
+                                                          </DialogFooter>
+                                                        </DialogContent>
+                                                      </Dialog>
+                                                    </div>
+                                                  </div>
+                                                )
+                                              )}
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+
+                                      <div className="flex justify-between pt-4 border-t">
+                                        <Button
+                                          variant="outline"
+                                          className="gap-2"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="lucide lucide-plus"
+                                          >
+                                            <path d="M5 12h14" />
+                                            <path d="M12 5v14" />
+                                          </svg>
+                                          Add Custom Question
+                                        </Button>
+                                        <div className="flex gap-2">
+                                          <Button
+                                            variant="outline"
+                                            className="gap-2"
+                                          >
+                                            <Download className="h-4 w-4" />
+                                            Export Questions
+                                          </Button>
+                                          <Button className="gap-2">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="16"
+                                              height="16"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              strokeWidth="2"
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              className="lucide lucide-save"
+                                            >
+                                              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                              <polyline points="17 21 17 13 7 13 7 21" />
+                                              <polyline points="7 3 7 8 15 8" />
+                                            </svg>
+                                            Save to Interview
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              )}
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-muted-foreground/20 rounded-lg">
+                              <Ghost className="h-16 w-16 text-muted-foreground mb-4" />
+                              <h3 className="text-xl font-medium mb-2">
+                                Resume Not Uploaded
+                              </h3>
+                              <p className="text-muted-foreground max-w-md">
+                                The candidate's is not uploaded the resume yet.
+                              </p>
+                            </div>
                           )}
                         </div>
                       )}
                     </CardContent>
                   </Card>
                 </TabsContent>
-
-                {/* <TabsContent
-                  value="technical"
-                  className="space-y-6"
-                ></TabsContent>
-
-                <TabsContent value="soft" className="space-y-6"></TabsContent> */}
               </Tabs>
             </CardContent>
-            
           </Card>
         </div>
       </SidebarInset>
