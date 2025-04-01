@@ -170,3 +170,14 @@ export const updateInterviewInvitaionStatus = async (interviewId,candidateId, da
         throw error;
     }
 }
+
+
+export const createSchedulesForInterviews = async (interviewsId, data) => {
+    try {
+        const response=await axiosInstance.post(`/interview/schedules/${interviewsId}`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error ordering interview flow`,error)
+        throw error;
+    }
+}
