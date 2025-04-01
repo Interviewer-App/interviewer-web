@@ -57,7 +57,6 @@ const ActionCell = ({ session }) => {
 
 
 const getStatusBadge = (status) => {
-  debugger
   switch (status) {
     case "toBeConducted":
       return (
