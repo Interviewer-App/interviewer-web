@@ -4225,7 +4225,6 @@ export default function InterviewPreviewPage({ params }) {
 
             <TabsContent value="timeslots" className="p-0 border-none">
               <TimeSlotsTab interviewTimeSlotsTabel={interviewTimeSlotsTabel}/>
-
             </TabsContent>
 
             <TabsContent value="invitation" className="p-0 border-none">
