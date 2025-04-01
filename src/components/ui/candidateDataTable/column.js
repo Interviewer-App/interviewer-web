@@ -161,7 +161,7 @@ export const candidatesTableColumns = [
   },
   {
     accessorKey: "status",
-    header: "Interview Status",
+    header: "Invivtation Status",
     // cell: ({ row }) => {
     //   const interviewStatus = row.original.invitationStatus.status;
     //   return interviewStatus;
