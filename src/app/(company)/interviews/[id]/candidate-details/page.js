@@ -2224,7 +2224,7 @@ function CandidateDetailsProfile() {
                                 Resume Not Uploaded
                               </h3>
                               <p className="text-muted-foreground max-w-md">
-                                The candidate's is not uploaded the resume yet.
+                                Candidate's is not uploaded the resume yet.
                               </p>
                             </div>
                           )}
