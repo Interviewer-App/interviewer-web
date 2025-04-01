@@ -240,7 +240,8 @@ export const interviewSessionTableColumns = [
     header: "Score",
     cell: ({ row }) => {
       const score = row.getValue("score");
-      const formattedScore = score > 0 ? `${score}%` : "N/A"; // Format score as percentage
+      // Format the score (0 becomes "0%", null/undefined becomes "N/A")
+      const formattedScore = typeof score === 'number' ? `${score}%` : "N/A";
       return formattedScore;
     },
   },
