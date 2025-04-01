@@ -57,6 +57,7 @@ const ActionCell = ({ session }) => {
 
 
 const getStatusBadge = (status) => {
+  debugger
   switch (status) {
     case "toBeConducted":
       return (
@@ -167,7 +168,7 @@ export const candidatesTableColumns = [
     //   return interviewStatus;
     // },
     cell: ({ row }) => {
-      const status = row.original.interviewSession.interviewStatus;
+      const status = row.original.interviewSession?.interviewStatus;
       return getStatusBadge(status);
     },
   },
