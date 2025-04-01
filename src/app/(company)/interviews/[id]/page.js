@@ -588,7 +588,7 @@ export default function InterviewPreviewPage({ params }) {
         minute: "numeric",
       }),
       status: session.interviewStatus,
-      score: session.score ? parseFloat(session.score).toFixed(2) : "N/A",
+      score: session.score ?? "N/A",
       userId: session.candidate.user.userID,
     }));
 
