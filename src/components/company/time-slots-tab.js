@@ -61,7 +61,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 // Add this interface at the top of the file, after the TimeSlot interface
 
 
-export default function TimeSlotsTab({ interviewId }) {
+export default function TimeSlotsTab({ interviewTimeSlotsTabel }) {
   const [isLoading, setIsLoading] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
 
@@ -91,213 +91,7 @@ export default function TimeSlotsTab({ interviewId }) {
 
   // Sample time slots - in a real app, this would come from an API
   // Replace the existing timeSlots state with this enhanced version that includes more details
-  const [timeSlots, setTimeSlots] = useState([
-    // Today
-    {
-      id: "TS001",
-      date: new Date(),
-      startTime: "09:00 AM",
-      endTime: "10:00 AM",
-      isBooked: true,
-      location: "Conference Room A",
-      description: "Technical interview for Frontend Developer position",
-      status: "scheduled",
-      bookedBy: {
-        id: "C002",
-        name: "Sarah Williams",
-      },
-      candidateDetails: {
-        email: "sarah.williams@example.com",
-        phone: "+1 (555) 123-4567",
-        position: "Frontend Developer",
-      },
-      interviewerDetails: {
-        name: "John Smith",
-        email: "john.smith@company.com",
-        department: "Engineering",
-      },
-      notes: "Candidate has 5 years of experience with React and TypeScript.",
-    },
-    {
-      id: "TS002",
-      date: new Date(),
-      startTime: "10:30 AM",
-      endTime: "11:30 AM",
-      isBooked: false,
-      location: "Virtual Meeting",
-      description: "Initial screening for UX Designer role",
-    },
-    {
-      id: "TS003",
-      date: new Date(),
-      startTime: "01:00 PM",
-      endTime: "02:00 PM",
-      isBooked: false,
-      location: "Conference Room B",
-      description: "Technical assessment for Backend Developer",
-    },
-    // Tomorrow
-    {
-      id: "TS004",
-      date: addDays(new Date(), 1),
-      startTime: "09:00 AM",
-      endTime: "10:00 AM",
-      isBooked: true,
-      location: "Virtual Meeting",
-      description: "Final interview for Product Manager position",
-      status: "scheduled",
-      bookedBy: {
-        id: "C007",
-        name: "Sophia Garcia",
-      },
-      candidateDetails: {
-        email: "sophia.garcia@example.com",
-        phone: "+1 (555) 987-6543",
-        position: "Product Manager",
-      },
-      interviewerDetails: {
-        name: "Michael Johnson",
-        email: "michael.johnson@company.com",
-        department: "Product",
-      },
-      notes: "Candidate is currently working at Tech Corp as a Senior Product Manager.",
-    },
-    {
-      id: "TS005",
-      date: addDays(new Date(), 1),
-      startTime: "10:30 AM",
-      endTime: "11:30 AM",
-      isBooked: false,
-      location: "Conference Room C",
-      description: "Technical interview for Data Scientist",
-    },
-    {
-      id: "TS006",
-      date: addDays(new Date(), 1),
-      startTime: "01:00 PM",
-      endTime: "02:00 PM",
-      isBooked: false,
-      location: "Virtual Meeting",
-      description: "Initial screening for Marketing Specialist",
-    },
-    // Day after tomorrow
-    {
-      id: "TS007",
-      date: addDays(new Date(), 2),
-      startTime: "09:00 AM",
-      endTime: "10:00 AM",
-      isBooked: false,
-      location: "Conference Room A",
-      description: "Technical interview for DevOps Engineer",
-    },
-    {
-      id: "TS008",
-      date: addDays(new Date(), 2),
-      startTime: "10:30 AM",
-      endTime: "11:30 AM",
-      isBooked: true,
-      location: "Virtual Meeting",
-      description: "Final round for Software Engineer position",
-      status: "scheduled",
-      bookedBy: {
-        id: "C009",
-        name: "Noah Thompson",
-      },
-      candidateDetails: {
-        email: "noah.thompson@example.com",
-        phone: "+1 (555) 456-7890",
-        position: "Software Engineer",
-      },
-      interviewerDetails: {
-        name: "Emily Davis",
-        email: "emily.davis@company.com",
-        department: "Engineering",
-      },
-      notes: "Candidate has strong backend skills and is looking to transition to full-stack.",
-    },
-    {
-      id: "TS009",
-      date: addDays(new Date(), 2),
-      startTime: "01:00 PM",
-      endTime: "02:00 PM",
-      isBooked: false,
-      location: "Conference Room B",
-      description: "Technical assessment for QA Engineer",
-    },
-    // 3 days from now
-    {
-      id: "TS010",
-      date: addDays(new Date(), 3),
-      startTime: "02:00 PM",
-      endTime: "03:00 PM",
-      isBooked: false,
-      location: "Virtual Meeting",
-      description: "Initial screening for UI Designer",
-    },
-    {
-      id: "TS011",
-      date: addDays(new Date(), 3),
-      startTime: "03:30 PM",
-      endTime: "04:30 PM",
-      isBooked: true,
-      location: "Conference Room A",
-      description: "Final interview for Data Analyst position",
-      status: "scheduled",
-      bookedBy: {
-        id: "C010",
-        name: "Mia Wilson",
-      },
-      candidateDetails: {
-        email: "mia.wilson@example.com",
-        phone: "+1 (555) 234-5678",
-        position: "Data Analyst",
-      },
-      interviewerDetails: {
-        name: "Daniel Brown",
-        email: "daniel.brown@company.com",
-        department: "Data Science",
-      },
-      notes: "Candidate has experience with SQL, Python, and data visualization tools.",
-    },
-    // 5 days from now
-    {
-      id: "TS012",
-      date: addDays(new Date(), 5),
-      startTime: "09:00 AM",
-      endTime: "10:00 AM",
-      isBooked: false,
-      location: "Conference Room C",
-      description: "Technical interview for Network Engineer",
-    },
-    {
-      id: "TS013",
-      date: addDays(new Date(), 5),
-      startTime: "10:30 AM",
-      endTime: "11:30 AM",
-      isBooked: false,
-      location: "Virtual Meeting",
-      description: "Initial screening for Project Manager",
-    },
-    // 7 days from now
-    {
-      id: "TS014",
-      date: addDays(new Date(), 7),
-      startTime: "01:00 PM",
-      endTime: "02:00 PM",
-      isBooked: false,
-      location: "Conference Room A",
-      description: "Technical assessment for Systems Administrator",
-    },
-    {
-      id: "TS015",
-      date: addDays(new Date(), 7),
-      startTime: "02:30 PM",
-      endTime: "03:30 PM",
-      isBooked: false,
-      location: "Virtual Meeting",
-      description: "Initial screening for Content Writer",
-    },
-  ])
+  const [timeSlots, setTimeSlots] = useState(interviewTimeSlotsTabel)
 
   // Simulate loading data
   useEffect(() => {
@@ -416,24 +210,22 @@ export default function TimeSlotsTab({ interviewId }) {
         <CardContent>
           <div className="space-y-6">
             {sortedDates.length > 0 ? (
-              <div className="rounded-md dark:border overflow-hidden">
+              <div className="rounded-md dark:border dark:border-[#4d4d4d] overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm dark:border-[#2a2a2a]">
+                  <table className="w-full text-sm ">
                     <thead>
                       <tr className="dark:bg-muted/50">
                         <th className="h-10 px-4 text-left font-medium">Date & Time</th>
                         <th className="h-10 px-4 text-left font-medium">Status</th>
-                        <th className="h-10 px-4 text-left font-medium">Location</th>
-                        <th className="h-10 px-4 text-left font-medium">Description</th>
-                        <th className="h-10 px-4 text-left font-medium">Candidate</th>
+                        <th className="h-10 px-4 text-left font-medium">Name</th>
+                        <th className="h-10 px-4 text-left font-medium">Email</th>
                         <th className="h-10 px-4 text-right font-medium">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {timeSlots
-                        .sort((a, b) => a.date.getTime() - b.date.getTime())
                         .map((slot) => (
-                          <tr key={slot.id} className="border-t dark:hover:bg-muted/30 dark:transition-colors">
+                          <tr key={slot.id} className="border-t dark:border-[#4d4d4d] dark:hover:bg-muted/30 dark:transition-colors">
                             <td className="p-4">
                               <div className="font-medium">{formatDate(slot.date)}</div>
                               <div className="dark:text-muted-foreground flex items-center gap-1 mt-1">
@@ -446,11 +238,12 @@ export default function TimeSlotsTab({ interviewId }) {
                                 {slot.isBooked ? "Booked" : "Available"}
                               </Badge>
                             </td>
-                            <td className="p-4">{slot.location || "-"}</td>
-                            <td className="p-4 max-w-[200px]">
+                            <td className="p-4">{slot.candidateDetails?.name || "-"}</td>
+                            <td className="p-4">{slot.candidateDetails?.email || "-"}</td>
+                            {/* <td className="p-4 max-w-[200px]">
                               <div className="truncate">{slot.description || "-"}</div>
-                            </td>
-                            <td className="p-4">
+                            </td> */}
+                            {/* <td className="p-4">
                               {slot.isBooked && slot.bookedBy ? (
                                 <div className="flex items-center gap-2">
                                   <Avatar className="h-6 w-6">
@@ -466,7 +259,7 @@ export default function TimeSlotsTab({ interviewId }) {
                               ) : (
                                 <span className="text-muted-foreground">-</span>
                               )}
-                            </td>
+                            </td> */}
                             <td className="p-4 text-right">
                               <div className="flex items-center justify-end gap-2">
                                 {slot.isBooked ? (
@@ -475,12 +268,13 @@ export default function TimeSlotsTab({ interviewId }) {
                                     Details
                                   </Button>
                                 ) : (
-                                  <Button size="sm" className="dark:bg-blue-600 dark:hover:bg-blue-700">
-                                    <Plus className="h-3.5 w-3.5 mr-1" />
-                                    Book
-                                  </Button>
+                                    <></>
+                                //   <Button size="sm" className="dark:bg-blue-600 dark:hover:bg-blue-700">
+                                //     <Plus className="h-3.5 w-3.5 mr-1" />
+                                //     Book
+                                //   </Button>
                                 )}
-                                <DropdownMenu>
+                                {/* <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon" className="h-8 w-8">
                                       <MoreHorizontal className="h-4 w-4" />
@@ -500,7 +294,7 @@ export default function TimeSlotsTab({ interviewId }) {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem className="text-red-500">Delete Slot</DropdownMenuItem>
                                   </DropdownMenuContent>
-                                </DropdownMenu>
+                                </DropdownMenu> */}
                               </div>
                             </td>
                           </tr>
