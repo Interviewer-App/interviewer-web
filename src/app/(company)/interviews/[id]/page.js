@@ -38,6 +38,9 @@ import {
   Check,
   Loader2,
   Save,
+  StopCircle,
+  ArrowUpRight,
+  Hourglass,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -217,6 +220,8 @@ import {
 } from "@/lib/api/interview-invitation";
 import CandidateAnalysisTab from "@/components/company/analysis-tab";
 import SkillsInput from "@/components/inputs/skillsInput";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -3810,7 +3815,350 @@ export default function InterviewPreviewPage({ params }) {
 
             <TabsContent value="sessions" className="p-0 border-none">
               <div className=" w-full h-fit rounded-lg mt-5">
-                <div>
+
+
+                    {/* Header with stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
+        <Card className="bg-card/50 border-border/50">
+          <CardContent className="p-4">
+            <div className="flex flex-col items-center justify-center h-full">
+              <p className="text-sm text-muted-foreground">Total Sessions</p>
+              <p className="text-3xl font-bold">24</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/50 border-border/50">
+          <CardContent className="p-4">
+            <div className="flex flex-col items-center justify-center h-full">
+              <p className="text-sm text-muted-foreground">Completed</p>
+              <p className="text-3xl font-bold text-green-500">18</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/50 border-border/50">
+          <CardContent className="p-4">
+            <div className="flex flex-col items-center justify-center h-full">
+              <p className="text-sm text-muted-foreground">Ongoing</p>
+              <div className="flex items-center gap-2">
+                {/* <p className="text-3xl font-bold text-blue-500">{statusCounts.ongoing}</p> */}
+                {/* {statusCounts.ongoing > 0 && (
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                  </span>
+                )} */}
+                <p className="text-3xl font-bold text-blue-500">2</p>
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+          </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/50 border-border/50">
+          <CardContent className="p-4">
+            <div className="flex flex-col items-center justify-center h-full">
+              <p className="text-sm text-muted-foreground">Upcoming</p>
+              <p className="text-3xl font-bold text-amber-500">4</p>
+              {/* <p className="text-3xl font-bold text-amber-500">{statusCounts.upcoming}</p> */}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Today's Sessions */}
+      {/* {todaysSessions.length > 0 && (
+        <Card className="border-blue-500/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2">
+              Today&apos;s Sessions
+              {statusCounts.ongoing > 0 && (
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+              )}
+            </CardTitle>
+            <CardDescription>
+              {todaysSessions.length} session{todaysSessions.length !== 1 ? "s" : ""} scheduled for today
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {todaysSessions.map((session) => (
+                <Card
+                  key={session.id}
+                  className={`overflow-hidden ${
+                    session.status === "Ongoing" ? "border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]" : ""
+                  }`}
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-center">
+                      <Badge className={getStatusColor(session.status)}>
+                        <div className="flex items-center gap-1">
+                          {getStatusIcon(session.status)}
+                          <span>{session.status}</span>
+                        </div>
+                      </Badge>
+                      <div className="text-sm font-medium">
+                        {session.startTime} - {session.endTime}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-3 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={session.candidates[0].avatar} alt={session.candidates[0].name} />
+                        <AvatarFallback>{session.candidates[0].name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium text-base">{session.candidates[0].name}</div>
+                        <div className="text-sm text-muted-foreground">{session.candidates[0].email}</div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Type:</span>
+                        <span className="font-medium ml-1">{session.type}</span>
+                      </div>
+                      {session.location && (
+                        <div>
+                          <span className="text-muted-foreground">Location:</span>
+                          <span className="font-medium ml-1">{session.location}</span>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                  <CardFooter className="pt-0 pb-4">
+                    <div className="flex gap-2 w-full">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          window.open(session.meetingLink, "_blank")
+                        }}
+                      >
+                        <ArrowUpRight className="h-4 w-4 mr-2" />
+                        Rejoin
+                      </Button>
+                      <Button
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        onClick={(e) => handleEndSession(session.id, e)}
+                      >
+                        <StopCircle className="h-4 w-4 mr-2" />
+                        End
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )} */}
+
+      {/* Today's Sessions */}
+<Card className="border-blue-500/20">
+  <CardHeader className="pb-2">
+    <CardTitle className="flex items-center gap-2">
+      Today&apos;s Sessions
+      <span className="relative flex h-3 w-3">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+      </span>
+    </CardTitle>
+    <CardDescription>
+      3 sessions scheduled for today
+    </CardDescription>
+  </CardHeader>
+  <CardContent>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Session 1 */}
+      <Card className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-center">
+            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+              <div className="flex items-center gap-1">
+              <Hourglass size={12}/> 
+                <span>Ongoing</span>
+              </div>
+            </Badge>
+            <div className="text-sm font-medium">
+              10:00 - 11:00
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pb-3 space-y-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" />
+              <AvatarFallback>SJ</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-medium text-base">Sarah Johnson</div>
+              <div className="text-sm text-muted-foreground">sarah.johnson@example.com</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div>
+              <span className="text-muted-foreground">Type:</span>
+              <span className="font-medium ml-1">Technical</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Location:</span>
+              <span className="font-medium ml-1">Zoom</span>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="pt-0 pb-4">
+          <div className="flex gap-2 w-full">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={(e) => {
+                e.stopPropagation()
+                window.open("https://zoom.us/j/123456789", "_blank")
+              }}
+            >
+              <ArrowUpRight className="h-4 w-4 mr-2" />
+              Rejoin
+            </Button>
+            <Button
+              className="flex-1 bg-green-600 hover:bg-green-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <StopCircle className="h-4 w-4 mr-2" />
+              End
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+
+      {/* Session 2 */}
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-center">
+            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+              <div className="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Upcoming</span>
+              </div>
+            </Badge>
+            <div className="text-sm font-medium">
+              14:30 - 15:30
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pb-3 space-y-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen" />
+              <AvatarFallback>MC</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-medium text-base">Michael Chen</div>
+              <div className="text-sm text-muted-foreground">michael.chen@example.com</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div>
+              <span className="text-muted-foreground">Type:</span>
+              <span className="font-medium ml-1">Behavioral</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Location:</span>
+              <span className="font-medium ml-1">Conference Room</span>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="pt-0 pb-4">
+          <div className="flex gap-2 w-full">
+            <Button
+              variant="outline"
+              className="flex-1"
+            >
+              <ArrowUpRight className="h-4 w-4 mr-2" />
+              Join
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+            >
+              Reschedule
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+
+      {/* Session 3 */}
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-center">
+            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+              <div className="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Upcoming</span>
+              </div>
+            </Badge>
+            <div className="text-sm font-medium">
+              16:00 - 17:00
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pb-3 space-y-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Rodriguez" />
+              <AvatarFallback>ER</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-medium text-base">Emma Rodriguez</div>
+              <div className="text-sm text-muted-foreground">emma.rodriguez@example.com</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div>
+              <span className="text-muted-foreground">Type:</span>
+              <span className="font-medium ml-1">Technical</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Location:</span>
+              <span className="font-medium ml-1">Google Meet</span>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="pt-0 pb-4">
+          <div className="flex gap-2 w-full">
+            <Button
+              variant="outline"
+              className="flex-1"
+            >
+              <ArrowUpRight className="h-4 w-4 mr-2" />
+              Join
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+            >
+              Reschedule
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
+  </CardContent>
+</Card>
+
+                <div className="my-6 border border-gray-200/20 rounded-lg p-6">
                   <h1 className=" text-2xl font-semibold mb-5">
                     Interview sessions
                   </h1>
