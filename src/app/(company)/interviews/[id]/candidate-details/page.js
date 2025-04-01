@@ -84,7 +84,7 @@ function CandidateDetailsProfile() {
   const pathParam = useParams();
   const searchParams = useSearchParams();
   const candidateId = searchParams.get("candidateId");
-  const sessionId = searchParams.get("sessionId");
+  const [sessionId, setSessionId] = useState(null);
   const [candidateDetails, setCandidateDetails] = useState({});
   const [documentUrl, setDocumentUrl] = useState("");
   const [age, setAge] = useState(0);
@@ -136,6 +136,12 @@ function CandidateDetailsProfile() {
       updatedAt: "2025-03-28T04:57:13.129Z",
     },
   ]);
+
+  useEffect(() => {
+    if (searchParams.get("sessionId")) {
+      setSessionId(searchParams.get("sessionId"));
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchCandidateDetails = async () => {
@@ -266,8 +272,8 @@ function CandidateDetailsProfile() {
       }
     };
 
-    if (sessionDetails.interviewStatus === "completed") fetchSessionHistory();
-  }, [sessionDetails]);
+    if (sessionDetails.interviewStatus === "completed" && sessionId) fetchSessionHistory();
+  }, [sessionDetails, sessionId]);
 
   useEffect(() => {
     const fetchdocument = async () => {
@@ -607,7 +613,14 @@ function CandidateDetailsProfile() {
           </Badge>
         );
       default:
-        return null;
+        return (
+          <Badge
+            variant="outline"
+            className="!text-gray-600 !border-gray-600/30 bg-gray-600/20 py-1 px-4"
+          >
+            {status}
+          </Badge>
+        );
     }
   };
 
@@ -673,28 +686,36 @@ function CandidateDetailsProfile() {
                 <div className="flex flex-col items-center">
                   <Avatar className="h-24 w-24 mb-4">
                     <AvatarImage
-                      src={sessionDetails?.candidate?.avatar}
-                      alt={sessionDetails?.candidate?.user?.firstName}
+                      src={candidateDetails?.user?.avatar}
+                      alt={candidateDetails?.user?.firstName}
                     />
                     <AvatarFallback className="text-2xl">
-                      {sessionDetails?.candidate?.user?.firstName.charAt(0)}
+                      {candidateDetails?.user?.firstName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <h2 className="text-xl font-bold">
-                    {sessionDetails?.candidate?.user?.firstName}{" "}
-                    {sessionDetails?.candidate?.user?.lastName}
+                  <h2 className="text-xl font-bold mb-1">
+                    {candidateDetails?.user?.firstName}{" "}
+                    {candidateDetails?.user?.lastName}
                   </h2>
-                  {getInterviewStatusBadge(sessionDetails?.interviewStatus)}
+                  {getInterviewStatusBadge(
+                    sessionDetails?.interviewStatus || "Not Scheduled"
+                  )}
                 </div>
 
                 <div className="space-y-3 pt-4">
                   <div className="flex items-center gap-3">
                     <Mail className="h-5 w-5 text-muted-foreground" />
-                    <span>{sessionDetails?.candidate?.user?.email}</span>
+                    <span>{candidateDetails?.user?.email}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-muted-foreground" />
-                    <span>{candidateDetails?.user?.contactNo}</span>
+                    {candidateDetails?.user?.contactNo ? (
+                      <span>{candidateDetails?.user?.contactNo}</span>
+                    ) : (
+                      <span className=" text-gray-500 text-sm">
+                        Not Provided
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-3">
                     <Calendar className="h-5 w-5 text-muted-foreground" />
@@ -712,23 +733,29 @@ function CandidateDetailsProfile() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-muted-foreground" />
-                    <span>
-                      {new Date(
-                        sessionDetails?.interview?.startDate
-                      ).toLocaleTimeString("en-US", {
-                        hour: "numeric",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}{" "}
-                      -{" "}
-                      {new Date(
-                        sessionDetails?.interview?.endDate
-                      ).toLocaleTimeString("en-US", {
-                        hour: "numeric",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </span>
+                    {sessionDetails?.interview?.startDate ? (
+                      <span>
+                        {new Date(
+                          sessionDetails?.interview?.startDate
+                        ).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}{" "}
+                        -{" "}
+                        {new Date(
+                          sessionDetails?.interview?.endDate
+                        ).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </span>
+                    ) : (
+                      <span className=" text-gray-500 text-sm">
+                        Not Scheduled
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -756,42 +783,48 @@ function CandidateDetailsProfile() {
             <Card className="md:col-span-2 !bg-transparent">
               <CardHeader>
                 <CardTitle>Interview Results</CardTitle>
-                {sessionDetails?.interviewStatus === "completed" ? (
-                  <CardDescription>
-                    Completed on{" "}
-                    {new Date(
-                      sessionDetails?.interview?.endDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}{" "}
-                    at{" "}
-                    {new Date(
-                      sessionDetails?.interview?.endDate
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </CardDescription>
+                {sessionDetails?.interviewStatus ? (
+                  sessionDetails?.interviewStatus === "completed" ? (
+                    <CardDescription>
+                      Completed on{" "}
+                      {new Date(
+                        sessionDetails?.interview?.endDate
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}{" "}
+                      at{" "}
+                      {new Date(
+                        sessionDetails?.interview?.endDate
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </CardDescription>
+                  ) : (
+                    <CardDescription>
+                      Scheduled for{" "}
+                      {new Date(
+                        sessionDetails?.interview?.startDate
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}{" "}
+                      at{" "}
+                      {new Date(
+                        sessionDetails?.interview?.startDate
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </CardDescription>
+                  )
                 ) : (
-                  <CardDescription>
-                    Scheduled for{" "}
-                    {new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}{" "}
-                    at{" "}
-                    {new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </CardDescription>
+                  <span className=" text-gray-500 text-sm">
+                    Not Scheduled Yet
+                  </span>
                 )}
               </CardHeader>
               {sessionDetails?.interviewStatus === "completed" ? (
@@ -987,22 +1020,24 @@ function CandidateDetailsProfile() {
                   </h3>
                   <p className="text-muted-foreground max-w-md">
                     The assessment results will be available once the interview
-                    is completed. The interview is scheduled for{" "}
-                    {new Date(
+                    is completed.{" "}
+                    {sessionDetails?.interview?.startDate &&
+                      `The interview is scheduled for ${" "}
+                    ${new Date(
                       sessionDetails?.interview?.startDate
                     ).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    })}{" "}
-                    at{" "}
-                    {new Date(
+                    })}${" "}
+                    at${" "}
+                    ${new Date(
                       sessionDetails?.interview?.startDate
                     ).toLocaleTimeString("en-US", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
-                    .
+                    .`}
                   </p>
                 </div>
               )}
@@ -1446,42 +1481,48 @@ function CandidateDetailsProfile() {
                   <Card className="!bg-transparent">
                     <CardHeader>
                       <CardTitle>Interview Results</CardTitle>
-                      {sessionDetails?.interviewStatus === "completed" ? (
-                        <CardDescription>
-                          Completed on{" "}
-                          {new Date(
-                            sessionDetails?.interview?.endDate
-                          ).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}{" "}
-                          at{" "}
-                          {new Date(
-                            sessionDetails?.interview?.endDate
-                          ).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </CardDescription>
+                      {sessionDetails?.interviewStatus ? (
+                        sessionDetails?.interviewStatus === "completed" ? (
+                          <CardDescription>
+                            Completed on{" "}
+                            {new Date(
+                              sessionDetails?.interview?.endDate
+                            ).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}{" "}
+                            at{" "}
+                            {new Date(
+                              sessionDetails?.interview?.endDate
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </CardDescription>
+                        ) : (
+                          <CardDescription>
+                            Scheduled for{" "}
+                            {new Date(
+                              sessionDetails?.interview?.startDate
+                            ).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}{" "}
+                            at{" "}
+                            {new Date(
+                              sessionDetails?.interview?.startDate
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </CardDescription>
+                        )
                       ) : (
-                        <CardDescription>
-                          Scheduled for{" "}
-                          {new Date(
-                            sessionDetails?.interview?.startDate
-                          ).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}{" "}
-                          at{" "}
-                          {new Date(
-                            sessionDetails?.interview?.startDate
-                          ).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </CardDescription>
+                        <span className=" text-gray-500 text-sm">
+                          Not Scheduled Yet
+                        </span>
                       )}
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -1726,17 +1767,24 @@ function CandidateDetailsProfile() {
                           </h3>
                           <p className="text-muted-foreground max-w-md">
                             The assessment results will be available once the
-                            interview is completed. The interview is scheduled
-                            for{" "}
-                            {candidateDetails.interviewDate?.toLocaleDateString(
-                              "en-US",
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )}{" "}
-                            at {candidateDetails.startTime}.
+                            interview is completed.{" "}
+                            {sessionDetails?.interview?.startDate &&
+                              `The interview is scheduled for ${" "}
+                    ${new Date(
+                      sessionDetails?.interview?.startDate
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}${" "}
+                    at${" "}
+                    ${new Date(
+                      sessionDetails?.interview?.startDate
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    .`}
                           </p>
                         </div>
                       )}
