@@ -3983,7 +3983,7 @@ export default function InterviewPreviewPage({ params }) {
       <Card className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+            <Badge className="!bg-blue-600  hover:bg-blue-100 !text-blue-950">
               <div className="flex items-center gap-1">
               <Hourglass size={12}/> 
                 <span>Ongoing</span>
@@ -4006,7 +4006,7 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
             <div>
               <span className="text-muted-foreground">Type:</span>
               <span className="font-medium ml-1">Technical</span>
@@ -4031,7 +4031,7 @@ export default function InterviewPreviewPage({ params }) {
               Rejoin
             </Button>
             <Button
-              className="flex-1 bg-green-600 hover:bg-green-700"
+              className="flex-1 !bg-green-600 hover:bg-green-700"
               onClick={(e) => e.stopPropagation()}
             >
               <StopCircle className="h-4 w-4 mr-2" />
@@ -4045,10 +4045,10 @@ export default function InterviewPreviewPage({ params }) {
       <Card className="overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+            <Badge className="!bg-[#39280a] hover:bg-amber-100 !text-[#d58a0b]">
               <div className="flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>Upcoming</span>
+                <span>Scheduled</span>
               </div>
             </Badge>
             <div className="text-sm font-medium">
@@ -4068,14 +4068,14 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
             <div>
               <span className="text-muted-foreground">Type:</span>
               <span className="font-medium ml-1">Behavioral</span>
             </div>
             <div>
               <span className="text-muted-foreground">Location:</span>
-              <span className="font-medium ml-1">Conference Room</span>
+              <span className="font-medium ml-1">Conference</span>
             </div>
           </div>
         </CardContent>
@@ -4102,10 +4102,10 @@ export default function InterviewPreviewPage({ params }) {
       <Card className="overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-              <div className="flex items-center gap-1">
+          <Badge className="!bg-blue-600  hover:bg-blue-100 !text-blue-950">
+          <div className="flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>Upcoming</span>
+                <span>Ongoing</span>
               </div>
             </Badge>
             <div className="text-sm font-medium">
@@ -4125,7 +4125,7 @@ export default function InterviewPreviewPage({ params }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
             <div>
               <span className="text-muted-foreground">Type:</span>
               <span className="font-medium ml-1">Technical</span>
@@ -4159,7 +4159,7 @@ export default function InterviewPreviewPage({ params }) {
 </Card>
 
                 <div className="my-6 border border-gray-200/20 rounded-lg p-6">
-                  <h1 className=" text-2xl font-semibold mb-5">
+                  <h1 className=" text-2xl font-semibold">
                     Interview sessions
                   </h1>
                   <div>
