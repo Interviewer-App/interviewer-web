@@ -3841,59 +3841,66 @@ export default function InterviewPreviewPage({ params }) {
 
                 {/* Header with stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
+                  {/* Total Sessions */}
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
                         <p className="text-sm text-muted-foreground">Total Sessions</p>
-                        <p className="text-3xl font-bold">24</p>
+                        <p className="text-3xl font-bold">
+                          {/* {interviewStatusDetails.totalSchedules || interviewSessions.length || 0} */}
+                          12
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
 
+                  {/* Completed Sessions */}
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
                         <p className="text-sm text-muted-foreground">Completed</p>
-                        <p className="text-3xl font-bold text-green-500">18</p>
+                        <p className="text-3xl font-bold text-green-500">
+                          {interviewStatusDetails.completedSchedules ||
+                            interviewSessions.filter((session) => session.interviewStatus === "completed").length ||
+                            0}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
 
+                  {/* Ongoing Sessions */}
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
                         <p className="text-sm text-muted-foreground">Ongoing</p>
                         <div className="flex items-center gap-2">
-                          {/* <p className="text-3xl font-bold text-blue-500">{statusCounts.ongoing}</p> */}
-                          {/* {statusCounts.ongoing > 0 && (
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                  </span>
-                )} */}
-                          <p className="text-3xl font-bold text-blue-500">2</p>
-                          <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                          </span>
+                          <p className="text-3xl font-bold text-blue-500">
+                          {interviewStatusDetails.completedSchedules ||
+                            interviewSessions.filter((session) => session.interviewStatus === "ongoing").length ||
+                            0}
+                          </p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
+                  {/* Upcoming Sessions */}
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <p className="text-sm text-muted-foreground">Upcoming</p>
-                        <p className="text-3xl font-bold text-amber-500">4</p>
-                        {/* <p className="text-3xl font-bold text-amber-500">{statusCounts.upcoming}</p> */}
+                        <p className="text-sm text-muted-foreground">To Be Conducted</p>
+                        <p className="text-3xl font-bold text-amber-500">
+                        {interviewStatusDetails.completedSchedules ||
+                            interviewSessions.filter((session) => session.interviewStatus === "toBeConducted").length ||
+                            0}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
 
-                {/* Today's Sessions */}
-                {/* {todaysSessions.length > 0 && (
+      {/* Today's Sessions */}
+      {/* {todaysSessions.length > 0 && (
         <Card className="border-blue-500/20">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
@@ -3985,7 +3992,7 @@ export default function InterviewPreviewPage({ params }) {
         </Card>
       )} */}
 
-                {/* Today's Sessions */}
+      {/* Today's Sessions */}
                 <Card className="border-blue-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2">
@@ -3996,186 +4003,126 @@ export default function InterviewPreviewPage({ params }) {
                       </span>
                     </CardTitle>
                     <CardDescription>
-                      3 sessions scheduled for today
+                      {(() => {
+                        const today = new Date("2025-04-01"); // Fixed date as per your setup; use new Date() for real-time
+                        const todaySessions = interviewSessions.filter((session) => {
+                          const sessionDate = new Date(session.scheduledDate);
+                          return (
+                            sessionDate.getFullYear() === today.getFullYear() &&
+                            sessionDate.getMonth() === today.getMonth() &&
+                            sessionDate.getDate() === today.getDate()
+                          );
+                        });
+                        return `${todaySessions.length} session${todaySessions.length === 1 ? "" : "s"} scheduled for today`;
+                      })()}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {/* Session 1 */}
-                      <Card className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]">
-                        <CardHeader className="pb-2">
-                          <div className="flex justify-between items-center">
-                            <Badge className="!bg-blue-600  hover:bg-blue-100 !text-blue-950">
-                              <div className="flex items-center gap-1">
-                                <Hourglass size={12} />
-                                <span>Ongoing</span>
-                              </div>
-                            </Badge>
-                            <div className="text-sm font-medium">
-                              10:00 - 11:00
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pb-3 space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" />
-                              <AvatarFallback>SJ</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium text-base">Sarah Johnson</div>
-                              <div className="text-sm text-muted-foreground">sarah.johnson@example.com</div>
-                            </div>
-                          </div>
 
-                          <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
-                            <div>
-                              <span className="text-muted-foreground">Type:</span>
-                              <span className="font-medium ml-1">Technical</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Location:</span>
-                              <span className="font-medium ml-1">Zoom</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                        <CardFooter className="pt-0 pb-4">
-                          <div className="flex gap-2 w-full">
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                window.open("https://zoom.us/j/123456789", "_blank")
-                              }}
-                            >
-                              <ArrowUpRight className="h-4 w-4 mr-2" />
-                              Rejoin
-                            </Button>
-                            <Button
-                              className="flex-1 !bg-green-600 hover:bg-green-700"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <StopCircle className="h-4 w-4 mr-2" />
-                              End
-                            </Button>
-                          </div>
-                        </CardFooter>
-                      </Card>
 
-                      {/* Session 2 */}
-                      <Card className="overflow-hidden">
-                        <CardHeader className="pb-2">
-                          <div className="flex justify-between items-center">
-                            <Badge className="!bg-[#39280a] hover:bg-amber-100 !text-[#d58a0b]">
-                              <div className="flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                                <span>Scheduled</span>
-                              </div>
-                            </Badge>
-                            <div className="text-sm font-medium">
-                              14:30 - 15:30
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pb-3 space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen" />
-                              <AvatarFallback>MC</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium text-base">Michael Chen</div>
-                              <div className="text-sm text-muted-foreground">michael.chen@example.com</div>
-                            </div>
-                          </div>
+                      {
+                        interviewSessions
+                          // .filter((session) => session.interviewStatus === "ongoing") // Filter for ongoing sessions
+                          .map((session, index) => {
+                            const startTime = new Date(session.scheduledDate).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            });
+                            const endTime = new Date(session.scheduledAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            });
+                            const candidateName = session.candidate.user.firstName + " " + (session.candidate.user.lastName || "");
+                            const candidateEmail = session.candidate.user.email;
+                            const interviewType = interviewDetail.interviewCategory; // Fallback to "Technical" if not available
+                            const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
+                            const zoomLink = session.zoomLink || "https://zoom.us/j/123456789"; // Replace with actual link from response if available
 
-                          <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
-                            <div>
-                              <span className="text-muted-foreground">Type:</span>
-                              <span className="font-medium ml-1">Behavioral</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Location:</span>
-                              <span className="font-medium ml-1">Conference</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                        <CardFooter className="pt-0 pb-4">
-                          <div className="flex gap-2 w-full">
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                            >
-                              <ArrowUpRight className="h-4 w-4 mr-2" />
-                              Join
-                            </Button>
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                            >
-                              Reschedule
-                            </Button>
-                          </div>
-                        </CardFooter>
-                      </Card>
+                            return (
+                              <Card
+                                key={index}
+                                className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                              >
+                                <CardHeader className="pb-2">
+                                  <div className="flex justify-between items-center">
+                                    <Badge
+                                      className={cn(
+                                        "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
+                                        session.interviewStatus === "ongoing" && "!bg-blue-600",
+                                        session.interviewStatus === "toBeConducted" && "!bg-orange-600",
+                                        session.interviewStatus === "completed" && "!bg-green-600"
+                                      )}
+                                    >
+                                      <div className="flex items-center gap-1">
+                                        <Hourglass size={12} />
+                                        <span>{session.interviewStatus.charAt(0).toUpperCase() + session.interviewStatus.slice(1)}</span>
+                                      </div>
+                                    </Badge>
+                                    <div className="text-sm font-medium">
+                                      {startTime} - {endTime}
+                                    </div>
+                                  </div>
+                                </CardHeader>
+                                <CardContent className="pb-3 space-y-3">
+                                  <div className="flex items-center gap-3">
+                                    <Avatar className="h-10 w-10">
+                                      <AvatarImage
+                                        src={session.candidate.user.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
+                                        alt={candidateName}
+                                      />
+                                      <AvatarFallback>
+                                        {candidateName.split(" ").map((n) => n[0]).join("")}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <div className="font-medium text-base">{candidateName}</div>
+                                      <div className="text-sm text-muted-foreground">{candidateEmail}</div>
+                                    </div>
+                                  </div>
 
-                      {/* Session 3 */}
-                      <Card className="overflow-hidden">
-                        <CardHeader className="pb-2">
-                          <div className="flex justify-between items-center">
-                            <Badge className="!bg-blue-600  hover:bg-blue-100 !text-blue-950">
-                              <div className="flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                                <span>Ongoing</span>
-                              </div>
-                            </Badge>
-                            <div className="text-sm font-medium">
-                              16:00 - 17:00
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pb-3 space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Rodriguez" />
-                              <AvatarFallback>ER</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium text-base">Emma Rodriguez</div>
-                              <div className="text-sm text-muted-foreground">emma.rodriguez@example.com</div>
-                            </div>
-                          </div>
+                                  <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
+                                    <div>
+                                      <span className="text-muted-foreground">Type:</span>
+                                      <span className="font-medium ml-1">{interviewType}</span>
+                                    </div>
+                                    <div>
+                                      <span className="text-muted-foreground">Location:</span>
+                                      <span className="font-medium ml-1">{location}</span>
+                                    </div>
+                                  </div>
+                                </CardContent>
+                                <CardFooter className="pt-0 pb-4">
+                                  <div className="flex gap-2 w-full">
+                                    <Button
+                                      variant="outline"
+                                      className="flex-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(zoomLink, "_blank");
+                                      }}
+                                    >
+                                      <ArrowUpRight className="h-4 w-4 mr-2" />
+                                      Rejoin
+                                    </Button>
+                                    <Button
+                                      className="flex-1 !bg-green-600 hover:bg-green-700"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        // Add logic to end the session if needed (e.g., API call)
+                                        console.log("End session for:", session.sessionId);
+                                      }}
+                                    >
+                                      <StopCircle className="h-4 w-4 mr-2" />
+                                      End
+                                    </Button>
+                                  </div>
+                                </CardFooter>
+                              </Card>
+                            );
+                          })
+                      }
 
-                          <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
-                            <div>
-                              <span className="text-muted-foreground">Type:</span>
-                              <span className="font-medium ml-1">Technical</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Location:</span>
-                              <span className="font-medium ml-1">Google Meet</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                        <CardFooter className="pt-0 pb-4">
-                          <div className="flex gap-2 w-full">
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                            >
-                              <ArrowUpRight className="h-4 w-4 mr-2" />
-                              Join
-                            </Button>
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                            >
-                              Reschedule
-                            </Button>
-                          </div>
-                        </CardFooter>
-                      </Card>
                     </div>
                   </CardContent>
                 </Card>
@@ -4231,7 +4178,7 @@ export default function InterviewPreviewPage({ params }) {
               <>
                 <Card
                   className="border-blue-500/20 overflow-hidden"
-                //  onClick={() => setInviteModalOpen(true)}
+                  //  onClick={() => setInviteModalOpen(true)}
                 >
                   <CardHeader className="bg-blue-500/5 border-b border-blue-500/20 pb-4">
                     <div className="flex justify-between items-center">
