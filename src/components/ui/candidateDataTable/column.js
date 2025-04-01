@@ -58,31 +58,31 @@ const ActionCell = ({ session }) => {
 
 const getStatusBadge = (status) => {
   switch (status) {
-    case "PENDING":
+    case "toBeConducted":
       return (
         <Badge
           variant="outline"
           className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/10"
         >
-          PENDING
+          toBeConducted
         </Badge>
       );
-    case "APPROVED":
+    case "completed":
       return (
         <Badge
           variant="outline"
           className=" !text-green-400 !border-green-400/30 py-1 px-4 bg-green-400/10"
         >
-          APPROVED
+          completed
         </Badge>
       );
-    case "REJECTED":
+    case "ongoing":
       return (
         <Badge
-          variant="outline"
-          className=" !text-red-400 !border-red-400/30 py-1 px-4 bg-red-400/10"
+          variant="ongoing"
+          className=" !text-yellow-400 !border-yellow-400/30 py-1 px-4 bg-yellow-400/10"
         >
-          REJECTED
+          ongoing
         </Badge>
       );
   }
@@ -161,13 +161,13 @@ export const candidatesTableColumns = [
   },
   {
     accessorKey: "status",
-    header: "Invivtation Status",
+    header: "Session Status",
     // cell: ({ row }) => {
     //   const interviewStatus = row.original.invitationStatus.status;
     //   return interviewStatus;
     // },
     cell: ({ row }) => {
-      const status = row.original.invitationStatus.status;
+      const status = row.original.interviewSession.interviewStatus;
       return getStatusBadge(status);
     },
   },
