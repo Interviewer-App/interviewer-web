@@ -227,7 +227,7 @@ export function CandidateDataTable({ columns, data , interviewId}) {
 
 
   const handleCandidateDetail = (row) => {
-      router.push(`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(row.original.candidate.candidateId)}`);
+      router.push(`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(row.original.candidate.candidateId)}&sessionId=${encodeURIComponent(row.original.interviewSession.sessionId)}`);
   }
 
   return (
