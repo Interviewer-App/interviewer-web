@@ -40,6 +40,10 @@ import {
   Download,
   GraduationCap,
   Sparkles,
+  Brain,
+  FlaskConical,
+  NotebookPen,
+  ShieldQuestion,
 } from "lucide-react";
 import {
   Card,
@@ -56,9 +60,22 @@ import { Button } from "@/components/ui/button";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDescription } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import {
+  getInterviewSessionById,
+  getInterviewSessionHistoryById,
+} from "@/lib/api/interview-session";
 
 function CandidateDetailsProfile() {
   const { data: session, status } = useSession();
@@ -66,6 +83,7 @@ function CandidateDetailsProfile() {
   const pathParam = useParams();
   const searchParams = useSearchParams();
   const candidateId = searchParams.get("candidateId");
+  const sessionId = searchParams.get("sessionId");
   const [candidateDetails, setCandidateDetails] = useState({});
   const [documentUrl, setDocumentUrl] = useState("");
   const [age, setAge] = useState(0);
@@ -73,9 +91,50 @@ function CandidateDetailsProfile() {
   const [experiences, setExperiences] = useState([]);
   const [skills, setSkills] = useState([]);
   const [activeTab, setActiveTab] = useState("details");
+  const [activeAssessmentTab, setActiveAssesmentTab] = useState("technical");
   const [questionsGenerated, setQuestionsGenerated] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [sessionDetails, setSessionDetails] = useState({});
+  const [sessionhistory, setSessionHistory] = useState([]);
+  const [categoryMarks, setCategoryMarks] = useState([
+    {
+      "id": "cm8sb9c4p0005u7mo3zc1wyfb",
+      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
+      "name": "Communication",
+      "color": "#641B44",
+      "percentage": 30,
+      "createdAt": "2025-03-28T04:57:13.129Z",
+      "updatedAt": "2025-03-28T04:57:13.129Z"
+  },
+  {
+      "id": "cm8sb9c4q0009u7momffp4uu6",
+      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
+      "name": "Problem-Solving",
+      "color": "#CBB271",
+      "percentage": 35,
+      "createdAt": "2025-03-28T04:57:13.129Z",
+      "updatedAt": "2025-03-28T04:57:13.129Z"
+  },
+  {
+      "id": "cm8sb9c4q000du7motwsztbfa",
+      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
+      "name": "Collaboration",
+      "color": "#D63A85",
+      "percentage": 25,
+      "createdAt": "2025-03-28T04:57:13.129Z",
+      "updatedAt": "2025-03-28T04:57:13.129Z"
+  },
+  {
+      "id": "cm8sb9c4q000hu7moodkuc7u7",
+      "parentAssignmentId": "cm8sb9c4p0004u7mo01t5suh0",
+      "name": "Adaptability",
+      "color": "#19EA0B",
+      "percentage": 10,
+      "createdAt": "2025-03-28T04:57:13.129Z",
+      "updatedAt": "2025-03-28T04:57:13.129Z"
+  }
+  ]);
 
   useEffect(() => {
     const fetchCandidateDetails = async () => {
@@ -126,6 +185,88 @@ function CandidateDetailsProfile() {
 
     if (candidateId) fetchCandidateDetails();
   }, [candidateId]);
+
+  useEffect(() => {
+    const fetchSessionData = async () => {
+      try {
+        const response = await getInterviewSessionById(sessionId);
+        if (response.data) {
+          setSessionDetails(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Session Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (sessionId) fetchSessionData();
+  }, [sessionId]);
+
+  useEffect(() => {
+    const fetchSessionHistory = async () => {
+      try {
+        const response = await getInterviewSessionHistoryById(sessionId);
+        if (response.data) {
+          setSessionHistory(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Session Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (sessionDetails.interviewStatus === "completed") fetchSessionHistory();
+  }, [sessionDetails]);
 
   useEffect(() => {
     const fetchdocument = async () => {
@@ -206,18 +347,18 @@ function CandidateDetailsProfile() {
   };
 
   const getScoreColor = (score) => {
-    if (score >= 90) return "text-green-500";
-    if (score >= 80) return "text-blue-500";
-    if (score >= 70) return "text-amber-500";
-    return "text-red-500";
+    if (score >= 90) return "!text-green-500";
+    if (score >= 80) return "!text-blue-500";
+    if (score >= 70) return "!text-amber-500";
+    return "!text-red-500";
   };
 
   // Get background color based on score
   const getScoreBgColor = (score) => {
-    if (score >= 90) return "bg-green-500";
-    if (score >= 80) return "bg-blue-500";
-    if (score >= 70) return "bg-amber-500";
-    return "bg-red-500";
+    if (score >= 90) return "!bg-green-500";
+    if (score >= 80) return "!bg-blue-500";
+    if (score >= 70) return "!bg-amber-500";
+    return "!bg-red-500";
   };
 
   const handleGenerateQuestions = useCallback(() => {
@@ -282,7 +423,7 @@ function CandidateDetailsProfile() {
     interviewDate: new Date(2025, 4, 3),
     startTime: "10:00 AM",
     endTime: "11:30 AM",
-    status: "Scheduled",
+    status: "Completed",
     dateOfBirth: new Date(2025, 2, 28),
     gender: "not specified",
     socialMedia: {
@@ -361,7 +502,8 @@ function CandidateDetailsProfile() {
       {
         role: "",
         company: "MoneyBestro",
-        project: "Finance data tracking mobile app for a Financial field Worker",
+        project:
+          "Finance data tracking mobile app for a Financial field Worker",
         status: "Completed",
       },
       {
@@ -371,9 +513,25 @@ function CandidateDetailsProfile() {
         status: "Completed",
       },
     ],
-    skills: ["HTML", "CSS", "JavaScript", "TypeScript", "PHP", "SQL", "Flutter", "Python", "Java", "C#"],
+    skills: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "TypeScript",
+      "PHP",
+      "SQL",
+      "Flutter",
+      "Python",
+      "Java",
+      "C#",
+    ],
     technicalSkills: [
-      { name: "React", score: 85, maxScore: 100, notes: "Good understanding of React hooks and component lifecycle." },
+      {
+        name: "React",
+        score: 85,
+        maxScore: 100,
+        notes: "Good understanding of React hooks and component lifecycle.",
+      },
       {
         name: "TypeScript",
         score: 90,
@@ -388,18 +546,25 @@ function CandidateDetailsProfile() {
       },
     ],
     softSkills: [
-      { name: "Communication", score: 90, maxScore: 100, notes: "Articulates ideas clearly and concisely." },
+      {
+        name: "Communication",
+        score: 90,
+        maxScore: 100,
+        notes: "Articulates ideas clearly and concisely.",
+      },
       {
         name: "Teamwork",
         score: 85,
         maxScore: 100,
-        notes: "Shows good collaboration skills and willingness to help others.",
+        notes:
+          "Shows good collaboration skills and willingness to help others.",
       },
       {
         name: "Problem Solving",
         score: 95,
         maxScore: 100,
-        notes: "Excellent analytical thinking and creative problem-solving approach.",
+        notes:
+          "Excellent analytical thinking and creative problem-solving approach.",
       },
     ],
     notes:
@@ -410,7 +575,40 @@ function CandidateDetailsProfile() {
       avatar: "/placeholder.svg?height=40&width=40",
     },
   };
-  
+
+  const getInterviewStatusBadge = (status) => {
+    switch (status) {
+      case "toBeConducted":
+        return (
+          <Badge
+            variant="outline"
+            className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/20"
+          >
+            To Be Conducted
+          </Badge>
+        );
+      case "ongoing":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-emerald-400 py-1 px-4 !border-emerald-400/30 !bg-emerald-400/20"
+          >
+            Ongoing
+          </Badge>
+        );
+      case "completed":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-green-600 !border-green-600/30 bg-green-600/20 py-1 px-4"
+          >
+            Completed
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className=" w-full">
@@ -432,7 +630,9 @@ function CandidateDetailsProfile() {
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem className="hidden md:block cursor-pointer">
                   <BreadcrumbLink
-                    href={`/interviews/${encodeURIComponent(pathParam.id)}`}
+                    href={`/interviews/${encodeURIComponent(
+                      sessionDetails.interviewId
+                    )}`}
                     className=" cursor-pointer"
                   >
                     Interview details
@@ -454,7 +654,9 @@ function CandidateDetailsProfile() {
               variant="outline"
               size="sm"
               className="gap-2"
-              onClick={() => router.push(`/interviews/${params.id}`)}
+              onClick={() =>
+                router.push(`/interviews/${sessionDetails.interviewId}`)
+              }
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Interview
@@ -470,26 +672,24 @@ function CandidateDetailsProfile() {
                 <div className="flex flex-col items-center">
                   <Avatar className="h-24 w-24 mb-4">
                     <AvatarImage
-                      src={candidateDetails.avatar}
-                      alt={candidateDetails.name}
+                      src={sessionDetails?.candidate?.avatar}
+                      alt={sessionDetails?.candidate?.user?.firstName}
                     />
                     <AvatarFallback className="text-2xl">
-                      {candidateDetails?.user?.firstName.charAt(0)}
+                      {sessionDetails?.candidate?.user?.firstName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <h2 className="text-xl font-bold">
-                    {candidateDetails?.user?.firstName}{" "}
-                    {candidateDetails?.user?.lastName}
+                    {sessionDetails?.candidate?.user?.firstName}{" "}
+                    {sessionDetails?.candidate?.user?.lastName}
                   </h2>
-                  <Badge className="mt-1 !bg-green-500/20 !text-green-500">
-                    Completed
-                  </Badge>
+                  {getInterviewStatusBadge(sessionDetails?.interviewStatus)}
                 </div>
 
                 <div className="space-y-3 pt-4">
                   <div className="flex items-center gap-3">
                     <Mail className="h-5 w-5 text-muted-foreground" />
-                    <span>{candidateDetails?.user?.email}</span>
+                    <span>{sessionDetails?.candidate?.user?.email}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-muted-foreground" />
@@ -512,8 +712,21 @@ function CandidateDetailsProfile() {
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-muted-foreground" />
                     <span>
-                      10:00 AM - 11:00 AM
-                      {/* {candidateDetails.startTime} - {candidateDetails.endTime} */}
+                      {new Date(
+                        sessionDetails?.interview?.startDate
+                      ).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}{" "}
+                      -{" "}
+                      {new Date(
+                        sessionDetails?.interview?.endDate
+                      ).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     </span>
                   </div>
                 </div>
@@ -525,13 +738,11 @@ function CandidateDetailsProfile() {
                       {/* <AvatarImage src={candidateDetails.interviewer.avatar} alt={candidateDetails.interviewer.name} /> */}
                       <AvatarFallback>
                         {/* {candidateDetails?.user?.firstName.charAt(0)} */}
-                        {("Ushan").charAt(0)}
+                        {"Ushan".charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">
-                        {"Ushan Sankalpa"}
-                      </div>
+                      <div className="font-medium">{"Ushan Sankalpa"}</div>
                       <div className="text-sm text-muted-foreground">
                         {"Senior Engineering Manager"}
                       </div>
@@ -544,153 +755,258 @@ function CandidateDetailsProfile() {
             <Card className="md:col-span-2 !bg-transparent">
               <CardHeader>
                 <CardTitle>Interview Results</CardTitle>
-                <CardDescription>
-                  Completed on{" "}
-                  {candidateDetails.completedAt?.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}{" "}
-                  at{" "}
-                  {candidateDetails.completedAt?.toLocaleTimeString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </CardDescription>
+                {sessionDetails?.interviewStatus === "completed" ? (
+                  <CardDescription>
+                    Completed on{" "}
+                    {new Date(
+                      sessionDetails?.interview?.endDate
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}{" "}
+                    at{" "}
+                    {new Date(
+                      sessionDetails?.interview?.endDate
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </CardDescription>
+                ) : (
+                  <CardDescription>
+                    Scheduled for{" "}
+                    {new Date(
+                      sessionDetails?.interview?.startDate
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}{" "}
+                    at{" "}
+                    {new Date(
+                      sessionDetails?.interview?.startDate
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </CardDescription>
+                )}
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex flex-col items-center">
-                  <div className="relative w-40 h-40">
-                    <svg className="w-full h-full" viewBox="0 0 100 100">
-                      {/* Background circle */}
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
-                        fill="none"
-                        stroke="hsl(var(--muted))"
-                        strokeWidth="10"
-                      />
-                      {/* Progress circle */}
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
-                        fill="none"
-                        stroke={
-                          candidateDetails.overallScore >= 90
-                            ? "#10b981"
-                            : candidateDetails.overallScore >= 80
-                            ? "#3b82f6"
-                            : candidateDetails.overallScore >= 70
-                            ? "#f59e0b"
-                            : "#ef4444"
-                        }
-                        strokeWidth="10"
-                        strokeDasharray={`${
-                          (2 * Math.PI * 45 * candidateDetails.overallScore) /
-                          100
-                        } ${
-                          2 *
-                          Math.PI *
-                          45 *
-                          (1 - candidateDetails.overallScore / 100)
-                        }`}
-                        strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                        transform="rotate(-90 50 50)"
-                        strokeLinecap="round"
-                      />
-                      {/* Percentage text */}
-                      <text
-                        x="50"
-                        y="45"
-                        dominantBaseline="middle"
-                        textAnchor="middle"
-                        fontSize="24"
-                        fontWeight="bold"
-                        fill="currentColor"
-                        className={getScoreColor(candidateDetails.overallScore)}
-                      >
-                        {candidateDetails.overallScore}
-                      </text>
-                      <text
-                        x="50"
-                        y="60"
-                        dominantBaseline="middle"
-                        textAnchor="middle"
-                        fontSize="14"
-                        fill="currentColor"
-                      >
-                        Overall Score
-                      </text>
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-medium">Technical Skills</h3>
-                      {/* <span className={`font-bold ${getScoreColor(avgTechnicalScore)}`}>
-                        {avgTechnicalScore.toFixed(1)}
-                      </span> */}
+              {sessionDetails?.interviewStatus === "completed" ? (
+                <CardContent className="space-y-6">
+                  <div className="flex flex-col items-center">
+                    <div className="relative w-40 h-40">
+                      <svg className="w-full h-full" viewBox="0 0 100 100">
+                        {/* Background circle */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke="hsl(var(--muted))"
+                          strokeWidth="10"
+                        />
+                        {/* Progress circle */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke={
+                            (sessionDetails.score ?? 0).toFixed(2) >= 90
+                              ? "#10b981"
+                              : (sessionDetails.score ?? 0).toFixed(2) >= 80
+                              ? "#3b82f6"
+                              : (sessionDetails.score ?? 0).toFixed(2) >= 70
+                              ? "#f59e0b"
+                              : "#ef4444"
+                          }
+                          strokeWidth="10"
+                          strokeDasharray={`${
+                            (2 *
+                              Math.PI *
+                              45 *
+                              (sessionDetails.score ?? 0).toFixed(2)) /
+                            100
+                          } ${
+                            2 *
+                            Math.PI *
+                            45 *
+                            (1 - (sessionDetails.score ?? 0).toFixed(2) / 100)
+                          }`}
+                          strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                          transform="rotate(-90 50 50)"
+                          strokeLinecap="round"
+                        />
+                        {/* Percentage text */}
+                        <text
+                          x="50"
+                          y="45"
+                          dominantBaseline="middle"
+                          textAnchor="middle"
+                          fontSize="24"
+                          fontWeight="bold"
+                          fill="currentColor"
+                          className={getScoreColor(
+                            (sessionDetails.score ?? 0).toFixed(2)
+                          )}
+                        >
+                          {(sessionDetails.score ?? 0).toFixed(2)}
+                        </text>
+                        <text
+                          x="50"
+                          y="60"
+                          dominantBaseline="middle"
+                          textAnchor="middle"
+                          fontSize="10"
+                          fill="currentColor"
+                        >
+                          Overall Score
+                        </text>
+                      </svg>
                     </div>
-                    {/* <Progress
-                      value={avgTechnicalScore}
-                      className="h-2"
-                      indicatorClassName={getScoreBgColor(avgTechnicalScore)}
-                    /> */}
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-medium">Soft Skills</h3>
-                      {/* <span className={`font-bold ${getScoreColor(avgSoftScore)}`}>{avgSoftScore.toFixed(1)}</span> */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium">Technical Skills</h3>
+                        <span
+                          className={`font-bold ${getScoreColor(
+                            (
+                              sessionDetails?.CategoryScore?.find(
+                                (item) =>
+                                  item.categoryAssignment.category
+                                    .categoryName === "Technical"
+                              ).score ?? 0
+                            ).toFixed(2)
+                          )}`}
+                        >
+                          {(
+                            sessionDetails?.CategoryScore?.find(
+                              (item) =>
+                                item.categoryAssignment.category
+                                  .categoryName === "Technical"
+                            ).score ?? 0
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                      <Progress
+                        value={(
+                          sessionDetails?.CategoryScore?.find(
+                            (item) =>
+                              item.categoryAssignment.category.categoryName ===
+                              "Technical"
+                          ).score ?? 0
+                        ).toFixed(2)}
+                        className="h-2"
+                        indicatorclassName={getScoreBgColor(
+                          (
+                            sessionDetails?.CategoryScore?.find(
+                              (item) =>
+                                item.categoryAssignment.category
+                                  .categoryName === "Technical"
+                            ).score ?? 0
+                          ).toFixed(2)
+                        )}
+                      />
                     </div>
-                    {/* <Progress value={avgSoftScore} className="h-2" indicatorClassName={getScoreBgColor(avgSoftScore)} /> */}
-                  </div>
-                </div>
 
-                <div className="pt-4">
-                  <h3 className="font-medium mb-3">Interviewer Notes</h3>
-                  <div className="p-4 bg-muted/30 rounded-md">
-                    <p>{candidateDetails.notes}</p>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium">Soft Skills</h3>
+                        <span
+                          className={`font-bold ${getScoreColor(
+                            (
+                              sessionDetails?.CategoryScore?.find(
+                                (item) =>
+                                  item.categoryAssignment.category
+                                    .categoryName === "Soft"
+                              ).score ?? 0
+                            ).toFixed(2)
+                          )}`}
+                        >
+                          {(
+                            sessionDetails?.CategoryScore?.find(
+                              (item) =>
+                                item.categoryAssignment.category
+                                  .categoryName === "Soft"
+                            ).score ?? 0
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                      <Progress
+                        value={(
+                          sessionDetails?.CategoryScore?.find(
+                            (item) =>
+                              item.categoryAssignment.category.categoryName ===
+                              "Soft"
+                          ).score ?? 0
+                        ).toFixed(2)}
+                        className="h-2"
+                        indicatorclassName={getScoreBgColor(
+                          (
+                            sessionDetails?.CategoryScore?.find(
+                              (item) =>
+                                item.categoryAssignment.category
+                                  .categoryName === "Soft"
+                            ).score ?? 0
+                          ).toFixed(2)
+                        )}
+                      />
+                    </div>
                   </div>
+
+                  <div className="pt-4">
+                    <h3 className="font-medium mb-3">Interviewer Feedback</h3>
+                    {sessionhistory?.interviewFeedback?.feedbackText ? (
+                      <div className="flex flex-col items-center w-full justify-center py-5 text-center border border-dashed border-muted-foreground rounded-lg">
+                        <NotebookPen className="h-8 w-8 text-muted-foreground mb-3" />
+                        <h3 className="text-base font-medium mb-2">
+                          No Feedback Found
+                        </h3>
+                        <p className=" text-xs text-muted-foreground max-w-md">
+                          The interviewer's notes will be available once
+                          interviewr submit the feedback.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-muted/30 h-full min-h-[150px] rounded-md">
+                        <p>{sessionhistory?.interviewFeedback?.feedbackText}</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              ) : (
+                <div className="flex flex-col h-full items-center w-full justify-center text-center">
+                  <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+                  <h3 className="text-xl font-medium mb-2">
+                    Interview Not Yet Completed
+                  </h3>
+                  <p className="text-muted-foreground max-w-md">
+                    The assessment results will be available once the interview
+                    is completed. The interview is scheduled for{" "}
+                    {new Date(
+                      sessionDetails?.interview?.startDate
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}{" "}
+                    at{" "}
+                    {new Date(
+                      sessionDetails?.interview?.startDate
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    .
+                  </p>
                 </div>
-              </CardContent>
+              )}
             </Card>
           </div>
-
-          {/* <div className="flex flex-col md:flex-row gap-6 mb-8">
-            <div className="flex items-center gap-6">
-              <Avatar className="h-32 w-32 text-5xl">
-                <AvatarImage
-                  src={candidateDetails?.user?.avatar}
-                  alt={candidateDetails?.user?.firstName}
-                />
-                <AvatarFallback className="text-4xl md:text-6xl">
-                  {candidateDetails?.user?.firstName
-                    ? candidateDetails?.user?.firstName.charAt(0)
-                    : ""}
-                  {candidateDetails?.user?.lastName
-                    ? candidateDetails?.user?.lastName.charAt(0)
-                    : ""}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 className="text-3xl font-bold">
-                  {candidateDetails?.user?.firstName}{" "}
-                  {candidateDetails?.user?.lastName}
-                </h2>
-                <p className="text-lg text-muted-foreground mb-2">
-                  {candidateDetails?.user?.email}
-                </p>
-                <Badge className="!bg-blue-600">
-                  {candidateDetails?.user?.role}
-                </Badge>
-              </div>
-            </div>
-          </div> */}
 
           <Card className="!bg-transparent">
             <CardHeader>
@@ -735,35 +1051,51 @@ function CandidateDetailsProfile() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          {experiences.map((exp, index) => (
-                            <div key={index} className="flex items-start gap-3">
-                              <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
-                              <div>
-                                <div className="font-medium">{exp.title}</div>
-                                <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                  {/* <span>{exp.company}</span> */}
-                                  {exp.company && (
-                                    <>
-                                      <span>{exp.company}</span>
-                                      <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
-                                    </>
-                                  )}
-                                  <Badge
-                                    variant="outline"
-                                    className={
-                                      new Date(exp.endDate) > new Date()
-                                        ? "!text-blue-400 !border-blue-400"
-                                        : "!text-green-400 !border-green-400"
-                                    }
-                                  >
-                                    {new Date(exp.endDate) > new Date()
-                                      ? "Ongoing"
-                                      : "Completed"}
-                                  </Badge>
+                          {experiences.length > 0 ? (
+                            experiences.map((exp, index) => (
+                              <div
+                                key={index}
+                                className="flex items-start gap-3"
+                              >
+                                <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                <div>
+                                  <div className="font-medium">{exp.title}</div>
+                                  <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                    {/* <span>{exp.company}</span> */}
+                                    {exp.company && (
+                                      <>
+                                        <span>{exp.company}</span>
+                                        {/* <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span> */}
+                                      </>
+                                    )}
+                                    <Badge
+                                      variant="outline"
+                                      className={
+                                        new Date(exp.endDate) > new Date()
+                                          ? "!text-blue-400 !border-blue-400"
+                                          : "!text-green-400 !border-green-400"
+                                      }
+                                    >
+                                      {new Date(exp.endDate) > new Date()
+                                        ? "Ongoing"
+                                        : "Completed"}
+                                    </Badge>
+                                  </div>
                                 </div>
                               </div>
+                            ))
+                          ) : (
+                            <div className="flex flex-col items-center w-full justify-center py-12 text-center">
+                              <FlaskConical className="h-16 w-16 text-muted-foreground mb-4" />
+                              <h3 className="text-xl font-medium mb-2">
+                                No Experience Found
+                              </h3>
+                              <p className="text-muted-foreground max-w-md">
+                                The candidate's experience details will be
+                                available once the interview is completed.
+                              </p>
                             </div>
-                          ))}
+                          )}
                         </CardContent>
                       </Card>
 
@@ -775,15 +1107,28 @@ function CandidateDetailsProfile() {
                         </CardHeader>
                         <CardContent>
                           <div className="flex flex-wrap gap-2">
-                            {skills.map((skill, index) => (
-                              <Badge
-                                key={index}
-                                variant="secondary"
-                                className="px-3 py-1 text-sm"
-                              >
-                                {skill}
-                              </Badge>
-                            ))}
+                            {skills.length > 0 ? (
+                              skills.map((skill, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="px-3 py-1 text-sm"
+                                >
+                                  {skill}
+                                </Badge>
+                              ))
+                            ) : (
+                              <div className="flex flex-col items-center w-full justify-center py-12 text-center">
+                                <Brain className="h-16 w-16 text-muted-foreground mb-4" />
+                                <h3 className="text-xl font-medium mb-2">
+                                  No Skills Found
+                                </h3>
+                                <p className="text-muted-foreground max-w-md">
+                                  The candidate's skill highlights will be
+                                  available once the interview is completed.
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -1100,133 +1445,277 @@ function CandidateDetailsProfile() {
                   <Card className="!bg-transparent">
                     <CardHeader>
                       <CardTitle>Interview Results</CardTitle>
-                      {candidateData.status === "Completed" ? (
+                      {sessionDetails?.interviewStatus === "completed" ? (
                         <CardDescription>
                           Completed on{" "}
-                          {candidateData.interviewDate.toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}
+                          {new Date(
+                            sessionDetails?.interview?.endDate
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}{" "}
+                          at{" "}
+                          {new Date(
+                            sessionDetails?.interview?.endDate
+                          ).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </CardDescription>
                       ) : (
                         <CardDescription>
                           Scheduled for{" "}
-                          {candidateDetails.interviewDate?.toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}{" "}
-                          at {candidateDetails.startTime}
+                          {new Date(
+                            sessionDetails?.interview?.startDate
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}{" "}
+                          at{" "}
+                          {new Date(
+                            sessionDetails?.interview?.startDate
+                          ).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </CardDescription>
                       )}
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {candidateDetails.status === "Completed" ? (
+                      {sessionDetails?.interviewStatus === "completed" ? (
                         <>
-                          <div className="flex flex-col items-center">
-                            <div className="relative w-40 h-40">
-                              <svg
-                                className="w-full h-full"
-                                viewBox="0 0 100 100"
+                          <Tabs
+                            value={activeAssessmentTab}
+                            onValueChange={setActiveAssesmentTab}
+                          >
+                            <TabsList className="grid grid-cols-2 mb-6">
+                              <TabsTrigger
+                                value="technical"
+                                className="flex items-center gap-2"
                               >
-                                {/* Background circle */}
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="45"
-                                  fill="none"
-                                  stroke="hsl(var(--muted))"
-                                  strokeWidth="10"
-                                />
-                                {/* Progress circle */}
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="45"
-                                  fill="none"
-                                  stroke="#3b82f6"
-                                  strokeWidth="10"
-                                  strokeDasharray={`${
-                                    (2 * Math.PI * 45 * 87) / 100
-                                  } ${2 * Math.PI * 45 * (1 - 87 / 100)}`}
-                                  strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                                  transform="rotate(-90 50 50)"
-                                  strokeLinecap="round"
-                                />
-                                {/* Percentage text */}
-                                <text
-                                  x="50"
-                                  y="45"
-                                  dominantBaseline="middle"
-                                  textAnchor="middle"
-                                  fontSize="24"
-                                  fontWeight="bold"
-                                  fill="currentColor"
-                                  className="text-blue-500"
-                                >
-                                  87
-                                </text>
-                                <text
-                                  x="50"
-                                  y="60"
-                                  dominantBaseline="middle"
-                                  textAnchor="middle"
-                                  fontSize="14"
-                                  fill="currentColor"
-                                >
-                                  Overall Score
-                                </text>
-                              </svg>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-3">
-                              <div className="flex justify-between items-center">
-                                <h3 className="font-medium">
-                                  Technical Skills
-                                </h3>
-                                <span className="font-bold text-blue-500">
-                                  83.3
-                                </span>
-                              </div>
-                              <Progress
-                                value={83.3}
-                                className="h-2"
-                                indicatorClassName="bg-blue-500"
-                              />
-                            </div>
-
-                            <div className="space-y-3">
-                              <div className="flex justify-between items-center">
-                                <h3 className="font-medium">Soft Skills</h3>
-                                <span className="font-bold text-blue-500">
-                                  90.0
-                                </span>
-                              </div>
-                              <Progress
-                                value={90.0}
-                                className="h-2"
-                                indicatorClassName="bg-green-500"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="pt-4">
-                            <h3 className="font-medium mb-3">
-                              Interviewer Notes
-                            </h3>
-                            <div className="p-4 bg-muted/30 rounded-md">
-                              <p>{candidateDetails.notes}</p>
-                            </div>
-                          </div>
+                                <User className="h-4 w-4" />
+                                Technical Skills
+                              </TabsTrigger>
+                              <TabsTrigger
+                                value="soft"
+                                className="flex items-center gap-2"
+                              >
+                                <Star className="h-4 w-4" />
+                                Soft Skills{" "}
+                              </TabsTrigger>
+                            </TabsList>
+                            <TabsContent
+                              value="technical"
+                              className="space-y-6"
+                            >
+                              <Card className="!bg-transparent">
+                                <CardHeader>
+                                  <CardTitle>Technical Skills</CardTitle>
+                                  <CardDescription>
+                                    Breakdown of candidate's performance in
+                                    different skill areas
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="flex justify-between items-center">
+                                    <h3 className="font-medium">
+                                      Technical Skills
+                                    </h3>
+                                    <span
+                                      className={`font-bold ${getScoreColor(
+                                        (
+                                          sessionDetails?.CategoryScore?.find(
+                                            (item) =>
+                                              item.categoryAssignment.category
+                                                .categoryName === "Technical"
+                                          ).score ?? 0
+                                        ).toFixed(2)
+                                      )}`}
+                                    >
+                                      {(
+                                        sessionDetails?.CategoryScore?.find(
+                                          (item) =>
+                                            item.categoryAssignment.category
+                                              .categoryName === "Technical"
+                                        ).score ?? 0
+                                      ).toFixed(2)}
+                                    </span>
+                                  </div>
+                                  <Progress
+                                    value={(
+                                      sessionDetails?.CategoryScore?.find(
+                                        (item) =>
+                                          item.categoryAssignment.category
+                                            .categoryName === "Technical"
+                                      ).score ?? 0
+                                    ).toFixed(2)}
+                                    className="h-2"
+                                    indicatorclassName={getScoreBgColor(
+                                      (
+                                        sessionDetails?.CategoryScore?.find(
+                                          (item) =>
+                                            item.categoryAssignment.category
+                                              .categoryName === "Technical"
+                                        ).score ?? 0
+                                      ).toFixed(2)
+                                    )}
+                                  />
+                                  <div className=" mt-5 w-full">
+                                    {sessionDetails?.questions?.map(
+                                      (question, index) => (
+                                        <Card
+                                          key={question.questionID}
+                                          className="!bg-transparent mt-2 py-2"
+                                        >
+                                          <CardContent>
+                                            <div className=" flex w-full justify-between items-center">
+                                              <span className=" text-base">
+                                                {question.questionText}
+                                              </span>
+                                              <span className=" text-base">
+                                                23 / 25
+                                              </span>
+                                            </div>
+                                            <div className=" w-full text-sm items-center text-gray-500">
+                                              Answer:{" "}
+                                              <span>
+                                                {question.answer ||
+                                                  "no given answer"}
+                                              </span>
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-5">
+                                              <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                                <Star className="h-3 w-3" />
+                                                <span className="font-bold">
+                                                  {question.type
+                                                    .toLowerCase()
+                                                    .split("_")
+                                                    .map(
+                                                      (word) =>
+                                                        word
+                                                          .charAt(0)
+                                                          .toUpperCase() +
+                                                        word.slice(1)
+                                                    )
+                                                    .join(" ")}
+                                                </span>
+                                              </Badge>
+                                              <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                                <Clock className="h-4 w-4" />
+                                                <span className="text-blue-500">
+                                                  {
+                                                    question.estimatedTimeMinutes
+                                                  }{" "}
+                                                  minutes
+                                                </span>
+                                              </Badge>
+                                            </div>
+                                          </CardContent>
+                                        </Card>
+                                      )
+                                    )}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </TabsContent>
+                            <TabsContent value="soft" className="space-y-6">
+                              <Card className="!bg-transparent">
+                                <CardHeader>
+                                  <CardTitle>Soft Skills</CardTitle>
+                                  <CardDescription>
+                                    Breakdown of candidate's performance in soft
+                                    skills areas like communication, teamwork,
+                                    etc.
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="flex justify-between items-center">
+                                    <h3 className="font-medium">Soft Skills</h3>
+                                    <span
+                                      className={`font-bold ${getScoreColor(
+                                        (
+                                          sessionDetails?.CategoryScore?.find(
+                                            (item) =>
+                                              item.categoryAssignment.category
+                                                .categoryName === "Soft"
+                                          ).score ?? 0
+                                        ).toFixed(2)
+                                      )}`}
+                                    >
+                                      {(
+                                        sessionDetails?.CategoryScore?.find(
+                                          (item) =>
+                                            item.categoryAssignment.category
+                                              .categoryName === "Soft"
+                                        ).score ?? 0
+                                      ).toFixed(2)}
+                                    </span>
+                                  </div>
+                                  <Progress
+                                    value={(
+                                      sessionDetails?.CategoryScore?.find(
+                                        (item) =>
+                                          item.categoryAssignment.category
+                                            .categoryName === "Soft"
+                                      ).score ?? 0
+                                    ).toFixed(2)}
+                                    className="h-2"
+                                    indicatorclassName={getScoreBgColor(
+                                      (
+                                        sessionDetails?.CategoryScore?.find(
+                                          (item) =>
+                                            item.categoryAssignment.category
+                                              .categoryName === "Soft"
+                                        ).score ?? 0
+                                      ).toFixed(2)
+                                    )}
+                                  />
+                                  <div className=" mt-5 w-full">
+                                    {categoryMarks.map(
+                                      (category) => (
+                                        <Card key={category.id} className="!bg-transparent mt-3">
+                                          <CardContent>
+                                            <div className="my-2">
+                                              <div className="flex justify-between items-center">
+                                                <h3 className="font-medium">
+                                                  {category.name}
+                                                </h3>
+                                                <span
+                                                  className={`font-bold ${getScoreColor(
+                                                    (
+                                                      category.percentage ?? 0
+                                                    ).toFixed(2)
+                                                  )}`}
+                                                >
+                                                  {(
+                                                    category.percentage ?? 0
+                                             
+                                                  ).toFixed(2)}
+                                                </span>
+                                              </div>
+                                              <Progress
+                                                value={(
+                                                  category.percentage ?? 0
+                                                ).toFixed(2)}
+                                                className="h-2"
+                                                indicatorclassName={getScoreBgColor(
+                                                  (
+                                                    category.percentage ?? 0
+                                                  ).toFixed(2)
+                                                )}
+                                              />
+                                            </div>
+                                          </CardContent>
+                                        </Card>
+                                      )
+                                    )}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </TabsContent>
+                          </Tabs>
                         </>
                       ) : (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -1292,10 +1781,10 @@ function CandidateDetailsProfile() {
                                     <div className="flex items-center gap-2">
                                       <span
                                         className={`font-bold ${getScoreColor(
-                                          skill.score
+                                          (skill.score ?? 0).toFixed(2)
                                         )}`}
                                       >
-                                        {skill.score}
+                                        {(skill.score ?? 0).toFixed(2)}
                                       </span>
                                       <span className="text-muted-foreground">
                                         / {skill.maxScore}
@@ -1305,7 +1794,7 @@ function CandidateDetailsProfile() {
                                   <Progress
                                     value={(skill.score / skill.maxScore) * 100}
                                     className="h-2"
-                                    indicatorClassName={getScoreBgColor(
+                                    indicatorclassName={getScoreBgColor(
                                       skill.score
                                     )}
                                   />
@@ -1341,7 +1830,7 @@ function CandidateDetailsProfile() {
                                 <Progress
                                   value={(skill.score / skill.maxScore) * 100}
                                   className="h-2"
-                                  indicatorClassName={getScoreBgColor(
+                                  indicatorclassName={getScoreBgColor(
                                     skill.score
                                   )}
                                 />
@@ -1396,21 +1885,19 @@ function CandidateDetailsProfile() {
                             </Button>
                           </div>
 
-                          <div className="border border-border rounded-lg overflow-hidden">
+                          {sessionDetails?.candidate?.resumeURL ? (<div className="border border-border rounded-lg overflow-hidden">
                             <div className="bg-muted p-4 flex justify-between items-center border-b border-border">
                               <div className="flex items-center gap-2">
                                 <FileText className="h-5 w-5" />
-                                <span>{candidateDetails?.user?.firstName}_resume.pdf</span>
+                                <span>
+                                  {candidateDetails?.user?.firstName}_resume.pdf
+                                </span>
                               </div>
-                              {/* <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <span>2 / 2</span>
-                                <span>63%</span>
-                              </div> */}
                             </div>
                             <div className="aspect-[3/4] bg-black/90 flex items-center justify-center p-4">
-                              {documentUrl.url && (
+                              {sessionDetails?.candidate?.resumeURL  && (
                                 <iframe
-                                  src={`${documentUrl.url}`}
+                                  src={`${sessionDetails?.candidate?.resumeURL}`}
                                   className=" overflow-x-hidden rounded-lg mt-5"
                                   width="100%"
                                   height="500px"
@@ -1419,7 +1906,28 @@ function CandidateDetailsProfile() {
                                 />
                               )}
                             </div>
+                          </div>) : (
+                            <div className="flex flex-col items-center justify-center py-12 text-center">
+                            <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+                            <h3 className="text-xl font-medium mb-2">
+                              Interview Not Yet Completed
+                            </h3>
+                            <p className="text-muted-foreground max-w-md">
+                              The assessment results will be available once the
+                              interview is completed. The interview is scheduled
+                              for{" "}
+                              {candidateDetails.interviewDate?.toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}{" "}
+                              at {candidateDetails.startTime}.
+                            </p>
                           </div>
+                          )}
 
                           <Card className="!bg-purple-500/5 !border-purple-500/30">
                             <CardHeader className="pb-2">
@@ -1444,16 +1952,21 @@ function CandidateDetailsProfile() {
                                 </h4>
                                 <div className="space-y-2">
                                   {candidateData.education.map((edu, index) => (
-                                <div key={index} className="flex items-start gap-3">
-                                  <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                  <div>
-                                    <div className="font-medium">
-                                      {edu.degree}: {edu.institution}
+                                    <div
+                                      key={index}
+                                      className="flex items-start gap-3"
+                                    >
+                                      <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                      <div>
+                                        <div className="font-medium">
+                                          {edu.degree}: {edu.institution}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                          {edu.period}
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div className="text-sm text-muted-foreground">{edu.period}</div>
-                                  </div>
-                                </div>
-                              ))}
+                                  ))}
                                 </div>
                               </div>
 
@@ -1462,33 +1975,40 @@ function CandidateDetailsProfile() {
                                   Experience
                                 </h4>
                                 <div className="space-y-3">
-                                  {candidateData.experience.slice(0, 5).map((exp, index) => (
-                                <div key={index} className="flex items-start gap-3">
-                                  <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                  <div>
-                                    <div className="font-medium">{exp.project}</div>
-                                    <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                      <span>{exp.company}</span>
-                                      {exp.role && (
-                                        <>
-                                          <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
-                                          <span>{exp.role}</span>
-                                        </>
-                                      )}
-                                      <Badge
-                                        variant="outline"
-                                        className={
-                                          exp.status === "Ongoing"
-                                            ? "!text-blue-400 !border-blue-400"
-                                            : "!text-green-400 !border-green-400"
-                                        }
+                                  {candidateData.experience
+                                    .slice(0, 5)
+                                    .map((exp, index) => (
+                                      <div
+                                        key={index}
+                                        className="flex items-start gap-3"
                                       >
-                                        {exp.status}
-                                      </Badge>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
+                                        <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                        <div>
+                                          <div className="font-medium">
+                                            {exp.project}
+                                          </div>
+                                          <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                            <span>{exp.company}</span>
+                                            {exp.role && (
+                                              <>
+                                                <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
+                                                <span>{exp.role}</span>
+                                              </>
+                                            )}
+                                            <Badge
+                                              variant="outline"
+                                              className={
+                                                exp.status === "Ongoing"
+                                                  ? "!text-blue-400 !border-blue-400"
+                                                  : "!text-green-400 !border-green-400"
+                                              }
+                                            >
+                                              {exp.status}
+                                            </Badge>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
                                 </div>
                               </div>
 
@@ -1498,10 +2018,14 @@ function CandidateDetailsProfile() {
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
                                   {candidateData.skills.map((skill, index) => (
-                                <Badge key={index} variant="secondary" className="px-3 py-1 text-sm">
-                                  {skill}
-                                </Badge>
-                              ))}
+                                    <Badge
+                                      key={index}
+                                      variant="secondary"
+                                      className="px-3 py-1 text-sm"
+                                    >
+                                      {skill}
+                                    </Badge>
+                                  ))}
                                 </div>
                               </div>
                             </CardContent>
@@ -1517,7 +2041,7 @@ function CandidateDetailsProfile() {
                               >
                                 {isGenerating ? (
                                   <>
-                                     <LoaderCircle className="animate-spin" />
+                                    <LoaderCircle className="animate-spin" />
                                   </>
                                 ) : (
                                   <>
@@ -1710,574 +2234,8 @@ function CandidateDetailsProfile() {
                 <TabsContent value="soft" className="space-y-6"></TabsContent> */}
               </Tabs>
             </CardContent>
-            <CardFooter className="flex justify-between border-t pt-6">
-              <Button
-                variant="outline"
-                onClick={() => router.push(`/interviews/${params.id}`)}
-              >
-                Back to Candidates
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export Assessment
-                </Button>
-                <Button>Move to Hiring</Button>
-              </div>
-            </CardFooter>
+            
           </Card>
-
-          <div className=" w-full flex flex-col md:flex-row justify-center md:justify-start items-center mt-9">
-            <Avatar className=" h-28 w-28 md:h-40 md:w-40 ">
-              <AvatarFallback className="text-4xl md:text-6xl">
-                {candidateDetails?.user?.firstName
-                  ? candidateDetails?.user?.firstName.charAt(0)
-                  : ""}
-                {candidateDetails?.user?.lastName
-                  ? candidateDetails?.user?.lastName.charAt(0)
-                  : ""}
-              </AvatarFallback>
-            </Avatar>
-            <div className=" ml-5 mt-5 md:mt-0">
-              <p className=" text-2xl md:text-5xl md:text-left text-center py-1">
-                {candidateDetails?.user?.firstName || "Candidate"}{" "}
-                {candidateDetails?.user?.lastName || ""}
-              </p>
-              <p className=" text-lg md:text-xl md:text-left text-center text-gray-500">
-                {candidateDetails?.user?.email}
-              </p>
-              <p className=" mx-auto md:mx-0 text-xs mt-3 rounded-full bg-blue-500/50 boeder-2 border-blue-700 text-blue-300 py-1 px-4 w-fit">
-                {candidateDetails?.user?.role || "Candidate"}
-              </p>
-            </div>
-          </div>
-          <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-8">
-            <div className=" w-full md:w-[70%] md:border-r-2 border-gray-500/20 md:pr-8">
-              {/* <div className="bg-blue-700/5 text-blue-500 border-2 border-blue-900 px-8 py-5 rounded-lg">
-                                <h1 className=" text-xl font-semibold">Experiences</h1>
-                                <div
-                                    className="text-justify w-full text-gray-500 bg-transparent rounded-lg mt-3"
-                                    dangerouslySetInnerHTML={{
-                                        __html: candidateDetails?.experience || "No Experiences",
-                                    }}
-                                />
-                            </div> */}
-              <Card className=" border-2 !bg-[#1b1d23] !border-blue-600/30">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-semibold text-blue-600">
-                        Experiences
-                      </h3>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    {experiences.map((experience, index) => (
-                      <div
-                        key={index}
-                        className={`border-l-2 border-border pl-4 py-2 `}
-                      >
-                        <div className="flex justify-between w-full">
-                          <h4 className="font-medium">{experience.title}</h4>
-                          <span className="text-sm text-[#b3b3b3]">
-                            {new Date(experience.startDate).getFullYear()} -{" "}
-                            {experience.endDate === ""
-                              ? "Present"
-                              : new Date(experience.endDate).getFullYear()}
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between w-full">
-                          <p className="text-sm text-[#b3b3b3]">
-                            {experience.company}
-                          </p>
-                        </div>
-
-                        <div className="flex justify-between w-full">
-                          <p className="text-sm mt-2">
-                            {experience.description}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              {/* <div className="bg-yellow-700/5 text-yellow-800 border-2 border-yellow-900 px-8 py-5 rounded-lg mt-5">
-                                <h1 className=" text-xl font-semibold">Skill Highlights</h1>
-                                <div
-                                    className="text-justify text-gray-500 w-full bg-transparent rounded-lg mt-3"
-                                    dangerouslySetInnerHTML={{
-                                        __html:
-                                            candidateDetails?.skillHighlights || "No Skill Highlight",
-                                    }}
-                                />
-                            </div> */}
-              <Card className="border-2 !bg-[#1b1d23] !border-orange-400/20 mt-5">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-semibold text-orange-400">
-                        Skill Highlights
-                      </h3>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                    {skills.map((skill, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-2 rounded-md bg-[#b3b3b309]"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className={`text-xs py-1 px-3 ${getSkillColor(
-                              skill.level
-                            )}`}
-                          >
-                            {skill.level}
-                          </Badge>
-                          <span className="text-sm font-medium">
-                            {skill.name}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              <div className=" w-full rounded-lg mt-5 px-8 py-5 bg-gray-700/20 border-2 border-gray-700 p-0 overflow-x-hidden">
-                <h2 className=" text-xl font-semibold">Resume</h2>
-                {documentUrl.url ? (
-                  <iframe
-                    src={`${documentUrl.url}`}
-                    className=" overflow-x-hidden rounded-lg mt-5"
-                    width="100%"
-                    height="500px"
-                    style={{ border: "none" }}
-                    title="PDF Viewer"
-                  />
-                ) : (
-                  <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg flex flex-col items-center justify-center min-h-[500px]">
-                    <h1 className=" text-xl font-semibold">
-                      No Document Found
-                    </h1>
-                    {/* <p className=" text-xs italic text-center w-[80%] py-2 mx-auto text-gray-600">
-                                            {
-                                                "Please upload your CV in PDF format. Ensure the file is properly named (e.g., YourName_CV.pdf) and does not exceed the size limit. Supported format: .pdf."
-                                            }
-                                        </p> */}
-                  </div>
-                )}
-              </div>
-              {documentUrl.url && (
-                <div className=" w-full min-h-[500px] bg-gray-700/20 text-gray-400 border-2 boeder-2 border-[#b378ff] px-8 py-5 rounded-lg mt-5">
-                  <h1 className=" text-2xl font-semibold h-full text-[#b378ff] flex justify-between">
-                    Resume Analiyze <WandSparkles />
-                  </h1>
-
-                  <h5 className=" text-2xl font-semibold h-full mt-5">
-                    Summary
-                  </h5>
-                  <p>{documentUrl.summary}</p>
-
-                  <h5 className=" text-2xl font-semibold h-full mt-5">
-                    Education
-                  </h5>
-                  {documentUrl?.education?.map((edu, index) => (
-                    <span
-                      key={index}
-                      className="inline-block bg-gray-200/10 rounded-lg px-4 py-2 text-sm text-gray-500 mr-2 mb-2"
-                    >
-                      {edu}
-                    </span>
-                  ))}
-
-                  <h5 className=" text-2xl font-semibold h-full mt-5">
-                    Experience
-                  </h5>
-                  {documentUrl?.experience?.map((exp, index) => (
-                    <span
-                      key={index}
-                      className="inline-block bg-gray-200/10 rounded-lg px-4 py-2 text-sm text-gray-500 mr-2 mb-2"
-                    >
-                      {exp}
-                    </span>
-                  ))}
-
-                  <h5 className=" text-2xl font-semibold h-full mt-5">
-                    Skills
-                  </h5>
-                  {documentUrl?.skills?.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="inline-block bg-gray-200/10 rounded-full px-3 py-1 text-sm text-gray-500 mr-2 mb-2"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-
-                  <h5 className=" text-2xl font-semibold h-full mt-5">
-                    Contact Info
-                  </h5>
-                  <p>Email - {documentUrl?.contactInfo?.email}</p>
-                  <p>Phone - {documentUrl?.contactInfo?.phone}</p>
-                </div>
-              )}
-            </div>
-            <div className=" w-full md:w-[40%] md:px-8 md:mt-0 mt-5">
-              <Card className="border-border !bg-[#1b1d23]">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold">Personal Details</h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <User
-                        size={16}
-                        className="text-muted-foreground mt-0.5"
-                      />
-                      <div>
-                        <p className="text-muted-foreground text-xs">
-                          Full Name
-                        </p>
-                        <p className="font-medium">
-                          {candidateDetails?.user?.firstName}{" "}
-                          {candidateDetails?.user?.lastName}
-                        </p>
-                      </div>
-                    </div>
-
-                    <Separator className="my-2" />
-
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="flex items-start gap-3">
-                        <CalendarIcon
-                          size={16}
-                          className="text-muted-foreground mt-0.5"
-                        />
-                        <div className="w-full">
-                          <p className="text-muted-foreground text-xs">
-                            Date of Birth
-                          </p>
-                          <p>
-                            {new Date(
-                              candidateDetails?.user?.dob
-                            ).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            ({age} years old)
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <User
-                          size={16}
-                          className="text-muted-foreground mt-0.5"
-                        />
-                        <div className="w-full">
-                          <p className="text-muted-foreground text-xs">
-                            Gender
-                          </p>
-                          <p>
-                            {candidateDetails?.user?.gender
-                              ? candidateDetails?.user?.gender
-                                  .charAt(0)
-                                  .toUpperCase() +
-                                candidateDetails?.user?.gender
-                                  .slice(1)
-                                  .toLowerCase()
-                              : "not specified"}
-                          </p>
-                        </div>
-                      </div>
-
-                      <Separator className="my-2" />
-
-                      <div className="flex items-start gap-3">
-                        <Mail
-                          size={16}
-                          className="text-muted-foreground mt-0.5"
-                        />
-                        <div>
-                          <p className="text-muted-foreground text-xs">Email</p>
-                          <p>{candidateDetails?.user?.email}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <Phone
-                          size={16}
-                          className="text-muted-foreground mt-0.5"
-                        />
-                        <div className=" w-full">
-                          <p className="text-muted-foreground text-xs">Phone</p>
-                          <p>
-                            {candidateDetails?.user?.contactNo
-                              ? candidateDetails?.user?.contactNo
-                              : "Not Provided"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border !bg-[#1b1d23] mt-5">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold">Social Media</h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className={`flex items-center gap-3`}>
-                        <div className="bg-[#b3b3b31a] rounded-md p-2">
-                          <Linkedin size={16} />
-                        </div>
-                        <div className="w-full">
-                          <p className="text-sm font-medium">LinkedIn</p>
-                          <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {candidateDetails?.linkedInUrl
-                              ? candidateDetails?.linkedInUrl.replace(
-                                  /^https?:\/\/(www\.)?/i,
-                                  ""
-                                )
-                              : "linkedin.com/in/username"}
-                          </p>
-                        </div>
-                      </div>
-                      {candidateDetails?.linkedInUrl && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-accent"
-                          asChild
-                        >
-                          <a
-                            href={candidateDetails?.linkedInUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink
-                              size={14}
-                              className=" text-yellow-400"
-                            />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className={`flex items-center gap-3 w-[80%]`}>
-                        <div className="bg-[#b3b3b31a] rounded-md p-2">
-                          <Github size={16} />
-                        </div>
-                        <div className="w-full">
-                          <p className="text-sm font-medium">Github</p>
-                          <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {candidateDetails?.githubUrl
-                              ? candidateDetails?.githubUrl.replace(
-                                  /^https?:\/\/(www\.)?/i,
-                                  ""
-                                )
-                              : "github.com/username"}
-                          </p>
-                        </div>
-                      </div>
-                      {candidateDetails?.githubUrl && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-accent"
-                          asChild
-                        >
-                          <a
-                            href={candidateDetails?.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink
-                              size={14}
-                              className=" text-yellow-400"
-                            />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className={`flex items-center gap-3 w-[80%]`}>
-                        <div className="bg-[#b3b3b31a] rounded-md p-2">
-                          <Facebook size={16} />
-                        </div>
-                        <div className=" w-full">
-                          <p className="text-sm font-medium">Facebook</p>
-                          <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {candidateDetails?.facebookUrl
-                              ? candidateDetails?.facebookUrl.replace(
-                                  /^https?:\/\/(www\.)?/i,
-                                  ""
-                                )
-                              : "facebook username"}
-                          </p>
-                        </div>
-                      </div>
-                      {candidateDetails?.facebookUrl && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-accent"
-                          asChild
-                        >
-                          <a
-                            href={candidateDetails?.facebookUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink
-                              size={14}
-                              className=" text-yellow-400"
-                            />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className={`flex items-center gap-3 w-[80%]`}>
-                        <div className="bg-[#b3b3b31a] rounded-md p-2">
-                          <FaXTwitter size={16} />
-                        </div>
-                        <div className="w-full">
-                          <p className="text-sm font-medium">X</p>
-                          <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {candidateDetails?.twitterUrl
-                              ? candidateDetails?.twitterUrl.replace(
-                                  /^https?:\/\/(www\.)?/i,
-                                  ""
-                                )
-                              : "x.com/username"}
-                          </p>
-                        </div>
-                      </div>
-                      {candidateDetails?.twitterUrl && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-accent"
-                          asChild
-                        >
-                          <a
-                            href={candidateDetails?.twitterUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink
-                              size={14}
-                              className=" text-yellow-400"
-                            />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className={`flex items-center gap-3 w-[80%]`}>
-                        <div className="bg-[#b3b3b31a] rounded-md p-2">
-                          <FaDiscord size={16} />
-                        </div>
-                        <div className="w-full">
-                          <p className="text-sm font-medium">Discord</p>
-                          <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {candidateDetails?.discordUrl
-                              ? candidateDetails?.discordUrl.replace(
-                                  /^https?:\/\/(www\.)?/i,
-                                  ""
-                                )
-                              : "discord.com/username"}
-                          </p>
-                        </div>
-                      </div>
-                      {candidateDetails?.discordUrl && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-accent"
-                          asChild
-                        >
-                          <a
-                            href={candidateDetails?.discordUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink
-                              size={14}
-                              className=" text-yellow-400"
-                            />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* <div className="bg-gray-700/20 text-gray-400 border-2 border-gray-700 px-8 py-5 rounded-lg mt-5">
-                                <h2 className=" text-xl font-semibold">Social Media</h2>
-                                <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                                    <FaLinkedin className=" text-3xl" />
-                                    <p
-                                        type="text"
-                                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                                    >
-                                        {candidateDetails?.linkedInUrl}
-                                    </p>
-                                </div>
-                                <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                                    <FaGithub className=" text-3xl" />
-                                    <p
-                                        type="text"
-                                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                                    >
-                                        {candidateDetails?.githubUrl}
-                                    </p>
-                                </div>
-                                <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                                    <FaFacebookSquare className=" text-3xl" />
-                                    <p
-                                        type="text"
-                                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                                    >
-                                        {candidateDetails?.facebookUrl}
-                                    </p>
-                                </div>
-                                <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                                    <FaXTwitter className=" text-3xl" />
-                                    <p
-                                        type="text"
-                                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                                    >
-                                        {candidateDetails?.twitterUrl}
-                                    </p>
-                                </div>
-                                <div className=" w-full mt-5 flex justify-start items-center gap-2">
-                                    <FaDiscord className=" text-3xl" />
-                                    <p
-                                        type="text"
-                                        className={` focus:outline-none bg-transparent rounded-lg w-full text-sm py-1.5 px-2`}
-                                    >
-                                        {candidateDetails?.discordUrl}
-                                    </p>
-                                </div>
-                            </div> */}
-            </div>
-          </div>
         </div>
       </SidebarInset>
     </div>
