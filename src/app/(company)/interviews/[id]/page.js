@@ -221,6 +221,7 @@ import {
 import CandidateAnalysisTab from "@/components/company/analysis-tab";
 import SkillsInput from "@/components/inputs/skillsInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import TimeSlotsTab from "@/components/company/time-slots-tab";
 
 
 export default function InterviewPreviewPage({ params }) {
@@ -1802,6 +1803,12 @@ export default function InterviewPreviewPage({ params }) {
                     )}
                   Interview Sessions
                 </div>
+              </TabsTrigger>
+              <TabsTrigger
+                value="timeslots"
+                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none h-11"
+              >
+                Time Slots
               </TabsTrigger>
               <TabsTrigger
                 value="invitation"
@@ -3985,7 +3992,7 @@ export default function InterviewPreviewPage({ params }) {
           <div className="flex justify-between items-center">
             <Badge className="!bg-blue-600  hover:bg-blue-100 !text-blue-950">
               <div className="flex items-center gap-1">
-              <Hourglass size={12}/> 
+              <Hourglass size={12}/>
                 <span>Ongoing</span>
               </div>
             </Badge>
@@ -4199,6 +4206,11 @@ export default function InterviewPreviewPage({ params }) {
                   </PaginationContent>
                 </Pagination>
               </div>
+            </TabsContent>
+
+            <TabsContent value="timeslots" className="p-0 border-none">
+                    <TimeSlotsTab/>
+
             </TabsContent>
 
             <TabsContent value="invitation" className="p-0 border-none">

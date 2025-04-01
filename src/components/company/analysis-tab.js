@@ -64,7 +64,6 @@ const sampleCandidates = [
     id: "c1",
     name: "Alex Johnson",
     email: "alex.johnson@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 3, 2025",
     technicalSkills: [
       { name: "React", score: 85, maxScore: 100 },
@@ -83,7 +82,6 @@ const sampleCandidates = [
     id: "c2",
     name: "Sarah Williams",
     email: "sarah.williams@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 4, 2025",
     technicalSkills: [
       { name: "React", score: 95, maxScore: 100 },
@@ -102,7 +100,6 @@ const sampleCandidates = [
     id: "c3",
     name: "Michael Chen",
     email: "michael.chen@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 5, 2025",
     technicalSkills: [
       { name: "React", score: 90, maxScore: 100 },
@@ -121,7 +118,6 @@ const sampleCandidates = [
     id: "c4",
     name: "Emily Rodriguez",
     email: "emily.rodriguez@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 6, 2025",
     technicalSkills: [
       { name: "React", score: 70, maxScore: 100 },
@@ -140,7 +136,6 @@ const sampleCandidates = [
     id: "c5",
     name: "David Kim",
     email: "david.kim@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 7, 2025",
     technicalSkills: [
       { name: "React", score: 80, maxScore: 100 },
@@ -159,7 +154,6 @@ const sampleCandidates = [
     id: "c6",
     name: "Jessica Taylor",
     email: "jessica.taylor@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 8, 2025",
     technicalSkills: [
       { name: "React", score: 85, maxScore: 100 },
@@ -178,7 +172,6 @@ const sampleCandidates = [
     id: "c7",
     name: "Robert Martinez",
     email: "robert.martinez@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 9, 2025",
     technicalSkills: [
       { name: "React", score: 75, maxScore: 100 },
@@ -197,7 +190,6 @@ const sampleCandidates = [
     id: "c8",
     name: "Lisa Wang",
     email: "lisa.wang@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
     interviewDate: "May 10, 2025",
     technicalSkills: [
       { name: "React", score: 95, maxScore: 100 },
@@ -217,12 +209,12 @@ const sampleCandidates = [
 // Helper function to calculate average score for a specific skill type
 const calculateAverageScore = (candidates, skillType) => {
   if (candidates.length === 0) return 0
-  const totalScore = ''
-//   const totalScore = candidates.reduce((sum, candidate) => {
-//     const skills = candidate[skillType]
-//     const candidateAvg = skills.reduce((skillSum, skill) => skillSum + skill.score, 0) / skills.length
-//     return sum + candidateAvg
-//   }, 0)
+  // const totalScore = ''
+  const totalScore = candidates.reduce((sum, candidate) => {
+    const skills = candidate[skillType]
+    const candidateAvg = skills.reduce((skillSum, skill) => skillSum + skill.score, 0) / skills.length
+    return sum + candidateAvg
+  }, 0)
 
   return Math.round((totalScore / candidates.length) * 10) / 10
 }
@@ -240,8 +232,8 @@ export default function CandidateAnalysisTab({ categoryList , candidates}) {
   const [showDetailedView, setShowDetailedView] = useState(false)
 
   // Calculate average scores
-  const avgTechnicalScore = calculateAverageScore(candidates, "technicalSkills")
-  const avgSoftScore = calculateAverageScore(candidates, "softSkills")
+  const avgTechnicalScore = calculateAverageScore(sampleCandidates, "technicalSkills")
+  const avgSoftScore = calculateAverageScore(sampleCandidates, "softSkills")
 //   const avgOverallScore =
 //   candidates.reduce((sum, candidate) => sum + candidate.overallScore, 0) / candidates.length
 const avgOverallScore = 0
@@ -249,7 +241,7 @@ const avgOverallScore = 0
   // Sort and filter candidates
   const sortedAndFilteredCandidates = useMemo(() => {
     // First apply search filter
-    let filtered = candidates.filter(
+    let filtered = sampleCandidates.filter(
       (candidate) =>
         candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         candidate.email.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -277,7 +269,7 @@ const avgOverallScore = 0
 
       return sortDirection === "desc" ? bValue - aValue : aValue - bValue
     })
-  }, [candidates, sortCriteria, sortDirection, searchQuery, statusFilter])
+  }, [sampleCandidates, sortCriteria, sortDirection, searchQuery, statusFilter])
 
   // Get top candidates
   const topCandidates = useMemo(() => {
@@ -301,7 +293,7 @@ const avgOverallScore = 0
 
   // Get candidates for comparison
   const candidatesForComparison = useMemo(() => {
-    return candidates.filter((candidate) => candidatesToCompare.includes(candidate.id))
+    return sampleCandidates.filter((candidate) => candidatesToCompare.includes(candidate.id))
   }, [candidatesToCompare])
 
   // Prepare data for the comparison chart
