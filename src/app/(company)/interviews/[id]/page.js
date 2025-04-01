@@ -577,6 +577,7 @@ export default function InterviewPreviewPage({ params }) {
   }, [categoryList]);
 
   useEffect(() => {
+    console.log("interviewSessions", interviewSessions);
     const sortedSessions = interviewSessions.map((session) => ({
       interviewId: session.interview.interviewID,
       sessionId: session.sessionId,
@@ -601,6 +602,7 @@ export default function InterviewPreviewPage({ params }) {
         const response = await getInterviewById(interviewId);
         if (response.data) {
           setInterviewDetail(response.data);
+          console.log("interviewDetail", interviewDetail);
           if (response.data.CategoryAssignment) {
             const categories = response.data.CategoryAssignment.map(
               (category) => {
@@ -824,7 +826,7 @@ export default function InterviewPreviewPage({ params }) {
   }, [interviewId]);
 
   useEffect(() => {
-    console.log("interviewDetail", interviewDetail);
+    // console.log("interviewDetail", interviewDetail);
     const softSkillId = interviewCategories.find(
       (category) => category.categoryName === "Soft"
     )?.categoryId;
@@ -942,7 +944,7 @@ export default function InterviewPreviewPage({ params }) {
   useEffect(() => {
     if (interviewId) {
       const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PORT; // Fallback if env var is missing
-      console.log("baseUrl", baseUrl);
+      // console.log("baseUrl", baseUrl);
       setInviteLink(`${baseUrl}/interview-schedules/${interviewId}`);
     }
   }, [interviewId]);
@@ -4029,14 +4031,14 @@ export default function InterviewPreviewPage({ params }) {
                               hour: "2-digit",
                               minute: "2-digit",
                             });
-                            const endTime = new Date(session.scheduledAt).toLocaleTimeString([], {
+                            const endTime = new Date(interviewDetail.endDate).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
                             });
                             const candidateName = session.candidate.user.firstName + " " + (session.candidate.user.lastName || "");
                             const candidateEmail = session.candidate.user.email;
-                            const interviewType = interviewDetail.interviewCategory; // Fallback to "Technical" if not available
-                            const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
+                            const interviewType = interviewDetail.interviewMedium; // Fallback to "Technical" if not available
+                            // const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
                             const zoomLink = session.zoomLink || "https://zoom.us/j/123456789"; // Replace with actual link from response if available
 
                             return (
@@ -4083,13 +4085,13 @@ export default function InterviewPreviewPage({ params }) {
 
                                   <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
                                     <div>
-                                      <span className="text-muted-foreground">Type:</span>
+                                      <span className="text-muted-foreground">Medium:</span>
                                       <span className="font-medium ml-1">{interviewType}</span>
                                     </div>
-                                    <div>
+                                    {/* <div>
                                       <span className="text-muted-foreground">Location:</span>
                                       <span className="font-medium ml-1">{location}</span>
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </CardContent>
                                 <CardFooter className="pt-0 pb-4">
@@ -4110,7 +4112,7 @@ export default function InterviewPreviewPage({ params }) {
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         // Add logic to end the session if needed (e.g., API call)
-                                        console.log("End session for:", session.sessionId);
+                                        // console.log("End session for:", session.sessionId);
                                       }}
                                     >
                                       <StopCircle className="h-4 w-4 mr-2" />
