@@ -29,7 +29,6 @@ export default function GenerateQuestionModal({
   details,
   setGenerateModalOpen,
 }) {
-  
   const [sessionID, setSessionID] = React.useState("");
   const [interviewId, setInterviewId] = React.useState("");
   const [jobRole, setJobRole] = React.useState("");
@@ -150,7 +149,8 @@ export default function GenerateQuestionModal({
               Genarate Questions
             </h1>
             <span className="text-[#737883] text-sm !pb-5">
-              Our AI will generate high-quality technical interview questions based on your criteria.
+              Our AI will generate high-quality technical interview questions
+              based on your criteria.
             </span>
           </div>
           <button
@@ -160,8 +160,6 @@ export default function GenerateQuestionModal({
             <MdClose className=" text-2xl" />
           </button>
           <form onSubmit={handleSubmit}>
-            
-
             {/* <input
               type="text"
               readOnly={true}
@@ -283,19 +281,21 @@ export default function GenerateQuestionModal({
             </div>
 
             <div className=" w-full flex justify-center items-center">
-              <button
+              <Button
+                variant="outline"
                 type="submit"
-                className=" h-11 min-w-[150px] w-full md:w-[40%] mt-2 flex justify-center items-center cursor-pointer bg-white text-black text-sm rounded-lg text-center font-semibold"
+                size="sm"
+                className="flex items-center gap-1 !text-blue-500 !border-blue-500/50 hover:!bg-blue-500/10 h-11 min-w-[150px] w-full md:w-[40%] mt-2 justify-center cursor-pointer text-sm rounded-lg text-center font-semibold"
               >
                 {loading ? (
                   <LoaderCircle className="animate-spin" />
                 ) : (
                   <>
-                    <Sparkles size={16} />
-                    Genarate
+                    <Sparkles className="h-4 w-4" />
+                    <span>Generate</span>
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
