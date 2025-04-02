@@ -2945,16 +2945,16 @@ export default function InterviewPreviewPage({ params }) {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() =>
-                                      setEditingQuestion(
-                                        question.interviewQuestionID
-                                      )
-                                    }
+                                    // onClick={() =>
+                                    //   setEditingQuestion(
+                                    //     question.interviewQuestionID
+                                    //   )
+                                    // }
                                     className="h-8 w-8"
                                   >
                                     <TooltipProvider>
                                       <Tooltip>
-                                        <TooltipTrigger asChild>
+                                        <TooltipTrigger >
                                           <span className=" h-full w-fit flex items-center justify-center cursor-pointer">
                                             <RiInformation2Line className=" text-orange-500 h-4 w-4" />
                                             <span className="sr-only">
@@ -2963,7 +2963,7 @@ export default function InterviewPreviewPage({ params }) {
                                           </span>
                                         </TooltipTrigger>
                                         <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
-                                          <p className=" w-[500px] text-gray-300">
+                                          <p className=" w-[500px] text-gray-300 ">
                                             {question.explanation}
                                           </p>
                                         </TooltipContent>
