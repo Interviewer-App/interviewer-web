@@ -42,6 +42,7 @@ import {
   ArrowUpRight,
   Hourglass,
   AlertCircle,
+  SaveAll,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -221,7 +222,7 @@ import {
 } from "@/lib/api/interview-invitation";
 import CandidateAnalysisTab from "@/components/company/analysis-tab";
 import SkillsInput from "@/components/inputs/skillsInput";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TimeSlotsTab from "@/components/company/time-slots-tab";
 
 
@@ -290,6 +291,9 @@ export default function InterviewPreviewPage({ params }) {
   const [interviewTimeSlotsTabel, setInterviewTimeSlotsTabel] = useState([]);
   const [filterInterviewTimeSlots, setFilterInterviewTimeSlots] = useState([]);
   const [noOfQuestions, setNoOfQuestions] = useState(0);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [isAnalizingInterview, setIsAnalizingInterview] = useState(false);
+  const [isGeneratingSoftSkills, setIsGeneratingSoftSkills] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [todayCandidates, setTodayCandidates] = useState(0);
   const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
@@ -501,12 +505,11 @@ export default function InterviewPreviewPage({ params }) {
         setTotalCandidates(response.total);
 
         // Count today's candidates
-        const todayCount = response.data.filter(schedule =>
+        const todayCount = response.data.filter((schedule) =>
           isToday(schedule.startTime)
         ).length;
 
         setTodayCandidates(todayCount);
-
       } catch (error) {
         console.log("Error fetching interviews:", error);
       } finally {
@@ -655,6 +658,7 @@ export default function InterviewPreviewPage({ params }) {
     generateModalOpen,
     createModalOpen,
     questionGenerationLoading,
+    isGeneratingQuestions,
   ]);
 
   useEffect(() => {
@@ -739,18 +743,29 @@ export default function InterviewPreviewPage({ params }) {
             return acc;
           }, {});
 
-          const transformedSchedules = scheduleData.flatMap(({ date, schedules }) =>
-            schedules.map(({ id, start, end, isBooked, candidateDetails }) => ({
-                id,
-                date: new Date(date).toISOString().split("T")[0],
-                startTime: new Date(start).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-                endTime: new Date(end).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-                isBooked,
-                candidateDetails: isBooked ? candidateDetails : null,
-            }))
+          const transformedSchedules = scheduleData.flatMap(
+            ({ date, schedules }) =>
+              schedules.map(
+                ({ id, start, end, isBooked, candidateDetails }) => ({
+                  id,
+                  date: new Date(date).toISOString().split("T")[0],
+                  startTime: new Date(start).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  }),
+                  endTime: new Date(end).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  }),
+                  isBooked,
+                  candidateDetails: isBooked ? candidateDetails : null,
+                })
+              )
           );
 
-          setInterviewTimeSlotsTabel(transformedSchedules)
+          setInterviewTimeSlotsTabel(transformedSchedules);
           setInterviewTimeSlotsDates(dates);
           setInterviewTimeSlots(timeSlotsMap);
           setFilterInterviewTimeSlots(timeSlotsMap);
@@ -802,7 +817,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-              interviewStatusDetails.completedSchedules,
+                interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -1141,10 +1156,12 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
-            } Successfully!`,
-          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
-            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } Successfully!`,
+          description: `The interview has been ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -1180,93 +1197,94 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await updateInterview(interviewId, {
-        jobDescription: description,
-        jobTitle: title,
-        requiredSkills: skills.join(", "),
-        interviewCategory,
-        startDate: new Date(dateRange.from).toISOString(),
-        endDate: new Date(dateRange.to).toISOString(),
-        categoryAssignments: categoryList.map((catagory) => {
-          return {
-            categoryId: catagory.key,
-            percentage: parseFloat(catagory.percentage),
-          };
-        }),
-        schedules: scheduleList
-          .filter((schedule) => !schedule.isBooked)
-          .map((schedule) => {
-            const startDate = new Date(schedule.date);
-            const endDate = new Date(schedule.date);
+    // e.preventDefault();
+    // try {
+    //   const response = await updateInterview(interviewId, {
+    //     jobDescription: description,
+    //     jobTitle: title,
+    //     requiredSkills: skills.join(", "),
+    //     interviewCategory,
+    //     startDate: new Date(dateRange.from).toISOString(),
+    //     endDate: new Date(dateRange.to).toISOString(),
+    //     categoryAssignments: categoryList.map((catagory) => {
+    //       return {
+    //         categoryId: catagory.key,
+    //         percentage: parseFloat(catagory.percentage),
+    //       };
+    //     }),
+    //     schedules: scheduleList
+    //       .filter((schedule) => !schedule.isBooked)
+    //       .map((schedule) => {
+    //         const startDate = new Date(schedule.date);
+    //         const endDate = new Date(schedule.date);
 
-            const [startHours, startMinutes] = schedule.startTime
-              .split(":")
-              .map(Number);
-            const localStart = new Date(
-              startDate.setHours(startHours, startMinutes, 0, 0)
-            );
+    //         const [startHours, startMinutes] = schedule.startTime
+    //           .split(":")
+    //           .map(Number);
+    //         const localStart = new Date(
+    //           startDate.setHours(startHours, startMinutes, 0, 0)
+    //         );
 
-            const [endHours, endMinutes] = schedule.endTime
-              .split(":")
-              .map(Number);
-            const localend = new Date(
-              endDate.setHours(endHours, endMinutes, 0, 0)
-            );
+    //         const [endHours, endMinutes] = schedule.endTime
+    //           .split(":")
+    //           .map(Number);
+    //         const localend = new Date(
+    //           endDate.setHours(endHours, endMinutes, 0, 0)
+    //         );
 
-            const startDateUtc = localStart.toISOString();
-            const endDateUtc = localend.toISOString();
+    //         const startDateUtc = localStart.toISOString();
+    //         const endDateUtc = localend.toISOString();
 
-            return {
-              startTime: startDateUtc,
-              endTime: endDateUtc,
-            };
-          }),
-      });
+    //         return {
+    //           startTime: startDateUtc,
+    //           endTime: endDateUtc,
+    //         };
+    //       }),
+    //   });
 
-      if (response) {
-        setEditDetails(false);
-        socket.emit("publishInterview", {
-          interviewId: interviewId,
-          companyId: interviewDetail.companyID,
-        });
-        toast({
-          variant: "default",
-          title: "Success!",
-          description: "Interview details have been updated successfully.",
-          action: <ToastAction altText="Close">Close</ToastAction>,
-        });
-      }
-    } catch (error) {
-      if (error.response) {
-        const { data } = error.response;
+    //   if (response) {
+    //     setEditDetails(false);
+    //     socket.emit("publishInterview", {
+    //       interviewId: interviewId,
+    //       companyId: interviewDetail.companyID,
+    //     });
+    //     toast({
+    //       variant: "default",
+    //       title: "Success!",
+    //       description: "Interview details have been updated successfully.",
+    //       action: <ToastAction altText="Close">Close</ToastAction>,
+    //     });
+    //   }
+    // } catch (error) {
+    //   if (error.response) {
+    //     const { data } = error.response;
 
-        if (data && data.message) {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: `Interview update failed: ${data.message}`,
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "An unexpected error occurred. Please try again.",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description:
-            "An unexpected error occurred. Please check your network and try again.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
-    }
+    //     if (data && data.message) {
+    //       toast({
+    //         variant: "destructive",
+    //         title: "Uh oh! Something went wrong.",
+    //         description: `Interview update failed: ${data.message}`,
+    //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+    //       });
+    //     } else {
+    //       toast({
+    //         variant: "destructive",
+    //         title: "Uh oh! Something went wrong.",
+    //         description: "An unexpected error occurred. Please try again.",
+    //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+    //       });
+    //     }
+    //   } else {
+    //     toast({
+    //       variant: "destructive",
+    //       title: "Uh oh! Something went wrong.",
+    //       description:
+    //         "An unexpected error occurred. Please check your network and try again.",
+    //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+    //     });
+    //   }
+    // }
+    setEditDetails(false);
   };
 
   const handleKeyDown = (e) => {
@@ -1446,8 +1464,177 @@ export default function InterviewPreviewPage({ params }) {
     }
   };
 
-  const handleAnalyze = () => {
-    setShowAnalysis(true);
+  const handleGenerateAISuggestioins = async (e) => {
+    e.preventDefault();
+    setIsAnalizingInterview(true);
+    try {
+      const data = {
+        position: interviewDetail.jobTitle,
+        qualifications: interviewDetail.jobDescription,
+        industry: interviewDetail.industry,
+        experience_level: interviewDetail.proficiencyLevel,
+        technicalPercentage: technicalPercentage,
+        softSkillsPercentage: softSkillsPercentage,
+        flexibleAssessment: true,
+        softSkills: softSkills,
+        questions: [],
+      };
+      const response = await generateRecommondations(data);
+      if (response) {
+        setIsAnalizingInterview(true);
+        setAiSuggestions(response.data.recommendation);
+        setShowAnalysis(true);
+        // const data = response.data.skills;
+        // setSoftSkills(
+        //   response.data.softskills.map((skill, index) => ({
+        //     ...skill,
+        //     expanded: false,
+        //     id: `s${index + 1}`,
+        //   }))
+        // );
+        setIsAnalizingInterview(false);
+      }
+    } catch (err) {
+      setIsAnalizingInterview(false);
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Recommondation generation failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setIsAnalizingInterview(false);
+    }
+  };
+
+  const handleAcceptSuggestions = () => {
+    // Update percentages
+    setTechnicalPercentage(
+      aiSuggestions.summary.recommended_weighting.technical_expertise
+    );
+    setSoftSkillsPercentage(
+      aiSuggestions.summary.recommended_weighting.soft_skills
+    );
+
+    // // Add suggested questions
+    // const newQuestions = [
+    //   ...questions.filter((q) => !aiSuggestions.removedQuestionIds.includes(q.id)),
+    //   ...aiSuggestions.addedQuestions.map((q) => ({
+    //     id: `q${Date.now() + Math.random()}`,
+    //     text: q.text,
+    //     marks: q.marks,
+    //   })),
+    // ]
+    // setQuestions(newQuestions)
+
+    // Calculate how much percentage to allocate to new skills
+    // const remainingSkills = softSkills.filter(
+    //   (s) => !aiSuggestions.removedSoftSkillIds.includes(s.id)
+    // );
+    const newSkillsCount = aiSuggestions.suggested_soft_skills.length;
+    // const totalNewSkills = remainingSkills.length + newSkillsCount;
+
+    // If we're adding new skills, adjust percentages
+    if (newSkillsCount > 0) {
+      // Adjust existing skills
+      // const percentagePerSkill = 100 / totalNewSkills;
+      // const adjustedSkills = remainingSkills.map((skill) => ({
+      //   ...skill,
+      //   percentage: percentagePerSkill,
+      // }));
+
+      // Add new skills with calculated percentage
+      const newSoftSkills = [
+        // ...adjustedSkills,
+        ...aiSuggestions.suggested_soft_skills.map((s) => ({
+          id: `s${Date.now() + Math.random()}`,
+          name: s.name,
+          description: s.description,
+          expanded: false,
+          percentage: s.percentage,
+          subCategoryParameters: s.subcategories,
+
+          // subcategories: [
+          //   {
+          //     id: `sub${Date.now()}`,
+          //     name: "General Assessment",
+          //     description: "Overall evaluation of this quality",
+          //     percentage: 100,
+          //   },
+          // ],
+        })),
+      ];
+
+      setSoftSkills(newSoftSkills);
+    } else {
+      // Just remove skills that need to be removed
+      setSoftSkills(remainingSkills);
+    }
+
+    setShowAnalysis(false);
+  };
+
+  const handleSoftSkillPercentageChange = (skillId, newPercentage) => {
+    // Get the current skill
+    const currentSkill = softSkills.find((s) => s.id === skillId);
+    if (!currentSkill) return;
+
+    const oldPercentage = currentSkill.percentage;
+    const percentageDiff = newPercentage - oldPercentage;
+
+    // If there's only one skill, it should always be 100%
+    if (softSkills.length === 1) {
+      setSoftSkills([{ ...softSkills[0], percentage: 100 }]);
+      return;
+    }
+
+    // Calculate how much to adjust other skills
+    const otherSkills = softSkills.filter((s) => s.id !== skillId);
+    const totalOtherPercentage = otherSkills.reduce(
+      (sum, s) => sum + s.percentage,
+      0
+    );
+
+    if (totalOtherPercentage <= 0) return;
+
+    // Proportionally adjust other skills
+    const adjustmentFactor = percentageDiff / totalOtherPercentage;
+
+    setSoftSkills(
+      softSkills.map((skill) => {
+        if (skill.id === skillId) {
+          return { ...skill, percentage: newPercentage };
+        } else {
+          // Ensure no skill goes below 5%
+          const adjustedPercentage = Math.max(
+            5,
+            skill.percentage - skill.percentage * adjustmentFactor
+          );
+          return { ...skill, percentage: adjustedPercentage };
+        }
+      })
+    );
   };
 
   const handleAddQuestion = async () => {
@@ -1619,8 +1806,8 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleGenerateQuestions = async () => {
-    loading(true);
-    const validNoOfQuestions = parseInt(10, 10);
+    setIsGeneratingQuestions(true);
+    const validNoOfQuestions = parseInt(noOfQuestions, 10);
 
     if (isNaN(validNoOfQuestions) || validNoOfQuestions <= 0) {
       toast({
@@ -1629,22 +1816,24 @@ export default function InterviewPreviewPage({ params }) {
         description: "Please enter a valid number of questions.",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
-      setLoading(false);
+      setIsGeneratingQuestions(false);
       return;
     }
 
     try {
-      const response = await generateInterviewQuestions(interviewDetail.interviewID, {
-        jobRole: interviewDetail.jobTitle,
-        skillLevel: interviewDetail.proficiencyLevel,
-        QuestionType: interviewDetail.interviewCategory,
-        Keywords: interviewDetail.requiredSkills,
-        noOfQuestions: validNoOfQuestions,
-      });
-
+      const response = await generateInterviewQuestions(
+        interviewDetail.interviewID,
+        {
+          jobRole: interviewDetail.jobTitle,
+          skillLevel: interviewDetail.proficiencyLevel,
+          QuestionType: interviewDetail.interviewCategory.toUpperCase(),
+          Keywords: skills.map((skill) => skill.toLowerCase()),
+          noOfQuestions: validNoOfQuestions,
+        }
+      );
 
       if (response) {
-        setLoading(false);
+        setIsGeneratingQuestions(false);
       }
     } catch (error) {
       if (error.response) {
@@ -1674,6 +1863,42 @@ export default function InterviewPreviewPage({ params }) {
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
+    } finally {
+      setIsGeneratingQuestions(false);
+      setIsQuestionPromptOpen(false);
+    }
+  };
+
+  const handleEditSoftSkill = (id, name, description) => {
+    setSoftSkills(
+      softSkills.map((s) => (s.id === id ? { ...s, name, description } : s))
+    );
+  };
+
+  const handleDeleteSoftSkill = (id) => {
+    const skillToDelete = softSkills.find((s) => s.id === id);
+    if (!skillToDelete) return;
+
+    const remainingSkills = softSkills.filter((s) => s.id !== id);
+
+    // Redistribute the deleted skill's percentage among remaining skills
+    if (remainingSkills.length > 0) {
+      const percentageToDistribute = skillToDelete.percentage;
+      const totalRemainingPercentage = remainingSkills.reduce(
+        (sum, s) => sum + s.percentage,
+        0
+      );
+
+      const updatedSkills = remainingSkills.map((skill) => {
+        const proportion = skill.percentage / totalRemainingPercentage;
+        const newPercentage =
+          skill.percentage + percentageToDistribute * proportion;
+        return { ...skill, percentage: newPercentage };
+      });
+
+      setSoftSkills(updatedSkills);
+    } else {
+      setSoftSkills([]);
     }
   };
 
@@ -1735,19 +1960,34 @@ export default function InterviewPreviewPage({ params }) {
             </div>
 
             <div className="flex items-center space-x-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-1"
-              >
-                <Edit className="h-4 w-4" />
-                Edit
-              </Button>
+              {activeTab === "insights" &&
+                (editDetails ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1 !bg-green-600"
+                    onClick={handleSaveChanges}
+                  >
+                    <SaveAll className="h-4 w-4" />
+                    Save
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                    onClick={() => setEditDetails(true)}
+                  >
+                    <Edit className="h-4 w-4" />
+                    Edit
+                  </Button>
+                ))}
               {interviewDetail.status !== "ACTIVE" ? (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
-                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
                   >
                     <LuCircleCheckBig className="h-4 w-4" />
                     Publish
@@ -1778,8 +2018,9 @@ export default function InterviewPreviewPage({ params }) {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
-                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
                   >
                     <Trash2 className="h-4 w-4" />
                     Unpublish
@@ -1840,11 +2081,11 @@ export default function InterviewPreviewPage({ params }) {
                   {interviewSessions.filter(
                     (session) => session.interviewStatus === "ongoing"
                   ).length > 0 && (
-                      <div className=" relative flex items-center justify-center h-full w-2.5 ">
-                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                      </div>
-                    )}
+                    <div className=" relative flex items-center justify-center h-full w-2.5 ">
+                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                    </div>
+                  )}
                   Interview Sessions
                 </div>
               </TabsTrigger>
@@ -2170,10 +2411,11 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card
-                    className={`overflow-hidden border-2 transition-all ${technicalPercentage >= 50
-                      ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
-                      : "border-muted"
-                      }`}
+                    className={`overflow-hidden border-2 transition-all ${
+                      technicalPercentage >= 50
+                        ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                        : "border-muted"
+                    }`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
@@ -2232,12 +2474,14 @@ export default function InterviewPreviewPage({ params }) {
                                 fill="none"
                                 stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                                 strokeWidth="10"
-                                strokeDasharray={`${(2 * Math.PI * 45 * technicalPercentage) / 100
-                                  } ${2 *
+                                strokeDasharray={`${
+                                  (2 * Math.PI * 45 * technicalPercentage) / 100
+                                } ${
+                                  2 *
                                   Math.PI *
                                   45 *
                                   (1 - technicalPercentage / 100)
-                                  }`}
+                                }`}
                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                 transform="rotate(-90 50 50)"
                                 strokeLinecap="round"
@@ -2263,7 +2507,7 @@ export default function InterviewPreviewPage({ params }) {
                         </div>
 
                         {/* Less prominent slider */}
-                        <div className="space-y-2">
+                        {editDetails && (<div className="space-y-2">
                           <p className="text-sm text-center text-muted-foreground mb-2">
                             Adjust percentage
                           </p>
@@ -2277,16 +2521,17 @@ export default function InterviewPreviewPage({ params }) {
                             onValueChange={handleTechnicalPercentageChange}
                             className="w-full"
                           />
-                        </div>
+                        </div>)}
                       </div>
                     </CardContent>
                   </Card>
 
                   <Card
-                    className={`overflow-hidden border-2 transition-all ${softSkillsPercentage >= 50
-                      ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
-                      : "border-muted"
-                      }`}
+                    className={`overflow-hidden border-2 transition-all ${
+                      softSkillsPercentage >= 50
+                        ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                        : "border-muted"
+                    }`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
@@ -2342,13 +2587,15 @@ export default function InterviewPreviewPage({ params }) {
                                 fill="none"
                                 stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                                 strokeWidth="10"
-                                strokeDasharray={`${(2 * Math.PI * 45 * softSkillsPercentage) /
+                                strokeDasharray={`${
+                                  (2 * Math.PI * 45 * softSkillsPercentage) /
                                   100
-                                  } ${2 *
+                                } ${
+                                  2 *
                                   Math.PI *
                                   45 *
                                   (1 - softSkillsPercentage / 100)
-                                  }`}
+                                }`}
                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                 transform="rotate(-90 50 50)"
                                 strokeLinecap="round"
@@ -2374,7 +2621,7 @@ export default function InterviewPreviewPage({ params }) {
                         </div>
 
                         {/* Less prominent slider */}
-                        <div className="space-y-2">
+                        {editDetails && (<div className="space-y-2">
                           <p className="text-sm text-center text-muted-foreground mb-2">
                             Adjust percentage
                           </p>
@@ -2387,7 +2634,7 @@ export default function InterviewPreviewPage({ params }) {
                             onValueChange={handleSoftSkillsPercentageChange}
                             className="w-full"
                           />
-                        </div>
+                        </div>)}
                       </div>
                     </CardContent>
                   </Card>
@@ -2419,15 +2666,17 @@ export default function InterviewPreviewPage({ params }) {
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-medium">Questions</h3>
                       <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          // onClick={() => setIsQuestionPromptOpen(true)}
-                          className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
-                        >
-                          <Sparkles className="h-4 w-4" />
-                          <span>Generate with AI</span>
-                        </Button>
+                        {!isQuestionPromptOpen && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setIsQuestionPromptOpen(true)}
+                            className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                          >
+                            <Sparkles className="h-4 w-4" />
+                            <span>Generate with AI</span>
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -2440,6 +2689,51 @@ export default function InterviewPreviewPage({ params }) {
                       </div>
                     </div>
 
+                    {isQuestionPromptOpen && (
+                      <div className="space-y-2 p-4 border rounded-md bg-card">
+                        <Label htmlFor="new-question">Number of Question</Label>
+                        <Textarea
+                          id="new-question"
+                          value={noOfQuestions}
+                          onChange={(e) => setNoOfQuestions(e.target.value)}
+                          placeholder="Enter your question here"
+                          className="min-h-[80px]"
+                        />
+                        <div className="space-y-2">
+                          <Label htmlFor="skills">Skills</Label>
+                          <SkillsInput
+                            skills={skills}
+                            onChange={setSkills}
+                            intervieweeType={interviewDetail.interviewCategory}
+                          />
+                        </div>
+                        <div className="flex justify-end space-x-2 mt-5">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setIsQuestionPromptOpen(false)}
+                            className="flex items-center gap-"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleGenerateQuestions}
+                            className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                          >
+                            {isGeneratingQuestions ? (
+                              <LoaderCircle className="animate-spin" />
+                            ) : (
+                              <>
+                                <Sparkles className="h-4 w-4" />
+                                <span>Generate with AI</span>
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                     {createModalOpen && (
                       <div className="space-y-2 p-4 border rounded-md bg-card">
                         <Label htmlFor="new-question">New Question</Label>
@@ -2525,7 +2819,7 @@ export default function InterviewPreviewPage({ params }) {
                         >
                           <CardContent className="p-4">
                             {editingQuestion ===
-                              question.interviewQuestionID ? (
+                            question.interviewQuestionID ? (
                               <div className="space-y-3">
                                 <Label htmlFor="question-text">Question</Label>
                                 <Textarea
@@ -2578,7 +2872,7 @@ export default function InterviewPreviewPage({ params }) {
                                           variant="outline"
                                         >
                                           {editingQuestionDetails.type ===
-                                            "CODING"
+                                          "CODING"
                                             ? "Coding"
                                             : "Open Ended"}
                                         </Button>
@@ -2684,7 +2978,8 @@ export default function InterviewPreviewPage({ params }) {
                                         question.interviewQuestionID
                                       );
                                       setEditingQuestionDetails({
-                                        interviewQuestionID: question.interviewQuestionID,
+                                        interviewQuestionID:
+                                          question.interviewQuestionID,
                                         questionText: question.questionText,
                                         estimatedTimeMinutes:
                                           question.estimatedTimeMinutes,
@@ -3395,9 +3690,9 @@ export default function InterviewPreviewPage({ params }) {
                                         className="border border-gray-500/40 rounded-md p-3 bg-muted/10"
                                       >
                                         {editingSubcategory &&
-                                          editingSubcategory.skillId ===
+                                        editingSubcategory.skillId ===
                                           skill.id &&
-                                          editingSubcategory.subcategoryId ===
+                                        editingSubcategory.subcategoryId ===
                                           subcategory.id ? (
                                           <div className="space-y-3">
                                             <div className="space-y-2">
@@ -3470,7 +3765,7 @@ export default function InterviewPreviewPage({ params }) {
                                                       Math.max(
                                                         1,
                                                         subcategory.percentage -
-                                                        5
+                                                          5
                                                       )
                                                     );
                                                   }}
@@ -3517,7 +3812,7 @@ export default function InterviewPreviewPage({ params }) {
                                                       Math.min(
                                                         100,
                                                         subcategory.percentage +
-                                                        5
+                                                          5
                                                       )
                                                     )
                                                   }
@@ -3653,12 +3948,19 @@ export default function InterviewPreviewPage({ params }) {
                   <h2 className="text-xl font-semibold">AI Analysis</h2>
                   <Button
                     type="button"
-                    onClick={handleAnalyze}
+                    onClick={handleGenerateAISuggestioins}
                     className="flex items-center gap-1 !bg-transparent !text-blue-500 border !border-blue-500/50 hover:!bg-blue-500/20 hover:!text-blue-400"
                     disabled={showAnalysis}
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Analyze & Suggest Improvements
+                    {isAnalizingInterview ? (
+                      <LoaderCircle className="animate-spin" />
+                    ) : (
+                      <>
+                        {" "}
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Analyze & Suggest Improvements
+                      </>
+                    )}
                   </Button>
                 </div>
 
@@ -3679,15 +3981,20 @@ export default function InterviewPreviewPage({ params }) {
                                 variant="outline"
                                 className="!text-blue-500 !font-bold"
                               >
-                                Technical: {aiSuggestions.technicalPercentage}%
+                                Technical:{" "}
+                                {
+                                  aiSuggestions.summary.recommended_weighting
+                                    .technical_expertise
+                                }
+                                %
                               </Badge>
                               <span className="text-sm text-muted-foreground">
-                                {aiSuggestions.technicalPercentage >
-                                  technicalPercentage
+                                {aiSuggestions.summary.recommended_weighting
+                                  .technical_expertise > technicalPercentage
                                   ? "+"
                                   : ""}
-                                {aiSuggestions.technicalPercentage -
-                                  technicalPercentage}
+                                {aiSuggestions.summary.recommended_weighting
+                                  .technical_expertise - technicalPercentage}
                                 %
                               </span>
                             </div>
@@ -3697,66 +4004,144 @@ export default function InterviewPreviewPage({ params }) {
                                 className="!text-blue-500 !font-bold"
                               >
                                 Soft Skills:{" "}
-                                {aiSuggestions.softSkillsPercentage}%
+                                {
+                                  aiSuggestions.summary.recommended_weighting
+                                    .soft_skills
+                                }
+                                %
                               </Badge>
                               <span className="text-sm text-muted-foreground">
-                                {aiSuggestions.softSkillsPercentage >
-                                  softSkillsPercentage
+                                {aiSuggestions.summary.recommended_weighting
+                                  .soft_skills > softSkillsPercentage
                                   ? "+"
                                   : ""}
-                                {aiSuggestions.softSkillsPercentage -
-                                  softSkillsPercentage}
+                                {aiSuggestions.summary.recommended_weighting
+                                  .soft_skills - softSkillsPercentage}
                                 %
                               </span>
                             </div>
                           </div>
+                          {aiSuggestions.summary.analysis && (
+                            <p className="text-sm text-muted-foreground mt-2">
+                              {aiSuggestions.summary.analysis}
+                            </p>
+                          )}{" "}
                         </div>
 
-                        {/* {aiSuggestions.addedQuestions.length > 0 && (
-                                <div>
-                                  <h4 className="font-medium">
-                                    Suggested Questions to Add
-                                  </h4>
-                                  <ul className="mt-2 space-y-2">
-                                    {aiSuggestions.addedQuestions.map(
-                                      (q, i) => (
-                                        <li
-                                          key={i}
-                                          className="flex items-start space-x-2"
-                                        >
-                                          <Plus className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                                          <div>
-                                            <p>{q.text}</p>
-                                            <Badge
-                                              variant="outline"
-                                              className="mt-1"
-                                            >
-                                              {q.marks} marks
-                                            </Badge>
-                                          </div>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                </div>
-                              )} */}
-
-                        {aiSuggestions.addedSoftSkills.length > 0 && (
+                        {aiSuggestions.questions.length > 0 && (
                           <div>
                             <h4 className="font-medium">
-                              Suggested Soft Skills to Add
+                              Suggested Questions to Add
                             </h4>
                             <ul className="mt-2 space-y-2">
-                              {aiSuggestions.addedSoftSkills.map((s, i) => (
+                              {aiSuggestions.questions.map((q, i) => (
                                 <li
                                   key={i}
                                   className="flex items-start space-x-2"
                                 >
                                   <Plus className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
                                   <div>
-                                    <p className="font-medium">{s.name}</p>
+                                    <p>{q.question}</p>
+                                    <p className=" text-sm text-muted-foreground">
+                                      {q.explanation}
+                                    </p>
+                                    <Badge
+                                      variant="outline"
+                                      className="mt-1 !text-blue-500 !font-bold"
+                                    >
+                                      {q.estimated_time} mins
+                                    </Badge>
+                                    <Badge
+                                      variant="outline"
+                                      className="mt-1 !text-blue-500 !font-bold ml-2"
+                                    >
+                                      {q.type
+                                        .toLowerCase()
+                                        .split("_")
+                                        .map(
+                                          (word) =>
+                                            word.charAt(0).toUpperCase() +
+                                            word.slice(1)
+                                        )
+                                        .join(" ")}
+                                    </Badge>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {aiSuggestions.suggested_soft_skills.length > 0 && (
+                          <div>
+                            <h4 className="font-medium">
+                              Suggested Soft Skills to Add
+                            </h4>
+                            <ul className="mt-2 space-y-2">
+                              {aiSuggestions.suggested_soft_skills.map(
+                                (s, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex items-start space-x-2"
+                                  >
+                                    <Plus className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                                    <div>
+                                      <p className="font-medium">{s.name}</p>
+                                      <p className="text-sm text-muted-foreground">
+                                        {s.description}
+                                      </p>
+                                      <Badge
+                                        variant="outline"
+                                        className="!text-blue-500 !font-bold"
+                                      >
+                                        {s.percentage}%
+                                      </Badge>
+                                    </div>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+
+                        {aiSuggestions.additional_improvements.length > 0 && (
+                          <div>
+                            <h4 className="font-medium">
+                              Suggested Soft Skills to Add
+                            </h4>
+                            <ul className="mt-2 space-y-2">
+                              {aiSuggestions.additional_improvements.map(
+                                (s, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex items-start space-x-2"
+                                  >
+                                    <Plus className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                                    <div>
+                                      <p className="text-sm text-muted-foreground">
+                                        {s}
+                                      </p>
+                                    </div>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+
+                        {aiSuggestions.recommendations.length > 0 && (
+                          <div>
+                            <h4 className="font-medium">Recommondations</h4>
+                            <ul className="mt-2 space-y-2">
+                              {aiSuggestions.recommendations.map((s, i) => (
+                                <li
+                                  key={i}
+                                  className="flex items-start space-x-2"
+                                >
+                                  <Plus className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                                  <div>
                                     <p className="text-sm text-muted-foreground">
-                                      {s.description}
+                                      {s.adjustment}
                                     </p>
                                   </div>
                                 </li>
@@ -3872,7 +4257,9 @@ export default function InterviewPreviewPage({ params }) {
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <p className="text-sm text-muted-foreground">Total Sessions</p>
+                        <p className="text-sm text-muted-foreground">
+                          Total Sessions
+                        </p>
                         <p className="text-3xl font-bold">
                           {/* {interviewStatusDetails.totalSchedules || interviewSessions.length || 0} */}
                           12
@@ -3885,10 +4272,15 @@ export default function InterviewPreviewPage({ params }) {
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <p className="text-sm text-muted-foreground">Completed</p>
+                        <p className="text-sm text-muted-foreground">
+                          Completed
+                        </p>
                         <p className="text-3xl font-bold text-green-500">
-                          {
-                            interviewSessions.filter((session) => session.interviewStatus === "completed").length ||
+                          {interviewStatusDetails.completedSchedules ||
+                            interviewSessions.filter(
+                              (session) =>
+                                session.interviewStatus === "completed"
+                            ).length ||
                             0}
                         </p>
                       </div>
@@ -3902,9 +4294,12 @@ export default function InterviewPreviewPage({ params }) {
                         <p className="text-sm text-muted-foreground">Ongoing</p>
                         <div className="flex items-center gap-2">
                           <p className="text-3xl font-bold text-blue-500">
-                          {
-                            interviewSessions.filter((session) => session.interviewStatus === "ongoing").length ||
-                            0}
+                            {interviewStatusDetails.completedSchedules ||
+                              interviewSessions.filter(
+                                (session) =>
+                                  session.interviewStatus === "ongoing"
+                              ).length ||
+                              0}
                           </p>
                         </div>
                       </div>
@@ -3915,10 +4310,15 @@ export default function InterviewPreviewPage({ params }) {
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <p className="text-sm text-muted-foreground">To Be Conducted</p>
+                        <p className="text-sm text-muted-foreground">
+                          To Be Conducted
+                        </p>
                         <p className="text-3xl font-bold text-amber-500">
-                        {
-                            interviewSessions.filter((session) => session.interviewStatus === "toBeConducted").length ||
+                          {interviewStatusDetails.completedSchedules ||
+                            interviewSessions.filter(
+                              (session) =>
+                                session.interviewStatus === "toBeConducted"
+                            ).length ||
                             0}
                         </p>
                       </div>
@@ -3926,8 +4326,8 @@ export default function InterviewPreviewPage({ params }) {
                   </Card>
                 </div>
 
-      {/* Today's Sessions */}
-      {/* {todaysSessions.length > 0 && (
+                {/* Today's Sessions */}
+                {/* {todaysSessions.length > 0 && (
         <Card className="border-blue-500/20">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
@@ -4019,7 +4419,7 @@ export default function InterviewPreviewPage({ params }) {
         </Card>
       )} */}
 
-      {/* Today's Sessions */}
+                {/* Today's Sessions */}
                 <Card className="border-blue-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2">
@@ -4031,17 +4431,21 @@ export default function InterviewPreviewPage({ params }) {
                     </CardTitle>
                     <CardDescription>
                       {(() => {
-                        
                         const today = new Date("2025-04-01"); // Fixed date as per your setup; use new Date() for real-time
-                        const todaySessions = interviewSessions.filter((session) => {
-                          const sessionDate = new Date(session.scheduledDate);
-                          return (
-                            sessionDate.getFullYear() === today.getFullYear() &&
-                            sessionDate.getMonth() === today.getMonth() &&
-                            sessionDate.getDate() === today.getDate()
-                          );
-                        });
-                        return `${todaySessions.length} session${todaySessions.length === 1 ? "" : "s"} scheduled for today`;
+                        const todaySessions = interviewSessions.filter(
+                          (session) => {
+                            const sessionDate = new Date(session.scheduledDate);
+                            return (
+                              sessionDate.getFullYear() ===
+                                today.getFullYear() &&
+                              sessionDate.getMonth() === today.getMonth() &&
+                              sessionDate.getDate() === today.getDate()
+                            );
+                          }
+                        );
+                        return `${todaySessions.length} session${
+                          todaySessions.length === 1 ? "" : "s"
+                        } scheduled for today`;
                       })()}
                     </CardDescription>
                   </CardHeader>
@@ -4104,14 +4508,22 @@ export default function InterviewPreviewPage({ params }) {
                                       <div className="font-medium text-base">{candidateName}</div>
                                       <div className="text-sm text-muted-foreground">{candidateEmail}</div>
                                     </div>
-                                  </div>
-
-                                  <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
-                                    <div>
-                                      <span className="text-muted-foreground">Medium:</span>
-                                      <span className="font-medium ml-1">{interviewType}</span>
+                                    <div className="text-sm text-muted-foreground">
+                                      {candidateEmail}
                                     </div>
-                                    {/* <div>
+                                  
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Medium:
+                                    </span>
+                                    <span className="font-medium ml-1">
+                                      {interviewType}
+                                    </span>
+                                  </div>
+                                  {/* <div>
                                       <span className="text-muted-foreground">Location:</span>
                                       <span className="font-medium ml-1">{location}</span>
                                     </div> */}
@@ -4341,7 +4753,12 @@ export default function InterviewPreviewPage({ params }) {
                                   Shareable Invitation Link
                                 </Label>
                                 <div className="flex gap-2">
-                                  <Input id="invite-link" value={inviteLink} readOnly className="flex-1" />
+                                  <Input
+                                    id="invite-link"
+                                    value={inviteLink}
+                                    readOnly
+                                    className="flex-1"
+                                  />
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                   Share this link with candidates to allow them
@@ -4482,7 +4899,9 @@ export default function InterviewPreviewPage({ params }) {
                 <Card className="bg-card/50 border-border/50">
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
-                      <p className="text-sm text-muted-foreground">Total Candidates</p>
+                      <p className="text-sm text-muted-foreground">
+                        Total Candidates
+                      </p>
                       <p className="text-3xl font-bold">{totalCandidates}</p>
                     </div>
                   </CardContent>
@@ -4519,7 +4938,9 @@ export default function InterviewPreviewPage({ params }) {
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
                       <p className="text-sm text-muted-foreground">Today</p>
-                      <p className="text-3xl font-bold text-purple-500">{todayCandidates}</p>
+                      <p className="text-3xl font-bold text-purple-500">
+                        {todayCandidates}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -4589,8 +5010,8 @@ export default function InterviewPreviewPage({ params }) {
                           {selectedSortCategory === "overall"
                             ? "Overall"
                             : categoryList.find(
-                              (cat) => cat.key === selectedSortCategory
-                            )?.catagory || "Select Category"}
+                                (cat) => cat.key === selectedSortCategory
+                              )?.catagory || "Select Category"}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56">
@@ -4695,13 +5116,17 @@ export default function InterviewPreviewPage({ params }) {
                       <AlertCircle className="h-5 w-5" />
                       Danger Zone
                     </CardTitle>
-                    <CardDescription>Destructive actions that cannot be undone</CardDescription>
+                    <CardDescription>
+                      Destructive actions that cannot be undone
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center p-4 border border-red-200 dark:border-red-900 rounded-md">
                       <div>
                         <h3 className="font-medium">Reset to Defaults</h3>
-                        <p className="text-sm text-muted-foreground">Reset all settings to their default values</p>
+                        <p className="text-sm text-muted-foreground">
+                          Reset all settings to their default values
+                        </p>
                       </div>
                       {/* <AlertDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                         <AlertDialogTrigger asChild>
@@ -4732,9 +5157,15 @@ export default function InterviewPreviewPage({ params }) {
                     <div className="flex justify-between items-center p-4 border border-red-200 dark:border-red-900 rounded-md">
                       <div>
                         <h3 className="font-medium">Delete Interview</h3>
-                        <p className="text-sm text-muted-foreground">Permanently delete this interview and all associated data</p>
+                        <p className="text-sm text-muted-foreground">
+                          Permanently delete this interview and all associated
+                          data
+                        </p>
                       </div>
-                      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                      <AlertDialog
+                        open={isDeleteDialogOpen}
+                        onOpenChange={setIsDeleteDialogOpen}
+                      >
                         <AlertDialogTrigger asChild>
                           <Button
                             variant="outline"
@@ -4745,15 +5176,22 @@ export default function InterviewPreviewPage({ params }) {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete the interview and all associated data
-                              including sessions, recordings, and candidate evaluations.
+                              This action cannot be undone. This will
+                              permanently delete the interview and all
+                              associated data including sessions, recordings,
+                              and candidate evaluations.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction className="bg-red-500 hover:bg-red-600" onClick={handleDeleteInterview}>
+                            <AlertDialogAction
+                              className="bg-red-500 hover:bg-red-600"
+                              onClick={handleDeleteInterview}
+                            >
                               Delete
                             </AlertDialogAction>
                           </AlertDialogFooter>
@@ -5905,13 +6343,13 @@ export default function InterviewPreviewPage({ params }) {
           interviewId={interviewId}
         />
       )}
-      {createModalOpen && (
+      {/* {createModalOpen && (
         <CreateQuestionModal
           forSession={false}
           id={interviewId}
           setCreateModalOpen={setCreateModalOpen}
         />
-      )}
+      )} */}
       {generateModalOpen && (
         <GenerateQuestionModal
           forSession={false}
