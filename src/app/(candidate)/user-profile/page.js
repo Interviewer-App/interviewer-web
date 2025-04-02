@@ -866,48 +866,47 @@ const UserProfile = () => {
 
                       <div className="space-y-6">
                         {experiences.length > 0 ? (
-                        experiences.map((experience, index) => (
-                          <div
-                            key={index}
-                            className={`border-l-2 border-border pl-4 py-2 ${
-                              isExperienceEdit
+                          experiences.map((experience, index) => (
+                            <div
+                              key={index}
+                              className={`border-l-2 border-border pl-4 py-2 ${isExperienceEdit
                                 ? "bg-[#b3b3b309] rounded-lg px-4"
                                 : ""
-                            }`}
-                          >
-                            <div className="flex justify-between w-full">
-                              <h4 className="font-medium">
-                                {experience.title}
-                              </h4>
-                              <span className="text-sm text-[#b3b3b3]">
-                                {new Date(experience.startDate).getFullYear()} -{" "}
-                                {experience.endDate === ""
-                                  ? "Present"
-                                  : new Date(experience.endDate).getFullYear()}
-                              </span>
-                            </div>
+                                }`}
+                            >
+                              <div className="flex justify-between w-full">
+                                <h4 className="font-medium">
+                                  {experience.title}
+                                </h4>
+                                <span className="text-sm text-[#b3b3b3]">
+                                  {new Date(experience.startDate).getFullYear()} -{" "}
+                                  {experience.endDate === ""
+                                    ? "Present"
+                                    : new Date(experience.endDate).getFullYear()}
+                                </span>
+                              </div>
 
-                            <div className="flex justify-between w-full">
-                              <p className="text-sm text-[#b3b3b3]">
-                                {experience.company}
-                              </p>
-                            </div>
+                              <div className="flex justify-between w-full">
+                                <p className="text-sm text-[#b3b3b3]">
+                                  {experience.company}
+                                </p>
+                              </div>
 
-                            <div className="flex justify-between w-full">
-                              <p className="text-sm mt-2">
-                                {experience.description}
-                              </p>
-                              {isExperienceEdit && (
-                                <div
-                                  onClick={(e) => handleDeleteExperience(index)}
-                                  className=" p-1 rounded-md flex justify-start items-center hover:bg-red-900/20 cursor-pointer text-red-800 text-xs "
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </div>
-                              )}
+                              <div className="flex justify-between w-full">
+                                <p className="text-sm mt-2">
+                                  {experience.description}
+                                </p>
+                                {isExperienceEdit && (
+                                  <div
+                                    onClick={(e) => handleDeleteExperience(index)}
+                                    className=" p-1 rounded-md flex justify-start items-center hover:bg-red-900/20 cursor-pointer text-red-800 text-xs "
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ))): <div className="text-[#b3b3b3]">No experiences added yet</div>}
+                          ))) : <div className="text-[#b3b3b3]">No experiences added yet</div>}
                       </div>
 
                       {isExperienceEdit && (
@@ -959,34 +958,34 @@ const UserProfile = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                         {skills.length > 0 ? (
-                        skills.map((skill, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-2 rounded-md bg-[#b3b3b309]"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Badge
-                                variant="outline"
-                                className={`text-xs py-1 px-3 ${getSkillColor(
-                                  skill.level
-                                )}`}
-                              >
-                                {skill.level}
-                              </Badge>
-                              <span className="text-sm font-medium">
-                                {skill.name}
-                              </span>
-                            </div>
-                            {isSkillEdit && (
-                              <div
-                                onClick={(e) => handleDeleteSkill(index)}
-                                className=" p-1 rounded-md hover:bg-red-900/20 cursor-pointer"
-                              >
-                                <Trash2 className="h-4 w-4 text-red-800" />
+                          skills.map((skill, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-2 rounded-md bg-[#b3b3b309]"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  variant="outline"
+                                  className={`text-xs py-1 px-3 ${getSkillColor(
+                                    skill.level
+                                  )}`}
+                                >
+                                  {skill.level}
+                                </Badge>
+                                <span className="text-sm font-medium">
+                                  {skill.name}
+                                </span>
                               </div>
-                            )}
-                          </div>
-                        ))): <div className="text-[#b3b3b3]">No skills added yet</div>}
+                              {isSkillEdit && (
+                                <div
+                                  onClick={(e) => handleDeleteSkill(index)}
+                                  className=" p-1 rounded-md hover:bg-red-900/20 cursor-pointer"
+                                >
+                                  <Trash2 className="h-4 w-4 text-red-800" />
+                                </div>
+                              )}
+                            </div>
+                          ))) : <div className="text-[#b3b3b3]">No skills added yet</div>}
                       </div>
 
                       {isSkillEdit && (
@@ -1110,7 +1109,7 @@ const UserProfile = () => {
                                     >
                                       {gender
                                         ? gender.charAt(0).toUpperCase() +
-                                          gender.slice(1).toLowerCase()
+                                        gender.slice(1).toLowerCase()
                                         : "Select Gender"}
                                     </Button>
                                   </DropdownMenuTrigger>
@@ -1139,7 +1138,7 @@ const UserProfile = () => {
                                 <p>
                                   {gender
                                     ? gender.charAt(0).toUpperCase() +
-                                      gender.slice(1).toLowerCase()
+                                    gender.slice(1).toLowerCase()
                                     : "not specified"}
                                 </p>
                               )}
@@ -1217,9 +1216,8 @@ const UserProfile = () => {
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div
-                            className={`flex items-center gap-3 ${
-                              isSocialMediaEdit ? "w-full" : "w-[80%]"
-                            }`}
+                            className={`flex items-center gap-3 ${isSocialMediaEdit ? "w-full" : "w-[80%]"
+                              }`}
                           >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <Linkedin size={16} />
@@ -1239,9 +1237,9 @@ const UserProfile = () => {
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                   {linkedinUrl
                                     ? linkedinUrl.replace(
-                                        /^https?:\/\/(www\.)?/i,
-                                        ""
-                                      )
+                                      /^https?:\/\/(www\.)?/i,
+                                      ""
+                                    )
                                     : "linkedin.com/in/username"}
                                 </p>
                               )}
@@ -1269,9 +1267,8 @@ const UserProfile = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <div
-                            className={`flex items-center gap-3 ${
-                              isSocialMediaEdit ? "w-full" : "w-[80%]"
-                            }`}
+                            className={`flex items-center gap-3 ${isSocialMediaEdit ? "w-full" : "w-[80%]"
+                              }`}
                           >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <Github size={16} />
@@ -1289,9 +1286,9 @@ const UserProfile = () => {
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                   {githubUrl
                                     ? githubUrl.replace(
-                                        /^https?:\/\/(www\.)?/i,
-                                        ""
-                                      )
+                                      /^https?:\/\/(www\.)?/i,
+                                      ""
+                                    )
                                     : "github.com/username"}
                                 </p>
                               )}
@@ -1319,9 +1316,8 @@ const UserProfile = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <div
-                            className={`flex items-center gap-3 ${
-                              isSocialMediaEdit ? "w-full" : "w-[80%]"
-                            }`}
+                            className={`flex items-center gap-3 ${isSocialMediaEdit ? "w-full" : "w-[80%]"
+                              }`}
                           >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <Facebook size={16} />
@@ -1341,9 +1337,9 @@ const UserProfile = () => {
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                   {facebookUrl
                                     ? facebookUrl.replace(
-                                        /^https?:\/\/(www\.)?/i,
-                                        ""
-                                      )
+                                      /^https?:\/\/(www\.)?/i,
+                                      ""
+                                    )
                                     : "linkedin username"}
                                 </p>
                               )}
@@ -1371,9 +1367,8 @@ const UserProfile = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <div
-                            className={`flex items-center gap-3 ${
-                              isSocialMediaEdit ? "w-full" : "w-[80%]"
-                            }`}
+                            className={`flex items-center gap-3 ${isSocialMediaEdit ? "w-full" : "w-[80%]"
+                              }`}
                           >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <FaXTwitter size={16} />
@@ -1393,9 +1388,9 @@ const UserProfile = () => {
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                   {twitterUrl
                                     ? twitterUrl.replace(
-                                        /^https?:\/\/(www\.)?/i,
-                                        ""
-                                      )
+                                      /^https?:\/\/(www\.)?/i,
+                                      ""
+                                    )
                                     : "x.com/username"}
                                 </p>
                               )}
@@ -1423,9 +1418,8 @@ const UserProfile = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <div
-                            className={`flex items-center gap-3 ${
-                              isSocialMediaEdit ? "w-full" : "w-[80%]"
-                            }`}
+                            className={`flex items-center gap-3 ${isSocialMediaEdit ? "w-full" : "w-[80%]"
+                              }`}
                           >
                             <div className="bg-[#b3b3b31a] rounded-md p-2">
                               <FaDiscord size={16} />
@@ -1445,9 +1439,9 @@ const UserProfile = () => {
                                 <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                   {discordUrl
                                     ? discordUrl.replace(
-                                        /^https?:\/\/(www\.)?/i,
-                                        ""
-                                      )
+                                      /^https?:\/\/(www\.)?/i,
+                                      ""
+                                    )
                                     : "discord.com/username"}
                                 </p>
                               )}
@@ -1495,35 +1489,63 @@ const UserProfile = () => {
             <TabsContent value="documents" className="mt-0">
               <Card className="border-border !bg-[#1b1d23]">
                 <CardContent className="pt-6 flex flex-col items-center justify-center">
-                  <h3 className="text-xl font-semibold mb-4 w-full">
-                    Your Documents
-                  </h3>
-                  <div className="text-[#b3b3b3] text-center py-12 w-full rounded-md border border-border">
-                    <div className="flex flex-col items-center gap-2">
-                      <Download
-                        size={24}
-                        className="text-muted-foreground mb-2"
-                      />
-                      <p>No documents uploaded yet</p>
-                      <p className="text-sm text-muted-foreground">
-                        Upload your resume, certificates, or other relevant
-                        documents
-                      </p>
-                    </div>
+                  <div className="flex items-center justify-between mb-6 w-full">
+                    <h3 className="text-xl font-semibold mb-4 w-full">
+                      Your Documents
+                    </h3>
+                    {documentUrl.url && (
+                      <Button className=" mt-4 w-[40%] max-w-[250px]"
+                          onClick={() => setModalOpen(true)}>
+                          Upload Document
+                        </Button>
+                    )}
+                    
                   </div>
-                  <Button className=" mt-4 w-[40%] max-w-[250px] mx-auto"
-                  onClick={() => setModalOpen(true)}>
-                    Upload Document
-                  </Button>
+
+                  <div className="text-[#b3b3b3] text-center py-12 w-full rounded-md border border-border">
+                    {documentUrl.url ? (
+                      <iframe
+                        src={`${documentUrl.url}#toolbar=0`}
+                        className=" overflow-x-hidden rounded-lg "
+                        width="100%"
+                        height="500px"
+                        style={{ border: "none" }}
+                        title="PDF Viewer"
+                      />
+                    ) : (
+                      <>
+                        <div className="flex flex-col items-center gap-2">
+                          <Download
+                            size={24}
+                            className="text-muted-foreground mb-2"
+                          />
+                          <p>No documents uploaded yet</p>
+                          <p className="text-sm text-muted-foreground">
+                            Upload your resume, certificates, or other relevant
+                            documents
+                          </p>
+                        </div>
+
+                        <Button className=" mt-4 w-[40%] max-w-[250px] mx-auto"
+                          onClick={() => setModalOpen(true)}>
+                          Upload Document
+                        </Button>
+                      </>
+
+
+                    )}
+
+                  </div>
+
                 </CardContent>
               </Card>
 
               {modalOpen && (
-                  <UploadDocumentModal
-                    setModalOpen={setModalOpen}
-                    isUpdated={false}
-                  />
-                )}
+                <UploadDocumentModal
+                  setModalOpen={setModalOpen}
+                  isUpdated={false}
+                />
+              )}
             </TabsContent>
 
             <TabsContent value="settings" className="mt-0">
