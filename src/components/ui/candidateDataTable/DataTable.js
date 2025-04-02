@@ -106,63 +106,68 @@ export function CandidateDataTable({ columns, data, interviewId }) {
       }
     });
 
-    // Extract and format data for each row and visible column
-    const body = table.getRowModel().rows.map((row) => {
-      return visibleColumns.map((column) => {
-        switch (column.id) {
-          case "email":
-            return row.original.candidate.email;
-          case "candidateName":
-            return row.original.candidate.fullName;
-          case "startDate":
-            const startDate = new Date(row.original.startTime);
-            return startDate.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-          case "startTime":
-            const startTime = new Date(row.original.startTime);
-            return startTime.toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true,
-            });
-          case "EndTime":
-            const endTime = new Date(row.original.endTime);
-            return endTime.toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true,
-            });
-          case "status":
-            return row.original.invitationStatus.status;
-          default:
-            return "";
-        }
-      });
-    });
+    // Filter rows to match the table (only rows where interviewSession is not null)
+  const filteredRows = table
+  .getRowModel()
+  .rows.filter((row) => row.original.interviewSession !== null);
 
-    // Define column widths (in mm) for better layout control
-    const columnWidths = visibleColumns.map((column) => {
+
+   const body = filteredRows.map((row) => {
+    return visibleColumns.map((column) => {
       switch (column.id) {
         case "email":
-          return 50; // Wider for email
+          return row.original.candidate.email;
         case "candidateName":
-          return 40;
+          return row.original.candidate.fullName;
         case "startDate":
-          return 30;
+          const startDate = new Date(row.original.startTime);
+          return startDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
         case "startTime":
-          return 25;
+          const startTime = new Date(row.original.startTime);
+          return startTime.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
         case "EndTime":
-          return 25;
+          const endTime = new Date(row.original.endTime);
+          return endTime.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
         case "status":
-          return 25;
+          // Use the same status field as the table (interviewSession.interviewStatus)
+          return row.original.interviewSession?.interviewStatus || "";
         default:
-          return 20;
+          return "";
       }
     });
+  });
 
+// Define column widths (in mm) for better layout control
+const columnWidths = visibleColumns.map((column) => {
+  switch (column.id) {
+    case "email":
+      return 40; // Wider for email
+    case "candidateName":
+      return 40;
+    case "startDate":
+      return 30;
+    case "startTime":
+      return 25;
+    case "EndTime":
+      return 25;
+    case "status":
+      return 35;
+    default:
+      return 20;
+  }
+});
     // Add the table with custom styling
     autoTable(doc, {
       startY: 40, // Start table below the header
