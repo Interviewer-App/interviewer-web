@@ -707,7 +707,6 @@ export default function InterviewPreviewPage({ params }) {
     }
 
     const fetchInterviewTimeSlots = async () => {
-      // debugger
       try {
         // const session = await getSession();
         // const companyId = session?.user?.companyID;
@@ -2693,13 +2692,12 @@ export default function InterviewPreviewPage({ params }) {
 
                     {isQuestionPromptOpen && (
                       <div className="space-y-2 p-4 border rounded-md bg-card">
-                        <Label htmlFor="new-question">Number of Question</Label>
-                        <Textarea
-                          id="new-question"
+                        <Label htmlFor="number-of-question">Number of Question</Label>
+                        <Input
+                          id="number-of-question"
                           value={noOfQuestions}
                           onChange={(e) => setNoOfQuestions(e.target.value)}
                           placeholder="Enter your question here"
-                          className="min-h-[80px]"
                         />
                         <div className="space-y-2">
                           <Label htmlFor="skills">Skills</Label>
