@@ -1,11 +1,10 @@
 "use client";
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { fetchDocumet, getCandidateById } from "@/lib/api/users";
-import { FaDiscord, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
-import { FaFacebookSquare } from "react-icons/fa";
+import { FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
@@ -19,10 +18,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
-  CalendarIcon,
-  Percent,
-  WandSparkles,
-  LoaderCircle,
   User,
   Mail,
   Phone,
@@ -33,7 +28,6 @@ import {
   ArrowLeft,
   Star,
   FileText,
-  Wand2,
   Calendar,
   Briefcase,
   Clock,
@@ -43,8 +37,10 @@ import {
   Brain,
   FlaskConical,
   NotebookPen,
-  ShieldQuestion,
   Ghost,
+  LinkedinIcon,
+  GithubIcon,
+  Plus,
 } from "lucide-react";
 import {
   Card,
@@ -55,46 +51,40 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertDescription } from "@/components/ui/alert";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import {
   getInterviewSessionById,
   getInterviewSessionHistoryById,
 } from "@/lib/api/interview-session";
+import { createQuestionForInterview } from "@/lib/api/question";
+import {
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertDialog } from "@radix-ui/react-alert-dialog";
 
 function CandidateDetailsProfile() {
-  const { data: session, status } = useSession();
   const router = useRouter();
-  const pathParam = useParams();
   const searchParams = useSearchParams();
   const candidateId = searchParams.get("candidateId");
   const sessionId = searchParams.get("sessionId");
   const [candidateDetails, setCandidateDetails] = useState({});
-  const [documentUrl, setDocumentUrl] = useState("");
+  const [documentAnalizedData, setDocumentAnalizedData] = useState("");
   const [age, setAge] = useState(0);
   const { toast } = useToast();
   const [experiences, setExperiences] = useState([]);
   const [skills, setSkills] = useState([]);
   const [activeTab, setActiveTab] = useState("details");
   const [activeAssessmentTab, setActiveAssesmentTab] = useState("technical");
-  const [questionsGenerated, setQuestionsGenerated] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionhistory, setSessionHistory] = useState([]);
   const [categoryMarks, setCategoryMarks] = useState([
@@ -191,8 +181,6 @@ function CandidateDetailsProfile() {
       try {
         const response = await getInterviewSessionById(sessionId);
         if (response.data) {
-          debugger
-
           setSessionDetails(response.data);
         }
       } catch (err) {
@@ -267,7 +255,8 @@ function CandidateDetailsProfile() {
       }
     };
 
-    if (sessionDetails.interviewStatus === "completed" && sessionId) fetchSessionHistory();
+    if (sessionDetails.interviewStatus === "completed" && sessionId)
+      fetchSessionHistory();
   }, [sessionDetails, sessionId]);
 
   useEffect(() => {
@@ -275,7 +264,7 @@ function CandidateDetailsProfile() {
       try {
         const response = await fetchDocumet(candidateId);
         if (response.data) {
-          setDocumentUrl(response.data);
+          setDocumentAnalizedData(response.data);
         }
       } catch (err) {
         if (err.response) {
@@ -333,18 +322,53 @@ function CandidateDetailsProfile() {
     setAge(age);
   };
 
-  const getSkillColor = (level) => {
-    switch (level) {
-      case "Beginner":
-        return " !bg-yellow-400/10 !text-yellow-400 !border-yellow-400/20";
-      case "Intermediate":
-        return "!bg-blue-400/10 !text-blue-400 !border-blue-400/20";
-      case "Advanced":
-        return "!bg-purple-400/10 !text-purple-400 !border-purple-400/20";
-      case "Expert":
-        return "!bg-green-400/10 !text-green-400 !border-green-400/20";
-      default:
-        return "!bg-gray-400/10 !text-gray-400 !border-gray-400/20";
+  const handleAddQuestion = async (question, type, minutes) => {
+    try {
+      const questionDataforInterview = {
+        question: question,
+        type: type,
+        estimatedTimeInMinutes: parseInt(minutes, 10),
+        interviewId: sessionDetails.interviewId,
+      };
+      const response = await createQuestionForInterview(
+        questionDataforInterview
+      );
+
+      if (response) {
+        toast({
+          variant: "success",
+          title: "Question created successfully.",
+          description: "The question has been added to the interview.",
+        });
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Question Adding failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     }
   };
 
@@ -361,221 +385,6 @@ function CandidateDetailsProfile() {
     if (score >= 80) return "!bg-blue-500";
     if (score >= 70) return "!bg-amber-500";
     return "!bg-red-500";
-  };
-
-  const handleGenerateQuestions = useCallback(() => {
-    setIsGenerating(true);
-
-    // Simulate AI processing
-    setTimeout(() => {
-      setIsGenerating(false);
-      setQuestionsGenerated(true);
-    }, 3000);
-  }, []);
-
-  const generatedQuestions = [
-    {
-      category: "Technical Skills",
-      questions: [
-        "Can you explain how you've used the MERN stack in your previous projects?",
-        "What challenges did you face when developing mobile applications with Flutter, and how did you overcome them?",
-        "How have you implemented AI-driven solutions using Python in your projects?",
-        "Can you walk me through your approach to ensuring code modularity and maintainability?",
-        "What TypeScript features do you find most valuable for ensuring code quality?",
-      ],
-    },
-    {
-      category: "Project Experience",
-      questions: [
-        "As a Team Leader for the Smart Administrative System, what methodologies did you use to manage your team?",
-        "What were the key features of the Finance data tracking mobile app you developed for MoneyBestro?",
-        "How did you approach the development of your Python Voice Assistant project?",
-        "What database design considerations did you make for the CRUD application for teacher data management?",
-        "Can you elaborate on the Stock Management System you're developing for Metrocon Constructors?",
-      ],
-    },
-    {
-      category: "Soft Skills & Leadership",
-      questions: [
-        "How do you approach solving complex problems in fast-paced environments?",
-        "Can you give an example of a situation where you had to lead a team through a challenging project phase?",
-        "How do you ensure effective communication within your development team?",
-        "What strategies do you use to balance multiple ongoing projects simultaneously?",
-        "How do you handle feedback and criticism on your work or leadership style?",
-      ],
-    },
-    {
-      category: "Education & Learning",
-      questions: [
-        "How has your education at CINEC campus prepared you for real-world software engineering challenges?",
-        "What additional skills have you gained through the certificate courses at Wellington College?",
-        "How do you stay updated with the latest technologies and programming practices?",
-        "What learning resources do you find most valuable for continuing your professional development?",
-        "How do you apply theoretical knowledge from your education to practical software development?",
-      ],
-    },
-  ];
-
-  const candidateData = {
-    // id: params.candidateId,
-    name: "Ushan Sankalpa",
-    email: "ushansankalpa95@gmail.com",
-    phone: "+94 77 123 4567",
-    avatar: "/placeholder.svg?height=128&width=128",
-    interviewDate: new Date(2025, 4, 3),
-    startTime: "10:00 AM",
-    endTime: "11:30 AM",
-    status: "Completed",
-    dateOfBirth: new Date(2025, 2, 28),
-    gender: "not specified",
-    socialMedia: {
-      linkedin: "linkedin.com/in/ushansankalpa",
-      github: "github.com/username",
-      facebook: "facebook.username",
-    },
-    resumeSummary:
-      "A highly motivated Software Engineering undergraduate passionate about designing and developing innovative applications. Skilled in web and mobile development. Experience in HTML, CSS, JavaScript, the MERN stack, Flutter, and AI-driven solutions using Python. Strong understanding of Object-Oriented Programming (OOP), applying modular and maintainable coding practices. Experienced in leading teams and solving complex problems in fast-paced environments. Committed to building scalable software that enhances user experiences and transforms industries",
-    education: [
-      {
-        institution: "Pushpadana Girls' College Kandy",
-        period: "2013-2021",
-        degree: "School",
-      },
-      {
-        institution: "CINEC campus (Pvt) Ltd",
-        period: "2022-Present",
-        degree: "BSc (Hons) Software Engineering",
-      },
-      {
-        institution: "Wellington College Kandy",
-        period: "2024-Present",
-        degree: "Certificate Courses",
-      },
-    ],
-    experience: [
-      {
-        role: "Team Leader",
-        company: "Mahaweli Authority of Sri Lanka",
-        project: "Smart Administrative System",
-        status: "Ongoing",
-      },
-      {
-        role: "",
-        company: "CarZone Lanka (Pvt) Ltd",
-        project: "Auction Data Management website",
-        status: "Ongoing",
-      },
-      {
-        role: "",
-        company: "Metrocon Constructors (Pvt) Ltd",
-        project: "Stock Management System",
-        status: "Ongoing",
-      },
-      {
-        role: "",
-        company: "Zenride",
-        project: "Zenride' Mini Mobile Game",
-        status: "Completed",
-      },
-      {
-        role: "",
-        company: "PACMAN",
-        project: "Whack a Mole, PAC Man-Inspired Games",
-        status: "Completed",
-      },
-      {
-        role: "",
-        company: "MLmodels",
-        project: "Python Machine Learning Models",
-        status: "Completed",
-      },
-      {
-        role: "",
-        company: "Assistant",
-        project: "Python Voice Assistant",
-        status: "Completed",
-      },
-      {
-        role: "",
-        company: "CRUD",
-        project: "CRUD application for teacher data management",
-        status: "Completed",
-      },
-      {
-        role: "",
-        company: "MoneyBestro",
-        project:
-          "Finance data tracking mobile app for a Financial field Worker",
-        status: "Completed",
-      },
-      {
-        role: "Team Leader",
-        company: "ZenFlow",
-        project: "Website for Mind Relaxation",
-        status: "Completed",
-      },
-    ],
-    skills: [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "TypeScript",
-      "PHP",
-      "SQL",
-      "Flutter",
-      "Python",
-      "Java",
-      "C#",
-    ],
-    technicalSkills: [
-      {
-        name: "React",
-        score: 85,
-        maxScore: 100,
-        notes: "Good understanding of React hooks and component lifecycle.",
-      },
-      {
-        name: "TypeScript",
-        score: 90,
-        maxScore: 100,
-        notes: "Excellent knowledge of TypeScript types and interfaces.",
-      },
-      {
-        name: "Node.js",
-        score: 75,
-        maxScore: 100,
-        notes: "Solid foundation but lacks experience with advanced concepts.",
-      },
-    ],
-    softSkills: [
-      {
-        name: "Communication",
-        score: 90,
-        maxScore: 100,
-        notes: "Articulates ideas clearly and concisely.",
-      },
-      {
-        name: "Teamwork",
-        score: 85,
-        maxScore: 100,
-        notes:
-          "Shows good collaboration skills and willingness to help others.",
-      },
-      {
-        name: "Problem Solving",
-        score: 95,
-        maxScore: 100,
-        notes:
-          "Excellent analytical thinking and creative problem-solving approach.",
-      },
-    ],
-    notes:
-      "Ushan demonstrated strong technical skills, particularly in web development. Their problem-solving approach was methodical and effective. Would be a good fit for the frontend development team.",
-    interviewer: {
-      name: "Jennifer Smith",
-      position: "Senior Engineering Manager",
-      avatar: "/placeholder.svg?height=40&width=40",
-    },
   };
 
   const getInterviewStatusBadge = (status) => {
@@ -1902,164 +1711,219 @@ function CandidateDetailsProfile() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      {documentUrl.url ? (
+                      {documentAnalizedData.url ? (
                         <div className="space-y-6">
-                        {sessionDetails?.candidate?.resumeURL ? (
-                          <>
-                            <div className="flex justify-between items-center">
-                              <h3 className="text-lg font-medium">
-                                Resume Analyze
-                              </h3>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="gap-2"
-                              >
-                                <Download className="h-4 w-4" />
-                                Download
-                              </Button>
-                            </div>
-                            <div className=" bg-black/90 flex items-center justify-center p-4">
+                          {sessionDetails?.candidate?.resumeURL ? (
+                            <>
+                              <div className="flex justify-between items-center">
+                                <h3 className="text-lg font-medium">
+                                  Resume Analyze
+                                </h3>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="gap-2"
+                                >
+                                  <Download className="h-4 w-4" />
+                                  Download
+                                </Button>
+                              </div>
+                              <div className=" bg-black/90 flex items-center justify-center">
                                 <iframe
                                   src={`${sessionDetails?.candidate?.resumeURL}`}
-                                  className=" overflow-x-hidden rounded-lg mt-5"
+                                  className=" overflow-x-hidden rounded-lg mt-2"
                                   width="100%"
                                   height="700px"
                                   style={{ border: "none" }}
                                   title="PDF Viewer"
                                 />
                               </div>
-                            <Card className="!bg-purple-500/5 !border-purple-500/30">
-                              <CardHeader className="pb-2">
-                                <CardTitle className="text-purple-400 flex items-center gap-2">
-                                  <Wand2 className="h-5 w-5" />
-                                  Resume Analysis
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent className="space-y-6">
-                                <div>
-                                  <h4 className="text-lg font-medium mb-2">
-                                    Summary
-                                  </h4>
-                                  <p className="text-muted-foreground">
-                                    {candidateData.resumeSummary}
-                                  </p>
-                                </div>
+                              <Card className="!bg-transparent !border-blue-500">
+                                <CardHeader className="pb-2">
+                                  <CardTitle className="text-blue-500 flex items-center gap-2">
+                                    <Sparkles className="h-5 w-5 text-blue-500" />
+                                    Resume Analysis
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Summary
+                                    </h4>
+                                    <p className="text-muted-foreground text-sm">
+                                      {documentAnalizedData.summary}
+                                    </p>
+                                  </div>
 
-                                <div>
-                                  <h4 className="text-lg font-medium mb-2">
-                                    Education
-                                  </h4>
-                                  <div className="space-y-2">
-                                    {candidateData.education.map(
-                                      (edu, index) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-start gap-3"
-                                        >
-                                          <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div>
-                                            <div className="font-medium">
-                                              {edu.degree}: {edu.institution}
-                                            </div>
-                                            <div className="text-sm text-muted-foreground">
-                                              {edu.period}
-                                            </div>
+                                  {documentAnalizedData.contactInfo && (
+                                    <div>
+                                      <h4 className="text-lg font-medium mb-2">
+                                        Contact Information
+                                      </h4>
+                                      {documentAnalizedData.contactInfo
+                                        .phone && (
+                                        <div className="flex items-start gap-3  mt-2">
+                                          <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                          <div className="font-medium">
+                                            {
+                                              documentAnalizedData.contactInfo
+                                                .phone
+                                            }
                                           </div>
                                         </div>
-                                      )
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <h4 className="text-lg font-medium mb-2">
-                                    Experience
-                                  </h4>
-                                  <div className="space-y-3">
-                                    {candidateData.experience
-                                      .slice(0, 5)
-                                      .map((exp, index) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-start gap-3"
-                                        >
-                                          <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div>
-                                            <div className="font-medium">
-                                              {exp.project}
-                                            </div>
-                                            <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                              <span>{exp.company}</span>
-                                              {exp.role && (
-                                                <>
-                                                  <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
-                                                  <span>{exp.role}</span>
-                                                </>
-                                              )}
-                                              <Badge
-                                                variant="outline"
-                                                className={
-                                                  exp.status === "Ongoing"
-                                                    ? "!text-blue-400 !border-blue-400"
-                                                    : "!text-green-400 !border-green-400"
-                                                }
-                                              >
-                                                {exp.status}
-                                              </Badge>
-                                            </div>
+                                      )}
+                                      {documentAnalizedData.contactInfo
+                                        .linkedin && (
+                                        <div className="flex items-start gap-3  mt-2">
+                                          <LinkedinIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                          <div className="font-medium">
+                                            {
+                                              documentAnalizedData.contactInfo
+                                                .linkedin
+                                            }
                                           </div>
                                         </div>
-                                      ))}
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <h4 className="text-lg font-medium mb-2">
-                                    Skills
-                                  </h4>
-                                  <div className="flex flex-wrap gap-2">
-                                    {candidateData.skills.map(
-                                      (skill, index) => (
-                                        <Badge
-                                          key={index}
-                                          variant="secondary"
-                                          className="px-3 py-1 text-sm"
-                                        >
-                                          {skill}
-                                        </Badge>
-                                      )
-                                    )}
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-
-                            {!questionsGenerated ? (
-                              <div className="flex justify-center">
-                                <Button
-                                  variant="outline"
-                                  onClick={handleGenerateQuestions}
-                                  disabled={isGenerating}
-                                  className="flex items-center gap-1  text-blue-500 !border-blue-500/50 hover:!text-blue-400 hover:!bg-blue-500/20"
-                                >
-                                  {isGenerating ? (
-                                    <>
-                                      <LoaderCircle className="animate-spin" />
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Sparkles className="h-4 w-4 text-blue-500" />
-                                      Generate Interview Questions
-                                    </>
+                                      )}
+                                      {documentAnalizedData.contactInfo
+                                        .github && (
+                                        <div className="flex items-start gap-3  mt-2">
+                                          <GithubIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                          <div className="font-medium">
+                                            {
+                                              documentAnalizedData.contactInfo
+                                                .github
+                                            }
+                                          </div>
+                                        </div>
+                                      )}
+                                      {documentAnalizedData.contactInfo
+                                        .email && (
+                                        <div className="flex items-start gap-3 mt-2">
+                                          <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                          <div className="font-medium">
+                                            {
+                                              documentAnalizedData.contactInfo
+                                                .email
+                                            }
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
                                   )}
-                                </Button>
-                              </div>
-                            ) : (
-                              <Card className="mt-8 border-purple-500/20">
+
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Education
+                                    </h4>
+                                    <div className="space-y-2">
+                                      {documentAnalizedData.education.map(
+                                        (edu, index) => (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3"
+                                          >
+                                            <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div>
+                                              <div className="font-medium">
+                                                {edu.title}
+                                              </div>
+                                              <div className="text-sm text-muted-foreground">
+                                                {edu.institution} -{" "}
+                                                {new Date(
+                                                  edu.startDate
+                                                ).getFullYear()}{" "}
+                                                -{" "}
+                                                {edu.endDate
+                                                  ? new Date(
+                                                      edu.endDate
+                                                    ).getFullYear()
+                                                  : "Present"}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Experience
+                                    </h4>
+                                    <div className="space-y-3">
+                                      {documentAnalizedData.experience
+                                        .slice(0, 5)
+                                        .map((exp, index) => (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3"
+                                          >
+                                            <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div>
+                                              <div className="font-medium">
+                                                {exp.jobTitle}
+                                                <Badge
+                                                  variant="outline"
+                                                  className={
+                                                    exp.status === "Ongoing"
+                                                      ? "!text-blue-400 !border-blue-400 ml-2"
+                                                      : "!text-green-400 !border-green-400 ml-2"
+                                                  }
+                                                >
+                                                  {exp.status}
+                                                </Badge>
+                                              </div>
+                                              <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                                <span>
+                                                  {new Date(
+                                                    exp.startDate
+                                                  ).getFullYear()}{" "}
+                                                  -{" "}
+                                                  {exp.endDate
+                                                    ? new Date(
+                                                        exp.endDate
+                                                      ).getFullYear()
+                                                    : "Present"}
+                                                </span>
+
+                                                {exp.company && (
+                                                  <>
+                                                    <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
+                                                    <span>{exp.company}</span>
+                                                  </>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ))}
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <h4 className="text-lg font-medium mb-2">
+                                      Skills
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2">
+                                      {documentAnalizedData.skills.map(
+                                        (skill, index) => (
+                                          <Badge
+                                            key={index}
+                                            variant="secondary"
+                                            className="px-3 py-1 text-sm !bg-gray-500/20 !border-gray-600 !text-gray-300"
+                                          >
+                                            {skill}
+                                          </Badge>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+
+                              <Card className="mt-8 !border-blue-500">
                                 <CardHeader>
-                                  <CardTitle className="flex items-center gap-2">
-                                    <Wand2 className="h-5 w-5 text-purple-400" />
+                                  <CardTitle className="flex items-center gap-2 text-blue-500">
+                                    <Sparkles className="h-5 w-5 text-blue-500" />
                                     AI-Generated Interview Questions
                                   </CardTitle>
                                   <CardDescription>
@@ -2069,188 +1933,114 @@ function CandidateDetailsProfile() {
                                 </CardHeader>
                                 <CardContent>
                                   <div className="space-y-8">
-                                    {generatedQuestions.map(
-                                      (category, index) => (
-                                        <div
-                                          key={index}
-                                          className="space-y-4"
-                                        >
-                                          <h3 className="text-lg font-medium flex items-center gap-2">
-                                            {index === 0 && (
-                                              <Star className="h-5 w-5 text-blue-400" />
-                                            )}
-                                            {index === 1 && (
-                                              <Briefcase className="h-5 w-5 text-green-400" />
-                                            )}
-                                            {index === 2 && (
-                                              <User className="h-5 w-5 text-amber-400" />
-                                            )}
-                                            {index === 3 && (
-                                              <GraduationCap className="h-5 w-5 text-purple-400" />
-                                            )}
-                                            {category.category}
-                                          </h3>
-                                          <div className="space-y-3 pl-7">
-                                            {category.questions.map(
-                                              (question, qIndex) => (
-                                                <div
-                                                  key={qIndex}
-                                                  className="group"
-                                                >
-                                                  <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
-                                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                                                      {qIndex + 1}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                      <p>{question}</p>
-                                                    </div>
-                                                    <Dialog>
-                                                      <DialogTrigger asChild>
-                                                        <Button
-                                                          variant="ghost"
-                                                          size="icon"
-                                                          className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        >
-                                                          <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="16"
-                                                            height="16"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            className="lucide lucide-pencil"
-                                                          >
-                                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                            <path d="m15 5 4 4" />
-                                                          </svg>
-                                                        </Button>
-                                                      </DialogTrigger>
-                                                      <DialogContent>
-                                                        <DialogHeader>
-                                                          <DialogTitle>
-                                                            Edit Question
-                                                          </DialogTitle>
-                                                          <DialogDescription>
-                                                            Modify this
-                                                            question to better
-                                                            suit your
-                                                            interview needs.
-                                                          </DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="space-y-4 py-4">
-                                                          <div className="space-y-2">
-                                                            <Label htmlFor="question">
-                                                              Question
-                                                            </Label>
-                                                            <Textarea
-                                                              id="question"
-                                                              defaultValue={
-                                                                question
-                                                              }
-                                                              rows={4}
-                                                            />
-                                                          </div>
-                                                          <div className="space-y-2">
-                                                            <Label htmlFor="notes">
-                                                              Notes (for
-                                                              interviewer
-                                                              only)
-                                                            </Label>
-                                                            <Textarea
-                                                              id="notes"
-                                                              placeholder="Add any notes or expected answers here..."
-                                                              rows={3}
-                                                            />
-                                                          </div>
-                                                        </div>
-                                                        <DialogFooter>
-                                                          <Button type="submit">
-                                                            Save Changes
-                                                          </Button>
-                                                        </DialogFooter>
-                                                      </DialogContent>
-                                                    </Dialog>
-                                                  </div>
-                                                </div>
-                                              )
-                                            )}
+                                    <h3 className="text-lg font-medium flex items-center gap-2">
+                                      <Star className="h-5 w-5 text-blue-400" />
+                                      Technical Skills
+                                    </h3>
+
+                                    {documentAnalizedData.questions.technical.map(
+                                      (question, qIndex) => (
+                                        <div key={qIndex} className="group">
+                                          <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
+                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                                              {qIndex + 1}
+                                            </div>
+                                            <div className="flex-1">
+                                              <p>{question.question}</p>
+                                            </div>
+                                            <AlertDialog>
+                                              <AlertDialogTrigger
+                                                className={` opacity-0 group-hover:opacity-100 transition-opacity`}
+                                              >
+                                                <Plus className="!h-6 !w-6 text-green-500" />
+                                              </AlertDialogTrigger>
+
+                                              <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                  <AlertDialogTitle>
+                                                    Are you sure you want to
+                                                    send this question to the
+                                                    candidate?
+                                                  </AlertDialogTitle>
+                                                  <AlertDialogDescription>
+                                                    Once you send this question
+                                                    to the candidate, you cannot
+                                                    undo this action.
+                                                  </AlertDialogDescription>
+                                                </AlertDialogHeader>
+
+                                                <AlertDialogFooter>
+                                                  <AlertDialogCancel>
+                                                    Cancel
+                                                  </AlertDialogCancel>
+                                                  <AlertDialogAction
+                                                    onClick={() =>
+                                                      handleAddQuestion(
+                                                        question.question,
+                                                        question.type,
+                                                        question.estimatedTimeInMinutes
+                                                      )
+                                                    }
+                                                    className="h-[40px] font-medium"
+                                                  >
+                                                    Add Question
+                                                  </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                              </AlertDialogContent>
+                                            </AlertDialog>
+                                          </div>
+                                        </div>
+                                      )
+                                    )}
+                                    <h3 className="text-lg font-medium flex items-center gap-2">
+                                      <User className="h-5 w-5 text-amber-400" />
+                                      Soft Skills & Leadership Skills
+                                    </h3>
+
+                                    {documentAnalizedData.questions.soft_skills.map(
+                                      (question, qIndex) => (
+                                        <div key={qIndex} className="group">
+                                          <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
+                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                                              {qIndex + 1}
+                                            </div>
+                                            <div className="flex-1">
+                                              <p>{question.question}</p>
+                                              <p className=" text-muted-foreground text-sm">
+                                                {question.context}
+                                              </p>
+                                            </div>
                                           </div>
                                         </div>
                                       )
                                     )}
 
-                                    <div className="flex justify-between pt-4 border-t">
+                                    <div className="flex justify-end">
                                       <Button
                                         variant="outline"
                                         className="gap-2"
                                       >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="16"
-                                          height="16"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          className="lucide lucide-plus"
-                                        >
-                                          <path d="M5 12h14" />
-                                          <path d="M12 5v14" />
-                                        </svg>
-                                        Add Custom Question
+                                        <Download className="h-4 w-4" />
+                                        Export Questions
                                       </Button>
-                                      <div className="flex gap-2">
-                                        <Button
-                                          variant="outline"
-                                          className="gap-2"
-                                        >
-                                          <Download className="h-4 w-4" />
-                                          Export Questions
-                                        </Button>
-                                        <Button className="gap-2">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="lucide lucide-save"
-                                          >
-                                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                                            <polyline points="17 21 17 13 7 13 7 21" />
-                                            <polyline points="7 3 7 8 15 8" />
-                                          </svg>
-                                          Save to Interview
-                                        </Button>
-                                      </div>
                                     </div>
                                   </div>
                                 </CardContent>
                               </Card>
-                            )}
-                          </>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-muted-foreground/20 rounded-lg">
-                            <Ghost className="h-16 w-16 text-muted-foreground mb-4" />
-                            <h3 className="text-xl font-medium mb-2">
-                              Resume Not Uploaded
-                            </h3>
-                            <p className="text-muted-foreground max-w-md">
-                              Candidate's is not uploaded the resume yet.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                        
+                              {/* )} */}
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-muted-foreground/20 rounded-lg">
+                              <Ghost className="h-16 w-16 text-muted-foreground mb-4" />
+                              <h3 className="text-xl font-medium mb-2">
+                                Resume Not Uploaded
+                              </h3>
+                              <p className="text-muted-foreground max-w-md">
+                                Candidate's is not uploaded the resume yet.
+                              </p>
+                            </div>
+                          )}
+                        </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-muted-foreground/20 rounded-lg">
                           <FileText className="h-16 w-16 text-muted-foreground mb-4" />
