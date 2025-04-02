@@ -292,6 +292,7 @@ export default function InterviewPreviewPage({ params }) {
   const [noOfQuestions, setNoOfQuestions] = useState(0);
   const [isCopied, setIsCopied] = useState(false);
   const [todayCandidates, setTodayCandidates] = useState(0);
+  const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
 
   // useEffect(() => {
   //   console.log('interviewIddddd',)
@@ -700,6 +701,7 @@ export default function InterviewPreviewPage({ params }) {
     }
 
     const fetchInterviewTimeSlots = async () => {
+      debugger
       try {
         // const session = await getSession();
         // const companyId = session?.user?.companyID;
@@ -761,7 +763,7 @@ export default function InterviewPreviewPage({ params }) {
       }
     };
     if (interviewId) fetchInterviewTimeSlots();
-  }, [interviewId]);
+  }, [interviewId, isAddTimeSlotDialogOpen]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -4173,7 +4175,7 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="timeslots" className="p-0 border-none">
-              <TimeSlotsTab interviewTimeSlotsTabel={interviewTimeSlotsTabel} interviewId={interviewId}/>
+              <TimeSlotsTab interviewTimeSlotsTabel={interviewTimeSlotsTabel} interviewId={interviewId} isAddTimeSlotDialogOpen={isAddTimeSlotDialogOpen} setIsAddTimeSlotDialogOpen={setIsAddTimeSlotDialogOpen}/>
             </TabsContent>
 
             <TabsContent value="invitation" className="p-0 border-none">

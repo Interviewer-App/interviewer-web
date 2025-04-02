@@ -66,7 +66,7 @@ import { createSchedulesForInterviews } from "@/lib/api/interview"
 // Add this interface at the top of the file, after the TimeSlot interface
 
 
-export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel }) {
+export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isAddTimeSlotDialogOpen,setIsAddTimeSlotDialogOpen}) {
     const [isLoading, setIsLoading] = useState(false)
     const [currentTime, setCurrentTime] = useState(new Date())
     const [dateRange, setDateRange] = useState("");
@@ -80,7 +80,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel }) {
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarView, setCalendarView] = useState("month")
     const [showAddSlotDialog, setShowAddSlotDialog] = useState(false)
-    const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false)
+    // const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false)
     const [newSlot, setNewSlot] = useState({
         date: new Date(),
         startTime: "09:00",
@@ -184,13 +184,21 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel }) {
 
     const saveSchedules = async () => {
         if (schedules.length === 0) {
-            toast.error("Please add at least one schedule");
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Please add at least one schedule",
+              });
             return;
         }
 
         // Validate that schedules exist
         if (schedules.length === 0) {
-            toast.error("Please add at least one schedule");
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Please add at least one schedule",
+              });
             return;
         }
 
