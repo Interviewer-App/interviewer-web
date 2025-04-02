@@ -297,6 +297,7 @@ export default function InterviewPreviewPage({ params }) {
   const [todayCandidates, setTodayCandidates] = useState(0);
   const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
 
+
   // useEffect(() => {
   //   console.log('interviewIddddd',)
   // }, [interviewId])
@@ -504,11 +505,12 @@ export default function InterviewPreviewPage({ params }) {
         setTotalCandidates(response.total);
 
         // Count today's candidates
-        const todayCount = response.data.filter((schedule) =>
+        const todayCount = response.data.filter(schedule =>
           isToday(schedule.startTime)
         ).length;
 
         setTodayCandidates(todayCount);
+
       } catch (error) {
         console.log("Error fetching interviews:", error);
       } finally {
@@ -4405,7 +4407,8 @@ export default function InterviewPreviewPage({ params }) {
         </Card>
       )} */}
 
-                {/* Today's Sessions */}
+      {/* Today's Sessions */}
+      
                 <Card className="border-blue-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2">
@@ -4514,34 +4517,39 @@ export default function InterviewPreviewPage({ params }) {
                                       <span className="text-muted-foreground">Location:</span>
                                       <span className="font-medium ml-1">{location}</span>
                                     </div> */}
-                                  </div>
-                                </CardContent>
-                                <CardFooter className="pt-0 pb-4">
-                                  <div className="flex gap-2 w-full">
-                                    <Button
-                                      variant="outline"
-                                      className="flex-1"
-                                      onClick={() => handleStartSession(sessionId)}
-                                    >
-                                      <ArrowUpRight className="h-4 w-4 mr-2" />
-                                      Rejoin
-                                    </Button>
-                                    <Button
-                                      className="flex-1 !bg-green-600 hover:bg-green-700"
-                                      onClick={() => leaveRoom(sessionId)}
-                                    >
-                                      <StopCircle className="h-4 w-4 mr-2" />
-                                      End
-                                    </Button>
-                                  </div>
-                                </CardFooter>
-                              </Card>
-                            );
-                          })
-                      }
+                                        </div>
+                                      </CardContent>
+                                      <CardFooter className="pt-0 pb-4">
+                                        <div className="flex gap-2 w-full">
+                                          <Button
+                                            variant="outline"
+                                            className="flex-1"
+                                            onClick={() => handleStartSession(sessionId)}
+                                          >
+                                            <ArrowUpRight className="h-4 w-4 mr-2" />
+                                            Rejoin
+                                          </Button>
+                                          <Button
+                                            className="flex-1 !bg-green-600 hover:bg-green-700"
+                                            onClick={() => leaveRoom(sessionId)}
+                                          >
+                                            <StopCircle className="h-4 w-4 mr-2" />
+                                            End
+                                          </Button>
+                                        </div>
+                                      </CardFooter>
+                                    </Card>
+                                  );
+                                })
+                            }
 
-                    </div>
-                  </CardContent>
+                          </div>
+                        </CardContent>
+                      );
+                    } else {
+                      return null;
+                    }
+                  })()}
                 </Card>
 
                 <div className="my-6 border border-gray-200/20 rounded-lg p-6">
