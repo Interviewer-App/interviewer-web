@@ -121,7 +121,7 @@ export function AppSidebar({ ...props }) {
 
   const [userData, setUserData] = React.useState({
     user: {
-      name: role,
+      name: session?.user?.firstName || session?.user?.name,
       email: userEmail,
       avatar: "",
     },
