@@ -540,6 +540,7 @@ export default function InterviewPreviewPage({ params }) {
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
 
+
   useEffect(() => {
     const totalPercentage = categoryList.reduce(
       (acc, cat) => acc + parseFloat(cat.percentage),
@@ -701,7 +702,7 @@ export default function InterviewPreviewPage({ params }) {
     }
 
     const fetchInterviewTimeSlots = async () => {
-      debugger
+      // debugger
       try {
         // const session = await getSession();
         // const companyId = session?.user?.companyID;
@@ -1674,6 +1675,15 @@ export default function InterviewPreviewPage({ params }) {
       }
     }
   };
+
+    const handleStartSession = (sessionId) => {
+    if (sessionId) {
+      router.push(
+        `/company-interview-session/${encodeURIComponent(sessionId)}`
+      );
+    }
+  };
+
 
   return (
     <div className=" w-full">
@@ -4008,6 +4018,7 @@ export default function InterviewPreviewPage({ params }) {
                     </CardTitle>
                     <CardDescription>
                       {(() => {
+                        
                         const today = new Date("2025-04-01"); // Fixed date as per your setup; use new Date() for real-time
                         const todaySessions = interviewSessions.filter((session) => {
                           const sessionDate = new Date(session.scheduledDate);
@@ -4029,6 +4040,7 @@ export default function InterviewPreviewPage({ params }) {
                         interviewSessions
                           // .filter((session) => session.interviewStatus === "ongoing") // Filter for ongoing sessions
                           .map((session, index) => {
+                            const sessionId=session.sessionId;
                             const startTime = new Date(session.scheduledDate).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
@@ -4101,10 +4113,7 @@ export default function InterviewPreviewPage({ params }) {
                                     <Button
                                       variant="outline"
                                       className="flex-1"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(zoomLink, "_blank");
-                                      }}
+                                      onClick={() => handleStartSession(sessionId)}
                                     >
                                       <ArrowUpRight className="h-4 w-4 mr-2" />
                                       Rejoin
