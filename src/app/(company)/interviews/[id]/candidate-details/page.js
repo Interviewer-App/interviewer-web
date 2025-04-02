@@ -84,7 +84,7 @@ function CandidateDetailsProfile() {
   const pathParam = useParams();
   const searchParams = useSearchParams();
   const candidateId = searchParams.get("candidateId");
-  const [sessionId, setSessionId] = useState(null);
+  const sessionId = searchParams.get("sessionId");
   const [candidateDetails, setCandidateDetails] = useState({});
   const [documentUrl, setDocumentUrl] = useState("");
   const [age, setAge] = useState(0);
@@ -94,7 +94,6 @@ function CandidateDetailsProfile() {
   const [activeTab, setActiveTab] = useState("details");
   const [activeAssessmentTab, setActiveAssesmentTab] = useState("technical");
   const [questionsGenerated, setQuestionsGenerated] = useState(false);
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [sessionDetails, setSessionDetails] = useState({});
   const [sessionhistory, setSessionHistory] = useState([]);
@@ -136,12 +135,6 @@ function CandidateDetailsProfile() {
       updatedAt: "2025-03-28T04:57:13.129Z",
     },
   ]);
-
-  useEffect(() => {
-    if (searchParams.get("sessionId")) {
-      setSessionId(searchParams.get("sessionId"));
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     const fetchCandidateDetails = async () => {
@@ -251,7 +244,7 @@ function CandidateDetailsProfile() {
             toast({
               variant: "destructive",
               title: "Uh oh! Something went wrong.",
-              description: `Session Fetching Faild: ${data.message}`,
+              description: `Session History Fetching Faild: ${data.message}`,
               action: <ToastAction altText="Try again">Try again</ToastAction>,
             });
           } else {

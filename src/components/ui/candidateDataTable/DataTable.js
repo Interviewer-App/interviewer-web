@@ -26,17 +26,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { useToast } from "@/hooks/use-toast";
 
-export function CandidateDataTable({ columns, data , interviewId}) {
+export function CandidateDataTable({ columns, data, interviewId }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const router = useRouter();
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const table = useReactTable({
     data,
@@ -56,7 +56,6 @@ export function CandidateDataTable({ columns, data , interviewId}) {
       rowSelection,
     },
   });
-
 
   const exportToPDF = () => {
     // Initialize jsPDF document
@@ -83,7 +82,9 @@ export function CandidateDataTable({ columns, data , interviewId}) {
     doc.text(`Generated on: ${currentDate}`, 14, 36);
 
     // Get visible columns
-    const visibleColumns = table.getAllColumns().filter((column) => column.getIsVisible());
+    const visibleColumns = table
+      .getAllColumns()
+      .filter((column) => column.getIsVisible());
 
     // Define headers based on visible columns
     const headers = visibleColumns.map((column) => {
@@ -222,13 +223,18 @@ export function CandidateDataTable({ columns, data , interviewId}) {
     toast({
       title: "Exported to PDF",
       description: "The candidate report has been exported to PDF.",
-    })
+    });
   };
 
-
   const handleCandidateDetail = (row) => {
-      router.push(`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(row.original.candidate.candidateId)}&sessionId=${encodeURIComponent(row.original?.interviewSession?.sessionId)}`);
-  }
+    router.push(
+      `/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(
+        row.original.candidate.candidateId
+      )}&sessionId=${encodeURIComponent(
+        row.original?.interviewSession?.sessionId
+      )}`
+    );
+  };
 
   return (
     <div className="px-6">
@@ -242,46 +248,46 @@ export function CandidateDataTable({ columns, data , interviewId}) {
           className="max-w-sm"
         />
         <div className="flex items-center space-x-4">
-        <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="max-w-[120px]"
             onClick={exportToPDF}
           >
             Export PDF
           </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="max-w-[120px] ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="bg-black bg-opacity-100 shadow-lg"
-          >
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => {
-                      setColumnVisibility((prev) => ({
-                        ...prev,
-                        [column.id]: value,
-                      }));
-                      column.toggleVisibility(!!value);
-                    }}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="max-w-[120px] ml-auto">
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-black bg-opacity-100 shadow-lg"
+            >
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => {
+                        setColumnVisibility((prev) => ({
+                          ...prev,
+                          [column.id]: value,
+                        }));
+                        column.toggleVisibility(!!value);
+                      }}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -295,9 +301,9 @@ export function CandidateDataTable({ columns, data , interviewId}) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -305,21 +311,28 @@ export function CandidateDataTable({ columns, data , interviewId}) {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}  className="hover:bg-gray-100 cursor-pointer"  onClick={() => handleCandidateDetail(row)}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="p-4 border-b md:border-none"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table
+                .getRowModel()
+                .rows.filter((row) => row.original.interviewSession !== null)
+                .map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleCandidateDetail(row)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className="p-4 border-b md:border-none"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
             ) : (
               <TableRow>
                 <TableCell
@@ -333,7 +346,6 @@ export function CandidateDataTable({ columns, data , interviewId}) {
           </TableBody>
         </Table>
       </div>
-      
     </div>
   );
 }
