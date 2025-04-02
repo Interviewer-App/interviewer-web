@@ -412,6 +412,7 @@ export default function InterviewPreviewPage({ params }) {
     type: "",
     interviewQuestionID: null,
   });
+  const dashboardRef = useRef();
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -1682,6 +1683,20 @@ export default function InterviewPreviewPage({ params }) {
         `/company-interview-session/${encodeURIComponent(sessionId)}`
       );
     }
+  };
+
+
+  const leaveRoom = async (sessionId) => {
+    const session = await getSession();
+
+    const userId = session?.user?.companyID;
+    const data = {
+      sessionId,
+      userId,
+    };
+    dashboardRef.current?.endCall();
+    socket.emit("endInterviewSession", data);
+    router.push(`/session-history/${sessionId}`);
   };
 
 
@@ -3851,8 +3866,6 @@ export default function InterviewPreviewPage({ params }) {
 
             <TabsContent value="sessions" className="p-0 border-none">
               <div className=" w-full h-fit rounded-lg mt-5">
-
-
                 {/* Header with stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
                   {/* Total Sessions */}
@@ -3874,7 +3887,7 @@ export default function InterviewPreviewPage({ params }) {
                       <div className="flex flex-col items-center justify-center h-full">
                         <p className="text-sm text-muted-foreground">Completed</p>
                         <p className="text-3xl font-bold text-green-500">
-                          {interviewStatusDetails.completedSchedules ||
+                          {
                             interviewSessions.filter((session) => session.interviewStatus === "completed").length ||
                             0}
                         </p>
@@ -3889,7 +3902,7 @@ export default function InterviewPreviewPage({ params }) {
                         <p className="text-sm text-muted-foreground">Ongoing</p>
                         <div className="flex items-center gap-2">
                           <p className="text-3xl font-bold text-blue-500">
-                          {interviewStatusDetails.completedSchedules ||
+                          {
                             interviewSessions.filter((session) => session.interviewStatus === "ongoing").length ||
                             0}
                           </p>
@@ -3904,7 +3917,7 @@ export default function InterviewPreviewPage({ params }) {
                       <div className="flex flex-col items-center justify-center h-full">
                         <p className="text-sm text-muted-foreground">To Be Conducted</p>
                         <p className="text-3xl font-bold text-amber-500">
-                        {interviewStatusDetails.completedSchedules ||
+                        {
                             interviewSessions.filter((session) => session.interviewStatus === "toBeConducted").length ||
                             0}
                         </p>
@@ -4083,12 +4096,8 @@ export default function InterviewPreviewPage({ params }) {
                                 <CardContent className="pb-3 space-y-3">
                                   <div className="flex items-center gap-3">
                                     <Avatar className="h-10 w-10">
-                                      <AvatarImage
-                                        src={session.candidate.user.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
-                                        alt={candidateName}
-                                      />
                                       <AvatarFallback>
-                                        {candidateName.split(" ").map((n) => n[0]).join("")}
+                                        {candidateName.split(" ").map((name) => name.charAt(0)).join("")}
                                       </AvatarFallback>
                                     </Avatar>
                                     <div>
@@ -4120,11 +4129,7 @@ export default function InterviewPreviewPage({ params }) {
                                     </Button>
                                     <Button
                                       className="flex-1 !bg-green-600 hover:bg-green-700"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        // Add logic to end the session if needed (e.g., API call)
-                                        // console.log("End session for:", session.sessionId);
-                                      }}
+                                      onClick={() => leaveRoom(sessionId)}
                                     >
                                       <StopCircle className="h-4 w-4 mr-2" />
                                       End
