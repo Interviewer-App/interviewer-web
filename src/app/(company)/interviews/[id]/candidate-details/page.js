@@ -59,7 +59,7 @@ import {
   getInterviewSessionById,
   getInterviewSessionHistoryById,
 } from "@/lib/api/interview-session";
-import { createQuestionForInterview } from "@/lib/api/question";
+import { createQuestion, createQuestionForInterview } from "@/lib/api/question";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -324,15 +324,13 @@ function CandidateDetailsProfile() {
 
   const handleAddQuestion = async (question, type, minutes) => {
     try {
-      const questionDataforInterview = {
+      const questionDataforSession = {
         question: question,
         type: type,
         estimatedTimeInMinutes: parseInt(minutes, 10),
-        interviewId: sessionDetails.interviewId,
+        sessionId: sessionDetails.sessionId,
       };
-      const response = await createQuestionForInterview(
-        questionDataforInterview
-      );
+      const response = await createQuestion(questionDataforSession);
 
       if (response) {
         toast({
@@ -1959,12 +1957,12 @@ function CandidateDetailsProfile() {
                                                 <AlertDialogHeader>
                                                   <AlertDialogTitle>
                                                     Are you sure you want to
-                                                    send this question to the
+                                                    feed this question to the
                                                     candidate?
                                                   </AlertDialogTitle>
                                                   <AlertDialogDescription>
-                                                    Once you send this question
-                                                    to the candidate, you cannot
+                                                    Once you add this question
+                                                    to the candidate's questionnaire, you cannot
                                                     undo this action.
                                                   </AlertDialogDescription>
                                                 </AlertDialogHeader>
