@@ -4304,15 +4304,18 @@ const CreateInterview = () => {
                                 </h4>
 
                                 {generatedSlots.length > 0 && (
+                                <div className="flex justify-center mr-5">
+
                                   <Button
                                     type="button"
                                     size="sm"
                                     onClick={addAllGeneratedSlots}
-                                    className="h-8"
+                                    className="h-8 "
                                   >
                                     <SaveAll className="h-4 w-4 mr-1" />
                                     Add All
                                   </Button>
+                                  </div>
                                 )}
                               </div>
 

@@ -32,11 +32,11 @@ const companyItems = [
     url: "/interviews",
     icon: MonitorCheck,
   },
-  {
-    title: "Insights",
-    url: "/interview-category",
-    icon: MessageCircleQuestion ,
-  },
+  // {
+  //   title: "Insights",
+  //   url: "/interview-category",
+  //   icon: MessageCircleQuestion ,
+  // },
   {
     title: "Interview-comparision",
     url: "/Interview-comparision",
