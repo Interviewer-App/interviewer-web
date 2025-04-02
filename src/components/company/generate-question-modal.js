@@ -18,6 +18,9 @@ import {
 import { LoaderCircle, Sparkles } from "lucide-react";
 import { generateInterviewQuestions, generateQuestions } from "@/lib/api/ai";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import SkillsInput from "../inputs/skillsInput";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -28,6 +31,7 @@ export default function GenerateQuestionModal({
   details,
   setGenerateModalOpen,
 }) {
+  
   const [sessionID, setSessionID] = React.useState("");
   const [interviewId, setInterviewId] = React.useState("");
   const [jobRole, setJobRole] = React.useState("");
@@ -87,8 +91,8 @@ export default function GenerateQuestionModal({
     try {
       if (forSession) {
         response = await generateQuestions(sessionID, {
-          jobRole,
-          skillLevel,
+          jobRole: details.interview.jobTitle,
+          skillLevel: details.interview.proficiencyLevel,
           QuestionType: questionType.toUpperCase(),
           Keywords: keywords.map((keyword) => keyword.label),
           noOfQuestions: validNoOfQuestions,
@@ -143,13 +147,13 @@ export default function GenerateQuestionModal({
       <div className=" fixed  top-0 left-0 z-40 h-full w-full flex items-center justify-center bg-black/50">
         <div className=" relative max-w-[700px] h-fit w-[90%] md:w-[50%] p-9  rounded-lg bg-[#09090b] border border-[#2d2f36]">
           <div className="pb-5">
-          <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-1 flex items-center gap-2">
-          <Sparkles />
-           Genarate Questions
-          </h1>
-          <span className="text-[#737883] text-sm !pb-5">
-          Our AI will generate high-quality technical interview questions based on your criteria.
-          </span>
+            <h1 className=" text-2xl font-semibold text-[#f3f3f3] pb-1 flex items-center gap-2">
+              <Sparkles />
+              Genarate Questions
+            </h1>
+            <span className="text-[#737883] text-sm !pb-5">
+              Our AI will generate high-quality technical interview questions based on your criteria.
+            </span>
           </div>
           <button
             onClick={() => setGenerateModalOpen(false)}
@@ -158,7 +162,9 @@ export default function GenerateQuestionModal({
             <MdClose className=" text-2xl" />
           </button>
           <form onSubmit={handleSubmit}>
-            <input
+            
+
+            {/* <input
               type="text"
               readOnly={true}
               placeholder="Job Role"
@@ -166,8 +172,8 @@ export default function GenerateQuestionModal({
               value={jobRole}
               required
               className=" h-[45px] w-full rounded-lg text-sm border text-gray-500 focus:outline-none bg-[#09090b] placeholder-[#3c3d41] px-6 py-2 mb-5 border-[#2d2f36]"
-            />
-            <div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            /> */}
+            {/* <div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="w-full">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -219,7 +225,7 @@ export default function GenerateQuestionModal({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </div>
+            </div> */}
             <Paper
               sx={{
                 border: "1px solid",
@@ -287,8 +293,8 @@ export default function GenerateQuestionModal({
                   <LoaderCircle className="animate-spin" />
                 ) : (
                   <>
-                  <Sparkles size={16} />
-                  Genarate
+                    <Sparkles size={16} />
+                    Genarate
                   </>
                 )}
               </button>
