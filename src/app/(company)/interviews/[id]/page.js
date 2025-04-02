@@ -225,7 +225,6 @@ import SkillsInput from "@/components/inputs/skillsInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TimeSlotsTab from "@/components/company/time-slots-tab";
 
-
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -543,7 +542,6 @@ export default function InterviewPreviewPage({ params }) {
     // Return the RGBA format
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
-
 
   useEffect(() => {
     const totalPercentage = categoryList.reduce(
@@ -1902,14 +1900,13 @@ export default function InterviewPreviewPage({ params }) {
     }
   };
 
-    const handleStartSession = (sessionId) => {
+  const handleStartSession = (sessionId) => {
     if (sessionId) {
       router.push(
         `/company-interview-session/${encodeURIComponent(sessionId)}`
       );
     }
   };
-
 
   const leaveRoom = async (sessionId) => {
     const session = await getSession();
@@ -1923,7 +1920,6 @@ export default function InterviewPreviewPage({ params }) {
     socket.emit("endInterviewSession", data);
     router.push(`/session-history/${sessionId}`);
   };
-
 
   return (
     <div className=" w-full">
@@ -2507,21 +2503,23 @@ export default function InterviewPreviewPage({ params }) {
                         </div>
 
                         {/* Less prominent slider */}
-                        {editDetails && (<div className="space-y-2">
-                          <p className="text-sm text-center text-muted-foreground mb-2">
-                            Adjust percentage
-                          </p>
-                          <Slider
-                            id="technical-percentage"
-                            min={0}
-                            max={100}
-                            step={5}
-                            enableColor={false}
-                            value={[technicalPercentage]}
-                            onValueChange={handleTechnicalPercentageChange}
-                            className="w-full"
-                          />
-                        </div>)}
+                        {editDetails && (
+                          <div className="space-y-2">
+                            <p className="text-sm text-center text-muted-foreground mb-2">
+                              Adjust percentage
+                            </p>
+                            <Slider
+                              id="technical-percentage"
+                              min={0}
+                              max={100}
+                              step={5}
+                              enableColor={false}
+                              value={[technicalPercentage]}
+                              onValueChange={handleTechnicalPercentageChange}
+                              className="w-full"
+                            />
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -2621,20 +2619,22 @@ export default function InterviewPreviewPage({ params }) {
                         </div>
 
                         {/* Less prominent slider */}
-                        {editDetails && (<div className="space-y-2">
-                          <p className="text-sm text-center text-muted-foreground mb-2">
-                            Adjust percentage
-                          </p>
-                          <Slider
-                            id="soft-skills-percentage"
-                            min={0}
-                            max={100}
-                            step={5}
-                            value={[softSkillsPercentage]}
-                            onValueChange={handleSoftSkillsPercentageChange}
-                            className="w-full"
-                          />
-                        </div>)}
+                        {editDetails && (
+                          <div className="space-y-2">
+                            <p className="text-sm text-center text-muted-foreground mb-2">
+                              Adjust percentage
+                            </p>
+                            <Slider
+                              id="soft-skills-percentage"
+                              min={0}
+                              max={100}
+                              step={5}
+                              value={[softSkillsPercentage]}
+                              onValueChange={handleSoftSkillsPercentageChange}
+                              className="w-full"
+                            />
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -4451,67 +4451,86 @@ export default function InterviewPreviewPage({ params }) {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {interviewSessions
+                        // .filter((session) => session.interviewStatus === "ongoing") // Filter for ongoing sessions
+                        .map((session, index) => {
+                          const sessionId = session.sessionId;
+                          const startTime = new Date(
+                            session.scheduledDate
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          });
+                          const endTime = new Date(
+                            interviewDetail.endDate
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          });
+                          const candidateName =
+                            session.candidate.user.firstName +
+                            " " +
+                            (session.candidate.user.lastName || "");
+                          const candidateEmail = session.candidate.user.email;
+                          const interviewType = interviewDetail.interviewMedium; // Fallback to "Technical" if not available
+                          // const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
+                          const zoomLink =
+                            session.zoomLink || "https://zoom.us/j/123456789"; // Replace with actual link from response if available
 
-
-                      {
-                        interviewSessions
-                          // .filter((session) => session.interviewStatus === "ongoing") // Filter for ongoing sessions
-                          .map((session, index) => {
-                            const sessionId=session.sessionId;
-                            const startTime = new Date(session.scheduledDate).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            });
-                            const endTime = new Date(interviewDetail.endDate).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            });
-                            const candidateName = session.candidate.user.firstName + " " + (session.candidate.user.lastName || "");
-                            const candidateEmail = session.candidate.user.email;
-                            const interviewType = interviewDetail.interviewMedium; // Fallback to "Technical" if not available
-                            // const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
-                            const zoomLink = session.zoomLink || "https://zoom.us/j/123456789"; // Replace with actual link from response if available
-
-                            return (
-                              <Card
-                                key={index}
-                                className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
-                              >
-                                <CardHeader className="pb-2">
-                                  <div className="flex justify-between items-center">
-                                    <Badge
-                                      className={cn(
-                                        "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
-                                        session.interviewStatus === "ongoing" && "!bg-blue-600",
-                                        session.interviewStatus === "toBeConducted" && "!bg-orange-600",
-                                        session.interviewStatus === "completed" && "!bg-green-600"
-                                      )}
-                                    >
-                                      <div className="flex items-center gap-1">
-                                        <Hourglass size={12} />
-                                        <span>{session.interviewStatus.charAt(0).toUpperCase() + session.interviewStatus.slice(1)}</span>
-                                      </div>
-                                    </Badge>
-                                    <div className="text-sm font-medium">
-                                      {startTime} - {endTime}
+                          return (
+                            <Card
+                              key={index}
+                              className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                            >
+                              <CardHeader className="pb-2">
+                                <div className="flex justify-between items-center">
+                                  <Badge
+                                    className={cn(
+                                      "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
+                                      session.interviewStatus === "ongoing" &&
+                                        "!bg-blue-600",
+                                      session.interviewStatus ===
+                                        "toBeConducted" && "!bg-orange-600",
+                                      session.interviewStatus === "completed" &&
+                                        "!bg-green-600"
+                                    )}
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      <Hourglass size={12} />
+                                      <span>
+                                        {session.interviewStatus
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                          session.interviewStatus.slice(1)}
+                                      </span>
                                     </div>
+                                  </Badge>
+                                  <div className="text-sm font-medium">
+                                    {startTime} - {endTime}
                                   </div>
-                                </CardHeader>
-                                <CardContent className="pb-3 space-y-3">
-                                  <div className="flex items-center gap-3">
-                                    <Avatar className="h-10 w-10">
-                                      <AvatarFallback>
-                                        {candidateName.split(" ").map((name) => name.charAt(0)).join("")}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                      <div className="font-medium text-base">{candidateName}</div>
-                                      <div className="text-sm text-muted-foreground">{candidateEmail}</div>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="pb-3 space-y-3">
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-10 w-10">
+                                    <AvatarFallback>
+                                      {candidateName
+                                        .split(" ")
+                                        .map((name) => name.charAt(0))
+                                        .join("")}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="font-medium text-base">
+                                      {candidateName}
                                     </div>
                                     <div className="text-sm text-muted-foreground">
                                       {candidateEmail}
                                     </div>
-                                  
+                                  </div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {candidateEmail}
+                                  </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
@@ -4527,32 +4546,32 @@ export default function InterviewPreviewPage({ params }) {
                                       <span className="text-muted-foreground">Location:</span>
                                       <span className="font-medium ml-1">{location}</span>
                                     </div> */}
-                                  </div>
-                                </CardContent>
-                                <CardFooter className="pt-0 pb-4">
-                                  <div className="flex gap-2 w-full">
-                                    <Button
-                                      variant="outline"
-                                      className="flex-1"
-                                      onClick={() => handleStartSession(sessionId)}
-                                    >
-                                      <ArrowUpRight className="h-4 w-4 mr-2" />
-                                      Rejoin
-                                    </Button>
-                                    <Button
-                                      className="flex-1 !bg-green-600 hover:bg-green-700"
-                                      onClick={() => leaveRoom(sessionId)}
-                                    >
-                                      <StopCircle className="h-4 w-4 mr-2" />
-                                      End
-                                    </Button>
-                                  </div>
-                                </CardFooter>
-                              </Card>
-                            );
-                          })
-                      }
-
+                                </div>
+                              </CardContent>
+                              <CardFooter className="pt-0 pb-4">
+                                <div className="flex gap-2 w-full">
+                                  <Button
+                                    variant="outline"
+                                    className="flex-1"
+                                    onClick={() =>
+                                      handleStartSession(sessionId)
+                                    }
+                                  >
+                                    <ArrowUpRight className="h-4 w-4 mr-2" />
+                                    Rejoin
+                                  </Button>
+                                  <Button
+                                    className="flex-1 !bg-green-600 hover:bg-green-700"
+                                    onClick={() => leaveRoom(sessionId)}
+                                  >
+                                    <StopCircle className="h-4 w-4 mr-2" />
+                                    End
+                                  </Button>
+                                </div>
+                              </CardFooter>
+                            </Card>
+                          );
+                        })}
                     </div>
                   </CardContent>
                 </Card>
@@ -4601,7 +4620,12 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="timeslots" className="p-0 border-none">
-              <TimeSlotsTab interviewTimeSlotsTabel={interviewTimeSlotsTabel} interviewId={interviewId} isAddTimeSlotDialogOpen={isAddTimeSlotDialogOpen} setIsAddTimeSlotDialogOpen={setIsAddTimeSlotDialogOpen}/>
+              <TimeSlotsTab
+                interviewTimeSlotsTabel={interviewTimeSlotsTabel}
+                interviewId={interviewId}
+                isAddTimeSlotDialogOpen={isAddTimeSlotDialogOpen}
+                setIsAddTimeSlotDialogOpen={setIsAddTimeSlotDialogOpen}
+              />
             </TabsContent>
 
             <TabsContent value="invitation" className="p-0 border-none">
