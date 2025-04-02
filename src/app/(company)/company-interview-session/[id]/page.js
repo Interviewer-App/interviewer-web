@@ -427,7 +427,7 @@ function InterviewSessionPreviewPage({ params }) {
                       ""}</p>
                   </div>
                 </div>
-                <div className="flex flex-row gap-2 items-center">
+                {/* <div className="flex flex-row gap-2 items-center">
                   <Dot size={38} />
                   <div className="flex flex-col">
                     <p className=" text-base text-white">
@@ -435,7 +435,7 @@ function InterviewSessionPreviewPage({ params }) {
                     </p>
                     <p className="text-gray-400">  {sessionDetails?.interviewCategory || ""}</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
