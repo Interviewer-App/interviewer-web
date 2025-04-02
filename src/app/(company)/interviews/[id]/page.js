@@ -42,6 +42,7 @@ import {
   ArrowUpRight,
   Hourglass,
   AlertCircle,
+  SaveAll,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -221,7 +222,7 @@ import {
 } from "@/lib/api/interview-invitation";
 import CandidateAnalysisTab from "@/components/company/analysis-tab";
 import SkillsInput from "@/components/inputs/skillsInput";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TimeSlotsTab from "@/components/company/time-slots-tab";
 
 
@@ -290,6 +291,9 @@ export default function InterviewPreviewPage({ params }) {
   const [interviewTimeSlotsTabel, setInterviewTimeSlotsTabel] = useState([]);
   const [filterInterviewTimeSlots, setFilterInterviewTimeSlots] = useState([]);
   const [noOfQuestions, setNoOfQuestions] = useState(0);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [isAnalizingInterview, setIsAnalizingInterview] = useState(false);
+  const [isGeneratingSoftSkills, setIsGeneratingSoftSkills] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [todayCandidates, setTodayCandidates] = useState(0);
   const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
@@ -501,12 +505,11 @@ export default function InterviewPreviewPage({ params }) {
         setTotalCandidates(response.total);
 
         // Count today's candidates
-        const todayCount = response.data.filter(schedule =>
+        const todayCount = response.data.filter((schedule) =>
           isToday(schedule.startTime)
         ).length;
 
         setTodayCandidates(todayCount);
-
       } catch (error) {
         console.log("Error fetching interviews:", error);
       } finally {
@@ -4018,8 +4021,7 @@ export default function InterviewPreviewPage({ params }) {
         </Card>
       )} */}
 
-      {/* Today's Sessions */}
-      
+                {/* Today's Sessions */}
                 <Card className="border-blue-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2">
@@ -4128,39 +4130,34 @@ export default function InterviewPreviewPage({ params }) {
                                       <span className="text-muted-foreground">Location:</span>
                                       <span className="font-medium ml-1">{location}</span>
                                     </div> */}
-                                        </div>
-                                      </CardContent>
-                                      <CardFooter className="pt-0 pb-4">
-                                        <div className="flex gap-2 w-full">
-                                          <Button
-                                            variant="outline"
-                                            className="flex-1"
-                                            onClick={() => handleStartSession(sessionId)}
-                                          >
-                                            <ArrowUpRight className="h-4 w-4 mr-2" />
-                                            Rejoin
-                                          </Button>
-                                          <Button
-                                            className="flex-1 !bg-green-600 hover:bg-green-700"
-                                            onClick={() => leaveRoom(sessionId)}
-                                          >
-                                            <StopCircle className="h-4 w-4 mr-2" />
-                                            End
-                                          </Button>
-                                        </div>
-                                      </CardFooter>
-                                    </Card>
-                                  );
-                                })
-                            }
+                                  </div>
+                                </CardContent>
+                                <CardFooter className="pt-0 pb-4">
+                                  <div className="flex gap-2 w-full">
+                                    <Button
+                                      variant="outline"
+                                      className="flex-1"
+                                      onClick={() => handleStartSession(sessionId)}
+                                    >
+                                      <ArrowUpRight className="h-4 w-4 mr-2" />
+                                      Rejoin
+                                    </Button>
+                                    <Button
+                                      className="flex-1 !bg-green-600 hover:bg-green-700"
+                                      onClick={() => leaveRoom(sessionId)}
+                                    >
+                                      <StopCircle className="h-4 w-4 mr-2" />
+                                      End
+                                    </Button>
+                                  </div>
+                                </CardFooter>
+                              </Card>
+                            );
+                          })
+                      }
 
-                          </div>
-                        </CardContent>
-                      );
-                    } else {
-                      return null;
-                    }
-                  })()}
+                    </div>
+                  </CardContent>
                 </Card>
 
                 <div className="my-6 border border-gray-200/20 rounded-lg p-6">
