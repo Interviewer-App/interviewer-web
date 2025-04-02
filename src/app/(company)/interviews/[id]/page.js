@@ -297,6 +297,7 @@ export default function InterviewPreviewPage({ params }) {
   const [todayCandidates, setTodayCandidates] = useState(0);
   const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
 
+
   // useEffect(() => {
   //   console.log('interviewIddddd',)
   // }, [interviewId])
@@ -504,11 +505,12 @@ export default function InterviewPreviewPage({ params }) {
         setTotalCandidates(response.total);
 
         // Count today's candidates
-        const todayCount = response.data.filter((schedule) =>
+        const todayCount = response.data.filter(schedule =>
           isToday(schedule.startTime)
         ).length;
 
         setTodayCandidates(todayCount);
+
       } catch (error) {
         console.log("Error fetching interviews:", error);
       } finally {
@@ -705,7 +707,6 @@ export default function InterviewPreviewPage({ params }) {
     }
 
     const fetchInterviewTimeSlots = async () => {
-      // debugger
       try {
         // const session = await getSession();
         // const companyId = session?.user?.companyID;
@@ -2691,13 +2692,12 @@ export default function InterviewPreviewPage({ params }) {
 
                     {isQuestionPromptOpen && (
                       <div className="space-y-2 p-4 border rounded-md bg-card">
-                        <Label htmlFor="new-question">Number of Question</Label>
-                        <Textarea
-                          id="new-question"
+                        <Label htmlFor="number-of-question">Number of Question</Label>
+                        <Input
+                          id="number-of-question"
                           value={noOfQuestions}
                           onChange={(e) => setNoOfQuestions(e.target.value)}
                           placeholder="Enter your question here"
-                          className="min-h-[80px]"
                         />
                         <div className="space-y-2">
                           <Label htmlFor="skills">Skills</Label>
@@ -4272,15 +4272,10 @@ export default function InterviewPreviewPage({ params }) {
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <p className="text-sm text-muted-foreground">
-                          Completed
-                        </p>
+                        <p className="text-sm text-muted-foreground">Completed</p>
                         <p className="text-3xl font-bold text-green-500">
-                          {interviewStatusDetails.completedSchedules ||
-                            interviewSessions.filter(
-                              (session) =>
-                                session.interviewStatus === "completed"
-                            ).length ||
+                          {
+                            interviewSessions.filter((session) => session.interviewStatus === "completed").length ||
                             0}
                         </p>
                       </div>
@@ -4294,12 +4289,9 @@ export default function InterviewPreviewPage({ params }) {
                         <p className="text-sm text-muted-foreground">Ongoing</p>
                         <div className="flex items-center gap-2">
                           <p className="text-3xl font-bold text-blue-500">
-                            {interviewStatusDetails.completedSchedules ||
-                              interviewSessions.filter(
-                                (session) =>
-                                  session.interviewStatus === "ongoing"
-                              ).length ||
-                              0}
+                          {
+                            interviewSessions.filter((session) => session.interviewStatus === "ongoing").length ||
+                            0}
                           </p>
                         </div>
                       </div>
@@ -4310,24 +4302,18 @@ export default function InterviewPreviewPage({ params }) {
                   <Card className="bg-card/50 border-border/50">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <p className="text-sm text-muted-foreground">
-                          To Be Conducted
-                        </p>
+                        <p className="text-sm text-muted-foreground">To Be Conducted</p>
                         <p className="text-3xl font-bold text-amber-500">
-                          {interviewStatusDetails.completedSchedules ||
-                            interviewSessions.filter(
-                              (session) =>
-                                session.interviewStatus === "toBeConducted"
-                            ).length ||
+                        {
+                            interviewSessions.filter((session) => session.interviewStatus === "toBeConducted").length ||
                             0}
                         </p>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
-
-                {/* Today's Sessions */}
-                {/* {todaysSessions.length > 0 && (
+      {/* Today's Sessions */}
+      {/* {todaysSessions.length > 0 && (
         <Card className="border-blue-500/20">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
@@ -4419,7 +4405,8 @@ export default function InterviewPreviewPage({ params }) {
         </Card>
       )} */}
 
-                {/* Today's Sessions */}
+      {/* Today's Sessions */}
+      
                 <Card className="border-blue-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2">
@@ -4429,151 +4416,138 @@ export default function InterviewPreviewPage({ params }) {
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
                       </span>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className='pb-4'>
                       {(() => {
-                        const today = new Date("2025-04-01"); // Fixed date as per your setup; use new Date() for real-time
-                        const todaySessions = interviewSessions.filter(
-                          (session) => {
-                            const sessionDate = new Date(session.scheduledDate);
-                            return (
-                              sessionDate.getFullYear() ===
-                                today.getFullYear() &&
-                              sessionDate.getMonth() === today.getMonth() &&
-                              sessionDate.getDate() === today.getDate()
-                            );
-                          }
-                        );
-                        return `${todaySessions.length} session${
-                          todaySessions.length === 1 ? "" : "s"
-                        } scheduled for today`;
+
+                        const today = new Date(); // Fixed date as per your setup; use new Date() for real-time
+                        const todaySessions = interviewSessions.filter((session) => {
+                          const sessionDate = new Date(session.scheduledDate);
+                          return (
+                            sessionDate.getFullYear() === today.getFullYear() &&
+                            sessionDate.getMonth() === today.getMonth() &&
+                            sessionDate.getDate() === today.getDate()
+                          );
+                        });
+                        return `${todaySessions.length} session${todaySessions.length === 1 ? "" : "s"} scheduled for today`;
                       })()}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {interviewSessions
-                        // .filter((session) => session.interviewStatus === "ongoing") // Filter for ongoing sessions
-                        .map((session, index) => {
-                          const sessionId = session.sessionId;
-                          const startTime = new Date(
-                            session.scheduledDate
-                          ).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          });
-                          const endTime = new Date(
-                            interviewDetail.endDate
-                          ).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          });
-                          const candidateName =
-                            session.candidate.user.firstName +
-                            " " +
-                            (session.candidate.user.lastName || "");
-                          const candidateEmail = session.candidate.user.email;
-                          const interviewType = interviewDetail.interviewMedium; // Fallback to "Technical" if not available
-                          // const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
-                          const zoomLink =
-                            session.zoomLink || "https://zoom.us/j/123456789"; // Replace with actual link from response if available
+                  {(() => {
+                    const today = new Date(); // Fixed date as per your setup; use new Date() for real-time
+                    const todaySessions = interviewSessions.filter((session) => {
+                      const sessionDate = new Date(session.scheduledDate);
+                      return (
+                        sessionDate.getFullYear() === today.getFullYear() &&
+                        sessionDate.getMonth() === today.getMonth() &&
+                        sessionDate.getDate() === today.getDate()
+                      );
+                    });
 
-                          return (
-                            <Card
-                              key={index}
-                              className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
-                            >
-                              <CardHeader className="pb-2">
-                                <div className="flex justify-between items-center">
-                                  <Badge
-                                    className={cn(
-                                      "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
-                                      session.interviewStatus === "ongoing" &&
-                                        "!bg-blue-600",
-                                      session.interviewStatus ===
-                                        "toBeConducted" && "!bg-orange-600",
-                                      session.interviewStatus === "completed" &&
-                                        "!bg-green-600"
-                                    )}
-                                  >
-                                    <div className="flex items-center gap-1">
-                                      <Hourglass size={12} />
-                                      <span>
-                                        {session.interviewStatus
-                                          .charAt(0)
-                                          .toUpperCase() +
-                                          session.interviewStatus.slice(1)}
-                                      </span>
-                                    </div>
-                                  </Badge>
-                                  <div className="text-sm font-medium">
-                                    {startTime} - {endTime}
-                                  </div>
-                                </div>
-                              </CardHeader>
-                              <CardContent className="pb-3 space-y-3">
-                                <div className="flex items-center gap-3">
-                                  <Avatar className="h-10 w-10">
-                                    <AvatarFallback>
-                                      {candidateName
-                                        .split(" ")
-                                        .map((name) => name.charAt(0))
-                                        .join("")}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <div className="font-medium text-base">
-                                      {candidateName}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">
-                                      {candidateEmail}
-                                    </div>
-                                  </div>
-                                  <div className="text-sm text-muted-foreground">
-                                    {candidateEmail}
-                                  </div>
-                                </div>
+                    if (todaySessions.length > 0) {
+                      return (
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-                                <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
-                                  <div>
-                                    <span className="text-muted-foreground">
-                                      Medium:
-                                    </span>
-                                    <span className="font-medium ml-1">
-                                      {interviewType}
-                                    </span>
-                                  </div>
-                                  {/* <div>
+
+                            {
+                              interviewSessions
+                                // .filter((session) => session.interviewStatus === "ongoing") // Filter for ongoing sessions
+                                .map((session, index) => {
+                                  const sessionId = session.sessionId;
+                                  const startTime = new Date(session.scheduledDate).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  });
+                                  const endTime = new Date(interviewDetail.endDate).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  });
+                                  const candidateName = session.candidate.user.firstName + " " + (session.candidate.user.lastName || "");
+                                  const candidateEmail = session.candidate.user.email;
+                                  const interviewType = interviewDetail.interviewMedium; // Fallback to "Technical" if not available
+                                  // const location = "Physical WithOut Device"; // This could be dynamic if your API provides it
+                                  const zoomLink = session.zoomLink || "https://zoom.us/j/123456789"; // Replace with actual link from response if available
+
+                                  return (
+                                    <Card
+                                      key={index}
+                                      className="overflow-hidden border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
+                                    >
+                                      <CardHeader className="pb-2">
+                                        <div className="flex justify-between items-center">
+                                          <Badge
+                                            className={cn(
+                                              "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
+                                              session.interviewStatus === "ongoing" && "!bg-blue-600",
+                                              session.interviewStatus === "toBeConducted" && "!bg-orange-600",
+                                              session.interviewStatus === "completed" && "!bg-green-600"
+                                            )}
+                                          >
+                                            <div className="flex items-center gap-1">
+                                              <Hourglass size={12} />
+                                              <span>{session.interviewStatus.charAt(0).toUpperCase() + session.interviewStatus.slice(1)}</span>
+                                            </div>
+                                          </Badge>
+                                          <div className="text-sm font-medium">
+                                            {startTime} - {endTime}
+                                          </div>
+                                        </div>
+                                      </CardHeader>
+                                      <CardContent className="pb-3 space-y-3">
+                                        <div className="flex items-center gap-3">
+                                          <Avatar className="h-10 w-10">
+                                            <AvatarFallback>
+                                              {candidateName.split(" ").map((name) => name.charAt(0)).join("")}
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          <div>
+                                            <div className="font-medium text-base">{candidateName}</div>
+                                            <div className="text-sm text-muted-foreground">{candidateEmail}</div>
+                                          </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-2 text-sm min-h-10">
+                                          <div>
+                                            <span className="text-muted-foreground">Medium:</span>
+                                            <span className="font-medium ml-1">{interviewType}</span>
+                                          </div>
+                                          {/* <div>
                                       <span className="text-muted-foreground">Location:</span>
                                       <span className="font-medium ml-1">{location}</span>
                                     </div> */}
-                                </div>
-                              </CardContent>
-                              <CardFooter className="pt-0 pb-4">
-                                <div className="flex gap-2 w-full">
-                                  <Button
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={() =>
-                                      handleStartSession(sessionId)
-                                    }
-                                  >
-                                    <ArrowUpRight className="h-4 w-4 mr-2" />
-                                    Rejoin
-                                  </Button>
-                                  <Button
-                                    className="flex-1 !bg-green-600 hover:bg-green-700"
-                                    onClick={() => leaveRoom(sessionId)}
-                                  >
-                                    <StopCircle className="h-4 w-4 mr-2" />
-                                    End
-                                  </Button>
-                                </div>
-                              </CardFooter>
-                            </Card>
-                          );
-                        })}
-                    </div>
-                  </CardContent>
+                                        </div>
+                                      </CardContent>
+                                      <CardFooter className="pt-0 pb-4">
+                                        <div className="flex gap-2 w-full">
+                                          <Button
+                                            variant="outline"
+                                            className="flex-1"
+                                            onClick={() => handleStartSession(sessionId)}
+                                          >
+                                            <ArrowUpRight className="h-4 w-4 mr-2" />
+                                            Rejoin
+                                          </Button>
+                                          <Button
+                                            className="flex-1 !bg-green-600 hover:bg-green-700"
+                                            onClick={() => leaveRoom(sessionId)}
+                                          >
+                                            <StopCircle className="h-4 w-4 mr-2" />
+                                            End
+                                          </Button>
+                                        </div>
+                                      </CardFooter>
+                                    </Card>
+                                  );
+                                })
+                            }
+
+                          </div>
+                        </CardContent>
+                      );
+                    } else {
+                      return null;
+                    }
+                  })()}
                 </Card>
 
                 <div className="my-6 border border-gray-200/20 rounded-lg p-6">
@@ -4777,12 +4751,7 @@ export default function InterviewPreviewPage({ params }) {
                                   Shareable Invitation Link
                                 </Label>
                                 <div className="flex gap-2">
-                                  <Input
-                                    id="invite-link"
-                                    value={inviteLink}
-                                    readOnly
-                                    className="flex-1"
-                                  />
+                                  <Input id="invite-link" value={inviteLink} readOnly className="flex-1" />
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                   Share this link with candidates to allow them
@@ -4923,9 +4892,7 @@ export default function InterviewPreviewPage({ params }) {
                 <Card className="bg-card/50 border-border/50">
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
-                      <p className="text-sm text-muted-foreground">
-                        Total Candidates
-                      </p>
+                      <p className="text-sm text-muted-foreground">Total Candidates</p>
                       <p className="text-3xl font-bold">{totalCandidates}</p>
                     </div>
                   </CardContent>
@@ -4962,9 +4929,7 @@ export default function InterviewPreviewPage({ params }) {
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
                       <p className="text-sm text-muted-foreground">Today</p>
-                      <p className="text-3xl font-bold text-purple-500">
-                        {todayCandidates}
-                      </p>
+                      <p className="text-3xl font-bold text-purple-500">{todayCandidates}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -5034,8 +4999,8 @@ export default function InterviewPreviewPage({ params }) {
                           {selectedSortCategory === "overall"
                             ? "Overall"
                             : categoryList.find(
-                                (cat) => cat.key === selectedSortCategory
-                              )?.catagory || "Select Category"}
+                              (cat) => cat.key === selectedSortCategory
+                            )?.catagory || "Select Category"}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56">
@@ -5140,17 +5105,13 @@ export default function InterviewPreviewPage({ params }) {
                       <AlertCircle className="h-5 w-5" />
                       Danger Zone
                     </CardTitle>
-                    <CardDescription>
-                      Destructive actions that cannot be undone
-                    </CardDescription>
+                    <CardDescription>Destructive actions that cannot be undone</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center p-4 border border-red-200 dark:border-red-900 rounded-md">
                       <div>
                         <h3 className="font-medium">Reset to Defaults</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Reset all settings to their default values
-                        </p>
+                        <p className="text-sm text-muted-foreground">Reset all settings to their default values</p>
                       </div>
                       {/* <AlertDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                         <AlertDialogTrigger asChild>
@@ -5181,15 +5142,9 @@ export default function InterviewPreviewPage({ params }) {
                     <div className="flex justify-between items-center p-4 border border-red-200 dark:border-red-900 rounded-md">
                       <div>
                         <h3 className="font-medium">Delete Interview</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Permanently delete this interview and all associated
-                          data
-                        </p>
+                        <p className="text-sm text-muted-foreground">Permanently delete this interview and all associated data</p>
                       </div>
-                      <AlertDialog
-                        open={isDeleteDialogOpen}
-                        onOpenChange={setIsDeleteDialogOpen}
-                      >
+                      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                         <AlertDialogTrigger asChild>
                           <Button
                             variant="outline"
@@ -5200,14 +5155,10 @@ export default function InterviewPreviewPage({ params }) {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Are you absolutely sure?
-                            </AlertDialogTitle>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will
-                              permanently delete the interview and all
-                              associated data including sessions, recordings,
-                              and candidate evaluations.
+                              This action cannot be undone. This will permanently delete the interview and all associated data
+                              including sessions, recordings, and candidate evaluations.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
