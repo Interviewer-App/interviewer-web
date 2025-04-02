@@ -18,8 +18,6 @@ import {
 import { LoaderCircle, Sparkles } from "lucide-react";
 import { generateInterviewQuestions, generateQuestions } from "@/lib/api/ai";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import SkillsInput from "../inputs/skillsInput";
 
 const ListItem = styled("li")(({ theme }) => ({
