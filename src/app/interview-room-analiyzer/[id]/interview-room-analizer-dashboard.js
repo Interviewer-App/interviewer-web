@@ -390,7 +390,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 <div className="space-y-4">
                   {/* Candidate Answer */}
                   <div className="border rounded-md p-4">
-                    <h4 className="font-medium text-sm mb-2">Candidate's Answer</h4>
+                    <h4 className="font-medium text-sm mb-2">Candidate&apos;s Answer</h4>
                     <div className="bg-muted/30 rounded-md p-3 min-h-[100px]">
                       <p className="text-sm">
                         {candidateAnswers?.answer || "Waiting for candidate to respond..."}
