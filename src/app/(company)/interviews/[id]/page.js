@@ -655,6 +655,7 @@ export default function InterviewPreviewPage({ params }) {
     interviewCategories,
     generateModalOpen,
     createModalOpen,
+    editingQuestionDetails,
     questionGenerationLoading,
     isGeneratingQuestions,
   ]);
@@ -669,7 +670,7 @@ export default function InterviewPreviewPage({ params }) {
     } else {
       setSkills([]);
     }
-  }, [interviewDetail, createModalOpen, editingQuestion]);
+  }, [interviewDetail, createModalOpen, editingQuestion, editingQuestionDetails]);
 
   useEffect(() => {
     const fetchOverviewData = async () => {
@@ -1734,6 +1735,7 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleEditQuestion = async (id, question, duration, type) => {
+    debugger
     setEditingQuestionDetails((prev) => ({
       ...prev,
       questionText: question,
