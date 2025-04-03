@@ -76,6 +76,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   }, [questionList]);
 
   useEffect(() => {
+    
     socket.emit("joinInterviewSession", {
       sessionId: sessionID,
       userId: userID,
@@ -91,6 +92,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     socket.on("questions", (data) => {
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
+      console.log('questionList', questionList);
     });
     
     socket.on("technicalStatus", (data) => {
@@ -343,7 +345,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
           </button>
         </div> */}
 
-        {tab === "DASHBOARD" && (
+        {activeTab === "technical" && (
           <InterviewRoomAnalizerDashboard
             analiyzeResponse={analiyzeResponse}
             candidateAnswers={candidateAnswers}
@@ -361,7 +363,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             setActiveTab={setActiveTab}
           />
         )}
-        {tab === "SCORE" && (
+        {activeTab === "soft" && (
           <InterviewRoomAnalizerScore
             numberOfAnswers={numberOfAnswers}
             numOfQuestions={numOfQuestions}
@@ -372,15 +374,16 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             questionList={questionList}
           />
         )}
-        {tab === "OTHER" && (
+        {activeTab === "overall" && (
           <InterviewRoomAnalizerOther
             categoryScores={categoryScores}
             setCategoryScores={setCategoryScores}
             sessionId={sessionId}
             allocation={true}
+            questionList={questionList}
           />
         )}
-        {tab === "CANDIDATE_PROFILE" && (
+        {activeTab === "ai-analysis" && (
           <InterviewRoomAnalizerCandidateProfile
             candidateId={sessionData.candidateId}
           />
