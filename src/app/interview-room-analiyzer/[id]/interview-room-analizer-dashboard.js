@@ -186,23 +186,26 @@ const InterviewRoomAnalizerDashboard = forwardRef(
 
                   {/* Question List */}
                   <div className="flex flex-col gap-3 mb-4">
-                    {questionList.sort((a, b) => b.index - a.index)
-                    .map((question, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-3 rounded-md border border-gray-500/40 bg-transparent"
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
-                            {index + 1}
+                    {questionList
+                      .sort((a, b) => b.index - a.index)
+                      .map((question, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-3 rounded-md border border-gray-500/40 bg-transparent"
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
+                              {index + 1}
+                            </div>
+                            <span className="font-medium">
+                              Question {index + 1}
+                            </span>
                           </div>
-                          <span className="font-medium">
-                            Question {index + 1}
-                          </span>
+                          <p className="text-sm ml-8">
+                            {question.questionText}
+                          </p>
                         </div>
-                        <p className="text-sm ml-8">{question.questionText}</p>
-                      </div>
-                    ))}
+                      ))}
                   </div>
 
                   <div className="flex justify-center mt-6">
@@ -314,10 +317,10 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                       >
                         <div
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
-                            currentQuestionIndex === index
-                              ? question.isAnswered
-                                ? "bg-transparent"
-                                : "bg-gray-800 text-primary"
+                            question.isAnswered
+                              ? "bg-transparent"
+                              : currentQuestionIndex === index
+                              ? "bg-gray-800 text-primary"
                               : "bg-muted-foreground/20 text-muted-foreground"
                           }`}
                         >
@@ -405,15 +408,17 @@ const InterviewRoomAnalizerDashboard = forwardRef(
 
             {/* Right panel - Analysis */}
             <Card className="flex flex-col !bg-transparent">
-              <CardHeader className="pb-3 border-b">
+              <CardHeader className="pb-3 border-b border-gray-500/40">
                 <CardTitle className="text-lg">Real-time Analysis</CardTitle>
               </CardHeader>
 
               <CardContent className="flex-1 py-4 overflow-auto">
                 <div className="space-y-4">
                   {/* Candidate Answer */}
-                  <div className="border rounded-md p-4">
-                    <h4 className="font-medium text-sm mb-2">Candidate&apos;s Answer</h4>
+                  <div className="border border-gray-500/40 rounded-md p-4">
+                    <h4 className="font-medium text-sm mb-2">
+                      Candidate&apos;s Answer
+                    </h4>
                     <div className="bg-muted/30 rounded-md p-3 min-h-[100px]">
                       <p className="text-sm">
                         {candidateAnswers?.answer ||
