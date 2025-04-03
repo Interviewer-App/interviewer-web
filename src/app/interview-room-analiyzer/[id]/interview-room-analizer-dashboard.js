@@ -56,6 +56,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       technicalStatus,
       userID,
       setActiveTab,
+      activeTab,
     },
     ref
   ) => {
@@ -120,7 +121,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       socket.emit("nextQuestion", data);
       setAnaliyzeResponse({});
       setTypingAnswer("typing...");
-      setCurrentQuestionIndex((prev) => prev + 1)
+      setCurrentQuestionIndex((prev) => prev + 1);
     };
 
     const endTechnicalTest = () => {
@@ -155,114 +156,115 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     //     setTechnicalTestCompleted(true)
     //   }
     // }
-  
+
     // Navigate to previous question
     const prevQuestion = () => {
       if (currentQuestionIndex > 0) {
-        setCurrentQuestionIndex((prev) => prev - 1)
+        setCurrentQuestionIndex((prev) => prev - 1);
       }
-    }
+    };
 
     return (
-      <div className=" h-[90vh] w-full bg-black px-6">
-        {/* {interviewStage === "pre-interview" && ( */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left panel - Questions preview */}
-          <Card className="flex flex-col">
-            <CardHeader className="pb-3 border-b">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Code className="h-5 w-5" />
-                Technical Assessment Preview
-              </CardTitle>
-            </CardHeader>
+      <div className=" w-full bg-black px-6 mb-10">
+        {technicalStatus === "toBeConducted" && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left panel - Questions preview */}
+            <Card className="flex flex-col !bg-transparent">
+              <CardHeader className="pb-3 border-b !border-gray-500/40">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Code className="h-5 w-5" />
+                  Technical Assessment Preview
+                </CardTitle>
+              </CardHeader>
 
-            <CardContent className="flex-1 py-4 overflow-auto">
-              <div className="space-y-4">
-                <p className="text-muted-foreground mb-4">
-                  The following technical questions will be presented to the
-                  candidate:
-                </p>
-
-                {/* Question List */}
-                <div className="flex flex-col gap-3 mb-4">
-                  {questionList.map((question, index) => (
-                    <div
-                      key={index}
-                      className="px-4 py-3 rounded-md border bg-card"
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
-                          {index + 1}
-                        </div>
-                        <span className="font-medium">
-                          Question {index + 1}
-                        </span>
-                      </div>
-                      <p className="text-sm ml-8">{question.questionText}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex justify-center mt-6">
-                  <Button
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
-                    size="lg"
-                    onClick={startTechnicalQuestions}
-                  >
-                    Start technical test
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Right panel - Options */}
-          <Card className="flex flex-col">
-            <CardHeader className="pb-3 border-b">
-              <CardTitle className="text-lg">Interview Options</CardTitle>
-            </CardHeader>
-
-            <CardContent className="flex-1 py-6">
-              <div className="flex flex-col items-center justify-center h-full space-y-8">
-                <div className="text-center max-w-md">
-                  <h3 className="text-xl font-medium mb-3">
-                    You can start the technical test right away or evaluate soft
-                    skills
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Some details saying the user can evaluate soft skills before
-                    starting the technical test. This gives you flexibility in
-                    how you conduct the interview.
+              <CardContent className="flex-1 py-4 overflow-auto">
+                <div className="space-y-4">
+                  <p className="text-muted-foreground mb-4">
+                    The following technical questions will be presented to the
+                    candidate:
                   </p>
 
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full mb-4"
-                    onClick={() => setActiveTab("overall")}
-                  >
-                    Evaluate soft skills
-                  </Button>
+                  {/* Question List */}
+                  <div className="flex flex-col gap-3 mb-4">
+                    {questionList.sort((a, b) => b.index - a.index)
+                    .map((question, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-3 rounded-md border border-gray-500/40 bg-transparent"
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
+                            {index + 1}
+                          </div>
+                          <span className="font-medium">
+                            Question {index + 1}
+                          </span>
+                        </div>
+                        <p className="text-sm ml-8">{question.questionText}</p>
+                      </div>
+                    ))}
+                  </div>
 
-                  {/* <Button
+                  <div className="flex justify-center mt-6">
+                    <Button
+                      className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
+                      size="lg"
+                      onClick={startTechnicalQuestions}
+                    >
+                      Start technical test
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Right panel - Options */}
+            <Card className="flex flex-col !bg-transparent">
+              <CardHeader className="pb-3 border-b border-gray-500/40">
+                <CardTitle className="text-lg">Interview Options</CardTitle>
+              </CardHeader>
+
+              <CardContent className="flex-1 py-6">
+                <div className="flex flex-col items-center justify-center h-full space-y-8">
+                  <div className="text-center max-w-md">
+                    <h3 className="text-xl font-medium mb-3">
+                      You can start the technical test right away or evaluate
+                      soft skills
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Some details saying the user can evaluate soft skills
+                      before starting the technical test. This gives you
+                      flexibility in how you conduct the interview.
+                    </p>
+
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full mb-4"
+                      onClick={() => setActiveTab("overall")}
+                    >
+                      Evaluate soft skills
+                    </Button>
+
+                    {/* <Button
                       className="bg-indigo-600 hover:bg-indigo-700 text-white w-full"
                       size="lg"
                       onClick={startTechnicalQuestions}
                     >
                       Start technical test
                     </Button> */}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        {/* )} */}
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
-        {/* {interviewStage === "technical-test" && activeTab === "technical" && ( */}
+        {technicalStatus === "ongoing" && activeTab === "technical" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left panel - Current Question */}
-            <Card className="flex flex-col">
-              <CardHeader className="pb-3 border-b">
+            <Card className="flex flex-col !bg-transparent">
+              <CardHeader className="pb-3 border-b border-gray-500/40">
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Code className="h-5 w-5" />
@@ -272,7 +274,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     <span>
                       {currentQuestionIndex + 1}/{questionList.length}
                     </span>
-                    <div className="flex ml-2">
+                    {/* <div className="flex ml-2">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -291,7 +293,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </CardHeader>
@@ -303,21 +305,31 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     {questionList.map((question, index) => (
                       <button
                         key={index}
-                        onClick={() => setCurrentQuestionIndex(index)}
+                        // onClick={() => setCurrentQuestionIndex(index)}
                         className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
-                          currentQuestionIndex === index ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                          currentQuestionIndex === index
+                            ? "bg-blue-700 text-primary-foreground"
+                            : "hover:bg-muted"
                         }`}
                       >
                         <div
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                             currentQuestionIndex === index
-                              ? "bg-primary-foreground text-primary"
+                              ? question.isAnswered
+                                ? "bg-transparent"
+                                : "bg-gray-800 text-primary"
                               : "bg-muted-foreground/20 text-muted-foreground"
                           }`}
                         >
-                          {index + 1}
+                          {question.isAnswered ? (
+                            <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
+                          ) : (
+                            index + 1
+                          )}
                         </div>
-                        <span className="line-clamp-1 flex-1">{question.questionText}</span>
+                        <span className="line-clamp-1 flex-1">
+                          {question.questionText}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -366,22 +378,33 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   </div> */}
 
                   <div className="flex justify-center mt-6">
-                    {currentQuestionIndex < questionList.length - 1 ? (
-                      <Button className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={nextQuestion}>
-                        Next question
-                      </Button>
-                    ) : (
-                      <Button className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={endTechnicalTest}>
-                        End technical test
-                      </Button>
-                    )}
+                    {technicalStatus === "ongoing" &&
+                      currentQuestionIndex < questionList.length - 1 && (
+                        <Button
+                          className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
+                          onClick={nextQuestion}
+                        >
+                          Next question
+                        </Button>
+                      )}
+                    {technicalStatus === "testEnd" &&
+                      currentQuestionIndex >=
+                        questionList.length -
+                          1(
+                            <Button
+                              className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
+                              onClick={endTechnicalTest}
+                            >
+                              End technical test
+                            </Button>
+                          )}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Right panel - Analysis */}
-            <Card className="flex flex-col">
+            <Card className="flex flex-col !bg-transparent">
               <CardHeader className="pb-3 border-b">
                 <CardTitle className="text-lg">Real-time Analysis</CardTitle>
               </CardHeader>
@@ -393,59 +416,70 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     <h4 className="font-medium text-sm mb-2">Candidate&apos;s Answer</h4>
                     <div className="bg-muted/30 rounded-md p-3 min-h-[100px]">
                       <p className="text-sm">
-                        {candidateAnswers?.answer || "Waiting for candidate to respond..."}
+                        {candidateAnswers?.answer ||
+                          "Waiting for candidate to respond..."}
                       </p>
                     </div>
                   </div>
 
                   {/* Key Strengths and Improvements */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="border rounded-md p-3">
-                      <h4 className="text-sm font-medium mb-2">Key Strengths</h4>
+                    <div className="border border-gray-500/40 rounded-md p-3">
+                      <h4 className="text-sm font-medium mb-2">
+                        Key Strengths
+                      </h4>
                       {candidateAnswers?.answer ? (
                         <ul className="list-disc pl-5 text-sm space-y-1">
-                          
-                        {analiyzeResponse.keyStrengths?.map((key, index) => (
-                          <li key={index}>{key}</li>
-                        )) || "No key strengths found"}
-                
+                          {analiyzeResponse.keyStrengths?.map((key, index) => (
+                            <li key={index}>{key}</li>
+                          )) || "No key strengths found"}
                         </ul>
                       ) : (
-                        <p className="text-sm text-muted-foreground italic">Waiting for candidate response...</p>
+                        <p className="text-sm text-muted-foreground italic">
+                          Waiting for candidate response...
+                        </p>
                       )}
                     </div>
 
-                    <div className="border rounded-md p-3">
+                    <div className="border border-gray-500/40 rounded-md p-3">
                       <h4 className="text-sm font-medium mb-2">Improvements</h4>
                       {candidateAnswers?.answer ? (
                         <ul className="list-disc pl-5 text-sm space-y-1">
                           {analiyzeResponse.areasOfImprovement?.map(
-                          (key, index) => <li key={index}>{key}</li>
-                        ) || "No areas of improvement found"}
+                            (key, index) => <li key={index}>{key}</li>
+                          ) || "No areas of improvement found"}
                         </ul>
                       ) : (
-                        <p className="text-sm text-muted-foreground italic">Waiting for candidate response...</p>
+                        <p className="text-sm text-muted-foreground italic">
+                          Waiting for candidate response...
+                        </p>
                       )}
                     </div>
                   </div>
 
                   {/* Alignment with requirements */}
-                  <div className="border rounded-md p-3">
-                    <h4 className="text-sm font-medium mb-2">Alignments with requirements</h4>
+                  <div className="border border-gray-500/40 rounded-md p-3">
+                    <h4 className="text-sm font-medium mb-2">
+                      Alignments with requirements
+                    </h4>
                     {candidateAnswers?.answer ? (
                       <p className="text-sm">
                         {analiyzeResponse?.alignment || ""}
                       </p>
                     ) : (
-                      <p className="text-sm text-muted-foreground italic">Waiting for candidate response...</p>
+                      <p className="text-sm text-muted-foreground italic">
+                        Waiting for candidate response...
+                      </p>
                     )}
                   </div>
 
                   {/* Follow-up Questions */}
-                  <div className="border rounded-md p-3 bg-muted/20">
-                    <h4 className="text-sm font-medium mb-2">Followup questions</h4>
+                  <div className="border border-gray-500/40 rounded-md p-3 bg-muted/20">
+                    <h4 className="text-sm font-medium mb-2">
+                      Followup questions
+                    </h4>
                     <div className="space-y-2">
-                    {analiyzeResponse.followUpQuestions?.map(
+                      {analiyzeResponse.followUpQuestions?.map(
                         (question, index) => (
                           <div
                             key={index}
@@ -458,7 +492,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                      <PlusCircle className="h-4 w-4 text-blue-500 flex-shrink-0 ml-2" />
+                                        <PlusCircle className="h-4 w-4 text-blue-500 flex-shrink-0 ml-2" />
                                       </TooltipTrigger>
                                       <TooltipContent>
                                         <p>Add as Next Question</p>
@@ -506,11 +540,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   </div>
 
                   {/* AI Score */}
-                  {/* <div className="border rounded-md p-4">
+                  <div className="border border-gray-500/40 rounded-md p-4">
                     <div className="flex justify-between items-center mb-3">
                       <h4 className="font-medium text-sm">AI Score</h4>
                       <div className="flex items-center">
-                        {editingAiScore === currentQuestion.id ? (
+                        {/* {editingAiScore === currentQuestion.id ? (
                           <div className="flex items-center gap-1">
                             <Input
                               type="number"
@@ -541,31 +575,31 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                               </Button>
                             </div>
                           </div>
-                        ) : (
-                          <div className="flex items-center gap-1">
-                            <div
-                              className={`text-2xl font-bold ${
-                                (currentQuestion.aiScore || 0) >= 80
-                                  ? "text-green-600"
-                                  : (currentQuestion.aiScore || 0) >= 60
-                                    ? "text-blue-600"
-                                    : (currentQuestion.aiScore || 0) >= 40
-                                      ? "text-amber-600"
-                                      : "text-red-600"
-                              }`}
-                            >
-                              {currentQuestion.aiScore || 0}%
-                            </div>
-                            <Button
+                        ) : ( */}
+                        <div className="flex items-center gap-1">
+                          <div
+                            className={`text-2xl font-bold ${
+                              (analiyzeResponse.relevanceScore || 0) >= 80
+                                ? "text-green-600"
+                                : (analiyzeResponse.relevanceScore || 0) >= 60
+                                ? "text-blue-600"
+                                : (analiyzeResponse.relevanceScore || 0) >= 40
+                                ? "text-amber-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {analiyzeResponse.relevanceScore || 0}%
+                          </div>
+                          {/* <Button
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
                               onClick={() => handleEditAiScore(currentQuestion.id)}
                             >
                               <Edit2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        )}
+                            </Button> */}
+                        </div>
+                        {/* )} */}
                       </div>
                     </div>
 
@@ -573,29 +607,35 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                       <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
-                            (currentQuestion.aiScore || 0) >= 80
+                            (analiyzeResponse.relevanceScore || 0) >= 80
                               ? "bg-green-500"
-                              : (currentQuestion.aiScore || 0) >= 60
-                                ? "bg-blue-500"
-                                : (currentQuestion.aiScore || 0) >= 40
-                                  ? "bg-amber-500"
-                                  : "bg-red-500"
+                              : (analiyzeResponse.relevanceScore || 0) >= 60
+                              ? "bg-blue-500"
+                              : (analiyzeResponse.relevanceScore || 0) >= 40
+                              ? "bg-amber-500"
+                              : "bg-red-500"
                           }`}
-                          style={{ width: `${currentQuestion.aiScore || 0}%` }}
+                          style={{
+                            width: `${analiyzeResponse.relevanceScore || 0}%`,
+                          }}
                         />
                       </div>
                       <div className="flex justify-between mt-1">
-                        <span className="text-xs text-muted-foreground">Poor</span>
-                        <span className="text-xs text-muted-foreground">Excellent</span>
+                        <span className="text-xs text-muted-foreground">
+                          Poor
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Excellent
+                        </span>
                       </div>
                     </div>
-                  </div>*/}
-                </div> 
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
-        {/* )} */}
-        <ResizablePanelGroup direction="horizontal">
+        )}
+        {/* <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={160}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={60}>
@@ -766,7 +806,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                       <p className=" text-sm text-gray-400">
                         {analiyzeResponse?.alignment || ""}
                       </p>
-                    </div> */}
+                    </div>
                   </div>
                 </div>
                 <div className=" w-full bg-blue-700/20 mt-5 text-gray-400 border-2 border-blue-700 px-4 py-3 rounded-lg">
@@ -845,7 +885,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
               </div>
             )}
           </ResizablePanel>
-        </ResizablePanelGroup>
+        </ResizablePanelGroup> */}
       </div>
     );
   }
