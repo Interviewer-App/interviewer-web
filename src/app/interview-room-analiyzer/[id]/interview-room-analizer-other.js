@@ -17,11 +17,15 @@ import { FaDotCircle } from "react-icons/fa";
 import { LuNotebookPen } from "react-icons/lu";
 import { getInterviewCategoryByInterviewId } from "@/lib/api/interview-category";
 import socket from "@/lib/utils/socket";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertTriangle, BarChart3, CheckCircle, Code, Sparkles, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 function InterviewRoomAnalizerOther({
   setCategoryScores,
   categoryScores,
   sessionId,
   allocation,
+  questionList,
 }) {
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [selectedCategoryScoreId, setSelectedCategoryScoreId] = useState(null);
@@ -29,7 +33,9 @@ function InterviewRoomAnalizerOther({
   const [categoryPercentageList, setCategoryPercentageList] = useState([]);
   const { toast } = useToast();
 
+
   useEffect(() => {
+    // console.log('questionList',questionList)
     const fetchCategoryPercentage = async () => {
       try {
         const response = await getInterviewCategoryByInterviewId(sessionId);
@@ -45,7 +51,7 @@ function InterviewRoomAnalizerOther({
         });
       }
     };
-    if ( sessionId) fetchCategoryPercentage();
+    if (sessionId) fetchCategoryPercentage();
   }, [sessionId]);
 
   const handleOpenNoteModal = (categoryId, categoryName) => {
@@ -58,7 +64,7 @@ function InterviewRoomAnalizerOther({
     setCategoryScores((prev) =>
       prev.map((item) =>
         item.categoryAssignment.category.categoryId ===
-        category.categoryAssignment.category.categoryId
+          category.categoryAssignment.category.categoryId
           ? { ...item, score: value }
           : item
       )
@@ -87,7 +93,8 @@ function InterviewRoomAnalizerOther({
   };
 
   return (
-    <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
+    <>
+      {/* <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
       <h1 className=" text-3xl font-semibold">Other categories</h1>
       <div className=" flex flex-col md:flex-row justify-between items-start w-full mt-5">
         <div className={` w-full ${allocation ? 'md:w-[60%] md:border-r-2 md:pr-8' : 'md:w-full'}   border-gray-700/20 min-h-[500px]`}>
@@ -206,7 +213,306 @@ function InterviewRoomAnalizerOther({
           categoryName={selectedCategoryName}
         />
       )}
-    </div>
+    </div> */}
+
+      <Card className="flex flex-col">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Overall Score Breakdown
+          </CardTitle>
+          <CardDescription>
+            Comprehensive assessment of candidate performance across all evaluation areas
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Technical Score */}
+            <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                  <Code className="h-4 w-4" />
+                  Technical Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-center">
+                  <div className="relative w-32 h-32 mb-2">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      {/* Background circle */}
+                      <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--muted))" strokeWidth="10" />
+                      {/* Progress circle */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="45"
+                        fill="none"
+                        stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
+                        strokeWidth="10"
+                        // strokeDasharray={`${(2 * Math.PI * 45 * technicalScorePercentage) / 100} ${2 * Math.PI * 45 * (1 - technicalScorePercentage / 100)}`}
+                        strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                        transform="rotate(-90 50 50)"
+                        strokeLinecap="round"
+                        className="text-blue-500"
+                        style={{ stroke: "#3b82f6" }}
+                      />
+                      {/* Percentage text */}
+                      <text
+                        x="50"
+                        y="50"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        fontSize="24"
+                        fontWeight="bold"
+                        fill="currentColor"
+                        className="text-blue-500"
+                        style={{ fill: "#3b82f6" }}
+                      >
+                        {/* {Math.round(technicalScorePercentage)}% */}
+                      </text>
+                    </svg>
+                  </div>
+                  {/* <p className="text-sm text-muted-foreground text-center">
+                        Weight: {sessionData.overallScore?.technicalWeight || 60}%
+                      </p> */}
+                </div>
+
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium mb-2">Question Breakdown</h4>
+                  <div className="space-y-3">
+                  {Array.isArray(questionList) && questionList.length > 0 ? (
+                    questionList.map((question, index) => (
+                      <div
+                        key={question.questionID || index}
+                        className="px-4 py-3 rounded-md border bg-card"
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
+                            {index + 1}
+                          </div>
+                          <span className="font-medium">
+                            Question {index + 1}
+                          </span>
+                          {question.isAnswered && (
+                            <Badge variant="outline" className="bg-green-100 text-green-700 ml-2">
+                              Answered
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm ml-8">{question.questionText}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-4 text-center">
+                      <AlertTriangle className="h-8 w-8 text-amber-500 mb-2" />
+                      <p className="text-muted-foreground">No questions available yet</p>
+                    </div>
+                  )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Soft Skills Score */}
+            <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2 text-purple-700 dark:text-purple-400">
+                  <User className="h-4 w-4" />
+                  Soft Skills Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-center">
+                  <div className="relative w-32 h-32 mb-2">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      {/* Background circle */}
+                      <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--muted))" strokeWidth="10" />
+                      {/* Progress circle */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="45"
+                        fill="none"
+                        stroke="hsl(var(--purple-500, 270 91.2% 59.8%))"
+                        strokeWidth="10"
+                        // strokeDasharray={`${(2 * Math.PI * 45 * softSkillsScorePercentage) / 100} ${2 * Math.PI * 45 * (1 - softSkillsScorePercentage / 100)}`}
+                        strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                        transform="rotate(-90 50 50)"
+                        strokeLinecap="round"
+                        style={{ stroke: "#8b5cf6" }}
+                      />
+                      {/* Percentage text */}
+                      <text
+                        x="50"
+                        y="50"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        fontSize="24"
+                        fontWeight="bold"
+                        fill="currentColor"
+                        style={{ fill: "#8b5cf6" }}
+                      >
+                        {/* {Math.round(softSkillsScorePercentage)}% */}
+                      </text>
+                    </svg>
+                  </div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    {/* Weight: {sessionData.overallScore?.softSkillsWeight || 40}% */}
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium mb-2">Skill Breakdown</h4>
+                  <div className="space-y-3">
+                    {/* {sessionData.softSkills.map((skill) => (
+                          <div key={skill.id} className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                              <span>{skill.name}</span>
+                              <span>
+                                {skill.score}/{skill.maxScore}
+                              </span>
+                            </div>
+                            <Progress value={(skill.score / skill.maxScore) * 100} className="h-1.5" />
+                          </div>
+                        ))} */}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+
+            {/* Combined Score */}
+            <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2 text-green-700 dark:text-green-400">
+                  <Sparkles className="h-4 w-4" />
+                  Combined Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-center">
+                  <div className="relative w-32 h-32 mb-2">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      {/* Background circle */}
+                      <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--muted))" strokeWidth="10" />
+                      {/* Progress circle */}
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="45"
+                        fill="none"
+                        stroke="hsl(var(--green-500, 142 91.2% 59.8%))"
+                        strokeWidth="10"
+                        // strokeDasharray={`${(2 * Math.PI * 45 * combinedScorePercentage) / 100} ${2 * Math.PI * 45 * (1 - combinedScorePercentage / 100)}`}
+                        strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                        transform="rotate(-90 50 50)"
+                        strokeLinecap="round"
+                        style={{ stroke: "#22c55e" }}
+                      />
+                      {/* Percentage text */}
+                      <text
+                        x="50"
+                        y="50"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        fontSize="24"
+                        fontWeight="bold"
+                        fill="currentColor"
+                        style={{ fill: "#22c55e" }}
+                      >
+                        {/* {Math.round(combinedScorePercentage)}% */}
+                      </text>
+                    </svg>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200">
+                        {/* Technical: {Math.round(technicalScorePercentage)}% */}
+                      </Badge>
+                      <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200">
+                        {/* Soft Skills: {Math.round(softSkillsScorePercentage)}% */}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Weighted average of all assessment areas</p>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <div className="p-3 rounded-md border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-900/30">
+                    <h4 className="text-sm font-medium flex items-center gap-1.5 mb-2 text-green-800 dark:text-green-300">
+                      <AlertTriangle className="h-4 w-4" />
+                      Assessment Summary
+                    </h4>
+                    <p className="text-sm text-green-700 dark:text-green-300">
+                      This candidate demonstrates strong technical knowledge with room for improvement in
+                      communication skills. Overall performance is above average for the position requirements.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium mb-4">AI-Assisted Evaluation</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Technical Strengths</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="list-disc pl-5 space-y-1 text-sm">
+                      <li>Strong understanding of JavaScript fundamentals</li>
+                      <li>Good knowledge of React component lifecycle</li>
+                      <li>Demonstrates problem-solving approach to coding challenges</li>
+                      <li>Familiar with modern web development practices</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Areas for Improvement</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="list-disc pl-5 space-y-1 text-sm">
+                      <li>Could improve depth of knowledge in algorithm optimization</li>
+                      <li>Limited experience with complex state management</li>
+                      <li>Communication could be more concise and structured</li>
+                      <li>Consider more examples in technical explanations</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-medium mb-4">Recommendation</h3>
+              <Card className="border-blue-200">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-blue-100 p-2 rounded-full text-blue-700">
+                      <CheckCircle className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-blue-700 mb-1">Proceed to Next Round</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Based on the overall assessment, this candidate shows promising skills and should proceed to
+                        the next interview round. Focus follow-up questions on state management experience and team
+                        collaboration examples.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+          </div>
+        </CardContent>
+      </Card>
+
+    </>
   );
 }
 
