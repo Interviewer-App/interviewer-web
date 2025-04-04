@@ -72,6 +72,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [activeTab, setActiveTab] = useState("technical");
   const [sessionDetails, setSessionDetails] = useState({});
   const timerRef = useRef(null)
+  const [candidateId,setCandidateId] = useState(null)
 
   const { toast } = useToast();
   useEffect(() => {
@@ -181,6 +182,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       // debugger;
       setOverollScore(data.totalScore.totalScore);
       setSessionData(data.totalScore.session);
+      setCandidateId( data.totalScore.session.candidateId);
     });
 
     socket.on("categoryScores", (data) => {
@@ -475,7 +477,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         )}
         {activeTab === "ai-analysis" && (
           <InterviewRoomAnalizerCandidateProfile
-            candidateId={sessionData.candidateId}
+            candidateId={candidateId}
           />
         )}
       </div>
