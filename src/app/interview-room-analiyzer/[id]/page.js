@@ -478,6 +478,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         {activeTab === "ai-analysis" && (
           <InterviewRoomAnalizerCandidateProfile
             candidateId={candidateId}
+            sessionId={sessionID}
           />
         )}
       </div>
