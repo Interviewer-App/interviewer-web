@@ -164,6 +164,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("answerSubmitted", (data) => {
+      // debugger;
       setIsSubmitAnswers(true);
       setCandidateAnswers({
         question: data.questionText,
@@ -177,6 +178,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("totalScore", (data) => {
+      // debugger;
       setOverollScore(data.totalScore.totalScore);
       setSessionData(data.totalScore.session);
     });
@@ -462,12 +464,14 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         )}
         {activeTab === "overall" && (
           <InterviewRoomAnalizerOther
+            totalScore={totalScore}
+            overollScore={overollScore}
             categoryScores={categoryScores}
             setCategoryScores={setCategoryScores}
             sessionId={sessionId}
             allocation={true}
             questionList={questionList}
-          />
+          />  
         )}
         {activeTab === "ai-analysis" && (
           <InterviewRoomAnalizerCandidateProfile
