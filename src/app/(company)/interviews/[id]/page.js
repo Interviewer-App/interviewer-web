@@ -296,7 +296,7 @@ export default function InterviewPreviewPage({ params }) {
   const [isCopied, setIsCopied] = useState(false);
   const [todayCandidates, setTodayCandidates] = useState(0);
   const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
-
+  const [isRefresh, setIsRefresh] = useState(false);
   // useEffect(() => {
   //   console.log('interviewIddddd',)
   // }, [interviewId])
@@ -704,6 +704,10 @@ export default function InterviewPreviewPage({ params }) {
     if (interviewId) {
       fetchInterviewStatus();
     }
+  },[interviewId]);
+
+  useEffect(() => {
+
 
     const fetchInterviewTimeSlots = async () => {
       try {
@@ -778,7 +782,7 @@ export default function InterviewPreviewPage({ params }) {
       }
     };
     if (interviewId) fetchInterviewTimeSlots();
-  }, [interviewId, isAddTimeSlotDialogOpen]);
+  }, [interviewId, isAddTimeSlotDialogOpen, isRefresh]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -1735,7 +1739,6 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleEditQuestion = async (id, question, duration, type) => {
-    debugger
     setEditingQuestionDetails((prev) => ({
       ...prev,
       questionText: question,
@@ -4644,6 +4647,8 @@ export default function InterviewPreviewPage({ params }) {
                 interviewId={interviewId}
                 isAddTimeSlotDialogOpen={isAddTimeSlotDialogOpen}
                 setIsAddTimeSlotDialogOpen={setIsAddTimeSlotDialogOpen}
+                setIsRefresh={setIsRefresh}
+                isRefresh={isRefresh}
               />
             </TabsContent>
 

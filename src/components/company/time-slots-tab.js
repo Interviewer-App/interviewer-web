@@ -66,7 +66,7 @@ import { createSchedulesForInterviews, deleteSchedulesForInterviews } from "@/li
 // Add this interface at the top of the file, after the TimeSlot interface
 
 
-export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen }) {
+export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen, setIsRefresh, isRefresh }) {
     const [isLoading, setIsLoading] = useState(false)
     const [currentTime, setCurrentTime] = useState(new Date())
     const [dateRange, setDateRange] = useState("");
@@ -116,7 +116,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isA
     }, [])
 
     // Group time slots by date
-    const groupedTimeSlots = timeSlots.reduce(
+    const groupedTimeSlots = interviewTimeSlotsTabel.reduce(
         (acc, slot) => {
             const dateStr = format(slot.date, "yyyy-MM-dd")
             if (!acc[dateStr]) {
@@ -135,7 +135,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isA
 
     // Handle adding a new time slot
     const handleAddTimeSlot = () => {
-        const id = `TS${timeSlots.length + 1}`.padStart(5, "0")
+        const id = `TS${interviewTimeSlotsTabel.length + 1}`.padStart(5, "0")
         const startTimeWithAmPm = `${newSlot.startTime} ${newSlot.startAmPm}`
         const endTimeWithAmPm = `${newSlot.endTime} ${newSlot.endAmPm}`
 
@@ -291,8 +291,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isA
                     description: "Schedules deleted successfully",
                 });
 
-                setIsAddTimeSlotDialogOpen(false)
-                setSchedules([])
+                setIsRefresh(isRefresh => !isRefresh)
             } else {
                 toast({
                     variant: "destructive",
@@ -522,7 +521,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isA
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {timeSlots
+                                            {interviewTimeSlotsTabel
                                                 .map((slot) => (
                                                     <tr key={slot.id} className="border-t dark:border-[#4d4d4d] dark:hover:bg-muted/30 dark:transition-colors">
                                                         <td className="p-4">
@@ -573,6 +572,8 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isA
                                                                     //     Book
                                                                     //   </Button>
                                                                 )}
+
+                                                                {slot.isBooked !== true && (
                                                                 <DropdownMenu>
                                                                     <DropdownMenuTrigger asChild>
                                                                         <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -593,7 +594,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isA
                                                                         <DropdownMenuSeparator /> */}
                                                                         <DropdownMenuItem className="text-red-500" onClick={() => handleDeleteSchedule(slot)} >Delete Slot</DropdownMenuItem>
                                                                     </DropdownMenuContent>
-                                                                </DropdownMenu>
+                                                                </DropdownMenu>)}
                                                             </div>
                                                         </td>
                                                     </tr>
