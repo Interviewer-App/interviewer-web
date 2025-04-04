@@ -46,7 +46,12 @@ import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 import VideoCall from "@/components/video/video";
 import { Mic, Pause, RefreshCw } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -1178,13 +1183,26 @@ const InterviewRoomPage = ({ params }) => {
               </div>
             )}
           </div>
-          <div className=" w-[20%] max-w-[400px] px-3 h-lvh bg-black border-l-2 border-gray-700">
-            <VideoCall
-              sessionId={sessionId}
-              isCandidate={true}
-              senderId={userId}
-              role="CANDIDATE"
-            />
+          <div className=" w-[20%] max-w-[400px] h-lvh bg-black border-l rounded-lg border-gray-500/40">
+            <div className=" px-4 py-4 border-b border-gray-500/40">
+              <h1 className=" text-lg font-semibold">Video Conference</h1>
+              <p className=" text-muted-foreground text-sm ">
+                You are connected with your interviewer
+              </p>
+            </div>
+            <div className=" px-3 mt-8">
+              <VideoCall
+                sessionId={sessionId}
+                isCandidate={true}
+                senderId={userId}
+                role="CANDIDATE"
+              />
+            </div>
+            <div className=" px-3">
+              <div className=" bg-muted-foreground/20 text-white text-sm p-3 rounded-lg mt-4">
+              Your interviewer will guide you through the technical assessment and answer any questions you may have.
+              </div>
+            </div>
           </div>
         </div>
       ) : (
