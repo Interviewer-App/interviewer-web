@@ -62,8 +62,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
   ) => {
     const videoCallRef = useRef();
     const [allAnswered, setAllAnswered] = useState(false);
-    const [isAllUnansweredOrNoneAnswered, setIsAllUnansweredOrNoneAnswered] =
-      useState(true);
+    const [isAllUnansweredOrNoneAnswered, setIsAllUnansweredOrNoneAnswered] =useState(true);
     const [questionCountDown, setQuestionCountDown] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -259,7 +258,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
           </div>
         )}
 
-        {technicalStatus === "ongoing" && activeTab === "technical" && (
+        { activeTab === "technical" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left panel - Current Question */}
             <Card className="flex flex-col !bg-transparent">
@@ -402,6 +401,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
             </Card>
 
             {/* Right panel - Analysis */}
+            {technicalStatus === "ongoing" ? (
             <Card className="flex flex-col !bg-transparent">
               <CardHeader className="pb-3 border-b border-gray-500/40">
                 <CardTitle className="text-lg">Real-time Analysis</CardTitle>
@@ -632,7 +632,44 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   </div>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            ) : (<Card className="flex flex-col !bg-transparent">
+              <CardHeader className="pb-3 border-b border-gray-500/40">
+                <CardTitle className="text-lg">Interview Options</CardTitle>
+              </CardHeader>
+
+              <CardContent className="flex-1 py-6">
+                <div className="flex flex-col items-center justify-center h-full space-y-8">
+                  <div className="text-center max-w-md">
+                    <h3 className="text-xl font-medium mb-3">
+                    Your technical assessment is complete
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Some details saying the user can evaluate soft skills
+                      before starting the technical test. This gives you
+                      flexibility in how you conduct the interview.
+                    </p>
+
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full mb-4"
+                      onClick={() => setActiveTab("overall")}
+                    >
+                      Evaluate soft skills
+                    </Button>
+
+                    {/* <Button
+          className="bg-indigo-600 hover:bg-indigo-700 text-white w-full"
+          size="lg"
+          onClick={startTechnicalQuestions}
+        >
+          Start technical test
+        </Button> */}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>)}
           </div>
         )}
         {/* <ResizablePanelGroup direction="horizontal">
