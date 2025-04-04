@@ -453,6 +453,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             analiyzeResponse={analiyzeResponse}
             answeredQuestionNo={answeredQuestionNo}
             questionList={questionList}
+            categoryScores={categoryScores}
+            setCategoryScores={setCategoryScores}
+            sessionId={sessionId}
+            technicalStatus={technicalStatus}
+            setActiveTab={setActiveTab}
           />
         )}
         {activeTab === "overall" && (
