@@ -4943,7 +4943,7 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="candidates" className="p-0 border-none">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <Card className="bg-card/50 border-border/50">
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
@@ -4992,7 +4992,7 @@ export default function InterviewPreviewPage({ params }) {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </div> */}
               <div className=" !bg-[#0a0a0a] w-full h-fit p-9 rounded-lg mt-5 border border-gray-500/30">
                 <div>
                   <h1 className=" text-2xl font-semibold">Candidates</h1>
