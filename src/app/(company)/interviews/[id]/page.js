@@ -247,7 +247,7 @@ export default function InterviewPreviewPage({ params }) {
   const [totalCandidates, setTotalCandidates] = useState(0);
   const [totalsessions, setTotalSessions] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [tab, setTab] = useState("overview");
   const [questionTab, setQuestionTab] = useState("technical");
   const [status, setStatus] = useState("");
@@ -4269,7 +4269,7 @@ export default function InterviewPreviewPage({ params }) {
                         </p>
                         <p className="text-3xl font-bold">
                           {/* {interviewStatusDetails.totalSchedules || interviewSessions.length || 0} */}
-                          12
+                          {interviewOverview?.total || 0}
                         </p>
                       </div>
                     </CardContent>
