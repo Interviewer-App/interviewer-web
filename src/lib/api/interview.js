@@ -181,3 +181,14 @@ export const createSchedulesForInterviews = async (interviewsId, data) => {
         throw error;
     }
 }
+
+
+export const deleteSchedulesForInterviews = async (scheduleId) => {
+    try {
+        const response=await axiosInstance.delete(`/interview/schedule/${scheduleId}`)
+        return response;
+    } catch (error) {
+        console.log(`Error ordering interview flow`,error)
+        throw error;
+    }
+}

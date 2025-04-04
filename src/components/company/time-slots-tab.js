@@ -61,12 +61,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";// Types
-import { createSchedulesForInterviews } from "@/lib/api/interview"
+import { createSchedulesForInterviews, deleteSchedulesForInterviews } from "@/lib/api/interview"
 
 // Add this interface at the top of the file, after the TimeSlot interface
 
 
-export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isAddTimeSlotDialogOpen,setIsAddTimeSlotDialogOpen}) {
+export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel, isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen }) {
     const [isLoading, setIsLoading] = useState(false)
     const [currentTime, setCurrentTime] = useState(new Date())
     const [dateRange, setDateRange] = useState("");
@@ -188,7 +188,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isA
                 variant: "destructive",
                 title: "Error",
                 description: "Please add at least one schedule",
-              });
+            });
             return;
         }
 
@@ -198,7 +198,7 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isA
                 variant: "destructive",
                 title: "Error",
                 description: "Please add at least one schedule",
-              });
+            });
             return;
         }
 
@@ -208,31 +208,31 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isA
                 startTime: new Date(`${sch.date}T${sch.startTime}`).toISOString(),
                 endTime: new Date(`${sch.date}T${sch.endTime}`).toISOString(),
             }));
-        
-            const response = await createSchedulesForInterviews(interviewId,scheduleData)
+
+            const response = await createSchedulesForInterviews(interviewId, scheduleData)
             if (response) {
                 toast({
                     title: "Success!",
                     description: "Schedules saved successfully",
-                  });
-                
-                setIsAddTimeSlotDialogOpen(false) 
-                setSchedules([]) 
+                });
+
+                setIsAddTimeSlotDialogOpen(false)
+                setSchedules([])
             } else {
                 toast({
                     variant: "destructive",
                     title: "Error",
                     description: "Error saving schedules",
-                  });
+                });
             }
-            
+
         } catch (error) {
             console.error("Error saving schedules:", error)
             toast({
                 variant: "destructive",
                 title: "Error",
                 description: "Error saving schedules",
-              });
+            });
         }
 
     }
@@ -279,6 +279,36 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isA
     const handleViewDetails = (slot) => {
         setSelectedTimeSlot(slot)
         setShowDetailsDialog(true)
+    }
+
+    const handleDeleteSchedule = async (slot) => {
+        try {
+
+            const response = await deleteSchedulesForInterviews(slot.id)
+            if (response) {
+                toast({
+                    title: "Success!",
+                    description: "Schedules deleted successfully",
+                });
+
+                setIsAddTimeSlotDialogOpen(false)
+                setSchedules([])
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Error saving schedules",
+                });
+            }
+
+        } catch (error) {
+            console.error("Error saving schedules:", error)
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Error saving schedules",
+            });
+        }
     }
 
     return (
@@ -543,27 +573,27 @@ export default function TimeSlotsTab({ interviewId, interviewTimeSlotsTabel ,isA
                                                                     //     Book
                                                                     //   </Button>
                                                                 )}
-                                                                {/* <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                                      <MoreHorizontal className="h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    {slot.isBooked ? (
-                                      <DropdownMenuItem onClick={() => handleViewDetails(slot)}>
-                                        View Details
-                                      </DropdownMenuItem>
-                                    ) : (
-                                      <DropdownMenuItem>Book Slot</DropdownMenuItem>
-                                    )}
-                                    <DropdownMenuItem>Edit Slot</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-red-500">Delete Slot</DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu> */}
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                                            <MoreHorizontal className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                                        <DropdownMenuSeparator />
+                                                                        {slot.isBooked ? (
+                                                                            <DropdownMenuItem onClick={() => handleViewDetails(slot)}>
+                                                                                View Details
+                                                                            </DropdownMenuItem>
+                                                                        ) : (
+                                                                            <DropdownMenuItem>Book Slot</DropdownMenuItem>
+                                                                        )}
+                                                                        <DropdownMenuItem>Edit Slot</DropdownMenuItem>
+                                                                        <DropdownMenuSeparator /> */}
+                                                                        <DropdownMenuItem className="text-red-500" onClick={() => handleDeleteSchedule(slot)} >Delete Slot</DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
                                                             </div>
                                                         </td>
                                                     </tr>
