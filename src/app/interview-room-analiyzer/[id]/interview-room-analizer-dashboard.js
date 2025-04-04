@@ -186,26 +186,22 @@ const InterviewRoomAnalizerDashboard = forwardRef(
 
                   {/* Question List */}
                   <div className="flex flex-col gap-3 mb-4">
-                    {questionList
-                      .sort((a, b) => b.index - a.index)
-                      .map((question, index) => (
-                        <div
-                          key={index}
-                          className="px-4 py-3 rounded-md border border-gray-500/40 bg-transparent"
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
-                              {index + 1}
-                            </div>
-                            <span className="font-medium">
-                              Question {index + 1}
-                            </span>
+                    {questionList.map((question, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-3 rounded-md border border-gray-500/40 bg-transparent"
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-6 h-6 rounded-full bg-muted-foreground/20 text-muted-foreground flex items-center justify-center text-xs">
+                            {index + 1}
                           </div>
-                          <p className="text-sm ml-8">
-                            {question.questionText}
-                          </p>
+                          <span className="font-medium">
+                            Question {index + 1}
+                          </span>
                         </div>
-                      ))}
+                        <p className="text-sm ml-8">{question.questionText}</p>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="flex justify-center mt-6">
@@ -305,12 +301,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 <div className="space-y-4">
                   {/* Question List - Simplified Navigation */}
                   <div className="flex flex-col gap-2 mb-4">
-                    {questionList.map((question, index) => (
+                    {[...questionList].sort((a, b) => b.index - a.index).map((question, mapIndex) => (
                       <button
-                        key={index}
-                        // onClick={() => setCurrentQuestionIndex(index)}
+                        key={mapIndex}
                         className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
-                          currentQuestionIndex === index
+                          currentQuestionIndex === mapIndex
                             ? "bg-blue-700 text-primary-foreground"
                             : "hover:bg-muted"
                         }`}
@@ -319,7 +314,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                             question.isAnswered
                               ? "bg-transparent"
-                              : currentQuestionIndex === index
+                              : currentQuestionIndex === mapIndex
                               ? "bg-gray-800 text-primary"
                               : "bg-muted-foreground/20 text-muted-foreground"
                           }`}
@@ -327,7 +322,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                           {question.isAnswered ? (
                             <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
                           ) : (
-                            index + 1
+                            mapIndex + 1
                           )}
                         </div>
                         <span className="line-clamp-1 flex-1">
