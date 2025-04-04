@@ -41,6 +41,7 @@ import {
   LinkedinIcon,
   GithubIcon,
   Plus,
+  Check,
 } from "lucide-react";
 import {
   Card,
@@ -803,7 +804,7 @@ function CandidateDetailsProfile() {
                           No Feedback Found
                         </h3>
                         <p className=" text-xs text-muted-foreground max-w-md">
-                          The interviewer's notes will be available once
+                          The interviewer&apos;s notes will be available once
                           interviewr submit the feedback.
                         </p>
                       </div>
@@ -850,7 +851,7 @@ function CandidateDetailsProfile() {
             <CardHeader>
               <CardTitle>Detailed Assessment</CardTitle>
               <CardDescription>
-                Breakdown of candidate's performance in different skill areas
+                Breakdown of candidate&apos;s performance in different skill areas
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -929,7 +930,7 @@ function CandidateDetailsProfile() {
                                 No Experience Found
                               </h3>
                               <p className="text-muted-foreground max-w-md">
-                                The candidate's experience details will be
+                                The candidate&apos;s experience details will be
                                 available once the interview is completed.
                               </p>
                             </div>
@@ -962,7 +963,7 @@ function CandidateDetailsProfile() {
                                   No Skills Found
                                 </h3>
                                 <p className="text-muted-foreground max-w-md">
-                                  The candidate's skill highlights will be
+                                  The candidate&apos;s skill highlights will be
                                   available once the interview is completed.
                                 </p>
                               </div>
@@ -1358,7 +1359,7 @@ function CandidateDetailsProfile() {
                                 <CardHeader>
                                   <CardTitle>Technical Skills</CardTitle>
                                   <CardDescription>
-                                    Breakdown of candidate's performance in
+                                    Breakdown of candidate&apos;s performance in
                                     different skill areas
                                   </CardDescription>
                                 </CardHeader>
@@ -1469,7 +1470,7 @@ function CandidateDetailsProfile() {
                                 <CardHeader>
                                   <CardTitle>Soft Skills</CardTitle>
                                   <CardDescription>
-                                    Breakdown of candidate's performance in soft
+                                    Breakdown of candidate&apos;s performance in soft
                                     skills areas like communication, teamwork,
                                     etc.
                                   </CardDescription>
@@ -1598,7 +1599,7 @@ function CandidateDetailsProfile() {
                       <CardHeader>
                         <CardTitle>Detailed Assessment</CardTitle>
                         <CardDescription>
-                          Breakdown of candidate's performance in different
+                          Breakdown of candidate&apos;s performance in different
                           skill areas
                         </CardDescription>
                       </CardHeader>
@@ -1705,7 +1706,7 @@ function CandidateDetailsProfile() {
                     <CardHeader>
                       <CardTitle>Resume</CardTitle>
                       <CardDescription>
-                        Upload and view candidate's resume
+                        Upload and view candidate&apos;s resume
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -1925,7 +1926,7 @@ function CandidateDetailsProfile() {
                                     AI-Generated Interview Questions
                                   </CardTitle>
                                   <CardDescription>
-                                    Questions tailored to the candidate's
+                                    Questions tailored to the candidate&apos;s
                                     profile based on their resume
                                   </CardDescription>
                                 </CardHeader>
@@ -1962,7 +1963,7 @@ function CandidateDetailsProfile() {
                                                   </AlertDialogTitle>
                                                   <AlertDialogDescription>
                                                     Once you add this question
-                                                    to the candidate's questionnaire, you cannot
+                                                    to the candidate&apos;s questionnaire, you cannot
                                                     undo this action.
                                                   </AlertDialogDescription>
                                                 </AlertDialogHeader>
@@ -2034,7 +2035,7 @@ function CandidateDetailsProfile() {
                                 Resume Not Uploaded
                               </h3>
                               <p className="text-muted-foreground max-w-md">
-                                Candidate's is not uploaded the resume yet.
+                                Candidate&apos;s is not uploaded the resume yet.
                               </p>
                             </div>
                           )}
@@ -2046,7 +2047,7 @@ function CandidateDetailsProfile() {
                             No Resume Uploaded
                           </h3>
                           <p className="text-muted-foreground text-center max-w-md mb-6">
-                            Upload the candidate's resume to view it here and
+                            Upload the candidate&apos;s resume to view it here and
                             generate AI-powered interview questions.
                           </p>
                         </div>
