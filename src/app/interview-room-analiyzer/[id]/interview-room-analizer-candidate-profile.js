@@ -73,11 +73,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertDialog } from "@radix-ui/react-alert-dialog";
 
-function InterviewRoomAnalizerCandidateProfile({candidateId}) {
+function InterviewRoomAnalizerCandidateProfile({candidateId,sessionId}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   // const candidateId = searchParams.get("candidateID"); // Adjust if the param name differs
-  const sessionId = searchParams.get("sessionID");
+  // const sessionId = searchParams.get("sessionID");
   const [candidateDetails, setCandidateDetails] = useState({});
   const [documentAnalizedData, setDocumentAnalizedData] = useState("");
   const [age, setAge] = useState(0);
@@ -922,7 +922,7 @@ function InterviewRoomAnalizerCandidateProfile({candidateId}) {
                                   variant="secondary"
                                   className="px-3 py-1 text-sm"
                                 >
-                                  {skill}
+                                   {typeof skill === "string" ? skill : skill.name} 
                                 </Badge>
                               ))
                             ) : (
