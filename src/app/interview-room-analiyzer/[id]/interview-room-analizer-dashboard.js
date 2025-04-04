@@ -105,6 +105,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       );
     }, [questionList]);
 
+    useEffect(() => {
+      const questionNumber = questionList.filter(question => question.isAnswered === true).length;
+      setCurrentQuestionIndex(questionNumber);
+    }, [questionList]);
+
     const handleExternalEndCall = () => {
       videoCallRef.current?.endCall();
     };
@@ -164,7 +169,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     };
 
     return (
-      <div className=" w-full bg-black px-6 mb-10">
+      <div className=" w-[90%] max-w-[1600px] bg-black mx-auto h-full p-6">
         {technicalStatus === "toBeConducted" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left panel - Questions preview */}
@@ -300,35 +305,38 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 <div className="space-y-4">
                   {/* Question List - Simplified Navigation */}
                   <div className="flex flex-col gap-2 mb-4">
-                    {[...questionList].sort((a, b) => b.index - a.index).map((question, mapIndex) => (
-                      <button
-                        key={mapIndex}
-                        className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
-                          currentQuestionIndex === mapIndex
-                            ? "bg-blue-700 text-primary-foreground"
-                            : "hover:bg-muted"
-                        }`}
-                      >
-                        <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
-                            question.isAnswered
-                              ? "bg-transparent"
-                              : currentQuestionIndex === mapIndex
-                              ? "bg-gray-800 text-primary"
-                              : "bg-muted-foreground/20 text-muted-foreground"
+                    {questionList
+                      .slice()
+                      .reverse()
+                      .map((question, index) => (
+                        <button
+                          key={index}
+                          className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
+                            currentQuestionIndex === index
+                              ? "bg-blue-700 text-primary-foreground"
+                              : "hover:bg-muted"
                           }`}
                         >
-                          {question.isAnswered ? (
-                            <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
-                          ) : (
-                            mapIndex + 1
-                          )}
-                        </div>
-                        <span className="line-clamp-1 flex-1">
-                          {question.questionText}
-                        </span>
-                      </button>
-                    ))}
+                          <div
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                              question.isAnswered
+                                ? "bg-transparent"
+                                : currentQuestionIndex === index
+                                ? "bg-gray-800 text-primary"
+                                : "bg-muted-foreground/20 text-muted-foreground"
+                            }`}
+                          >
+                            {question.isAnswered ? (
+                              <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
+                            ) : (
+                              index + 1
+                            )}
+                          </div>
+                          <span className="line-clamp-1 flex-1">
+                            {question.questionText}
+                          </span>
+                        </button>
+                      ))}
                   </div>
 
                   {/* Current Question */}
