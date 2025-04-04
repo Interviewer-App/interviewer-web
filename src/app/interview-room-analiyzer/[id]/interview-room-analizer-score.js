@@ -120,7 +120,7 @@ function InterviewRoomAnalizerScore({
   };
 
   return (
-    <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6">
+    <div className=" w-[90%] max-w-[1600px] bg-black mx-auto h-full p-6">
       <Card className="flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
