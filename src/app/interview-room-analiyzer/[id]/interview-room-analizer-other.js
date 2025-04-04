@@ -20,18 +20,30 @@ import socket from "@/lib/utils/socket";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, BarChart3, CheckCircle, Code, Sparkles, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getInterviewSessionById } from "@/lib/api/interview-session";
+
+
 function InterviewRoomAnalizerOther({
   setCategoryScores,
   categoryScores,
   sessionId,
   allocation,
   questionList,
+  totalScore,
+  overollScore
 }) {
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [selectedCategoryScoreId, setSelectedCategoryScoreId] = useState(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState(null);
   const [categoryPercentageList, setCategoryPercentageList] = useState([]);
   const { toast } = useToast();
+  const [sessionDetails, setSessionDetails] = useState({});
+  const [interviewId, setInterviewId] = useState(null);
+
+  // useEffect(() => {
+  //   console.log('totalScore',totalScore)
+  //   console.log('overollScore',overollScore)
+  // },[])
 
 
   useEffect(() => {
@@ -53,6 +65,32 @@ function InterviewRoomAnalizerOther({
     };
     if (sessionId) fetchCategoryPercentage();
   }, [sessionId]);
+
+  useEffect(() => {
+    const fetchSessionDetails = async () => {
+      try {
+        if (!sessionId) return;
+
+        const response = await getInterviewSessionById(sessionId);
+        console.log('getInterviewSessionById',response.data);
+        if (response.data) {
+          setSessionDetails(response.data);
+          setInterviewId(response.data.interview.interviewID);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: `Error fetching session: ${error}`,
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    };
+
+    fetchSessionDetails();
+  }, [sessionId]);
+  
+
 
   const handleOpenNoteModal = (categoryId, categoryName) => {
     setSelectedCategoryScoreId(categoryId);
@@ -249,7 +287,7 @@ function InterviewRoomAnalizerOther({
                         fill="none"
                         stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                         strokeWidth="10"
-                        // strokeDasharray={`${(2 * Math.PI * 45 * technicalScorePercentage) / 100} ${2 * Math.PI * 45 * (1 - technicalScorePercentage / 100)}`}
+                        strokeDasharray={`${(2 * Math.PI * 45 * (totalScore || 0)) / 100} ${2 * Math.PI * 45 * (1 - (totalScore || 0) / 100)}`}
                         strokeDashoffset={2 * Math.PI * 45 * 0.25}
                         transform="rotate(-90 50 50)"
                         strokeLinecap="round"
@@ -268,13 +306,13 @@ function InterviewRoomAnalizerOther({
                         className="text-blue-500"
                         style={{ fill: "#3b82f6" }}
                       >
-                        {/* {Math.round(technicalScorePercentage)}% */}
+                        {Math.round(totalScore)}%
                       </text>
                     </svg>
                   </div>
-                  {/* <p className="text-sm text-muted-foreground text-center">
-                        Weight: {sessionData.overallScore?.technicalWeight || 60}%
-                      </p> */}
+                  <p className="text-sm text-muted-foreground text-center">
+                        Weight: {totalScore || 0}%
+                  </p>
                 </div>
 
                 <div className="mt-4">
@@ -327,6 +365,7 @@ function InterviewRoomAnalizerOther({
                     <svg className="w-full h-full" viewBox="0 0 100 100">
                       {/* Background circle */}
                       <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--muted))" strokeWidth="10" />
+                      
                       {/* Progress circle */}
                       <circle
                         cx="50"
@@ -335,7 +374,7 @@ function InterviewRoomAnalizerOther({
                         fill="none"
                         stroke="hsl(var(--purple-500, 270 91.2% 59.8%))"
                         strokeWidth="10"
-                        // strokeDasharray={`${(2 * Math.PI * 45 * softSkillsScorePercentage) / 100} ${2 * Math.PI * 45 * (1 - softSkillsScorePercentage / 100)}`}
+                        strokeDasharray={`${(2 * Math.PI * 45 * ((overollScore || 0) - (totalScore || 0))) / 100} ${2 * Math.PI * 45 * (1 - ((overollScore || 0) - (totalScore || 0)) / 100)}`}
                         strokeDashoffset={2 * Math.PI * 45 * 0.25}
                         transform="rotate(-90 50 50)"
                         strokeLinecap="round"
@@ -352,29 +391,41 @@ function InterviewRoomAnalizerOther({
                         fill="currentColor"
                         style={{ fill: "#8b5cf6" }}
                       >
-                        {/* {Math.round(softSkillsScorePercentage)}% */}
+                        {Math.round(overollScore-totalScore)}%
                       </text>
                     </svg>
                   </div>
                   <p className="text-sm text-muted-foreground text-center">
-                    {/* Weight: {sessionData.overallScore?.softSkillsWeight || 40}% */}
+                    Weight: {overollScore-totalScore || 0}%
                   </p>
                 </div>
 
                 <div className="mt-4">
                   <h4 className="text-sm font-medium mb-2">Skill Breakdown</h4>
                   <div className="space-y-3">
-                    {/* {sessionData.softSkills.map((skill) => (
+                    {categoryScores
+                      .filter(
+                        (category) =>
+                          category.categoryAssignment.category.categoryName === "Soft"
+                      )
+                      .map((category) =>
+                        category.subCategoryScores.map((skill) => (
                           <div key={skill.id} className="space-y-1">
                             <div className="flex justify-between text-xs">
-                              <span>{skill.name}</span>
+                              <span>{skill.subCategoryAssignment.name}</span>
                               <span>
-                                {skill.score}/{skill.maxScore}
+                                {skill.subCategoryAssignment.percentage}/{100}
                               </span>
                             </div>
-                            <Progress value={(skill.score / skill.maxScore) * 100} className="h-1.5" />
+                            <div className="w-full bg-gray-200 rounded-full h-1.5">
+                              <div
+                                className="bg-purple-500 h-1.5 rounded-full"
+                                style={{ width: `${(skill.subCategoryAssignment.percentage / 100) * 100}%` }}
+                              ></div>
+                            </div>
                           </div>
-                        ))} */}
+                        ))
+                      )}
                   </div>
                 </div>
               </CardContent>
@@ -420,17 +471,17 @@ function InterviewRoomAnalizerOther({
                         fill="currentColor"
                         style={{ fill: "#22c55e" }}
                       >
-                        {/* {Math.round(combinedScorePercentage)}% */}
+                        {Math.round(overollScore)}%
                       </text>
                     </svg>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-2 mb-1">
-                      <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200">
-                        {/* Technical: {Math.round(technicalScorePercentage)}% */}
+                      <Badge variant="outline" className="bg-blue-100 !text-blue-700 border-blue-200">
+                        Technical: {Math.round(totalScore )}%
                       </Badge>
-                      <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200">
-                        {/* Soft Skills: {Math.round(softSkillsScorePercentage)}% */}
+                      <Badge variant="outline" className="bg-purple-100 !text-purple-700 border-purple-200">
+                        Soft Skills: {Math.round(overollScore-totalScore)}%
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">Weighted average of all assessment areas</p>
@@ -453,62 +504,6 @@ function InterviewRoomAnalizerOther({
             </Card>
           </div>
 
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium mb-4">AI-Assisted Evaluation</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">Technical Strengths</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc pl-5 space-y-1 text-sm">
-                      <li>Strong understanding of JavaScript fundamentals</li>
-                      <li>Good knowledge of React component lifecycle</li>
-                      <li>Demonstrates problem-solving approach to coding challenges</li>
-                      <li>Familiar with modern web development practices</li>
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">Areas for Improvement</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc pl-5 space-y-1 text-sm">
-                      <li>Could improve depth of knowledge in algorithm optimization</li>
-                      <li>Limited experience with complex state management</li>
-                      <li>Communication could be more concise and structured</li>
-                      <li>Consider more examples in technical explanations</li>
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium mb-4">Recommendation</h3>
-              <Card className="border-blue-200">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-blue-100 p-2 rounded-full text-blue-700">
-                      <CheckCircle className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-blue-700 mb-1">Proceed to Next Round</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Based on the overall assessment, this candidate shows promising skills and should proceed to
-                        the next interview round. Focus follow-up questions on state management experience and team
-                        collaboration examples.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-          </div>
         </CardContent>
       </Card>
 
