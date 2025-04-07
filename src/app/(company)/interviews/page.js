@@ -479,6 +479,13 @@ const InterviewsPage = () => {
                     open positions.
                   </p>
                   <Button
+                    onClick={() => {router.push('/interviews/createInterview')}}
+                    className="flex items-center gap-2 transform hover:scale-105 transition-all animate-scale-in shadow-sm"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Create Interview</span>
+                  </Button>
+                  <Button
                     size="lg"
                     className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium"
                     onClick={() => {router.push('/interviews/createInterview')}}
