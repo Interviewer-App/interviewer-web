@@ -74,6 +74,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [sessionDetails, setSessionDetails] = useState({});
   const timerRef = useRef(null)
   const [candidateId,setCandidateId] = useState(null)
+  const videoCallRef = useRef();
 
   const { toast } = useToast();
   useEffect(() => {
@@ -259,7 +260,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     videoCallRef.current?.endCall();
   };
 
-      const videoCallRef = useRef();
 
   return (
     <>
