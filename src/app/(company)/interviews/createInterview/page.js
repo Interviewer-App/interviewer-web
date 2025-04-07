@@ -2628,9 +2628,9 @@ const CreateInterview = () => {
                           <AlertCircleIcon className="h-4 w-4" />
                           <AlertTitle>Manual Assessment</AlertTitle>
                           <AlertDescription>
-                            You've chosen to assess technical expertise manually
+                            You&apos;ve chosen to assess technical expertise manually
                             during the interview. Prepare your own questions and
-                            evaluation criteria based on the candidate's field.
+                            evaluation criteria based on the candidate&apos;s field.
                           </AlertDescription>
                         </Alert>
                       )}

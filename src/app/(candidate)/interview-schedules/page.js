@@ -314,7 +314,7 @@ const InterviewSchedulePage = () => {
                   No interviews found
                 </h1>
                 <p className="text-gray-500 mb-8 text-center">
-              You don't have any scheduled interviews at the moment. <br/>Schedule an interview or check back later.
+              You don&apos;t have any scheduled interviews at the moment. <br/>Schedule an interview or check back later.
             </p>
               </div>
             </div>
