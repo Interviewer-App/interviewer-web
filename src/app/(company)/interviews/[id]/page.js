@@ -1391,6 +1391,10 @@ export default function InterviewPreviewPage({ params }) {
     setActiveTab("candidates");
   };
 
+  const handleViewInvitaions = () => {
+    setActiveTab("invitation");
+  };
+
   const handleTechnicalPercentageChange = (value) => {
     const newValue = value[0];
     setTechnicalPercentage(newValue);
@@ -1982,6 +1986,12 @@ export default function InterviewPreviewPage({ params }) {
                     Edit
                   </Button>
                 ))}
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1 dark:bg-yellow-700"
+                    onClick={handleViewInvitaions}
+                  >Send Invitation <ArrowUpRight className="h-4 w-4" /> </Button>
               {interviewDetail.status !== "ACTIVE" ? (
                 <AlertDialog>
                   <AlertDialogTrigger
