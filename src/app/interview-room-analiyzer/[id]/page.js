@@ -38,6 +38,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import VideoCall from "@/components/video/video";
 
 const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -253,6 +254,12 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
+
+  const handleExternalEndCall = () => {
+    videoCallRef.current?.endCall();
+  };
+
+      const videoCallRef = useRef();
 
   return (
     <>
@@ -478,9 +485,17 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         {activeTab === "ai-analysis" && (
           <InterviewRoomAnalizerCandidateProfile
             candidateId={candidateId}
+            sessionId={sessionID}
           />
         )}
       </div>
+      <VideoCall
+                  sessionId={sessionId}
+                  isCandidate={false}
+                  ref={videoCallRef}
+                  senderId={userID}
+                  role="COMPANY"
+                />
     </>
   );
 };

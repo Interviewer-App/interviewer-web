@@ -4,6 +4,7 @@ import React, {
   useState,
   forwardRef,
   useImperativeHandle,
+  useCallback,
 } from "react";
 import Peer from "peerjs";
 import io from "socket.io-client";
@@ -20,6 +21,7 @@ import {
   MessageCircle,
   Phone,
   MessageSquare,
+  Maximize2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -43,23 +45,154 @@ const VideoCall = forwardRef(
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const [peer, setPeer] = useState(null);
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
-    const socket = useRef(null);
+    const [isMaximized, setIsMaximized] = useState(null);
     const [isMicOn, setIsMicOn] = useState(true);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const originalVideoTrack = useRef(null);
-    const originalAudioTrack = useRef(null);
-    const activeCalls = useRef([]);
     const [callDuration, setCallDuration] = useState(0);
     const router = useRouter();
-
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [isChatOpen, setIsChatOpen] = useState(false);
-    const messagesEndRef = useRef(null);
+    const [isToolbarVisible, setIsToolbarVisible] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0); // State to track unread messages
+    const [candidateVideoPosition, setCandidateVideoPosition] = useState({
+      x: typeof window !== "undefined" ? window.innerWidth - 300 : 0,
+      y: typeof window !== "undefined" ? window.innerHeight - 300 : 0,
+    });
+    const [interviewerVideoPosition, setInterviewerVideoPosition] = useState({
+      x: typeof window !== "undefined" ? window.innerWidth - 200 : 0,
+      y: typeof window !== "undefined" ? window.innerHeight - 150 : 0,
+    });
+    const [isDraggingCandidate, setIsDraggingCandidate] = useState(false);
+    const [isDraggingInterviewer, setIsDraggingInterviewer] = useState(false);
+    const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(false);
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef(null);
+    const socket = useRef(null);
+    const candidateVideoRef = useRef(null);
+    const interviewerVideoRef = useRef(null);
+    const messagesEndRef = useRef(null);
+    const originalVideoTrack = useRef(null);
+    const originalAudioTrack = useRef(null);
+    const activeCalls = useRef([]);
+    const dragStartPositionRef = useRef({ x: 0, y: 0 });
+
+    const handleDragStart = useCallback(
+      (e, isCandidate) => {
+        e.preventDefault();
+
+        // Get the mouse or touch position
+        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+        const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+        // Store the initial position
+        dragStartPositionRef.current = {
+          x:
+            clientX -
+            (isCandidate
+              ? candidateVideoPosition.x
+              : interviewerVideoPosition.x),
+          y:
+            clientY -
+            (isCandidate
+              ? candidateVideoPosition.y
+              : interviewerVideoPosition.y),
+        };
+
+        // Set the dragging state
+        if (isCandidate) {
+          setIsDraggingCandidate(true);
+        } else {
+          setIsDraggingInterviewer(true);
+        }
+      },
+      [candidateVideoPosition, interviewerVideoPosition]
+    );
+
+    const handleDragMove = useCallback(
+      (e) => {
+        if (!isDraggingCandidate && !isDraggingInterviewer) return;
+
+        // Get the mouse or touch position
+        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+        const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+        // Calculate the new position
+        const newX = clientX - dragStartPositionRef.current.x;
+        const newY = clientY - dragStartPositionRef.current.y;
+
+        // Apply bounds checking
+        const applyBounds = (x, y, element) => {
+          if (!element) return { x, y };
+
+          const rect = element.getBoundingClientRect();
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+
+          // Ensure the element stays within the viewport
+          const boundedX = Math.max(0, Math.min(x, viewportWidth - rect.width));
+          const boundedY = Math.max(
+            0,
+            Math.min(y, viewportHeight - rect.height)
+          );
+
+          return { x: boundedX, y: boundedY };
+        };
+
+        // Update the position based on which element is being dragged
+        if (isDraggingCandidate) {
+          const bounded = applyBounds(newX, newY, candidateVideoRef.current);
+          setCandidateVideoPosition(bounded);
+        } else if (isDraggingInterviewer) {
+          const bounded = applyBounds(newX, newY, interviewerVideoRef.current);
+          setInterviewerVideoPosition(bounded);
+        }
+      },
+      [isDraggingCandidate, isDraggingInterviewer]
+    );
+
+    const handleDragEnd = useCallback(() => {
+      setIsDraggingCandidate(false);
+      setIsDraggingInterviewer(false);
+    }, []);
+
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        setCandidateVideoPosition({
+          x: window.innerWidth - 300,
+          y: window.innerHeight - 300,
+        });
+        setInterviewerVideoPosition({
+          x: window.innerWidth - 200,
+          y: window.innerHeight - 150,
+        });
+      }
+    }, []);
+
+    // Add event listeners for mouse and touch events
+    useEffect(() => {
+      if (isDraggingCandidate || isDraggingInterviewer) {
+        // Add event listeners for mouse and touch events
+        window.addEventListener("mousemove", handleDragMove);
+        window.addEventListener("mouseup", handleDragEnd);
+        window.addEventListener("touchmove", handleDragMove);
+        window.addEventListener("touchend", handleDragEnd);
+      }
+
+      return () => {
+        // Clean up event listeners
+        window.removeEventListener("mousemove", handleDragMove);
+        window.removeEventListener("mouseup", handleDragEnd);
+        window.removeEventListener("touchmove", handleDragMove);
+        window.removeEventListener("touchend", handleDragEnd);
+      };
+    }, [
+      isDraggingCandidate,
+      isDraggingInterviewer,
+      handleDragMove,
+      handleDragEnd,
+    ]);
 
     useEffect(() => {
       // Scroll to the bottom of the chat when new messages are added
@@ -72,6 +205,30 @@ const VideoCall = forwardRef(
       }, 1000);
       return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+      console.log("Video available:", isRemoteVideoOn );
+    }, );
+
+    useEffect(() => {
+      if (remoteStream) {
+        const videoTracks = remoteStream.getVideoTracks();
+        if (videoTracks.length > 0) {
+          const track = videoTracks[0];
+          const handleTrackEnded = () => {
+            setIsRemoteVideoOn(track.enabled);
+          };
+          
+          track.addEventListener('enabled', handleTrackEnded);
+          track.addEventListener('disabled', handleTrackEnded);
+          
+          return () => {
+            track.removeEventListener('enabled', handleTrackEnded);
+            track.removeEventListener('disabled', handleTrackEnded);
+          };
+        }
+      }
+    }, [remoteStream]);
 
     useEffect(() => {
       socket.current = io(process.env.NEXT_PUBLIC_API_URL_SOCKET);
@@ -103,6 +260,18 @@ const VideoCall = forwardRef(
             call.on("stream", (remoteStream) => {
               setRemoteStream(remoteStream);
               remoteVideoRef.current.srcObject = remoteStream;
+
+              remoteStream.getVideoTracks().forEach(track => {
+                track.addEventListener('enabled', () => setIsRemoteVideoOn(true));
+                track.addEventListener('disabled', () => setIsRemoteVideoOn(false));
+                track.addEventListener('ended', () => setIsRemoteVideoOn(false));
+              });
+
+              remoteStream.getAudioTracks().forEach(track => {
+                track.addEventListener('enabled', () => setIsRemoteAudioOn(true));
+                track.addEventListener('disabled', () => setIsRemoteAudioOn(false));
+                track.addEventListener('ended', () => setIsRemoteAudioOn(false));
+              });
             });
             call.on("close", () => {
               activeCalls.current = activeCalls.current.filter(
@@ -128,6 +297,18 @@ const VideoCall = forwardRef(
               activeCalls.current.push(call);
             }
           });
+
+          peerInstance.on("call", (call) => {
+            call.answer(stream);
+            call.on("stream", (remoteStream) => {
+              setRemoteStream(remoteStream);
+              remoteVideoRef.current.srcObject = remoteStream;
+              // Check if remote stream has video tracks
+              const hasVideo = remoteStream.getVideoTracks().length > 0;
+              setIsRemoteVideoOn(hasVideo);
+            });
+          });
+          
         } catch (error) {
           console.error("Error accessing media devices:", error);
         }
@@ -173,6 +354,26 @@ const VideoCall = forwardRef(
         socketChat.off("receiveMessage");
       };
     }, [isChatOpen]);
+
+    useEffect(() => {
+      const handleMouseMove = (e) => {
+        if (window.innerHeight - e.clientY < 50) {
+          setIsToolbarVisible(true);
+        } else {
+          setIsToolbarVisible(false);
+        }
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
+    }, []);
+
+    useImperativeHandle(ref, () => ({
+      endCall: handleEndCall,
+    }));
 
     const toggleMic = () => {
       if (originalAudioTrack.current) {
@@ -304,10 +505,6 @@ const VideoCall = forwardRef(
       }
     };
 
-    useImperativeHandle(ref, () => ({
-      endCall: handleEndCall,
-    }));
-
     const handleChatButtonClick = () => {
       setIsChatOpen(!isChatOpen);
       setUnreadCount(0);
@@ -327,54 +524,142 @@ const VideoCall = forwardRef(
       }
     };
 
-    const [isToolbarVisible, setIsToolbarVisible] = useState(false);
-
-    useEffect(() => {
-      const handleMouseMove = (e) => {
-        if (window.innerHeight - e.clientY < 50) {
-          setIsToolbarVisible(true);
-        } else {
-          setIsToolbarVisible(false);
-        }
-      };
-
-      window.addEventListener("mousemove", handleMouseMove);
-
-      return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-      };
-    }, []);
-
     return (
-      <div className="bg-black relative h-full max-h-lvh w-auto">
+      <div className="bg-black relative h-full w-auto">
         {/* Video containers */}
-        <div
-          className={`${
-            isCandidate ? "flex-col" : "flex-row"
-          } flex items-center h-full justify-center gap-5`}
-        >
-          <div className="w-full flex items-center justify-center bg-black rounded-lg">
-            <video
-              ref={remoteVideoRef}
-              autoPlay
-              className="h-full w-auto object-contain rounded-lg"
-            />
+        {isCandidate ? (
+          <div className={`flex-col flex items-center justify-center gap-5`}>
+            <div className="w-full relative flex items-center justify-center bg-gray-500 rounded-lg">
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                className="h-full w-auto object-contain rounded-lg"
+              />
+              <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
+                You ({isCandidate ? "Interviewer" : "Candidate"})
+              </div>
+            </div>
+            <div className="w-full relative flex items-center justify-center bg-black">
+              <video
+                ref={localVideoRef}
+                autoPlay
+                muted
+                className="h-full w-auto object-contain rounded-lg"
+              />
+              <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
+                You ({isCandidate ? "Candidate" : "Interviewer"})
+              </div>
+            </div>
           </div>
-          <div className="w-full flex items-center justify-center bg-black">
-            <video
-              ref={localVideoRef}
-              autoPlay
-              muted
-              className="h-full w-auto object-contain rounded-lg"
-            />
+        ) : (
+          <div className="fixed inset-0 pointer-events-none z-50">
+            {/* Candidate video */}
+            <div
+              ref={candidateVideoRef}
+              className={`w-64 h-48 bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto ${
+                isDraggingCandidate ? "cursor-grabbing" : "cursor-grab"
+              }`}
+              style={{
+                left: `${candidateVideoPosition.x}px`,
+                top: `${candidateVideoPosition.y}px`,
+                transition: isDraggingCandidate
+                  ? "none"
+                  : "box-shadow 0.2s ease",
+                boxShadow: isDraggingCandidate
+                  ? "0 8px 16px rgba(0,0,0,0.2)"
+                  : "0 4px 8px rgba(0,0,0,0.1)",
+              }}
+              onMouseDown={(e) => handleDragStart(e, true)}
+              onTouchStart={(e) => handleDragStart(e, true)}
+            >
+              <div className="relative h-full">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* {isVideoOn ? (
+                  <img
+                    src={sessionData.candidate.avatar || "/placeholder.svg?height=192&width=256"}
+                    alt="Candidate"
+                    className="h-full w-full object-cover"
+                    draggable={false}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-muted-foreground">
+                    <VideoOff className="h-8 w-8 mb-2" />
+                    <span className="text-sm">Camera Off</span>
+                  </div>
+                )} */}
+                  <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    className="h-full w-auto object-contain rounded-lg"
+                  />
+                </div>
+                <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-xs text-white">
+                  {isCandidate ? "Interviewer" : "Candidate"}
+                </div>
+                <div className="absolute top-2 right-2 flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
+                  >
+                    <Maximize2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Interviewer video (smaller) */}
+            <div
+              ref={interviewerVideoRef}
+              className={`w-32 h-24 bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto ${
+                isDraggingInterviewer ? "cursor-grabbing" : "cursor-grab"
+              }`}
+              style={{
+                left: `${interviewerVideoPosition.x}px`,
+                top: `${interviewerVideoPosition.y}px`,
+                transition: isDraggingInterviewer
+                  ? "none"
+                  : "box-shadow 0.2s ease",
+                boxShadow: isDraggingInterviewer
+                  ? "0 8px 16px rgba(0,0,0,0.2)"
+                  : "0 4px 8px rgba(0,0,0,0.1)",
+              }}
+              onMouseDown={(e) => handleDragStart(e, false)}
+              onTouchStart={(e) => handleDragStart(e, false)}
+            >
+              <div className="relative h-full">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    muted
+                    className="h-full w-auto object-contain rounded-lg"
+                  />
+                  {/* {isVideoOn ? (
+                  <img
+                    src={sessionData.interviewer.avatar || "/placeholder.svg?height=96&width=128"}
+                    alt="Interviewer"
+                    className="h-full w-full object-cover"
+                    draggable={false}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-muted-foreground">
+                    <VideoOff className="h-6 w-6 mb-1" />
+                    <span className="text-xs">Camera Off</span>
+                  </div>
+                )} */}
+                </div>
+                <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
+                  You ({isCandidate ? "Candidate" : "Interviewer"})
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Controls bar */}
         <div
-          className={`fixed z-50 bottom-0 left-0 right-0 bg-gray-900 py-4 px-4 flex justify-center gap-4 transition-transform duration-300 ${
-            isToolbarVisible ? "translate-y-0" : "translate-y-full"
-          }`}
+          className={`fixed z-50 bottom-0 left-0 right-0 bg-gray-900 py-4 px-4 flex justify-center gap-4 transition-transform duration-300 `}
         >
           <div className="absolute top-1/2 -translate-y-1/2 left-4 text-white z-50">
             <span className="font-medium text-xl">

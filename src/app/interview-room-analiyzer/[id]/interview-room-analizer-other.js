@@ -332,7 +332,7 @@ function InterviewRoomAnalizerOther({
                             Question {index + 1}
                           </span>
                           {question.isAnswered && (
-                            <Badge variant="outline" className="bg-green-100 text-green-700 ml-2">
+                            <Badge variant="outline" className="bg-green-100 !text-green-700 ml-2">
                               Answered
                             </Badge>
                           )}

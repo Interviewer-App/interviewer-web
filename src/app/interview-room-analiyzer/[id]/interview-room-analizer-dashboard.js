@@ -62,8 +62,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
   ) => {
     const videoCallRef = useRef();
     const [allAnswered, setAllAnswered] = useState(false);
-    const [isAllUnansweredOrNoneAnswered, setIsAllUnansweredOrNoneAnswered] =
-      useState(true);
+    const [isAllUnansweredOrNoneAnswered, setIsAllUnansweredOrNoneAnswered] =useState(true);
     const [questionCountDown, setQuestionCountDown] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -104,6 +103,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       setIsAllUnansweredOrNoneAnswered(
         answeredCount === 0 || unansweredQuestions.length === 0
       );
+    }, [questionList]);
+
+    useEffect(() => {
+      const questionNumber = questionList.filter(question => question.isAnswered === true).length;
+      setCurrentQuestionIndex(questionNumber);
     }, [questionList]);
 
     const handleExternalEndCall = () => {
@@ -165,7 +169,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     };
 
     return (
-      <div className=" w-full bg-black px-6 mb-10">
+      <div className=" w-[90%] max-w-[1600px] bg-black mx-auto h-full p-6">
         {technicalStatus === "toBeConducted" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left panel - Questions preview */}
@@ -259,7 +263,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
           </div>
         )}
 
-        {technicalStatus === "ongoing" && activeTab === "technical" && (
+        { activeTab === "technical" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left panel - Current Question */}
             <Card className="flex flex-col !bg-transparent">
@@ -301,35 +305,38 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 <div className="space-y-4">
                   {/* Question List - Simplified Navigation */}
                   <div className="flex flex-col gap-2 mb-4">
-                    {[...questionList].sort((a, b) => b.index - a.index).map((question, mapIndex) => (
-                      <button
-                        key={mapIndex}
-                        className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
-                          currentQuestionIndex === mapIndex
-                            ? "bg-blue-700 text-primary-foreground"
-                            : "hover:bg-muted"
-                        }`}
-                      >
-                        <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
-                            question.isAnswered
-                              ? "bg-transparent"
-                              : currentQuestionIndex === mapIndex
-                              ? "bg-gray-800 text-primary"
-                              : "bg-muted-foreground/20 text-muted-foreground"
+                    {questionList
+                      .slice()
+                      .reverse()
+                      .map((question, index) => (
+                        <button
+                          key={index}
+                          className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
+                            currentQuestionIndex === index
+                              ? "bg-blue-700 text-primary-foreground"
+                              : "hover:bg-muted"
                           }`}
                         >
-                          {question.isAnswered ? (
-                            <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
-                          ) : (
-                            mapIndex + 1
-                          )}
-                        </div>
-                        <span className="line-clamp-1 flex-1">
-                          {question.questionText}
-                        </span>
-                      </button>
-                    ))}
+                          <div
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                              question.isAnswered
+                                ? "bg-transparent"
+                                : currentQuestionIndex === index
+                                ? "bg-gray-800 text-primary"
+                                : "bg-muted-foreground/20 text-muted-foreground"
+                            }`}
+                          >
+                            {question.isAnswered ? (
+                              <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
+                            ) : (
+                              index + 1
+                            )}
+                          </div>
+                          <span className="line-clamp-1 flex-1">
+                            {question.questionText}
+                          </span>
+                        </button>
+                      ))}
                   </div>
 
                   {/* Current Question */}
@@ -402,6 +409,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
             </Card>
 
             {/* Right panel - Analysis */}
+            {technicalStatus === "ongoing" ? (
             <Card className="flex flex-col !bg-transparent">
               <CardHeader className="pb-3 border-b border-gray-500/40">
                 <CardTitle className="text-lg">Real-time Analysis</CardTitle>
@@ -632,7 +640,44 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   </div>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            ) : (<Card className="flex flex-col !bg-transparent">
+              <CardHeader className="pb-3 border-b border-gray-500/40">
+                <CardTitle className="text-lg">Interview Options</CardTitle>
+              </CardHeader>
+
+              <CardContent className="flex-1 py-6">
+                <div className="flex flex-col items-center justify-center h-full space-y-8">
+                  <div className="text-center max-w-md">
+                    <h3 className="text-xl font-medium mb-3">
+                    Your technical assessment is complete
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Some details saying the user can evaluate soft skills
+                      before starting the technical test. This gives you
+                      flexibility in how you conduct the interview.
+                    </p>
+
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full mb-4"
+                      onClick={() => setActiveTab("overall")}
+                    >
+                      Evaluate soft skills
+                    </Button>
+
+                    {/* <Button
+          className="bg-indigo-600 hover:bg-indigo-700 text-white w-full"
+          size="lg"
+          onClick={startTechnicalQuestions}
+        >
+          Start technical test
+        </Button> */}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>)}
           </div>
         )}
         {/* <ResizablePanelGroup direction="horizontal">

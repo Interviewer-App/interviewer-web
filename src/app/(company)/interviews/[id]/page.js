@@ -247,7 +247,7 @@ export default function InterviewPreviewPage({ params }) {
   const [totalCandidates, setTotalCandidates] = useState(0);
   const [totalsessions, setTotalSessions] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [tab, setTab] = useState("overview");
   const [questionTab, setQuestionTab] = useState("technical");
   const [status, setStatus] = useState("");
@@ -4269,7 +4269,7 @@ export default function InterviewPreviewPage({ params }) {
                         </p>
                         <p className="text-3xl font-bold">
                           {/* {interviewStatusDetails.totalSchedules || interviewSessions.length || 0} */}
-                          12
+                          {interviewOverview?.total || 0}
                         </p>
                       </div>
                     </CardContent>
@@ -4943,7 +4943,7 @@ export default function InterviewPreviewPage({ params }) {
             </TabsContent>
 
             <TabsContent value="candidates" className="p-0 border-none">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <Card className="bg-card/50 border-border/50">
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center h-full">
@@ -4992,7 +4992,7 @@ export default function InterviewPreviewPage({ params }) {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </div> */}
               <div className=" !bg-[#0a0a0a] w-full h-fit p-9 rounded-lg mt-5 border border-gray-500/30">
                 <div>
                   <h1 className=" text-2xl font-semibold">Candidates</h1>

@@ -953,7 +953,7 @@ function CandidateDetailsProfile() {
                                   variant="secondary"
                                   className="px-3 py-1 text-sm"
                                 >
-                                  {skill}
+                                   {typeof skill === "string" ? skill : skill.name} 
                                 </Badge>
                               ))
                             ) : (
