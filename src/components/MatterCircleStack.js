@@ -112,6 +112,27 @@ const MatterCircleStack = () => {
       textColor: "text-white",
       font: "font-playfair",
     },
+    {
+      category: "Teacher",
+      text: "Teacher",
+      bgColor: "bg-[#003079]",
+      textColor: "text-white",
+      font: "font-playfair",
+    },
+    {
+      category: "Chef",
+      text: "Chef",
+      bgColor: "bg-[#7333BD]",
+      textColor: "text-white",
+      font: "font-playfair",
+    },
+    {
+      category: "Any Talent",
+      text: "Any Talent",
+      bgColor: "bg-[#00795F]",
+      textColor: "text-white",
+      font: "font-playfair",
+    },
   ];
   const [currentButton, setCurrentButton] = useState(buttons[0].category);
 
@@ -1040,7 +1061,7 @@ const MatterCircleStack = () => {
                         <div className=" w-full">
                           <div className="flex justify-between">
                             <span className="text-black text-[8px] font-semibold">
-                              Technical
+                              Technical skills
                             </span>
                             <span className="text-black text-[8px] font-semibold">
                               {emoji.technicalLevel}/100
@@ -1059,7 +1080,7 @@ const MatterCircleStack = () => {
                         <div className=" w-full pb-2">
                           <div className="flex justify-between">
                             <span className="text-black text-[8px] font-semibold">
-                              Behevioral
+                              Soft skkills
                             </span>
                             <span className="text-black text-[8px] font-semibold">
                               {emoji.behevioralLevel}/100

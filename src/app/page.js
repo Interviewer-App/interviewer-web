@@ -702,15 +702,15 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="flex flex-col md:flex-row w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-6">
-          <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black w-full md:max-w-[418px] md:min-h-[418px] flex-shrink-0">
-            <h1 className="font-bohemian-soul text-center md:text-start leading-[30px] text-[24px] md:text-[24px] md:leading-[30px] text-black dark:text-black">
+        <div className="flex flex-col lg:flex-row w-[90%] lg:w-[90%] max-w-[1500px] mx-auto gap-6">
+          <div className="flex flex-col justify-center lg:justify-start items-center lg:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black w-full lg:max-w-[418px] lg:min-h-[418px] flex-shrink-0">
+            <h1 className="font-bohemian-soul text-center lg:text-start leading-[30px] text-[24px] md:text-[24px] md:leading-[30px] text-black dark:text-black">
               Evaluate Skills in Any Field.
               <br />
               No Expertise Needed.
             </h1>
 
-            <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center md:text-start pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
+            <p className="max-w-[368px] md:max-w-[388px] text-xs md:text-[15px] text-center lg:text-start pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
               The Skillchecker is an AI powered tool that helps
               you evaluate skills in any field, especially those
               outside your expertise.
@@ -755,7 +755,7 @@ export default function Home() {
                 How Skillchecker works?
               </h2>
 
-              <ul className="lg:text-xs md:text-sm lg:space-y-4 lg:mb-9 lg:mt-9 mx-4 font-semibold space-y-5 mb-12 mt-12">
+              <ul className="lg:text-xs md:text-sm lg:space-y-4 lg:mb-9 lg:mt-9 mx-4 font-semibold space-y-5 mb-12 mt-12 flex flex-col justify-center items-center">
                 <li className="flex items-start">
                   <span className="lg:text-xs mr-1 md:text-sm">1.</span>
                   <span>
