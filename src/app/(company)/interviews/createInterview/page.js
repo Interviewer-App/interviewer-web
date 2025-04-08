@@ -867,6 +867,7 @@ const CreateInterview = () => {
         industry: relatedField,
         intervieweeType: intervieweeType,
         proficiencyLevel: proficiencyLevel,
+        flexibleAssignment : useQuestionnaire,
         schedules: schedules
           .filter((schedule) => !schedule.isBooked) // Exclude booked schedules, if applicable
           .map((schedule) => {
