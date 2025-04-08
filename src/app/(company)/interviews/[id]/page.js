@@ -135,7 +135,7 @@ import {
 } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, redirect } from "next/navigation";
+import { usePathname, useRouter, redirect, useSearchParams } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
@@ -274,7 +274,6 @@ export default function InterviewPreviewPage({ params }) {
   const [sortDirection, setSortDirection] = useState("desc");
   const [dateRange, setDateRange] = useState({});
   const [interviewStatusDetails, setInterviewStatusDetails] = useState({});
-  const [activeTab, setActiveTab] = useState("overview");
   const [bookingsData, setBookingsData] = useState([]);
   const [sessionsData, setSessionsData] = useState([]);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
@@ -416,6 +415,20 @@ export default function InterviewPreviewPage({ params }) {
     interviewQuestionID: null,
   });
   const dashboardRef = useRef();
+
+
+  const searchParams = useSearchParams();
+
+  // Get initial tab from query param or default to 'overview'
+  const [activeTab, setActiveTab] = useState("overview");
+  const tabParam = searchParams.get("tab");
+
+  useEffect(() => {
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -704,7 +717,7 @@ export default function InterviewPreviewPage({ params }) {
     if (interviewId) {
       fetchInterviewStatus();
     }
-  },[interviewId]);
+  }, [interviewId]);
 
   useEffect(() => {
 
@@ -819,7 +832,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-                interviewStatusDetails.completedSchedules,
+              interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -1158,12 +1171,10 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } Successfully!`,
-          description: `The interview has been ${
-            status === "ACTIVE" ? "published" : "unpublished"
-          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
+            } Successfully!`,
+          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
+            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -1929,6 +1940,15 @@ export default function InterviewPreviewPage({ params }) {
     router.push(`/session-history/${sessionId}`);
   };
 
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("tab", value);
+
+    router.replace(`?${params.toString()}`);
+  };
+
   return (
     <div className=" w-full">
       <SidebarInset>
@@ -1986,18 +2006,17 @@ export default function InterviewPreviewPage({ params }) {
                     Edit
                   </Button>
                 ))}
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center gap-1 dark:bg-yellow-700"
-                    onClick={handleViewInvitaions}
-                  >Send Invitation <ArrowUpRight className="h-4 w-4" /> </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 dark:bg-yellow-700"
+                onClick={handleViewInvitaions}
+              >Send Invitation <ArrowUpRight className="h-4 w-4" /> </Button>
               {interviewDetail.status !== "ACTIVE" ? (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
                   >
                     <LuCircleCheckBig className="h-4 w-4" />
                     Publish
@@ -2028,9 +2047,8 @@ export default function InterviewPreviewPage({ params }) {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${
-                      tab === "edit" || tab === "settings" ? "hidden" : "block"
-                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
+                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
+                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
                   >
                     <Trash2 className="h-4 w-4" />
                     Unpublish
@@ -2067,7 +2085,7 @@ export default function InterviewPreviewPage({ params }) {
           <Tabs
             defaultValue="overview"
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={handleTabChange}
             className="w-full"
           >
             <TabsList className="!bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6">
@@ -2091,11 +2109,11 @@ export default function InterviewPreviewPage({ params }) {
                   {interviewSessions.filter(
                     (session) => session.interviewStatus === "ongoing"
                   ).length > 0 && (
-                    <div className=" relative flex items-center justify-center h-full w-2.5 ">
-                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                    </div>
-                  )}
+                      <div className=" relative flex items-center justify-center h-full w-2.5 ">
+                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                      </div>
+                    )}
                   Interview Sessions
                 </div>
               </TabsTrigger>
@@ -2421,11 +2439,10 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card
-                    className={`overflow-hidden border-2 transition-all ${
-                      technicalPercentage >= 50
+                    className={`overflow-hidden border-2 transition-all ${technicalPercentage >= 50
                         ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
                         : "border-muted"
-                    }`}
+                      }`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
@@ -2484,14 +2501,12 @@ export default function InterviewPreviewPage({ params }) {
                                 fill="none"
                                 stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                                 strokeWidth="10"
-                                strokeDasharray={`${
-                                  (2 * Math.PI * 45 * technicalPercentage) / 100
-                                } ${
-                                  2 *
+                                strokeDasharray={`${(2 * Math.PI * 45 * technicalPercentage) / 100
+                                  } ${2 *
                                   Math.PI *
                                   45 *
                                   (1 - technicalPercentage / 100)
-                                }`}
+                                  }`}
                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                 transform="rotate(-90 50 50)"
                                 strokeLinecap="round"
@@ -2539,11 +2554,10 @@ export default function InterviewPreviewPage({ params }) {
                   </Card>
 
                   <Card
-                    className={`overflow-hidden border-2 transition-all ${
-                      softSkillsPercentage >= 50
+                    className={`overflow-hidden border-2 transition-all ${softSkillsPercentage >= 50
                         ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
                         : "border-muted"
-                    }`}
+                      }`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
@@ -2599,15 +2613,13 @@ export default function InterviewPreviewPage({ params }) {
                                 fill="none"
                                 stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                                 strokeWidth="10"
-                                strokeDasharray={`${
-                                  (2 * Math.PI * 45 * softSkillsPercentage) /
+                                strokeDasharray={`${(2 * Math.PI * 45 * softSkillsPercentage) /
                                   100
-                                } ${
-                                  2 *
+                                  } ${2 *
                                   Math.PI *
                                   45 *
                                   (1 - softSkillsPercentage / 100)
-                                }`}
+                                  }`}
                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                 transform="rotate(-90 50 50)"
                                 strokeLinecap="round"
@@ -2840,7 +2852,7 @@ export default function InterviewPreviewPage({ params }) {
                         >
                           <CardContent className="p-4">
                             {editingQuestion ===
-                            question.interviewQuestionID ? (
+                              question.interviewQuestionID ? (
                               <div className="space-y-3">
                                 <Label htmlFor="question-text">Question</Label>
                                 <Textarea
@@ -3705,9 +3717,9 @@ export default function InterviewPreviewPage({ params }) {
                                         className="border border-gray-500/40 rounded-md p-3 bg-muted/10"
                                       >
                                         {editingSubcategory &&
-                                        editingSubcategory.skillId ===
+                                          editingSubcategory.skillId ===
                                           skill.id &&
-                                        editingSubcategory.subcategoryId ===
+                                          editingSubcategory.subcategoryId ===
                                           subcategory.id ? (
                                           <div className="space-y-3">
                                             <div className="space-y-2">
@@ -3780,7 +3792,7 @@ export default function InterviewPreviewPage({ params }) {
                                                       Math.max(
                                                         1,
                                                         subcategory.percentage -
-                                                          5
+                                                        5
                                                       )
                                                     );
                                                   }}
@@ -3827,7 +3839,7 @@ export default function InterviewPreviewPage({ params }) {
                                                       Math.min(
                                                         100,
                                                         subcategory.percentage +
-                                                          5
+                                                        5
                                                       )
                                                     )
                                                   }
@@ -4446,15 +4458,14 @@ export default function InterviewPreviewPage({ params }) {
                             const sessionDate = new Date(session.scheduledDate);
                             return (
                               sessionDate.getFullYear() ===
-                                today.getFullYear() &&
+                              today.getFullYear() &&
                               sessionDate.getMonth() === today.getMonth() &&
                               sessionDate.getDate() === today.getDate()
                             );
                           }
                         );
-                        return `${todaySessions.length} session${
-                          todaySessions.length === 1 ? "" : "s"
-                        } scheduled for today`;
+                        return `${todaySessions.length} session${todaySessions.length === 1 ? "" : "s"
+                          } scheduled for today`;
                       })()}
                     </CardDescription>
                   </CardHeader>
@@ -4515,12 +4526,12 @@ export default function InterviewPreviewPage({ params }) {
                                           className={cn(
                                             "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
                                             session.interviewStatus ===
-                                              "ongoing" && "!bg-blue-600",
+                                            "ongoing" && "!bg-blue-600",
                                             session.interviewStatus ===
-                                              "toBeConducted" &&
-                                              "!bg-orange-600",
+                                            "toBeConducted" &&
+                                            "!bg-orange-600",
                                             session.interviewStatus ===
-                                              "completed" && "!bg-green-600"
+                                            "completed" && "!bg-green-600"
                                           )}
                                         >
                                           <div className="flex items-center gap-1">
@@ -4666,7 +4677,7 @@ export default function InterviewPreviewPage({ params }) {
               <>
                 <Card
                   className="border-blue-500/20 overflow-hidden"
-                  //  onClick={() => setInviteModalOpen(true)}
+                //  onClick={() => setInviteModalOpen(true)}
                 >
                   <CardHeader className="bg-blue-500/5 border-b border-blue-500/20 pb-4">
                     <div className="flex justify-between items-center">
@@ -5068,8 +5079,8 @@ export default function InterviewPreviewPage({ params }) {
                           {selectedSortCategory === "overall"
                             ? "Overall"
                             : categoryList.find(
-                                (cat) => cat.key === selectedSortCategory
-                              )?.catagory || "Select Category"}
+                              (cat) => cat.key === selectedSortCategory
+                            )?.catagory || "Select Category"}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56">
