@@ -393,18 +393,12 @@ const JoinedInterviewsDetails = ({ params }) => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>Strong problem-solving approach</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>Good understanding of algorithms</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>Clear communication skills</span>
-                      </li>
+                      {sessionScoreDetails.aiAnalysis.strengths.map((point, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
                     </ul>
                   </CardContent>
                 </Card>
@@ -418,18 +412,12 @@ const JoinedInterviewsDetails = ({ params }) => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      <li className="flex items-start gap-2">
-                        <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                        <span>Consider edge cases more thoroughly</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                        <span>Provide more detailed explanations</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                        <span>Structure responses more methodically</span>
-                      </li>
+                      {sessionScoreDetails.aiAnalysis.areasToImprove.map((point, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
                     </ul>
                   </CardContent>
                 </Card>
