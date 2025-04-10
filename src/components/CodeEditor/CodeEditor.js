@@ -161,7 +161,7 @@ function CodeEditor({
               </div>
             </>
           ) : (
-            <div className=" flex justify-center flex-col items-center h-full">
+            <div className=" flex justify-center mt-24 flex-col items-center h-full">
               <p className=" text-xl font-semibold">
                 Your answer has been submitted.
               </p>
