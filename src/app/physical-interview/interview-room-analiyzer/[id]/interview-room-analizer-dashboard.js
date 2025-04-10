@@ -436,89 +436,98 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         className=" bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 py-2 px-4 rounded-lg justify-between"
                         key={index}
                       >
-                        <div>
-                          <div className="flex justify-between">
-                          <div className=" flex justify-start items-center">
-                            <h1 className="text-md text-gray-400 font-semibold">
-                              Question  :
-                            </h1>
-                            <h1 className="text-md text-gray-400 font-semibold px-2 ">
-                              {question.estimatedTimeMinutes} min
-                            </h1>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className=" text-[10px] text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[100px] px-1 border-2 flex items-center justify-center ">
-                                    <RiInformation2Line className=" text-sm mr-1" />{" "}
-                                    Explanation
-                                  </span>
-                                </TooltipTrigger>
-                                <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
-                                  <p className=" w-[500px] text-gray-300">
-                                    {question.explanation}
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                            <div>
-                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                <DialogTrigger asChild>
-                                <Button onClick={() => openDialogForQuestion(question.questionID)}>
-  {question.isAnswered ? "Edit Marks" : "Add Marks"}
-</Button>
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-[425px]">
-                                  <DialogHeader>
-                                    <DialogTitle>Add marks to the question</DialogTitle>
-                                    <DialogDescription>
-                                      Enter feedback and score for this question. Click save when you&apos;re done.
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <div className="grid gap-4 py-4">
-                                    <div className="grid grid-cols-4 items-center gap-4">
-                                      <Label htmlFor="feedback" className="text-right">
-                                        Feedback
-                                      </Label>
-                                      <Input
-                                        id="feedback"
-                                        value={feedback}
-                                        onChange={(e) => setFeedback(e.target.value)}
-                                        className="col-span-3"
-                                      />
-                                    </div>
-                                    <div className="grid grid-cols-4 items-center gap-4">
-                                      <Label htmlFor="score" className="text-right">
-                                        Score
-                                      </Label>
-                                      <div className="col-span-3 space-y-1">
+                          <div>
+                            <div className="flex justify-between">
+                            <div className=" flex justify-start items-center">
+                              <h1 className="text-md text-gray-400 font-semibold">
+                                Question  :
+                              </h1>
+                              <h1 className="text-md text-gray-400 font-semibold px-2 ">
+                                {question.estimatedTimeMinutes} min
+                              </h1>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className=" text-[10px] text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[100px] px-1 border-2 flex items-center justify-center ">
+                                      <RiInformation2Line className=" text-sm mr-1" />{" "}
+                                      Explanation
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
+                                    <p className=" w-[500px] text-gray-300">
+                                      {question.explanation}
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                              <div>
+                              <div className="flex items-center space-x-3"> {/* Added space-x-3 for gap */}
+                              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                  <DialogTrigger asChild>
+                                  <Button onClick={() => openDialogForQuestion(question.questionID)}>
+                                {question.isAnswered ? "Edit Marks" : "Add Marks"}
+                                      </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                      <DialogTitle>Add marks to the question</DialogTitle>
+                                      <DialogDescription>
+                                        Enter feedback and score for this question. Click save when you&apos;re done.
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                      <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="feedback" className="text-right">
+                                          Feedback
+                                        </Label>
                                         <Input
-                                          id="score"
-                                          type="number"
-                                          value={score}
-                                          onChange={(e) => setScore(e.target.value)}
+                                          id="feedback"
+                                          value={feedback}
+                                          onChange={(e) => setFeedback(e.target.value)}
+                                          className="col-span-3"
                                         />
-                                        <p className="text-xs text-muted-foreground text-red-400">
-                                          Marks should not exceed 100
-                                        </p>
+                                      </div>
+                                      <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="score" className="text-right">
+                                          Score
+                                        </Label>
+                                        <div className="col-span-3 space-y-1">
+                                          <Input
+                                            id="score"
+                                            type="number"
+                                            value={score}
+                                            onChange={(e) => setScore(e.target.value)}
+                                          />
+                                          <p className="text-xs text-muted-foreground text-red-400">
+                                            Marks should not exceed 100
+                                          </p>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <DialogFooter>
-                                    <Button type="submit" onClick={handleAddMarks}>
-                                      Save changes
-                                    </Button>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </Dialog>
-                            </div>
-                            </div>
-                        
+                                    <DialogFooter>
+                                      <Button type="submit" onClick={handleAddMarks}>
+                                        Save changes
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                                
+                                {/* Display marks only if the question is answered and has a score */}
+                                {question.isAnswered && question.questionScore?.score !== undefined && (
+                                  <span className="text-sm text-orange-500 font-semibold bg-black border border-gray-500 rounded-md p-2">
+                                    {question.questionScore.score}/100
+                                  </span>
+                                )}
+                                </div>
+                              </div>
+                              </div>
+                          
 
-                          <div className=" mr-9 text-justify text-sm pt-3">
-                            {question.questionText}
+                            <div className=" mr-9 text-justify text-sm pt-3">
+                              {question.questionText}
+                            </div>
                           </div>
-                        </div>
                         <div>
                           {question.isAnswered && (
                             <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
