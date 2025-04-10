@@ -37,7 +37,7 @@ import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 import { useState } from "react";
 import InterviewRoomAnalizerOther from "./interview-room-analizer-other";
 import { ArrowUpRight, Share } from "lucide-react";
-
+import { Button } from "@/components/ui/button"
 const InterviewRoomAnalizerDashboard = forwardRef(
   (
     {
@@ -369,13 +369,14 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   <div className=" mt-5 w-full">
                     {questionList.map((question, index) => (
                       <div
-                        className=" bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 py-2 px-4 rounded-lg flex items-center justify-between"
+                        className=" bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 py-2 px-4 rounded-lg justify-between"
                         key={index}
                       >
                         <div>
+                          <div className="flex justify-between">
                           <div className=" flex justify-start items-center">
                             <h1 className="text-md text-gray-400 font-semibold">
-                              Qestion  :
+                              Question  :
                             </h1>
                             <h1 className="text-md text-gray-400 font-semibold px-2 ">
                               {question.estimatedTimeMinutes} min
@@ -396,6 +397,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                               </Tooltip>
                             </TooltipProvider>
                           </div>
+                          <div>
+                          <Button variant="secondary">Add Marks</Button>
+                            </div>
+                            </div>
+                        
 
                           <div className=" mr-9 text-justify text-sm pt-3">
                             {question.questionText}
