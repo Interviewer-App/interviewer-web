@@ -20,6 +20,7 @@ function InterviewRoomAnalizerScore({
   totalScore,
   overollScore,
   questionList,
+  softSkillScore,
 }) {
   const [expandedQuestions, setExpandedQuestions] = useState({});
 
@@ -73,7 +74,7 @@ function InterviewRoomAnalizerScore({
                   )}
                   {question.isAnswered && (
                     <p className=" text-sm py-1">
-                      Marks: {question.interviewResponses.score.score}
+                      Marks: {question.interviewResponses?.score?.score}
                     </p>
                   )}
                 </div>
