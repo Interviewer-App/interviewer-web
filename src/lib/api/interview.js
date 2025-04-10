@@ -202,3 +202,14 @@ export const deleteSchedulesForInterviews = async (scheduleId) => {
         throw error;
     }
 }
+
+
+export const addFeedback = async (sessionId,data) => {
+    try{
+        const response = await axiosInstance.post(`/interview-session/feedback/${sessionId}`, data);
+        return response;
+    } catch(error){
+        console.log('Error creating interview:', error);
+        throw error;
+    }
+}
