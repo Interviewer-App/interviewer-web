@@ -225,7 +225,7 @@ function CandidateDetailsProfile() {
         const response = await getInterviewSessionHistoryById(sessionId);
         if (response.data) {
           setSessionHistory(response.data);
-          console.log('setSessionHistory',response)
+          console.log('setSessionHistory', response)
         }
       } catch (err) {
         if (err.response) {
@@ -656,24 +656,22 @@ function CandidateDetailsProfile() {
                             (sessionDetails.score ?? 0).toFixed(2) >= 90
                               ? "#10b981"
                               : (sessionDetails.score ?? 0).toFixed(2) >= 80
-                              ? "#3b82f6"
-                              : (sessionDetails.score ?? 0).toFixed(2) >= 70
-                              ? "#f59e0b"
-                              : "#ef4444"
+                                ? "#3b82f6"
+                                : (sessionDetails.score ?? 0).toFixed(2) >= 70
+                                  ? "#f59e0b"
+                                  : "#ef4444"
                           }
                           strokeWidth="10"
-                          strokeDasharray={`${
-                            (2 *
+                          strokeDasharray={`${(2 *
                               Math.PI *
                               45 *
                               (sessionDetails.score ?? 0).toFixed(2)) /
                             100
-                          } ${
-                            2 *
+                            } ${2 *
                             Math.PI *
                             45 *
                             (1 - (sessionDetails.score ?? 0).toFixed(2) / 100)
-                          }`}
+                            }`}
                           strokeDashoffset={2 * Math.PI * 45 * 0.25}
                           transform="rotate(-90 50 50)"
                           strokeLinecap="round"
@@ -831,19 +829,19 @@ function CandidateDetailsProfile() {
                     {sessionDetails?.interview?.startDate &&
                       `The interview is scheduled for ${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}${" "}
+                        sessionDetails?.interview?.startDate
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}${" "}
                     at${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                        sessionDetails?.interview?.startDate
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     .`}
                   </p>
                 </div>
@@ -957,7 +955,7 @@ function CandidateDetailsProfile() {
                                   variant="secondary"
                                   className="px-3 py-1 text-sm"
                                 >
-                                   {typeof skill === "string" ? skill : skill.name} 
+                                  {typeof skill === "string" ? skill : skill.name}
                                 </Badge>
                               ))
                             ) : (
@@ -1032,11 +1030,11 @@ function CandidateDetailsProfile() {
                                 <div className="font-medium">
                                   {candidateDetails?.user?.gender
                                     ? candidateDetails?.user?.gender
-                                        .charAt(0)
-                                        .toUpperCase() +
-                                      candidateDetails?.user?.gender
-                                        .slice(1)
-                                        .toLowerCase()
+                                      .charAt(0)
+                                      .toUpperCase() +
+                                    candidateDetails?.user?.gender
+                                      .slice(1)
+                                      .toLowerCase()
                                     : "not specified"}
                                 </div>
                               </div>
@@ -1093,9 +1091,9 @@ function CandidateDetailsProfile() {
                                   <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                     {candidateDetails?.linkedInUrl
                                       ? candidateDetails?.linkedInUrl.replace(
-                                          /^https?:\/\/(www\.)?/i,
-                                          ""
-                                        )
+                                        /^https?:\/\/(www\.)?/i,
+                                        ""
+                                      )
                                       : "linkedin.com/in/username"}
                                   </p>
                                 </div>
@@ -1132,9 +1130,9 @@ function CandidateDetailsProfile() {
                                   <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                     {candidateDetails?.githubUrl
                                       ? candidateDetails?.githubUrl.replace(
-                                          /^https?:\/\/(www\.)?/i,
-                                          ""
-                                        )
+                                        /^https?:\/\/(www\.)?/i,
+                                        ""
+                                      )
                                       : "github.com/username"}
                                   </p>
                                 </div>
@@ -1173,9 +1171,9 @@ function CandidateDetailsProfile() {
                                   <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                     {candidateDetails?.facebookUrl
                                       ? candidateDetails?.facebookUrl.replace(
-                                          /^https?:\/\/(www\.)?/i,
-                                          ""
-                                        )
+                                        /^https?:\/\/(www\.)?/i,
+                                        ""
+                                      )
                                       : "facebook username"}
                                   </p>
                                 </div>
@@ -1212,9 +1210,9 @@ function CandidateDetailsProfile() {
                                   <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                     {candidateDetails?.twitterUrl
                                       ? candidateDetails?.twitterUrl.replace(
-                                          /^https?:\/\/(www\.)?/i,
-                                          ""
-                                        )
+                                        /^https?:\/\/(www\.)?/i,
+                                        ""
+                                      )
                                       : "x.com/username"}
                                   </p>
                                 </div>
@@ -1251,9 +1249,9 @@ function CandidateDetailsProfile() {
                                   <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
                                     {candidateDetails?.discordUrl
                                       ? candidateDetails?.discordUrl.replace(
-                                          /^https?:\/\/(www\.)?/i,
-                                          ""
-                                        )
+                                        /^https?:\/\/(www\.)?/i,
+                                        ""
+                                      )
                                       : "discord.com/username"}
                                   </p>
                                 </div>
@@ -1521,45 +1519,30 @@ function CandidateDetailsProfile() {
                                       ).toFixed(2)
                                     )}
                                   />
-                                  <div className=" mt-5 w-full">
-                                    {categoryMarks.map((category) => (
-                                      <Card
-                                        key={category.id}
-                                        className="!bg-transparent mt-3"
-                                      >
-                                        <CardContent>
-                                          <div className="my-2">
-                                            <div className="flex justify-between items-center">
-                                              <h3 className="font-medium">
-                                                {category.name}
-                                              </h3>
-                                              <span
-                                                className={`font-bold ${getScoreColor(
-                                                  (
-                                                    category.percentage ?? 0
-                                                  ).toFixed(2)
-                                                )}`}
-                                              >
-                                                {(
-                                                  category.percentage ?? 0
-                                                ).toFixed(2)}
-                                              </span>
+                                  <div className="mt-5 w-full">
+                                    {sessionhistory?.categoryScores
+                                      ?.find(cat => cat.categoryName === 'Soft')
+                                      ?.subCategoryScores?.map((subCategory, index) => (
+                                        <Card key={`soft-subcat-${index}`} className="!bg-transparent mt-3">
+                                          <CardContent>
+                                            <div className="my-2">
+                                              <div className="flex justify-between items-center">
+                                                <h3 className="font-medium">
+                                                  {subCategory.subCategoryName || 'Unnamed Subcategory'}
+                                                </h3>
+                                                <span className={`font-bold ${getScoreColor(subCategory.score)}`}>
+                                                  {(subCategory.score ?? 0).toFixed(2)}
+                                                </span>
+                                              </div>
+                                              <Progress
+                                                value={subCategory.score ?? 0}
+                                                className="h-2"
+                                                indicatorclassname={getScoreBgColor(subCategory.score)}
+                                              />
                                             </div>
-                                            <Progress
-                                              value={(
-                                                category.percentage ?? 0
-                                              ).toFixed(2)}
-                                              className="h-2"
-                                              indicatorclassName={getScoreBgColor(
-                                                (
-                                                  category.percentage ?? 0
-                                                ).toFixed(2)
-                                              )}
-                                            />
-                                          </div>
-                                        </CardContent>
-                                      </Card>
-                                    ))}
+                                          </CardContent>
+                                        </Card>
+                                      ))}
                                   </div>
                                 </CardContent>
                               </Card>
@@ -1578,19 +1561,19 @@ function CandidateDetailsProfile() {
                             {sessionDetails?.interview?.startDate &&
                               `The interview is scheduled for ${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}${" "}
+                                sessionDetails?.interview?.startDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}${" "}
                     at${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                                sessionDetails?.interview?.startDate
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                     .`}
                           </p>
                         </div>
@@ -1765,52 +1748,52 @@ function CandidateDetailsProfile() {
                                       </h4>
                                       {documentAnalizedData.contactInfo
                                         .phone && (
-                                        <div className="flex items-start gap-3  mt-2">
-                                          <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .phone
-                                            }
+                                          <div className="flex items-start gap-3  mt-2">
+                                            <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div className="font-medium">
+                                              {
+                                                documentAnalizedData.contactInfo
+                                                  .phone
+                                              }
+                                            </div>
                                           </div>
-                                        </div>
-                                      )}
+                                        )}
                                       {documentAnalizedData.contactInfo
                                         .linkedin && (
-                                        <div className="flex items-start gap-3  mt-2">
-                                          <LinkedinIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .linkedin
-                                            }
+                                          <div className="flex items-start gap-3  mt-2">
+                                            <LinkedinIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div className="font-medium">
+                                              {
+                                                documentAnalizedData.contactInfo
+                                                  .linkedin
+                                              }
+                                            </div>
                                           </div>
-                                        </div>
-                                      )}
+                                        )}
                                       {documentAnalizedData.contactInfo
                                         .github && (
-                                        <div className="flex items-start gap-3  mt-2">
-                                          <GithubIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .github
-                                            }
+                                          <div className="flex items-start gap-3  mt-2">
+                                            <GithubIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div className="font-medium">
+                                              {
+                                                documentAnalizedData.contactInfo
+                                                  .github
+                                              }
+                                            </div>
                                           </div>
-                                        </div>
-                                      )}
+                                        )}
                                       {documentAnalizedData.contactInfo
                                         .email && (
-                                        <div className="flex items-start gap-3 mt-2">
-                                          <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .email
-                                            }
+                                          <div className="flex items-start gap-3 mt-2">
+                                            <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                            <div className="font-medium">
+                                              {
+                                                documentAnalizedData.contactInfo
+                                                  .email
+                                              }
+                                            </div>
                                           </div>
-                                        </div>
-                                      )}
+                                        )}
                                     </div>
                                   )}
 
@@ -1838,8 +1821,8 @@ function CandidateDetailsProfile() {
                                                 -{" "}
                                                 {edu.endDate
                                                   ? new Date(
-                                                      edu.endDate
-                                                    ).getFullYear()
+                                                    edu.endDate
+                                                  ).getFullYear()
                                                   : "Present"}
                                               </div>
                                             </div>
@@ -1884,8 +1867,8 @@ function CandidateDetailsProfile() {
                                                   -{" "}
                                                   {exp.endDate
                                                     ? new Date(
-                                                        exp.endDate
-                                                      ).getFullYear()
+                                                      exp.endDate
+                                                    ).getFullYear()
                                                     : "Present"}
                                                 </span>
 

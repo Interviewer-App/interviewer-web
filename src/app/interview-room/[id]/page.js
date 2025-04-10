@@ -945,7 +945,7 @@ const InterviewRoomPage = ({ params }) => {
               <div className=" bg-black h-lvh w-full">
                 {questionType === "OPEN_ENDED" ? (
                   <div className="flex flex-col max-w-[1500px] mx-auto justify-center items-center w-full text-white bg-black">
-                    <div className="w-[80%] max-w-[1500px] mx-auto flex flex-col h-lvh py-3 justify-between relative">
+                    <div className="w-[80%] max-w-[1500px] mx-auto flex flex-col h-lvh py-3 justify-center relative">
                       <div className=" w-full pt-9">
                         <div className=" relative p-8 rounded-lg bg-[#0a0a0a] py-8 px-6 border border-gray-700 text-white shadow-md flex flex-col justify-center">
                           {isSubmitBtnAvailable && (

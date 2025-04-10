@@ -17,7 +17,7 @@ import FeedbackModal from "@/components/company/feedback-modal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { fetchDocumet, getCandidateById } from "@/lib/api/users";
 import { FaDiscord, FaXTwitter } from "react-icons/fa6";
-import { useParams, useRouter, useSearchParams,usePathname } from "next/navigation";
+import { useParams, useRouter, useSearchParams, usePathname } from "next/navigation";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Breadcrumb,
@@ -168,22 +168,22 @@ function SessionHistoryPage() {
   }, [params]);
 
 
-// Fetch session data when sessionId changes
-useEffect(() => {
-  const fetchSessionData = async () => {
-    try {
-      const response = await getInterviewSessionById(sessionId);
-      setCandidateId(response.data.candidateId);
-      if (response.data) {
-        setSessionDetails(response.data);
+  // Fetch session data when sessionId changes
+  useEffect(() => {
+    const fetchSessionData = async () => {
+      try {
+        const response = await getInterviewSessionById(sessionId);
+        setCandidateId(response.data.candidateId);
+        if (response.data) {
+          setSessionDetails(response.data);
+        }
+      } catch (err) {
+        // ... (keep your error handling unchanged)
       }
-    } catch (err) {
-      // ... (keep your error handling unchanged)
-    }
-  };
+    };
 
-  if (sessionId) fetchSessionData();
-}, [sessionId]);
+    if (sessionId) fetchSessionData();
+  }, [sessionId]);
 
   useEffect(() => {
     const fetchSessionData = async () => {
@@ -226,14 +226,14 @@ useEffect(() => {
     };
 
     if (sessionId) fetchSessionData();
-  }, [sessionId,toast]);
+  }, [sessionId, toast]);
 
   useEffect(() => {
     // debugger
     const fetchCandidateDetails = async () => {
       try {
         const response = await getCandidateById(candidateId);
-        console.log('fetchCandidateDetails',response);
+        console.log('fetchCandidateDetails', response);
         if (response.data) {
           const parsedExperiences = response.data?.experience
             ? JSON.parse(response.data?.experience)
@@ -322,7 +322,7 @@ useEffect(() => {
 
     if (sessionDetails.interviewStatus === "completed" && sessionId)
       fetchSessionHistory();
-  }, [sessionDetails, sessionId,isEditing]);
+  }, [sessionDetails, sessionId, isEditing]);
 
   useEffect(() => {
     const fetchdocument = async () => {
@@ -496,7 +496,7 @@ useEffect(() => {
       const response = await addFeedback(sessionId, {
         feedbackText: feedbackText,
       });
-  
+
       if (response.status === 200 || response.status === 201) {
         toast({
           variant: "success",
@@ -782,289 +782,315 @@ useEffect(() => {
           />
         )}
       </SidebarInset> */}
-          <div className=" w-full">
-      <SidebarInset>
-        <header className="flex bg-black h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-3">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink
-                    href="/interviews"
-                    className=" cursor-pointer"
-                  >
-                    Interviews
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem className="hidden md:block cursor-pointer">
-                  <BreadcrumbLink
-                    href={`/interviews/${encodeURIComponent(
-                      sessionDetails.interviewId
-                    )}`}
-                    className=" cursor-pointer"
-                  >
-                    Interview details
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem className="hidden md:block cursor-pointer">
-                  <BreadcrumbPage>Session History</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
+      <div className=" w-full">
+        <SidebarInset>
+          <header className="flex bg-black h-16 shrink-0 items-center gap-2">
+            <div className="flex items-center gap-2 px-3">
+              <SidebarTrigger />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem className="hidden md:block">
+                    <BreadcrumbLink
+                      href="/interviews"
+                      className=" cursor-pointer"
+                    >
+                      Interviews
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbItem className="hidden md:block cursor-pointer">
+                    <BreadcrumbLink
+                      href={`/interviews/${encodeURIComponent(
+                        sessionDetails.interviewId
+                      )}`}
+                      className=" cursor-pointer"
+                    >
+                      Interview details
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbItem className="hidden md:block cursor-pointer">
+                    <BreadcrumbPage>Session History</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+          </header>
 
-        <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Candidate Details</h1>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() =>
-                router.push(`/interviews/${sessionDetails.interviewId}`)
-              }
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Interview
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <Card className="md:col-span-1 !bg-transparent">
-              <CardHeader className="pb-2">
-                <CardTitle>Candidate Profile</CardTitle>
-                <CardDescription>Interview results and details</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex flex-col items-center">
-                  <Avatar className="h-24 w-24 mb-4">
-                    <AvatarImage
-                      src={candidateDetails?.user?.avatar}
-                      alt={candidateDetails?.user?.firstName}
-                    />
-                    <AvatarFallback className="text-2xl">
-                      {candidateDetails?.user?.firstName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h2 className="text-xl font-bold mb-1">
-                    {candidateDetails?.user?.firstName}{" "}
-                    {candidateDetails?.user?.lastName}
-                  </h2>
-                  {getInterviewStatusBadge(
-                    sessionDetails?.interviewStatus || "Not Scheduled"
-                  )}
-                </div>
-
-                <div className="space-y-3 pt-4">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-muted-foreground" />
-                    <span>{candidateDetails?.user?.email}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-muted-foreground" />
-                    {candidateDetails?.user?.contactNo ? (
-                      <span>{candidateDetails?.user?.contactNo}</span>
-                    ) : (
-                      <span className=" text-gray-500 text-sm">
-                        Not Provided
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5 text-muted-foreground" />
-                    <span>
-                      {new Date(candidateDetails?.user?.dob).toLocaleDateString(
-                        "en-US",
-                        {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-muted-foreground" />
-                    {sessionDetails?.interview?.startDate ? (
-                      <span>
-                        {new Date(
-                          sessionDetails?.interview?.startDate
-                        ).toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}{" "}
-                        -{" "}
-                        {new Date(
-                          sessionDetails?.interview?.endDate
-                        ).toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </span>
-                    ) : (
-                      <span className=" text-gray-500 text-sm">
-                        Not Scheduled
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t">
-                  <h3 className="font-medium mb-3">Interviewer</h3>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      {/* <AvatarImage src={candidateDetails.interviewer.avatar} alt={candidateDetails.interviewer.name} /> */}
-                      <AvatarFallback>
-                        {/* {candidateDetails?.user?.firstName.charAt(0)} */}
-                        {"Ushan".charAt(0)}
+          <div className=" w-[90%] max-w-[1500px] bg-black mx-auto h-full p-6 relative">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-3xl font-bold">Candidate Details</h1>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() =>
+                  router.push(`/interviews/${sessionDetails.interviewId}`)
+                }
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Interview
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <Card className="md:col-span-1 !bg-transparent">
+                <CardHeader className="pb-2">
+                  <CardTitle>Candidate Profile</CardTitle>
+                  <CardDescription>Interview results and details</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex flex-col items-center">
+                    <Avatar className="h-24 w-24 mb-4">
+                      <AvatarImage
+                        src={candidateDetails?.user?.avatar}
+                        alt={candidateDetails?.user?.firstName}
+                      />
+                      <AvatarFallback className="text-2xl">
+                        {candidateDetails?.user?.firstName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <div className="font-medium">{"Ushan Sankalpa"}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {"Senior Engineering Manager"}
+                    <h2 className="text-xl font-bold mb-1">
+                      {candidateDetails?.user?.firstName}{" "}
+                      {candidateDetails?.user?.lastName}
+                    </h2>
+                    {getInterviewStatusBadge(
+                      sessionDetails?.interviewStatus || "Not Scheduled"
+                    )}
+                  </div>
+
+                  <div className="space-y-3 pt-4">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-5 w-5 text-muted-foreground" />
+                      <span>{candidateDetails?.user?.email}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 text-muted-foreground" />
+                      {candidateDetails?.user?.contactNo ? (
+                        <span>{candidateDetails?.user?.contactNo}</span>
+                      ) : (
+                        <span className=" text-gray-500 text-sm">
+                          Not Provided
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Calendar className="h-5 w-5 text-muted-foreground" />
+                      <span>
+                        {new Date(candidateDetails?.user?.dob).toLocaleDateString(
+                          "en-US",
+                          {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="h-5 w-5 text-muted-foreground" />
+                      {sessionDetails?.interview?.startDate ? (
+                        <span>
+                          {new Date(
+                            sessionDetails?.interview?.startDate
+                          ).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}{" "}
+                          -{" "}
+                          {new Date(
+                            sessionDetails?.interview?.endDate
+                          ).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </span>
+                      ) : (
+                        <span className=" text-gray-500 text-sm">
+                          Not Scheduled
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <h3 className="font-medium mb-3">Interviewer</h3>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        {/* <AvatarImage src={candidateDetails.interviewer.avatar} alt={candidateDetails.interviewer.name} /> */}
+                        <AvatarFallback>
+                          {/* {candidateDetails?.user?.firstName.charAt(0)} */}
+                          {"Ushan".charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">{"Ushan Sankalpa"}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {"Senior Engineering Manager"}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="md:col-span-2 !bg-transparent">
-              <CardHeader>
-                <CardTitle>Interview Results</CardTitle>
-                {sessionDetails?.interviewStatus ? (
-                  sessionDetails?.interviewStatus === "completed" ? (
-                    <CardDescription>
-                      Completed on{" "}
-                      {new Date(
-                        sessionDetails?.interview?.endDate
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
-                      at{" "}
-                      {new Date(
-                        sessionDetails?.interview?.endDate
-                      ).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </CardDescription>
+              <Card className="md:col-span-2 !bg-transparent">
+                <CardHeader>
+                  <CardTitle>Interview Results</CardTitle>
+                  {sessionDetails?.interviewStatus ? (
+                    sessionDetails?.interviewStatus === "completed" ? (
+                      <CardDescription>
+                        Completed on{" "}
+                        {new Date(
+                          sessionDetails?.interview?.endDate
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        at{" "}
+                        {new Date(
+                          sessionDetails?.interview?.endDate
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </CardDescription>
+                    ) : (
+                      <CardDescription>
+                        Scheduled for{" "}
+                        {new Date(
+                          sessionDetails?.interview?.startDate
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        at{" "}
+                        {new Date(
+                          sessionDetails?.interview?.startDate
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </CardDescription>
+                    )
                   ) : (
-                    <CardDescription>
-                      Scheduled for{" "}
-                      {new Date(
-                        sessionDetails?.interview?.startDate
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
-                      at{" "}
-                      {new Date(
-                        sessionDetails?.interview?.startDate
-                      ).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </CardDescription>
-                  )
-                ) : (
-                  <span className=" text-gray-500 text-sm">
-                    Not Scheduled Yet
-                  </span>
-                )}
-              </CardHeader>
-              {sessionDetails?.interviewStatus === "completed" ? (
-                <CardContent className="space-y-6">
-                  <div className="flex flex-col items-center">
-                    <div className="relative w-40 h-40">
-                      <svg className="w-full h-full" viewBox="0 0 100 100">
-                        {/* Background circle */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke="hsl(var(--muted))"
-                          strokeWidth="10"
-                        />
-                        {/* Progress circle */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke={
-                            (sessionDetails.score ?? 0).toFixed(2) >= 90
-                              ? "#10b981"
-                              : (sessionDetails.score ?? 0).toFixed(2) >= 80
-                              ? "#3b82f6"
-                              : (sessionDetails.score ?? 0).toFixed(2) >= 70
-                              ? "#f59e0b"
-                              : "#ef4444"
-                          }
-                          strokeWidth="10"
-                          strokeDasharray={`${
-                            (2 *
+                    <span className=" text-gray-500 text-sm">
+                      Not Scheduled Yet
+                    </span>
+                  )}
+                </CardHeader>
+                {sessionDetails?.interviewStatus === "completed" ? (
+                  <CardContent className="space-y-6">
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-40 h-40">
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          {/* Background circle */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="hsl(var(--muted))"
+                            strokeWidth="10"
+                          />
+                          {/* Progress circle */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke={
+                              (sessionDetails.score ?? 0).toFixed(2) >= 90
+                                ? "#10b981"
+                                : (sessionDetails.score ?? 0).toFixed(2) >= 80
+                                  ? "#3b82f6"
+                                  : (sessionDetails.score ?? 0).toFixed(2) >= 70
+                                    ? "#f59e0b"
+                                    : "#ef4444"
+                            }
+                            strokeWidth="10"
+                            strokeDasharray={`${(2 *
+                                Math.PI *
+                                45 *
+                                (sessionDetails.score ?? 0).toFixed(2)) /
+                              100
+                              } ${2 *
                               Math.PI *
                               45 *
-                              (sessionDetails.score ?? 0).toFixed(2)) /
-                            100
-                          } ${
-                            2 *
-                            Math.PI *
-                            45 *
-                            (1 - (sessionDetails.score ?? 0).toFixed(2) / 100)
-                          }`}
-                          strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                          transform="rotate(-90 50 50)"
-                          strokeLinecap="round"
-                        />
-                        {/* Percentage text */}
-                        <text
-                          x="50"
-                          y="45"
-                          dominantBaseline="middle"
-                          textAnchor="middle"
-                          fontSize="24"
-                          fontWeight="bold"
-                          fill="currentColor"
-                          className={getScoreColor(
-                            (sessionDetails.score ?? 0).toFixed(2)
-                          )}
-                        >
-                          {(sessionDetails.score ?? 0).toFixed(2)}
-                        </text>
-                        <text
-                          x="50"
-                          y="60"
-                          dominantBaseline="middle"
-                          textAnchor="middle"
-                          fontSize="10"
-                          fill="currentColor"
-                        >
-                          Overall Score
-                        </text>
-                      </svg>
+                              (1 - (sessionDetails.score ?? 0).toFixed(2) / 100)
+                              }`}
+                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                            transform="rotate(-90 50 50)"
+                            strokeLinecap="round"
+                          />
+                          {/* Percentage text */}
+                          <text
+                            x="50"
+                            y="45"
+                            dominantBaseline="middle"
+                            textAnchor="middle"
+                            fontSize="24"
+                            fontWeight="bold"
+                            fill="currentColor"
+                            className={getScoreColor(
+                              (sessionDetails.score ?? 0).toFixed(2)
+                            )}
+                          >
+                            {(sessionDetails.score ?? 0).toFixed(2)}
+                          </text>
+                          <text
+                            x="50"
+                            y="60"
+                            dominantBaseline="middle"
+                            textAnchor="middle"
+                            fontSize="10"
+                            fill="currentColor"
+                          >
+                            Overall Score
+                          </text>
+                        </svg>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium">Technical Skills</h3>
-                        <span
-                          className={`font-bold ${getScoreColor(
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-medium">Technical Skills</h3>
+                          <span
+                            className={`font-bold ${getScoreColor(
+                              (
+                                sessionDetails?.CategoryScore?.find(
+                                  (item) =>
+                                    item.categoryAssignment.category
+                                      .categoryName === "Technical"
+                                ).score ?? 0
+                              ).toFixed(2)
+                            )}`}
+                          >
+                            {(
+                              sessionDetails?.CategoryScore?.find(
+                                (item) =>
+                                  item.categoryAssignment.category
+                                    .categoryName === "Technical"
+                              ).score ?? 0
+                            ).toFixed(2)}
+                          </span>
+                        </div>
+                        <Progress
+                          value={(
+                            sessionDetails?.CategoryScore?.find(
+                              (item) =>
+                                item.categoryAssignment.category.categoryName ===
+                                "Technical"
+                            ).score ?? 0
+                          ).toFixed(2)}
+                          className="h-2"
+                          indicatorclassname={getScoreBgColor(
                             (
                               sessionDetails?.CategoryScore?.find(
                                 (item) =>
@@ -1072,43 +1098,43 @@ useEffect(() => {
                                     .categoryName === "Technical"
                               ).score ?? 0
                             ).toFixed(2)
-                          )}`}
-                        >
-                          {(
+                          )}
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-medium">Soft Skills</h3>
+                          <span
+                            className={`font-bold ${getScoreColor(
+                              (
+                                sessionDetails?.CategoryScore?.find(
+                                  (item) =>
+                                    item.categoryAssignment.category
+                                      .categoryName === "Soft"
+                                ).score ?? 0
+                              ).toFixed(2)
+                            )}`}
+                          >
+                            {(
+                              sessionDetails?.CategoryScore?.find(
+                                (item) =>
+                                  item.categoryAssignment.category
+                                    .categoryName === "Soft"
+                              ).score ?? 0
+                            ).toFixed(2)}
+                          </span>
+                        </div>
+                        <Progress
+                          value={(
                             sessionDetails?.CategoryScore?.find(
                               (item) =>
-                                item.categoryAssignment.category
-                                  .categoryName === "Technical"
+                                item.categoryAssignment.category.categoryName ===
+                                "Soft"
                             ).score ?? 0
                           ).toFixed(2)}
-                        </span>
-                      </div>
-                      <Progress
-                        value={(
-                          sessionDetails?.CategoryScore?.find(
-                            (item) =>
-                              item.categoryAssignment.category.categoryName ===
-                              "Technical"
-                          ).score ?? 0
-                        ).toFixed(2)}
-                        className="h-2"
-                        indicatorclassname={getScoreBgColor(
-                          (
-                            sessionDetails?.CategoryScore?.find(
-                              (item) =>
-                                item.categoryAssignment.category
-                                  .categoryName === "Technical"
-                            ).score ?? 0
-                          ).toFixed(2)
-                        )}
-                      />
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium">Soft Skills</h3>
-                        <span
-                          className={`font-bold ${getScoreColor(
+                          className="h-2"
+                          indicatorclassname={getScoreBgColor(
                             (
                               sessionDetails?.CategoryScore?.find(
                                 (item) =>
@@ -1116,35 +1142,7 @@ useEffect(() => {
                                     .categoryName === "Soft"
                               ).score ?? 0
                             ).toFixed(2)
-                          )}`}
-                        >
-                          {(
-                            sessionDetails?.CategoryScore?.find(
-                              (item) =>
-                                item.categoryAssignment.category
-                                  .categoryName === "Soft"
-                            ).score ?? 0
-                          ).toFixed(2)}
-                        </span>
-                      </div>
-                      <Progress
-                        value={(
-                          sessionDetails?.CategoryScore?.find(
-                            (item) =>
-                              item.categoryAssignment.category.categoryName ===
-                              "Soft"
-                          ).score ?? 0
-                        ).toFixed(2)}
-                        className="h-2"
-                        indicatorclassname={getScoreBgColor(
-                          (
-                            sessionDetails?.CategoryScore?.find(
-                              (item) =>
-                                item.categoryAssignment.category
-                                  .categoryName === "Soft"
-                            ).score ?? 0
-                          ).toFixed(2)
-                        )}
+                          )}
                         />
                       </div>
                     </div>
@@ -1193,560 +1191,588 @@ useEffect(() => {
                     </div>
                   </CardContent>
                 ) : (
-                <div className="flex flex-col h-full items-center w-full justify-center text-center">
-                  <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-xl font-medium mb-2">
-                    Interview Not Yet Completed
-                  </h3>
-                  <p className="text-muted-foreground max-w-md">
-                    The assessment results will be available once the interview
-                    is completed.{" "}
-                    {sessionDetails?.interview?.startDate &&
-                      `The interview is scheduled for ${" "}
+                  <div className="flex flex-col h-full items-center w-full justify-center text-center">
+                    <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+                    <h3 className="text-xl font-medium mb-2">
+                      Interview Not Yet Completed
+                    </h3>
+                    <p className="text-muted-foreground max-w-md">
+                      The assessment results will be available once the interview
+                      is completed.{" "}
+                      {sessionDetails?.interview?.startDate &&
+                        `The interview is scheduled for ${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}${" "}
+                          sessionDetails?.interview?.startDate
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}${" "}
                     at${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                          sessionDetails?.interview?.startDate
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                     .`}
-                  </p>
-                </div>
-              )}
-            </Card>
-          </div>
+                    </p>
+                  </div>
+                )}
+              </Card>
+            </div>
 
-          <Card className="!bg-transparent">
-            <CardHeader>
-              <CardTitle>Detailed Assessment</CardTitle>
-              <CardDescription>
-                Breakdown of candidate&apos;s performance in different skill areas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid grid-cols-3 mb-6">
-                  <TabsTrigger
-                    value="details"
-                    className="flex items-center gap-2"
-                  >
-                    <User className="h-4 w-4" />
-                    Candidate Details
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="assessment"
-                    className="flex items-center gap-2"
-                  >
-                    <Star className="h-4 w-4" />
-                    Assessment
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="resume"
-                    className="flex items-center gap-2"
-                  >
-                    <FileText className="h-4 w-4" />
-                    Resume & Questions
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="details" className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Left Column - Experience and Skills */}
-                    <div className="md:col-span-2 space-y-6">
-                      <Card className="!bg-transparent">
-                        <CardHeader>
-                          <CardTitle className="text-blue-400">
-                            Experiences
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {experiences.length > 0 ? (
-                            experiences.map((exp, index) => (
-                              <div
-                                key={index}
-                                className="flex items-start gap-3"
-                              >
-                                <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                <div>
-                                  <div className="font-medium">{exp.title}</div>
-                                  <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                    {/* <span>{exp.company}</span> */}
-                                    {exp.company && (
-                                      <>
-                                        <span>{exp.company}</span>
-                                        {/* <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span> */}
-                                      </>
-                                    )}
-                                    <Badge
-                                      variant="outline"
-                                      className={
-                                        new Date(exp.endDate) > new Date()
-                                          ? "!text-blue-400 !border-blue-400"
-                                          : "!text-green-400 !border-green-400"
-                                      }
-                                    >
-                                      {new Date(exp.endDate) > new Date()
-                                        ? "Ongoing"
-                                        : "Completed"}
-                                    </Badge>
+            <Card className="!bg-transparent">
+              <CardHeader>
+                <CardTitle>Detailed Assessment</CardTitle>
+                <CardDescription>
+                  Breakdown of candidate&apos;s performance in different skill areas
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="grid grid-cols-3 mb-6">
+                    <TabsTrigger
+                      value="details"
+                      className="flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      Candidate Details
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="assessment"
+                      className="flex items-center gap-2"
+                    >
+                      <Star className="h-4 w-4" />
+                      Assessment
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="resume"
+                      className="flex items-center gap-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      Resume & Questions
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="details" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Left Column - Experience and Skills */}
+                      <div className="md:col-span-2 space-y-6">
+                        <Card className="!bg-transparent">
+                          <CardHeader>
+                            <CardTitle className="text-blue-400">
+                              Experiences
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {experiences.length > 0 ? (
+                              experiences.map((exp, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-start gap-3"
+                                >
+                                  <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                  <div>
+                                    <div className="font-medium">{exp.title}</div>
+                                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                      {/* <span>{exp.company}</span> */}
+                                      {exp.company && (
+                                        <>
+                                          <span>{exp.company}</span>
+                                          {/* <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span> */}
+                                        </>
+                                      )}
+                                      <Badge
+                                        variant="outline"
+                                        className={
+                                          new Date(exp.endDate) > new Date()
+                                            ? "!text-blue-400 !border-blue-400"
+                                            : "!text-green-400 !border-green-400"
+                                        }
+                                      >
+                                        {new Date(exp.endDate) > new Date()
+                                          ? "Ongoing"
+                                          : "Completed"}
+                                      </Badge>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="flex flex-col items-center w-full justify-center py-12 text-center">
-                              <FlaskConical className="h-16 w-16 text-muted-foreground mb-4" />
-                              <h3 className="text-xl font-medium mb-2">
-                                No Experience Found
-                              </h3>
-                              <p className="text-muted-foreground max-w-md">
-                                The candidate&apos;s experience details will be
-                                available once the interview is completed.
-                              </p>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-
-                      <Card className="!bg-transparent">
-                        <CardHeader>
-                          <CardTitle className="text-orange-400">
-                            Skill Highlights
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex flex-wrap gap-2">
-                            {skills.length > 0 ? (
-                              skills.map((skill, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="secondary"
-                                  className="px-3 py-1 text-sm"
-                                >
-                                   {typeof skill === "string" ? skill : skill.name} 
-                                </Badge>
                               ))
                             ) : (
                               <div className="flex flex-col items-center w-full justify-center py-12 text-center">
-                                <Brain className="h-16 w-16 text-muted-foreground mb-4" />
+                                <FlaskConical className="h-16 w-16 text-muted-foreground mb-4" />
                                 <h3 className="text-xl font-medium mb-2">
-                                  No Skills Found
+                                  No Experience Found
                                 </h3>
                                 <p className="text-muted-foreground max-w-md">
-                                  The candidate&apos;s skill highlights will be
+                                  The candidate&apos;s experience details will be
                                   available once the interview is completed.
                                 </p>
                               </div>
                             )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
+                          </CardContent>
+                        </Card>
 
-                    {/* Right Column - Personal Details and Social Media */}
-                    <div className="space-y-6">
-                      <Card className="!bg-transparent">
-                        <CardHeader>
-                          <CardTitle>Personal Details</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <User className="h-5 w-5 text-muted-foreground" />
-                              <div>
-                                <div className="text-sm text-muted-foreground">
-                                  Full Name
+                        <Card className="!bg-transparent">
+                          <CardHeader>
+                            <CardTitle className="text-orange-400">
+                              Skill Highlights
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex flex-wrap gap-2">
+                              {skills.length > 0 ? (
+                                skills.map((skill, index) => (
+                                  <Badge
+                                    key={index}
+                                    variant="secondary"
+                                    className="px-3 py-1 text-sm"
+                                  >
+                                    {typeof skill === "string" ? skill : skill.name}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <div className="flex flex-col items-center w-full justify-center py-12 text-center">
+                                  <Brain className="h-16 w-16 text-muted-foreground mb-4" />
+                                  <h3 className="text-xl font-medium mb-2">
+                                    No Skills Found
+                                  </h3>
+                                  <p className="text-muted-foreground max-w-md">
+                                    The candidate&apos;s skill highlights will be
+                                    available once the interview is completed.
+                                  </p>
                                 </div>
-                                <div className="font-medium">
-                                  {candidateDetails?.user?.firstName}{" "}
-                                  {candidateDetails?.user?.lastName}
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Right Column - Personal Details and Social Media */}
+                      <div className="space-y-6">
+                        <Card className="!bg-transparent">
+                          <CardHeader>
+                            <CardTitle>Personal Details</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <User className="h-5 w-5 text-muted-foreground" />
+                                <div>
+                                  <div className="text-sm text-muted-foreground">
+                                    Full Name
+                                  </div>
+                                  <div className="font-medium">
+                                    {candidateDetails?.user?.firstName}{" "}
+                                    {candidateDetails?.user?.lastName}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <Calendar className="h-5 w-5 text-muted-foreground" />
-                              <div>
-                                <div className="text-sm text-muted-foreground">
-                                  Date of Birth
-                                </div>
-                                <div className="font-medium">
-                                  {new Date(
-                                    candidateDetails?.user?.dob
-                                  ).toLocaleDateString("en-US", {
-                                    day: "numeric",
-                                    month: "long",
-                                    year: "numeric",
-                                  })}
-                                  <span className="text-sm text-muted-foreground ml-2">
-                                    ({age} Years old)
-                                  </span>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <Calendar className="h-5 w-5 text-muted-foreground" />
+                                <div>
+                                  <div className="text-sm text-muted-foreground">
+                                    Date of Birth
+                                  </div>
+                                  <div className="font-medium">
+                                    {new Date(
+                                      candidateDetails?.user?.dob
+                                    ).toLocaleDateString("en-US", {
+                                      day: "numeric",
+                                      month: "long",
+                                      year: "numeric",
+                                    })}
+                                    <span className="text-sm text-muted-foreground ml-2">
+                                      ({age} Years old)
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <User className="h-5 w-5 text-muted-foreground" />
-                              <div>
-                                <div className="text-sm text-muted-foreground">
-                                  Gender
-                                </div>
-                                <div className="font-medium">
-                                  {candidateDetails?.user?.gender
-                                    ? candidateDetails?.user?.gender
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <User className="h-5 w-5 text-muted-foreground" />
+                                <div>
+                                  <div className="text-sm text-muted-foreground">
+                                    Gender
+                                  </div>
+                                  <div className="font-medium">
+                                    {candidateDetails?.user?.gender
+                                      ? candidateDetails?.user?.gender
                                         .charAt(0)
                                         .toUpperCase() +
                                       candidateDetails?.user?.gender
                                         .slice(1)
                                         .toLowerCase()
-                                    : "not specified"}
+                                      : "not specified"}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <Mail className="h-5 w-5 text-muted-foreground" />
-                              <div>
-                                <div className="text-sm text-muted-foreground">
-                                  Email
-                                </div>
-                                <div className="font-medium">
-                                  {candidateDetails?.user?.email}
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <Mail className="h-5 w-5 text-muted-foreground" />
+                                <div>
+                                  <div className="text-sm text-muted-foreground">
+                                    Email
+                                  </div>
+                                  <div className="font-medium">
+                                    {candidateDetails?.user?.email}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <Phone className="h-5 w-5 text-muted-foreground" />
-                              <div>
-                                <div className="text-sm text-muted-foreground">
-                                  Phone
-                                </div>
-                                <div className="font-medium">
-                                  {candidateDetails?.user?.contactNo
-                                    ? candidateDetails?.user?.contactNo
-                                    : "Not Provided"}
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <Phone className="h-5 w-5 text-muted-foreground" />
+                                <div>
+                                  <div className="text-sm text-muted-foreground">
+                                    Phone
+                                  </div>
+                                  <div className="font-medium">
+                                    {candidateDetails?.user?.contactNo
+                                      ? candidateDetails?.user?.contactNo
+                                      : "Not Provided"}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
 
-                      <Card className="!bg-transparent">
-                        <CardHeader>
-                          <CardTitle>Social Media</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                              <div className={`flex items-center gap-3`}>
-                                <div className="bg-[#b3b3b31a] rounded-md p-2">
-                                  <Linkedin size={16} />
-                                </div>
-                                <div className="w-full">
-                                  <p className="text-sm font-medium">
-                                    LinkedIn
-                                  </p>
-                                  <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                    {candidateDetails?.linkedInUrl
-                                      ? candidateDetails?.linkedInUrl.replace(
+                        <Card className="!bg-transparent">
+                          <CardHeader>
+                            <CardTitle>Social Media</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className={`flex items-center gap-3`}>
+                                  <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                    <Linkedin size={16} />
+                                  </div>
+                                  <div className="w-full">
+                                    <p className="text-sm font-medium">
+                                      LinkedIn
+                                    </p>
+                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                      {candidateDetails?.linkedInUrl
+                                        ? candidateDetails?.linkedInUrl.replace(
                                           /^https?:\/\/(www\.)?/i,
                                           ""
                                         )
-                                      : "linkedin.com/in/username"}
-                                  </p>
+                                        : "linkedin.com/in/username"}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              {candidateDetails?.linkedInUrl && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-accent relative"
-                                  asChild
-                                >
-                                  <a
-                                    href={candidateDetails?.linkedInUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                {candidateDetails?.linkedInUrl && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-accent relative"
+                                    asChild
                                   >
-                                    <ExternalLink
-                                      size={14}
-                                      className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
-                                    />
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div
-                                className={`flex items-center gap-3 w-[80%]`}
-                              >
-                                <div className="bg-[#b3b3b31a] rounded-md p-2">
-                                  <Github size={16} />
-                                </div>
-                                <div className="w-full">
-                                  <p className="text-sm font-medium">Github</p>
-                                  <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                    {candidateDetails?.githubUrl
-                                      ? candidateDetails?.githubUrl.replace(
+                                    <a
+                                      href={candidateDetails?.linkedInUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <ExternalLink
+                                        size={14}
+                                        className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
+                                      />
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div
+                                  className={`flex items-center gap-3 w-[80%]`}
+                                >
+                                  <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                    <Github size={16} />
+                                  </div>
+                                  <div className="w-full">
+                                    <p className="text-sm font-medium">Github</p>
+                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                      {candidateDetails?.githubUrl
+                                        ? candidateDetails?.githubUrl.replace(
                                           /^https?:\/\/(www\.)?/i,
                                           ""
                                         )
-                                      : "github.com/username"}
-                                  </p>
+                                        : "github.com/username"}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              {candidateDetails?.githubUrl && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-accent relative"
-                                  asChild
-                                >
-                                  <a
-                                    href={candidateDetails?.githubUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                {candidateDetails?.githubUrl && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-accent relative"
+                                    asChild
                                   >
-                                    <ExternalLink
-                                      size={14}
-                                      className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
-                                    />
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div
-                                className={`flex items-center gap-3 w-[80%]`}
-                              >
-                                <div className="bg-[#b3b3b31a] rounded-md p-2">
-                                  <Facebook size={16} />
-                                </div>
-                                <div className=" w-full">
-                                  <p className="text-sm font-medium">
-                                    Facebook
-                                  </p>
-                                  <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                    {candidateDetails?.facebookUrl
-                                      ? candidateDetails?.facebookUrl.replace(
+                                    <a
+                                      href={candidateDetails?.githubUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <ExternalLink
+                                        size={14}
+                                        className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
+                                      />
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div
+                                  className={`flex items-center gap-3 w-[80%]`}
+                                >
+                                  <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                    <Facebook size={16} />
+                                  </div>
+                                  <div className=" w-full">
+                                    <p className="text-sm font-medium">
+                                      Facebook
+                                    </p>
+                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                      {candidateDetails?.facebookUrl
+                                        ? candidateDetails?.facebookUrl.replace(
                                           /^https?:\/\/(www\.)?/i,
                                           ""
                                         )
-                                      : "facebook username"}
-                                  </p>
+                                        : "facebook username"}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              {candidateDetails?.facebookUrl && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-accent relative"
-                                  asChild
-                                >
-                                  <a
-                                    href={candidateDetails?.facebookUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                {candidateDetails?.facebookUrl && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-accent relative"
+                                    asChild
                                   >
-                                    <ExternalLink
-                                      size={14}
-                                      className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
-                                    />
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div
-                                className={`flex items-center gap-3 w-[80%]`}
-                              >
-                                <div className="bg-[#b3b3b31a] rounded-md p-2">
-                                  <FaXTwitter size={16} />
-                                </div>
-                                <div className="w-full">
-                                  <p className="text-sm font-medium">X</p>
-                                  <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                    {candidateDetails?.twitterUrl
-                                      ? candidateDetails?.twitterUrl.replace(
+                                    <a
+                                      href={candidateDetails?.facebookUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <ExternalLink
+                                        size={14}
+                                        className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
+                                      />
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div
+                                  className={`flex items-center gap-3 w-[80%]`}
+                                >
+                                  <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                    <FaXTwitter size={16} />
+                                  </div>
+                                  <div className="w-full">
+                                    <p className="text-sm font-medium">X</p>
+                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                      {candidateDetails?.twitterUrl
+                                        ? candidateDetails?.twitterUrl.replace(
                                           /^https?:\/\/(www\.)?/i,
                                           ""
                                         )
-                                      : "x.com/username"}
-                                  </p>
+                                        : "x.com/username"}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              {candidateDetails?.twitterUrl && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-accent relative"
-                                  asChild
-                                >
-                                  <a
-                                    href={candidateDetails?.twitterUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                {candidateDetails?.twitterUrl && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-accent relative"
+                                    asChild
                                   >
-                                    <ExternalLink
-                                      size={14}
-                                      className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
-                                    />
-                                  </a>
-                                </Button>
-                              )}
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div
-                                className={`flex items-center gap-3 w-[80%]`}
-                              >
-                                <div className="bg-[#b3b3b31a] rounded-md p-2">
-                                  <FaDiscord size={16} />
-                                </div>
-                                <div className="w-full">
-                                  <p className="text-sm font-medium">Discord</p>
-                                  <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                    {candidateDetails?.discordUrl
-                                      ? candidateDetails?.discordUrl.replace(
+                                    <a
+                                      href={candidateDetails?.twitterUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <ExternalLink
+                                        size={14}
+                                        className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
+                                      />
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div
+                                  className={`flex items-center gap-3 w-[80%]`}
+                                >
+                                  <div className="bg-[#b3b3b31a] rounded-md p-2">
+                                    <FaDiscord size={16} />
+                                  </div>
+                                  <div className="w-full">
+                                    <p className="text-sm font-medium">Discord</p>
+                                    <p className="text-xs text-[#b3b3b3] max-w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                      {candidateDetails?.discordUrl
+                                        ? candidateDetails?.discordUrl.replace(
                                           /^https?:\/\/(www\.)?/i,
                                           ""
                                         )
-                                      : "discord.com/username"}
-                                  </p>
+                                        : "discord.com/username"}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              {candidateDetails?.discordUrl && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-accent relative"
-                                  asChild
-                                >
-                                  <a
-                                    href={candidateDetails?.discordUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                {candidateDetails?.discordUrl && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-accent relative"
+                                    asChild
                                   >
-                                    <ExternalLink
-                                      size={14}
-                                      className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
-                                    />
-                                  </a>
-                                </Button>
-                              )}
+                                    <a
+                                      href={candidateDetails?.discordUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <ExternalLink
+                                        size={14}
+                                        className=" text-yellow-400 absolute top-1/2 right-0 transform -translate-y-1/2"
+                                      />
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
-                </TabsContent>
-                <TabsContent value="assessment" className="space-y-6">
-                  <Card className="!bg-transparent">
-                    <CardHeader>
-                      <CardTitle>Interview Results</CardTitle>
-                      {sessionDetails?.interviewStatus ? (
-                        sessionDetails?.interviewStatus === "completed" ? (
-                          <CardDescription>
-                            Completed on{" "}
-                            {new Date(
-                              sessionDetails?.interview?.endDate
-                            ).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}{" "}
-                            at{" "}
-                            {new Date(
-                              sessionDetails?.interview?.endDate
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </CardDescription>
+                  </TabsContent>
+                  <TabsContent value="assessment" className="space-y-6">
+                    <Card className="!bg-transparent">
+                      <CardHeader>
+                        <CardTitle>Interview Results</CardTitle>
+                        {sessionDetails?.interviewStatus ? (
+                          sessionDetails?.interviewStatus === "completed" ? (
+                            <CardDescription>
+                              Completed on{" "}
+                              {new Date(
+                                sessionDetails?.interview?.endDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}{" "}
+                              at{" "}
+                              {new Date(
+                                sessionDetails?.interview?.endDate
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </CardDescription>
+                          ) : (
+                            <CardDescription>
+                              Scheduled for{" "}
+                              {new Date(
+                                sessionDetails?.interview?.startDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}{" "}
+                              at{" "}
+                              {new Date(
+                                sessionDetails?.interview?.startDate
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </CardDescription>
+                          )
                         ) : (
-                          <CardDescription>
-                            Scheduled for{" "}
-                            {new Date(
-                              sessionDetails?.interview?.startDate
-                            ).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}{" "}
-                            at{" "}
-                            {new Date(
-                              sessionDetails?.interview?.startDate
-                            ).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </CardDescription>
-                        )
-                      ) : (
-                        <span className=" text-gray-500 text-sm">
-                          Not Scheduled Yet
-                        </span>
-                      )}
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {sessionDetails?.interviewStatus === "completed" ? (
-                        <>
-                          <Tabs
-                            value={activeAssessmentTab}
-                            onValueChange={setActiveAssesmentTab}
-                          >
-                            <TabsList className="grid grid-cols-2 mb-6">
-                              <TabsTrigger
-                                value="technical"
-                                className="flex items-center gap-2"
-                              >
-                                <User className="h-4 w-4" />
-                                Technical Skills
-                              </TabsTrigger>
-                              <TabsTrigger
-                                value="soft"
-                                className="flex items-center gap-2"
-                              >
-                                <Star className="h-4 w-4" />
-                                Soft Skills{" "}
-                              </TabsTrigger>
-                            </TabsList>
-                            <TabsContent
-                              value="technical"
-                              className="space-y-6"
+                          <span className=" text-gray-500 text-sm">
+                            Not Scheduled Yet
+                          </span>
+                        )}
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        {sessionDetails?.interviewStatus === "completed" ? (
+                          <>
+                            <Tabs
+                              value={activeAssessmentTab}
+                              onValueChange={setActiveAssesmentTab}
                             >
-                              <Card className="!bg-transparent">
-                                <CardHeader>
-                                  <CardTitle>Technical Skills</CardTitle>
-                                  <CardDescription>
-                                    Breakdown of candidate&apos;s performance in
-                                    different skill areas
-                                  </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                  <div className="flex justify-between items-center">
-                                    <h3 className="font-medium">
-                                      Technical Skills
-                                    </h3>
-                                    <span
-                                      className={`font-bold ${getScoreColor(
+                              <TabsList className="grid grid-cols-2 mb-6">
+                                <TabsTrigger
+                                  value="technical"
+                                  className="flex items-center gap-2"
+                                >
+                                  <User className="h-4 w-4" />
+                                  Technical Skills
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="soft"
+                                  className="flex items-center gap-2"
+                                >
+                                  <Star className="h-4 w-4" />
+                                  Soft Skills{" "}
+                                </TabsTrigger>
+                              </TabsList>
+                              <TabsContent
+                                value="technical"
+                                className="space-y-6"
+                              >
+                                <Card className="!bg-transparent">
+                                  <CardHeader>
+                                    <CardTitle>Technical Skills</CardTitle>
+                                    <CardDescription>
+                                      Breakdown of candidate&apos;s performance in
+                                      different skill areas
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent>
+                                    <div className="flex justify-between items-center">
+                                      <h3 className="font-medium">
+                                        Technical Skills
+                                      </h3>
+                                      <span
+                                        className={`font-bold ${getScoreColor(
+                                          (
+                                            sessionDetails?.CategoryScore?.find(
+                                              (item) =>
+                                                item.categoryAssignment.category
+                                                  .categoryName === "Technical"
+                                            ).score ?? 0
+                                          ).toFixed(2)
+                                        )}`}
+                                      >
+                                        {(
+                                          sessionDetails?.CategoryScore?.find(
+                                            (item) =>
+                                              item.categoryAssignment.category
+                                                .categoryName === "Technical"
+                                          ).score ?? 0
+                                        ).toFixed(2)}
+                                      </span>
+                                    </div>
+                                    <Progress
+                                      value={(
+                                        sessionDetails?.CategoryScore?.find(
+                                          (item) =>
+                                            item.categoryAssignment.category
+                                              .categoryName === "Technical"
+                                        ).score ?? 0
+                                      ).toFixed(2)}
+                                      className="h-2"
+                                      indicatorclassname={getScoreBgColor(
                                         (
                                           sessionDetails?.CategoryScore?.find(
                                             (item) =>
@@ -1754,109 +1780,109 @@ useEffect(() => {
                                                 .categoryName === "Technical"
                                           ).score ?? 0
                                         ).toFixed(2)
-                                      )}`}
-                                    >
-                                      {(
+                                      )}
+                                    />
+                                    <div className=" mt-5 w-full">
+                                      {sessionDetails?.questions?.map(
+                                        (question, index) => (
+                                          <Card
+                                            key={question.questionID}
+                                            className="!bg-transparent mt-2 py-2"
+                                          >
+                                            <CardContent>
+                                              <div className=" flex w-full justify-between items-center">
+                                                <span className=" text-base">
+                                                  {question.questionText}
+                                                </span>
+                                                <span className=" text-base">
+                                                  23 / 25
+                                                </span>
+                                              </div>
+                                              <div className=" w-full text-sm items-center text-gray-500">
+                                                Answer:{" "}
+                                                <span>
+                                                  {question.answer ||
+                                                    "no given answer"}
+                                                </span>
+                                              </div>
+                                              <div className="flex items-center gap-2 mt-5">
+                                                <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                                  <Star className="h-3 w-3" />
+                                                  <span className="font-bold">
+                                                    {question.type
+                                                      .toLowerCase()
+                                                      .split("_")
+                                                      .map(
+                                                        (word) =>
+                                                          word
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                          word.slice(1)
+                                                      )
+                                                      .join(" ")}
+                                                  </span>
+                                                </Badge>
+                                                <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                                  <Clock className="h-4 w-4" />
+                                                  <span className="text-blue-500">
+                                                    {
+                                                      question.estimatedTimeMinutes
+                                                    }{" "}
+                                                    minutes
+                                                  </span>
+                                                </Badge>
+                                              </div>
+                                            </CardContent>
+                                          </Card>
+                                        )
+                                      )}
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              </TabsContent>
+                              <TabsContent value="soft" className="space-y-6">
+                                <Card className="!bg-transparent">
+                                  <CardHeader>
+                                    <CardTitle>Soft Skills</CardTitle>
+                                    <CardDescription>
+                                      Breakdown of candidate&apos;s performance in soft
+                                      skills areas like communication, teamwork,
+                                      etc.
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent>
+                                    <div className="flex justify-between items-center">
+                                      <h3 className="font-medium">Soft Skills</h3>
+                                      <span
+                                        className={`font-bold ${getScoreColor(
+                                          (
+                                            sessionDetails?.CategoryScore?.find(
+                                              (item) =>
+                                                item.categoryAssignment.category
+                                                  .categoryName === "Soft"
+                                            ).score ?? 0
+                                          ).toFixed(2)
+                                        )}`}
+                                      >
+                                        {(
+                                          sessionDetails?.CategoryScore?.find(
+                                            (item) =>
+                                              item.categoryAssignment.category
+                                                .categoryName === "Soft"
+                                          ).score ?? 0
+                                        ).toFixed(2)}
+                                      </span>
+                                    </div>
+                                    <Progress
+                                      value={(
                                         sessionDetails?.CategoryScore?.find(
                                           (item) =>
                                             item.categoryAssignment.category
-                                              .categoryName === "Technical"
+                                              .categoryName === "Soft"
                                         ).score ?? 0
                                       ).toFixed(2)}
-                                    </span>
-                                  </div>
-                                  <Progress
-                                    value={(
-                                      sessionDetails?.CategoryScore?.find(
-                                        (item) =>
-                                          item.categoryAssignment.category
-                                            .categoryName === "Technical"
-                                      ).score ?? 0
-                                    ).toFixed(2)}
-                                    className="h-2"
-                                    indicatorclassname={getScoreBgColor(
-                                      (
-                                        sessionDetails?.CategoryScore?.find(
-                                          (item) =>
-                                            item.categoryAssignment.category
-                                              .categoryName === "Technical"
-                                        ).score ?? 0
-                                      ).toFixed(2)
-                                    )}
-                                  />
-                                  <div className=" mt-5 w-full">
-                                    {sessionDetails?.questions?.map(
-                                      (question, index) => (
-                                        <Card
-                                          key={question.questionID}
-                                          className="!bg-transparent mt-2 py-2"
-                                        >
-                                          <CardContent>
-                                            <div className=" flex w-full justify-between items-center">
-                                              <span className=" text-base">
-                                                {question.questionText}
-                                              </span>
-                                              <span className=" text-base">
-                                                23 / 25
-                                              </span>
-                                            </div>
-                                            <div className=" w-full text-sm items-center text-gray-500">
-                                              Answer:{" "}
-                                              <span>
-                                                {question.answer ||
-                                                  "no given answer"}
-                                              </span>
-                                            </div>
-                                            <div className="flex items-center gap-2 mt-5">
-                                              <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
-                                                <Star className="h-3 w-3" />
-                                                <span className="font-bold">
-                                                  {question.type
-                                                    .toLowerCase()
-                                                    .split("_")
-                                                    .map(
-                                                      (word) =>
-                                                        word
-                                                          .charAt(0)
-                                                          .toUpperCase() +
-                                                        word.slice(1)
-                                                    )
-                                                    .join(" ")}
-                                                </span>
-                                              </Badge>
-                                              <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
-                                                <Clock className="h-4 w-4" />
-                                                <span className="text-blue-500">
-                                                  {
-                                                    question.estimatedTimeMinutes
-                                                  }{" "}
-                                                  minutes
-                                                </span>
-                                              </Badge>
-                                            </div>
-                                          </CardContent>
-                                        </Card>
-                                      )
-                                    )}
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            </TabsContent>
-                            <TabsContent value="soft" className="space-y-6">
-                              <Card className="!bg-transparent">
-                                <CardHeader>
-                                  <CardTitle>Soft Skills</CardTitle>
-                                  <CardDescription>
-                                    Breakdown of candidate&apos;s performance in soft
-                                    skills areas like communication, teamwork,
-                                    etc.
-                                  </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                  <div className="flex justify-between items-center">
-                                    <h3 className="font-medium">Soft Skills</h3>
-                                    <span
-                                      className={`font-bold ${getScoreColor(
+                                      className="h-2"
+                                      indicatorclassname={getScoreBgColor(
                                         (
                                           sessionDetails?.CategoryScore?.find(
                                             (item) =>
@@ -1864,156 +1890,149 @@ useEffect(() => {
                                                 .categoryName === "Soft"
                                           ).score ?? 0
                                         ).toFixed(2)
-                                      )}`}
-                                    >
-                                      {(
-                                        sessionDetails?.CategoryScore?.find(
-                                          (item) =>
-                                            item.categoryAssignment.category
-                                              .categoryName === "Soft"
-                                        ).score ?? 0
-                                      ).toFixed(2)}
-                                    </span>
-                                  </div>
-                                  <Progress
-                                    value={(
-                                      sessionDetails?.CategoryScore?.find(
-                                        (item) =>
-                                          item.categoryAssignment.category
-                                            .categoryName === "Soft"
-                                      ).score ?? 0
-                                    ).toFixed(2)}
-                                    className="h-2"
-                                    indicatorclassname={getScoreBgColor(
-                                      (
-                                        sessionDetails?.CategoryScore?.find(
-                                          (item) =>
-                                            item.categoryAssignment.category
-                                              .categoryName === "Soft"
-                                        ).score ?? 0
-                                      ).toFixed(2)
-                                    )}
-                                  />
-                                  <div className=" mt-5 w-full">
-                                    {categoryMarks.map((category) => (
-                                      <Card
-                                        key={category.id}
-                                        className="!bg-transparent mt-3"
-                                      >
-                                        <CardContent>
-                                          <div className="my-2">
-                                            <div className="flex justify-between items-center">
-                                              <h3 className="font-medium">
-                                                {category.name}
-                                              </h3>
-                                              <span
-                                                className={`font-bold ${getScoreColor(
-                                                  (
-                                                    category.percentage ?? 0
-                                                  ).toFixed(2)
-                                                )}`}
-                                              >
-                                                {(
-                                                  category.percentage ?? 0
-                                                ).toFixed(2)}
-                                              </span>
-                                            </div>
-                                            <Progress
-                                              value={(
-                                                category.percentage ?? 0
-                                              ).toFixed(2)}
-                                              className="h-2"
-                                              indicatorclassname={getScoreBgColor(
-                                                (
-                                                  category.percentage ?? 0
-                                                ).toFixed(2)
-                                              )}
-                                            />
-                                          </div>
-                                        </CardContent>
-                                      </Card>
-                                    ))}
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            </TabsContent>
-                          </Tabs>
-                        </>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-12 text-center">
-                          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
-                          <h3 className="text-xl font-medium mb-2">
-                            Interview Not Yet Completed
-                          </h3>
-                          <p className="text-muted-foreground max-w-md">
-                            The assessment results will be available once the
-                            interview is completed.{" "}
-                            {sessionDetails?.interview?.startDate &&
-                              `The interview is scheduled for ${" "}
+                                      )}
+                                    />
+                                    <div className="mt-5 w-full">
+                                      {sessionhistory?.categoryScores
+                                        ?.find(cat => cat.categoryName === 'Soft')
+                                        ?.subCategoryScores?.map((subCategory, index) => (
+                                          <Card key={`soft-subcat-${index}`} className="!bg-transparent mt-3">
+                                            <CardContent>
+                                              <div className="my-2">
+                                                <div className="flex justify-between items-center">
+                                                  <h3 className="font-medium">
+                                                    {subCategory.subCategoryName || 'Unnamed Subcategory'}
+                                                  </h3>
+                                                  <span className={`font-bold ${getScoreColor(subCategory.score)}`}>
+                                                    {(subCategory.score ?? 0).toFixed(2)}
+                                                  </span>
+                                                </div>
+                                                <Progress
+                                                  value={subCategory.score ?? 0}
+                                                  className="h-2"
+                                                  indicatorclassname={getScoreBgColor(subCategory.score)}
+                                                />
+                                              </div>
+                                            </CardContent>
+                                          </Card>
+                                        ))}
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              </TabsContent>
+                            </Tabs>
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center py-12 text-center">
+                            <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+                            <h3 className="text-xl font-medium mb-2">
+                              Interview Not Yet Completed
+                            </h3>
+                            <p className="text-muted-foreground max-w-md">
+                              The assessment results will be available once the
+                              interview is completed.{" "}
+                              {sessionDetails?.interview?.startDate &&
+                                `The interview is scheduled for ${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}${" "}
+                                  sessionDetails?.interview?.startDate
+                                ).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}${" "}
                     at${" "}
                     ${new Date(
-                      sessionDetails?.interview?.startDate
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                                  sessionDetails?.interview?.startDate
+                                ).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
                     .`}
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
 
-                  {candidateDetails.status === "Completed" && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Detailed Assessment</CardTitle>
-                        <CardDescription>
-                          Breakdown of candidate&apos;s performance in different
-                          skill areas
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Tabs defaultValue="technical" className="w-full">
-                          <TabsList className="grid grid-cols-2 mb-6">
-                            <TabsTrigger
-                              value="technical"
-                              className="flex items-center gap-2"
-                            >
-                              <Star className="h-4 w-4" />
-                              Technical Skills
-                            </TabsTrigger>
-                            <TabsTrigger
-                              value="soft"
-                              className="flex items-center gap-2"
-                            >
-                              <User className="h-4 w-4" />
-                              Soft Skills
-                            </TabsTrigger>
-                          </TabsList>
+                    {candidateDetails.status === "Completed" && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Detailed Assessment</CardTitle>
+                          <CardDescription>
+                            Breakdown of candidate&apos;s performance in different
+                            skill areas
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Tabs defaultValue="technical" className="w-full">
+                            <TabsList className="grid grid-cols-2 mb-6">
+                              <TabsTrigger
+                                value="technical"
+                                className="flex items-center gap-2"
+                              >
+                                <Star className="h-4 w-4" />
+                                Technical Skills
+                              </TabsTrigger>
+                              <TabsTrigger
+                                value="soft"
+                                className="flex items-center gap-2"
+                              >
+                                <User className="h-4 w-4" />
+                                Soft Skills
+                              </TabsTrigger>
+                            </TabsList>
 
-                          <TabsContent value="technical" className="space-y-6">
-                            {candidateDetails.technicalSkills.map(
-                              (skill, index) => (
+                            <TabsContent value="technical" className="space-y-6">
+                              {candidateDetails.technicalSkills.map(
+                                (skill, index) => (
+                                  <div key={index} className="space-y-3">
+                                    <div className="flex justify-between items-center">
+                                      <h3 className="font-medium">
+                                        {skill.name}
+                                      </h3>
+                                      <div className="flex items-center gap-2">
+                                        <span
+                                          className={`font-bold ${getScoreColor(
+                                            (skill.score ?? 0).toFixed(2)
+                                          )}`}
+                                        >
+                                          {(skill.score ?? 0).toFixed(2)}
+                                        </span>
+                                        <span className="text-muted-foreground">
+                                          / {skill.maxScore}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <Progress
+                                      value={(skill.score / skill.maxScore) * 100}
+                                      className="h-2"
+                                      indicatorclassname={getScoreBgColor(
+                                        skill.score
+                                      )}
+                                    />
+                                    <div className="p-3 bg-muted/30 rounded-md">
+                                      <div className="flex items-start gap-2">
+                                        <Check className="h-4 w-4 mt-1 text-muted-foreground" />
+                                        <p className="text-sm">{skill.notes}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </TabsContent>
+
+                            <TabsContent value="soft" className="space-y-6">
+                              {candidateDetails.softSkills.map((skill, index) => (
                                 <div key={index} className="space-y-3">
                                   <div className="flex justify-between items-center">
-                                    <h3 className="font-medium">
-                                      {skill.name}
-                                    </h3>
+                                    <h3 className="font-medium">{skill.name}</h3>
                                     <div className="flex items-center gap-2">
                                       <span
                                         className={`font-bold ${getScoreColor(
-                                          (skill.score ?? 0).toFixed(2)
+                                          skill.score
                                         )}`}
                                       >
-                                        {(skill.score ?? 0).toFixed(2)}
+                                        {skill.score}
                                       </span>
                                       <span className="text-muted-foreground">
                                         / {skill.maxScore}
@@ -2034,410 +2053,374 @@ useEffect(() => {
                                     </div>
                                   </div>
                                 </div>
-                              )
-                            )}
-                          </TabsContent>
+                              ))}
+                            </TabsContent>
+                          </Tabs>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </TabsContent>
 
-                          <TabsContent value="soft" className="space-y-6">
-                            {candidateDetails.softSkills.map((skill, index) => (
-                              <div key={index} className="space-y-3">
+                  <TabsContent value="resume" className="space-y-6">
+                    <Card className="!bg-transparent">
+                      <CardHeader>
+                        <CardTitle>Resume</CardTitle>
+                        <CardDescription>
+                          Upload and view candidate&apos;s resume
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {documentAnalizedData.url ? (
+                          <div className="space-y-6">
+                            {sessionDetails?.candidate?.resumeURL ? (
+                              <>
                                 <div className="flex justify-between items-center">
-                                  <h3 className="font-medium">{skill.name}</h3>
-                                  <div className="flex items-center gap-2">
-                                    <span
-                                      className={`font-bold ${getScoreColor(
-                                        skill.score
-                                      )}`}
-                                    >
-                                      {skill.score}
-                                    </span>
-                                    <span className="text-muted-foreground">
-                                      / {skill.maxScore}
-                                    </span>
-                                  </div>
+                                  <h3 className="text-lg font-medium">
+                                    Resume Analyze
+                                  </h3>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                  >
+                                    <Download className="h-4 w-4" />
+                                    Download
+                                  </Button>
                                 </div>
-                                <Progress
-                                  value={(skill.score / skill.maxScore) * 100}
-                                  className="h-2"
-                                  indicatorclassname={getScoreBgColor(
-                                    skill.score
-                                  )}
-                                />
-                                <div className="p-3 bg-muted/30 rounded-md">
-                                  <div className="flex items-start gap-2">
-                                    <Check className="h-4 w-4 mt-1 text-muted-foreground" />
-                                    <p className="text-sm">{skill.notes}</p>
-                                  </div>
+                                <div className=" bg-black/90 flex items-center justify-center">
+                                  <iframe
+                                    src={`${sessionDetails?.candidate?.resumeURL}`}
+                                    className=" overflow-x-hidden rounded-lg mt-2"
+                                    width="100%"
+                                    height="700px"
+                                    style={{ border: "none" }}
+                                    title="PDF Viewer"
+                                  />
                                 </div>
-                              </div>
-                            ))}
-                          </TabsContent>
-                        </Tabs>
-                      </CardContent>
-                    </Card>
-                  )}
-                </TabsContent>
-
-                <TabsContent value="resume" className="space-y-6">
-                  <Card className="!bg-transparent">
-                    <CardHeader>
-                      <CardTitle>Resume</CardTitle>
-                      <CardDescription>
-                        Upload and view candidate&apos;s resume
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {documentAnalizedData.url ? (
-                        <div className="space-y-6">
-                          {sessionDetails?.candidate?.resumeURL ? (
-                            <>
-                              <div className="flex justify-between items-center">
-                                <h3 className="text-lg font-medium">
-                                  Resume Analyze
-                                </h3>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="gap-2"
-                                >
-                                  <Download className="h-4 w-4" />
-                                  Download
-                                </Button>
-                              </div>
-                              <div className=" bg-black/90 flex items-center justify-center">
-                                <iframe
-                                  src={`${sessionDetails?.candidate?.resumeURL}`}
-                                  className=" overflow-x-hidden rounded-lg mt-2"
-                                  width="100%"
-                                  height="700px"
-                                  style={{ border: "none" }}
-                                  title="PDF Viewer"
-                                />
-                              </div>
-                              <Card className="!bg-transparent !border-blue-500">
-                                <CardHeader className="pb-2">
-                                  <CardTitle className="text-blue-500 flex items-center gap-2">
-                                    <Sparkles className="h-5 w-5 text-blue-500" />
-                                    Resume Analysis
-                                  </CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                  <div>
-                                    <h4 className="text-lg font-medium mb-2">
-                                      Summary
-                                    </h4>
-                                    <p className="text-muted-foreground text-sm">
-                                      {documentAnalizedData.summary}
-                                    </p>
-                                  </div>
-
-                                  {documentAnalizedData.contactInfo && (
+                                <Card className="!bg-transparent !border-blue-500">
+                                  <CardHeader className="pb-2">
+                                    <CardTitle className="text-blue-500 flex items-center gap-2">
+                                      <Sparkles className="h-5 w-5 text-blue-500" />
+                                      Resume Analysis
+                                    </CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="space-y-6">
                                     <div>
                                       <h4 className="text-lg font-medium mb-2">
-                                        Contact Information
+                                        Summary
                                       </h4>
-                                      {documentAnalizedData.contactInfo
-                                        .phone && (
-                                        <div className="flex items-start gap-3  mt-2">
-                                          <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .phone
-                                            }
-                                          </div>
-                                        </div>
-                                      )}
-                                      {documentAnalizedData.contactInfo
-                                        .linkedin && (
-                                        <div className="flex items-start gap-3  mt-2">
-                                          <LinkedinIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .linkedin
-                                            }
-                                          </div>
-                                        </div>
-                                      )}
-                                      {documentAnalizedData.contactInfo
-                                        .github && (
-                                        <div className="flex items-start gap-3  mt-2">
-                                          <GithubIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .github
-                                            }
-                                          </div>
-                                        </div>
-                                      )}
-                                      {documentAnalizedData.contactInfo
-                                        .email && (
-                                        <div className="flex items-start gap-3 mt-2">
-                                          <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                          <div className="font-medium">
-                                            {
-                                              documentAnalizedData.contactInfo
-                                                .email
-                                            }
-                                          </div>
-                                        </div>
-                                      )}
+                                      <p className="text-muted-foreground text-sm">
+                                        {documentAnalizedData.summary}
+                                      </p>
                                     </div>
-                                  )}
 
-                                  <div>
-                                    <h4 className="text-lg font-medium mb-2">
-                                      Education
-                                    </h4>
-                                    <div className="space-y-2">
-                                      {documentAnalizedData.education.map(
-                                        (edu, index) => (
-                                          <div
-                                            key={index}
-                                            className="flex items-start gap-3"
-                                          >
-                                            <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                            <div>
+                                    {documentAnalizedData.contactInfo && (
+                                      <div>
+                                        <h4 className="text-lg font-medium mb-2">
+                                          Contact Information
+                                        </h4>
+                                        {documentAnalizedData.contactInfo
+                                          .phone && (
+                                            <div className="flex items-start gap-3  mt-2">
+                                              <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
                                               <div className="font-medium">
-                                                {edu.title}
-                                              </div>
-                                              <div className="text-sm text-muted-foreground">
-                                                {edu.institution} -{" "}
-                                                {new Date(
-                                                  edu.startDate
-                                                ).getFullYear()}{" "}
-                                                -{" "}
-                                                {edu.endDate
-                                                  ? new Date(
-                                                      edu.endDate
-                                                    ).getFullYear()
-                                                  : "Present"}
+                                                {
+                                                  documentAnalizedData.contactInfo
+                                                    .phone
+                                                }
                                               </div>
                                             </div>
-                                          </div>
-                                        )
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  <div>
-                                    <h4 className="text-lg font-medium mb-2">
-                                      Experience
-                                    </h4>
-                                    <div className="space-y-3">
-                                      {documentAnalizedData.experience
-                                        .slice(0, 5)
-                                        .map((exp, index) => (
-                                          <div
-                                            key={index}
-                                            className="flex items-start gap-3"
-                                          >
-                                            <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
-                                            <div>
+                                          )}
+                                        {documentAnalizedData.contactInfo
+                                          .linkedin && (
+                                            <div className="flex items-start gap-3  mt-2">
+                                              <LinkedinIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
                                               <div className="font-medium">
-                                                {exp.jobTitle}
-                                                <Badge
-                                                  variant="outline"
-                                                  className={
-                                                    exp.status === "Ongoing"
-                                                      ? "!text-blue-400 !border-blue-400 ml-2"
-                                                      : "!text-green-400 !border-green-400 ml-2"
-                                                  }
-                                                >
-                                                  {exp.status}
-                                                </Badge>
+                                                {
+                                                  documentAnalizedData.contactInfo
+                                                    .linkedin
+                                                }
                                               </div>
-                                              <div className="text-sm text-muted-foreground flex items-center gap-2">
-                                                <span>
+                                            </div>
+                                          )}
+                                        {documentAnalizedData.contactInfo
+                                          .github && (
+                                            <div className="flex items-start gap-3  mt-2">
+                                              <GithubIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                              <div className="font-medium">
+                                                {
+                                                  documentAnalizedData.contactInfo
+                                                    .github
+                                                }
+                                              </div>
+                                            </div>
+                                          )}
+                                        {documentAnalizedData.contactInfo
+                                          .email && (
+                                            <div className="flex items-start gap-3 mt-2">
+                                              <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                              <div className="font-medium">
+                                                {
+                                                  documentAnalizedData.contactInfo
+                                                    .email
+                                                }
+                                              </div>
+                                            </div>
+                                          )}
+                                      </div>
+                                    )}
+
+                                    <div>
+                                      <h4 className="text-lg font-medium mb-2">
+                                        Education
+                                      </h4>
+                                      <div className="space-y-2">
+                                        {documentAnalizedData.education.map(
+                                          (edu, index) => (
+                                            <div
+                                              key={index}
+                                              className="flex items-start gap-3"
+                                            >
+                                              <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                              <div>
+                                                <div className="font-medium">
+                                                  {edu.title}
+                                                </div>
+                                                <div className="text-sm text-muted-foreground">
+                                                  {edu.institution} -{" "}
                                                   {new Date(
-                                                    exp.startDate
+                                                    edu.startDate
                                                   ).getFullYear()}{" "}
                                                   -{" "}
-                                                  {exp.endDate
+                                                  {edu.endDate
                                                     ? new Date(
+                                                      edu.endDate
+                                                    ).getFullYear()
+                                                    : "Present"}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-lg font-medium mb-2">
+                                        Experience
+                                      </h4>
+                                      <div className="space-y-3">
+                                        {documentAnalizedData.experience
+                                          .slice(0, 5)
+                                          .map((exp, index) => (
+                                            <div
+                                              key={index}
+                                              className="flex items-start gap-3"
+                                            >
+                                              <Briefcase className="h-5 w-5 text-muted-foreground mt-0.5" />
+                                              <div>
+                                                <div className="font-medium">
+                                                  {exp.jobTitle}
+                                                  <Badge
+                                                    variant="outline"
+                                                    className={
+                                                      exp.status === "Ongoing"
+                                                        ? "!text-blue-400 !border-blue-400 ml-2"
+                                                        : "!text-green-400 !border-green-400 ml-2"
+                                                    }
+                                                  >
+                                                    {exp.status}
+                                                  </Badge>
+                                                </div>
+                                                <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                                  <span>
+                                                    {new Date(
+                                                      exp.startDate
+                                                    ).getFullYear()}{" "}
+                                                    -{" "}
+                                                    {exp.endDate
+                                                      ? new Date(
                                                         exp.endDate
                                                       ).getFullYear()
-                                                    : "Present"}
-                                                </span>
+                                                      : "Present"}
+                                                  </span>
 
-                                                {exp.company && (
-                                                  <>
-                                                    <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
-                                                    <span>{exp.company}</span>
-                                                  </>
-                                                )}
+                                                  {exp.company && (
+                                                    <>
+                                                      <span className="w-1 h-1 rounded-full bg-muted-foreground inline-block"></span>
+                                                      <span>{exp.company}</span>
+                                                    </>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className="text-lg font-medium mb-2">
+                                        Skills
+                                      </h4>
+                                      <div className="flex flex-wrap gap-2">
+                                        {documentAnalizedData.skills.map(
+                                          (skill, index) => (
+                                            <Badge
+                                              key={index}
+                                              variant="secondary"
+                                              className="px-3 py-1 text-sm !bg-gray-500/20 !border-gray-600 !text-gray-300"
+                                            >
+                                              {skill}
+                                            </Badge>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+
+                                <Card className="mt-8 !border-blue-500">
+                                  <CardHeader>
+                                    <CardTitle className="flex items-center gap-2 text-blue-500">
+                                      <Sparkles className="h-5 w-5 text-blue-500" />
+                                      AI-Generated Interview Questions
+                                    </CardTitle>
+                                    <CardDescription>
+                                      Questions tailored to the candidate&apos;s
+                                      profile based on their resume
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent>
+                                    <div className="space-y-8">
+                                      <h3 className="text-lg font-medium flex items-center gap-2">
+                                        <Star className="h-5 w-5 text-blue-400" />
+                                        Technical Skills
+                                      </h3>
+
+                                      {documentAnalizedData.questions.technical.map(
+                                        (question, qIndex) => (
+                                          <div key={qIndex} className="group">
+                                            <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
+                                              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                                                {qIndex + 1}
+                                              </div>
+                                              <div className="flex-1">
+                                                <p>{question.question}</p>
+                                              </div>
+                                              <AlertDialog>
+                                                <AlertDialogTrigger
+                                                  className={` opacity-0 group-hover:opacity-100 transition-opacity`}
+                                                >
+                                                  <Plus className="!h-6 !w-6 text-green-500" />
+                                                </AlertDialogTrigger>
+
+                                                <AlertDialogContent>
+                                                  <AlertDialogHeader>
+                                                    <AlertDialogTitle>
+                                                      Are you sure you want to
+                                                      feed this question to the
+                                                      candidate?
+                                                    </AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                      Once you add this question
+                                                      to the candidate&apos;s questionnaire, you cannot
+                                                      undo this action.
+                                                    </AlertDialogDescription>
+                                                  </AlertDialogHeader>
+
+                                                  <AlertDialogFooter>
+                                                    <AlertDialogCancel>
+                                                      Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                      onClick={() =>
+                                                        handleAddQuestion(
+                                                          question.question,
+                                                          question.type,
+                                                          question.estimatedTimeInMinutes
+                                                        )
+                                                      }
+                                                      className="h-[40px] font-medium"
+                                                    >
+                                                      Add Question
+                                                    </AlertDialogAction>
+                                                  </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                              </AlertDialog>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                      <h3 className="text-lg font-medium flex items-center gap-2">
+                                        <User className="h-5 w-5 text-amber-400" />
+                                        Soft Skills & Leadership Skills
+                                      </h3>
+
+                                      {documentAnalizedData.questions.soft_skills.map(
+                                        (question, qIndex) => (
+                                          <div key={qIndex} className="group">
+                                            <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
+                                              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                                                {qIndex + 1}
+                                              </div>
+                                              <div className="flex-1">
+                                                <p>{question.question}</p>
+                                                <p className=" text-muted-foreground text-sm">
+                                                  {question.context}
+                                                </p>
                                               </div>
                                             </div>
                                           </div>
-                                        ))}
-                                    </div>
-                                  </div>
-
-                                  <div>
-                                    <h4 className="text-lg font-medium mb-2">
-                                      Skills
-                                    </h4>
-                                    <div className="flex flex-wrap gap-2">
-                                      {documentAnalizedData.skills.map(
-                                        (skill, index) => (
-                                          <Badge
-                                            key={index}
-                                            variant="secondary"
-                                            className="px-3 py-1 text-sm !bg-gray-500/20 !border-gray-600 !text-gray-300"
-                                          >
-                                            {skill}
-                                          </Badge>
                                         )
                                       )}
+
+                                      <div className="flex justify-end">
+                                        <Button
+                                          variant="outline"
+                                          className="gap-2"
+                                        >
+                                          <Download className="h-4 w-4" />
+                                          Export Questions
+                                        </Button>
+                                      </div>
                                     </div>
-                                  </div>
-                                </CardContent>
-                              </Card>
-
-                              <Card className="mt-8 !border-blue-500">
-                                <CardHeader>
-                                  <CardTitle className="flex items-center gap-2 text-blue-500">
-                                    <Sparkles className="h-5 w-5 text-blue-500" />
-                                    AI-Generated Interview Questions
-                                  </CardTitle>
-                                  <CardDescription>
-                                    Questions tailored to the candidate&apos;s
-                                    profile based on their resume
-                                  </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                  <div className="space-y-8">
-                                    <h3 className="text-lg font-medium flex items-center gap-2">
-                                      <Star className="h-5 w-5 text-blue-400" />
-                                      Technical Skills
-                                    </h3>
-
-                                    {documentAnalizedData.questions.technical.map(
-                                      (question, qIndex) => (
-                                        <div key={qIndex} className="group">
-                                          <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
-                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                                              {qIndex + 1}
-                                            </div>
-                                            <div className="flex-1">
-                                              <p>{question.question}</p>
-                                            </div>
-                                            <AlertDialog>
-                                              <AlertDialogTrigger
-                                                className={` opacity-0 group-hover:opacity-100 transition-opacity`}
-                                              >
-                                                <Plus className="!h-6 !w-6 text-green-500" />
-                                              </AlertDialogTrigger>
-
-                                              <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                  <AlertDialogTitle>
-                                                    Are you sure you want to
-                                                    feed this question to the
-                                                    candidate?
-                                                  </AlertDialogTitle>
-                                                  <AlertDialogDescription>
-                                                    Once you add this question
-                                                    to the candidate&apos;s questionnaire, you cannot
-                                                    undo this action.
-                                                  </AlertDialogDescription>
-                                                </AlertDialogHeader>
-
-                                                <AlertDialogFooter>
-                                                  <AlertDialogCancel>
-                                                    Cancel
-                                                  </AlertDialogCancel>
-                                                  <AlertDialogAction
-                                                    onClick={() =>
-                                                      handleAddQuestion(
-                                                        question.question,
-                                                        question.type,
-                                                        question.estimatedTimeInMinutes
-                                                      )
-                                                    }
-                                                    className="h-[40px] font-medium"
-                                                  >
-                                                    Add Question
-                                                  </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                              </AlertDialogContent>
-                                            </AlertDialog>
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-                                    <h3 className="text-lg font-medium flex items-center gap-2">
-                                      <User className="h-5 w-5 text-amber-400" />
-                                      Soft Skills & Leadership Skills
-                                    </h3>
-
-                                    {documentAnalizedData.questions.soft_skills.map(
-                                      (question, qIndex) => (
-                                        <div key={qIndex} className="group">
-                                          <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors">
-                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                                              {qIndex + 1}
-                                            </div>
-                                            <div className="flex-1">
-                                              <p>{question.question}</p>
-                                              <p className=" text-muted-foreground text-sm">
-                                                {question.context}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-
-                                    <div className="flex justify-end">
-                                      <Button
-                                        variant="outline"
-                                        className="gap-2"
-                                      >
-                                        <Download className="h-4 w-4" />
-                                        Export Questions
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                              {/* )} */}
-                            </>
-                          ) : (
-                            <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-muted-foreground/20 rounded-lg">
-                              <Ghost className="h-16 w-16 text-muted-foreground mb-4" />
-                              <h3 className="text-xl font-medium mb-2">
-                                Resume Not Uploaded
-                              </h3>
-                              <p className="text-muted-foreground max-w-md">
-                                Candidate&apos;s is not uploaded the resume yet.
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-muted-foreground/20 rounded-lg">
-                          <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-                          <h3 className="text-xl font-medium mb-2">
-                            No Resume Uploaded
-                          </h3>
-                          <p className="text-muted-foreground text-center max-w-md mb-6">
-                            Upload the candidate&apos;s resume to view it here and
-                            generate AI-powered interview questions.
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-      </SidebarInset>
-    </div>
+                                  </CardContent>
+                                </Card>
+                                {/* )} */}
+                              </>
+                            ) : (
+                              <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-muted-foreground/20 rounded-lg">
+                                <Ghost className="h-16 w-16 text-muted-foreground mb-4" />
+                                <h3 className="text-xl font-medium mb-2">
+                                  Resume Not Uploaded
+                                </h3>
+                                <p className="text-muted-foreground max-w-md">
+                                  Candidate&apos;s is not uploaded the resume yet.
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-muted-foreground/20 rounded-lg">
+                            <FileText className="h-16 w-16 text-muted-foreground mb-4" />
+                            <h3 className="text-xl font-medium mb-2">
+                              No Resume Uploaded
+                            </h3>
+                            <p className="text-muted-foreground text-center max-w-md mb-6">
+                              Upload the candidate&apos;s resume to view it here and
+                              generate AI-powered interview questions.
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </div>
+        </SidebarInset>
+      </div>
     </>
   );
 }
