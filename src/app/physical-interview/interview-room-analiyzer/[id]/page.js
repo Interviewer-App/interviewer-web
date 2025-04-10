@@ -180,14 +180,14 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             >
               Dashboard
             </button>
-            <button
+            {/* <button
               onClick={() => handleTabChange("OTHER")}
               className={` ${
                 tab === "OTHER" ? "bg-gray-700/50" : ""
               } px-4 py-2 hover:bg-gray-700/50 rounded-md h-11`}
             >
               Other
-            </button>
+            </button> */}
             <button
               onClick={() => handleTabChange("SCORE")}
               className={` ${
