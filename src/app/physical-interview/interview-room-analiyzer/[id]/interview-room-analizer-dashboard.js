@@ -78,6 +78,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     const [questionCountDown, setQuestionCountDown] = useState(0);
     const [feedback, setFeedback] = useState("");
     const [score, setScore] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedQuestionID, setSelectedQuestionID] = useState(null); // New state for selected questionID
     const { toast } = useToast()
     
     useEffect(() => {
@@ -323,29 +325,47 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     };
 
 
-    const handleAddMarks = async (questionID) => {
+    const handleAddMarks = async () => {
+      if (!selectedQuestionID) {
+        toast({
+          title: "Error",
+          description: "No question selected.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const payload = {
-        questionID: questionID, 
+        questionID: selectedQuestionID, // Use the selected questionID
         feedback: feedback,
-        score: parseInt(score, 10), 
-      
+        score: parseInt(score, 10),
       };
 
       try {
         const response = await addMarks(payload);
         toast({
-          description: "Your message has been sent.",
-        })
-        // Optionally, reset the form or update the UI after success
+          description: "Your marks have been submitted successfully.",
+        });
+        // Reset the form and close the dialog
+        setIsDialogOpen(false);
         setFeedback("");
         setScore("");
+        setSelectedQuestionID(null); // Reset selected questionID
       } catch (error) {
         toast({
           title: "Uh oh! Something went wrong.",
           description: "There was a problem with your request.",
-        })
-        
+          variant: "destructive",
+        });
       }
+    };
+
+    // Function to open dialog with the correct questionID
+    const openDialogForQuestion = (questionID) => {
+      setSelectedQuestionID(questionID); // Set the selected questionID
+      setFeedback(""); // Reset feedback
+      setScore(""); // Reset score
+      setIsDialogOpen(true); // Open the dialog
     };
 
 
@@ -442,9 +462,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             </TooltipProvider>
                           </div>
                             <div>
-                            <Dialog>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
-                                  <Button>Add Marks</Button>
+                                <Button onClick={() => openDialogForQuestion(question.questionID)}>
+  {question.isAnswered ? "Edit Marks" : "Add Marks"}
+</Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
                                   <DialogHeader>
@@ -483,10 +505,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                     </div>
                                   </div>
                                   <DialogFooter>
-                                    <Button
-                                      type="submit"
-                                      onClick={() => handleAddMarks(question.questionID)}
-                                    >
+                                    <Button type="submit" onClick={handleAddMarks}>
                                       Save changes
                                     </Button>
                                   </DialogFooter>
