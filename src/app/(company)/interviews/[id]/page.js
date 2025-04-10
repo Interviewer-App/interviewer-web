@@ -2238,7 +2238,7 @@ export default function InterviewPreviewPage({ params }) {
                         <div className="flex items-center">
                           <Briefcase className="h-4 w-4 mr-2 text-[#b3b3b3]" />
                           <p className="text-base">
-                            {interviewDetail.interviewCategory}
+                            {interviewDetail.interviewMedium}
                           </p>
                         </div>
                       </div>
