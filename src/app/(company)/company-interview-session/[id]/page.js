@@ -377,7 +377,7 @@ function InterviewSessionPreviewPage({ params }) {
                       href={`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(
                         sessionDetails?.candidateId
                       )}`}
-                      className=" text-xs border-2 px-5 border-black hover:text-blue-500 hover:border-blue-500 text-white bg-[#191e2b] rounded-xs py-1 cursor-pointer rounded-xl"
+                      className=" text-xs border-2 px-5 border-black hover:text-blue-500 hover:border-[#7b3aed] text-white bg-[#7c3aeddc] rounded-xs py-1 cursor-pointer rounded-xl"
                     >
                       More about Candidatre
                     </Link>
