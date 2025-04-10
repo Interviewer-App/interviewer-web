@@ -1089,7 +1089,7 @@ const InterviewRoomPage = ({ params }) => {
                     time={formatTime(questionCountDown)}
                   />
                 ) : (<div className=" flex justify-center items-center w-full h-full">
-                  <p>Technical test started......</p>
+                  <p className=" text-2xl font-semibold">Technical interview is ongoing..</p>
                 </div>) }
               </div>
             ) : technicalStatus === "completed" ? (
