@@ -78,7 +78,7 @@ function InterviewRoomAnalizerScore({
                   )}
                 </div>
               </div>
-              <h1
+              {/* <h1
                 onClick={() => toggleExpand(index)}
                 className=" text-xs bg-indigo-900/50 text-indigo-500 w-fit px-4 py-1 rounded-full my-2 cursor-pointer"
               >
@@ -90,7 +90,7 @@ function InterviewRoomAnalizerScore({
                 ) : (
                   <MdExpandMore className="inline-block ml-1" />
                 )}
-              </h1>
+              </h1> */}
               {expandedQuestions[index] && (
                 <p className=" text-sm text-gray-500 px-5 mx-auto">
                   {question.interviewResponses.responseText ||
