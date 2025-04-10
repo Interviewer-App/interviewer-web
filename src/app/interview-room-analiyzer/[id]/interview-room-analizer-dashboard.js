@@ -767,8 +767,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         Technical Skills Assessment
                       </CardTitle>
                       <CardDescription>
-                        Technical Skills Assessment" is a test to evaluate the
-                        candidate's technical skills and knowledge in the
+                        Technical Skills Assessment&quot; is a test to evaluate the
+                        candidate&apos;s technical skills and knowledge in the
                         relevant field.
                       </CardDescription>
                     </div>
