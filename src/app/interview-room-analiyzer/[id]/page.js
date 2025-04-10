@@ -167,7 +167,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("answerSubmitted", (data) => {
-      // debugger;
       setIsSubmitAnswers(true);
       setCandidateAnswers({
         question: data.questionText,
@@ -175,13 +174,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       });
       setAnaliyzeResponse(data.metrics);
       setAnsweredQuestionNO(data.questionNumber);
-      // setTotalScore(data.totalScore.score);
       setNumberOfAnswers(data.totalScore.numberOfAnswers);
       setIsQuestionAvailabe(true);
     });
 
     socket.on("totalScore", (data) => {
-      // debugger;
       setOverollScore(data.totalScore.totalScore);
       setSessionData(data.totalScore.session);
       setCandidateId(data.totalScore.session.candidateId);
@@ -189,7 +186,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("categoryScores", (data) => {
-      debugger
       setCategoryScores(data.categoryScores.categoryScores);
       setTotalScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Technical")?.score);
       setSoftSkillScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Soft")?.score);
@@ -389,7 +385,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
                     className="flex items-center gap-2"
                   >
                     <Sparkles className="h-4 w-4" />
-                    AI Analysis
+                    Candidate Profile
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -445,6 +441,8 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             candidateAnswers={candidateAnswers}
             sessionId={sessionId}
             questionList={questionList}
+            totalScore={totalScore}
+            setTotalScore={setTotalScore}
             availableQuestion={availableQuestion}
             categoryScores={categoryScores}
             setCategoryScores={setCategoryScores}
@@ -463,7 +461,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             numberOfAnswers={numberOfAnswers}
             numOfQuestions={numOfQuestions}
             totalScore={totalScore}
-
             overollScore={overollScore}
             analiyzeResponse={analiyzeResponse}
             answeredQuestionNo={answeredQuestionNo}
