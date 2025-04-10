@@ -1058,14 +1058,14 @@ const InterviewRoomPage = ({ params }) => {
                                 <button
                                   onClick={handleSubmit}
                                   disabled={!transcript}
-                                  className="mt-5 mb-10 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg"
+                                  className="mt-5 mb-24 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg"
                                 >
                                   Submit Answer
                                 </button>
                               )}
                             </div>
                           </div>
-                        ) : (
+                        ) :  (
                           <div className=" flex min-h-[300px] justify-center flex-col items-center h-full">
                             <p className=" text-xl font-semibold">
                               Your answer has been submitted.
@@ -1078,7 +1078,7 @@ const InterviewRoomPage = ({ params }) => {
                       </div>
                     </div>
                   </div>
-                ) : (
+                ) : questionType === "CODING" ? (
                   <CodeEditor
                     question={question}
                     handleSubmit={handleSubmit}
@@ -1088,7 +1088,9 @@ const InterviewRoomPage = ({ params }) => {
                     socket={socket}
                     time={formatTime(questionCountDown)}
                   />
-                )}
+                ) : (<div className=" flex justify-center items-center w-full h-full">
+                  <p>Technical test started......</p>
+                </div>) }
               </div>
             ) : technicalStatus === "completed" ? (
               <div>
