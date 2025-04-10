@@ -53,6 +53,8 @@ import {
   GithubIcon,
   Plus,
   Check,
+  Pencil,
+  Save,
 } from "lucide-react";
 import {
   Card,
@@ -83,6 +85,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AlertDialog } from "@radix-ui/react-alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { addFeedback } from "@/lib/api/interview";
 
 function SessionHistoryPage() {
   const params = useParams();
@@ -151,6 +155,11 @@ function SessionHistoryPage() {
       updatedAt: "2025-03-28T04:57:13.129Z",
     },
   ]);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [feedbackText, setFeedbackText] = useState(
+    sessionhistory?.interviewFeedback?.[0]?.feedbackText || ""
+  );
 
   useEffect(() => {
     if (params?.id) {
@@ -313,7 +322,7 @@ useEffect(() => {
 
     if (sessionDetails.interviewStatus === "completed" && sessionId)
       fetchSessionHistory();
-  }, [sessionDetails, sessionId]);
+  }, [sessionDetails, sessionId,isEditing]);
 
   useEffect(() => {
     const fetchdocument = async () => {
@@ -479,6 +488,35 @@ useEffect(() => {
             {status}
           </Badge>
         );
+    }
+  };
+
+  const handleSaveFeedback = async () => {
+    try {
+      const response = await addFeedback(sessionId, {
+        feedbackText: feedbackText,
+      });
+  
+      if (response.status === 200 || response.status === 201) {
+        toast({
+          variant: "success",
+          title: "Success!",
+          description: "Feedback saved successfully.",
+        });
+        setIsEditing(false);
+        // Optionally update sessionhistory here if needed, e.g.:
+        // setSessionHistory(prev => ({
+        //   ...prev,
+        //   interviewFeedback: [{ feedbackText, feedbackId: response.data.feedbackId || 'new' }]
+        // }));
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save feedback. Please try again.",
+      });
+      console.log('Error saving feedback:', error);
     }
   };
 
@@ -1107,31 +1145,54 @@ useEffect(() => {
                             ).score ?? 0
                           ).toFixed(2)
                         )}
-                      />
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="pt-4">
-                    <h3 className="font-medium mb-3">Interviewer Feedback</h3>
-                    {sessionhistory?.interviewFeedback?.feedbackText ? (
-                      <div className="flex flex-col items-center w-full justify-center py-5 text-center border border-dashed border-muted-foreground rounded-lg">
-                        <NotebookPen className="h-8 w-8 text-muted-foreground mb-3" />
-                        <h3 className="text-base font-medium mb-2">
-                          No Feedback Found
-                        </h3>
-                        <p className=" text-xs text-muted-foreground max-w-md">
-                          The interviewer&apos;s notes will be available once
-                          interviewr submit the feedback.
-                        </p>
+                    <div className="pt-4">
+                      <div className="flex justify-between items-center mb-3">
+                        <h3 className="font-medium">Interviewer Feedback</h3>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                          onClick={() => (isEditing ? handleSaveFeedback() : setIsEditing(true))}
+                        >
+                          {isEditing ? (
+                            <>
+                              <Save size={16} /> Save
+                            </>
+                          ) : (
+                            <>
+                              <Pencil size={16} /> Add Feedback
+                            </>
+                          )}
+                        </Button>
                       </div>
-                    ) : (
-                      <div className="p-4 bg-muted/30 h-full min-h-[150px] rounded-md">
-                        <p>{sessionhistory?.interviewFeedback?.feedbackText}</p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              ) : (
+                      {isEditing ? (
+                        <Textarea
+                          value={feedbackText}
+                          onChange={(e) => setFeedbackText(e.target.value)}
+                          placeholder="Enter your feedback here..."
+                          className="w-full min-h-[150px] p-4 bg-muted/30 rounded-md"
+                        />
+                      ) : sessionhistory?.interviewFeedback?.length > 0 &&
+                        sessionhistory.interviewFeedback[0]?.feedbackText ? (
+                        <div className="p-4 bg-muted/30 h-full min-h-[150px] rounded-md">
+                          <p>{sessionhistory.interviewFeedback[0].feedbackText}</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center w-full justify-center py-5 text-center border border-dashed border-muted-foreground rounded-lg">
+                          <NotebookPen className="h-8 w-8 text-muted-foreground mb-3" />
+                          <h3 className="text-base font-medium mb-2">No Feedback Found</h3>
+                          <p className="text-xs text-muted-foreground max-w-md">
+                            The interviewer&apos;s notes will be available once interviewer submits the feedback.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                ) : (
                 <div className="flex flex-col h-full items-center w-full justify-center text-center">
                   <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
                   <h3 className="text-xl font-medium mb-2">
