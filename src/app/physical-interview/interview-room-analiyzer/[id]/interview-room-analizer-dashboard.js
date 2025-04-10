@@ -38,7 +38,22 @@ import { useState } from "react";
 import InterviewRoomAnalizerOther from "./interview-room-analizer-other";
 import { ArrowUpRight, Share } from "lucide-react";
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { addMarks } from "@/lib/api/interview-session";
+import { useToast } from "@/hooks/use-toast";
+
 const InterviewRoomAnalizerDashboard = forwardRef(
+  
   (
     {
       analiyzeResponse,
@@ -61,7 +76,10 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     const [isAllUnansweredOrNoneAnswered, setIsAllUnansweredOrNoneAnswered] =
       useState(true);
     const [questionCountDown, setQuestionCountDown] = useState(0);
-
+    const [feedback, setFeedback] = useState("");
+    const [score, setScore] = useState("");
+    const { toast } = useToast()
+    
     useEffect(() => {
       if (availableQuestion?.estimatedTimeMinutes) {
         const totalSeconds = availableQuestion.estimatedTimeMinutes * 60;
@@ -305,6 +323,32 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     };
 
 
+    const handleAddMarks = async (questionID) => {
+      const payload = {
+        questionID: questionID, 
+        feedback: feedback,
+        score: parseInt(score, 10), 
+      
+      };
+
+      try {
+        const response = await addMarks(payload);
+        toast({
+          description: "Your message has been sent.",
+        })
+        // Optionally, reset the form or update the UI after success
+        setFeedback("");
+        setScore("");
+      } catch (error) {
+        toast({
+          title: "Uh oh! Something went wrong.",
+          description: "There was a problem with your request.",
+        })
+        
+      }
+    };
+
+
     return (
       <div className=" h-[90vh] w-full bg-black">
         <ResizablePanelGroup direction="horizontal">
@@ -397,8 +441,57 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                               </Tooltip>
                             </TooltipProvider>
                           </div>
-                          <div>
-                          <Button variant="secondary">Add Marks</Button>
+                            <div>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button>Add Marks</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Add marks to the question</DialogTitle>
+                                    <DialogDescription>
+                                      Enter feedback and score for this question. Click save when you&apos;re done.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="grid gap-4 py-4">
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                      <Label htmlFor="feedback" className="text-right">
+                                        Feedback
+                                      </Label>
+                                      <Input
+                                        id="feedback"
+                                        value={feedback}
+                                        onChange={(e) => setFeedback(e.target.value)}
+                                        className="col-span-3"
+                                      />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                      <Label htmlFor="score" className="text-right">
+                                        Score
+                                      </Label>
+                                      <div className="col-span-3 space-y-1">
+                                        <Input
+                                          id="score"
+                                          type="number"
+                                          value={score}
+                                          onChange={(e) => setScore(e.target.value)}
+                                        />
+                                        <p className="text-xs text-muted-foreground text-red-400">
+                                          Marks should not exceed 100
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <DialogFooter>
+                                    <Button
+                                      type="submit"
+                                      onClick={() => handleAddMarks(question.questionID)}
+                                    >
+                                      Save changes
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
                             </div>
                             </div>
                         
