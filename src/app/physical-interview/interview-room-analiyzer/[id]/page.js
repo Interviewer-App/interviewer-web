@@ -54,6 +54,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [typingAnswer, setTypingAnswer] = useState("typing...");
   const dashboardRef = useRef();
   const [technicalStatus, setTechnicalStatus] = useState('');
+  const [softSkillScore, setSoftSkillScore] = useState(0);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -98,7 +99,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       });
       setAnaliyzeResponse(data.metrics);
       setAnsweredQuestionNO(data.questionNumber);
-      setTotalScore(data.totalScore.score);
+      // setTotalScore(data.totalScore.score);
       setNumberOfAnswers(data.totalScore.numberOfAnswers);
       setIsQuestionAvailabe(true);
     });
@@ -110,6 +111,8 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
     socket.on("categoryScores", (data) => {
       setCategoryScores(data.categoryScores.categoryScores);
+      setTotalScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Technical")?.score);
+      setSoftSkillScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Soft")?.score);
     });
 
     socket.on("participantLeft", (data) => {
@@ -235,6 +238,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             numberOfAnswers={numberOfAnswers}
             numOfQuestions={numOfQuestions}
             totalScore={totalScore}
+            softSkillScore={softSkillScore}
             overollScore={overollScore}
             analiyzeResponse={analiyzeResponse}
             answeredQuestionNo={answeredQuestionNo}
