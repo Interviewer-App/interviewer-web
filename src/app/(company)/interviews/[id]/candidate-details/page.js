@@ -42,6 +42,7 @@ import {
   GithubIcon,
   Plus,
   Check,
+  Pencil,
 } from "lucide-react";
 import {
   Card,
@@ -224,6 +225,7 @@ function CandidateDetailsProfile() {
         const response = await getInterviewSessionHistoryById(sessionId);
         if (response.data) {
           setSessionHistory(response.data);
+          console.log('setSessionHistory',response)
         }
       } catch (err) {
         if (err.response) {
@@ -796,8 +798,14 @@ function CandidateDetailsProfile() {
                   </div>
 
                   <div className="pt-4">
+
                     <h3 className="font-medium mb-3">Interviewer Feedback</h3>
-                    {sessionhistory?.interviewFeedback?.feedbackText ? (
+                    {sessionhistory?.interviewFeedback?.length > 0 &&
+                      sessionhistory.interviewFeedback[0]?.feedbackText ? (
+                      <div className="p-4 bg-muted/30 h-full min-h-[150px] rounded-md">
+                        <p>{sessionhistory.interviewFeedback[0].feedbackText}</p>
+                      </div>
+                    ) : (
                       <div className="flex flex-col items-center w-full justify-center py-5 text-center border border-dashed border-muted-foreground rounded-lg">
                         <NotebookPen className="h-8 w-8 text-muted-foreground mb-3" />
                         <h3 className="text-base font-medium mb-2">
@@ -807,10 +815,6 @@ function CandidateDetailsProfile() {
                           The interviewer&apos;s notes will be available once
                           interviewr submit the feedback.
                         </p>
-                      </div>
-                    ) : (
-                      <div className="p-4 bg-muted/30 h-full min-h-[150px] rounded-md">
-                        <p>{sessionhistory?.interviewFeedback?.feedbackText}</p>
                       </div>
                     )}
                   </div>
