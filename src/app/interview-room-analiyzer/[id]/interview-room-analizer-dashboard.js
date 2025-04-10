@@ -85,6 +85,10 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       }
     }, [availableQuestion]);
 
+    // useEffect(() => { 
+    //   console.log('availableQuestion', availableQuestion);
+    // }, [availableQuestion]);
+
     // Format time as MM:SS
     const formatTime = (seconds) => {
       const minutes = Math.floor(seconds / 60)
@@ -263,7 +267,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
           </div>
         )}
 
-        { activeTab === "technical" && (
+        { activeTab === "technical" && technicalStatus !== "toBeConducted" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left panel - Current Question */}
             <Card className="flex flex-col !bg-transparent">
@@ -307,12 +311,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   <div className="flex flex-col gap-2 mb-4">
                     {questionList
                       .slice()
-                      .reverse()
                       .map((question, index) => (
                         <button
                           key={index}
                           className={`text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors ${
-                            currentQuestionIndex === index
+                            question.questionID === availableQuestion?.questionID
                               ? "bg-blue-700 text-primary-foreground"
                               : "hover:bg-muted"
                           }`}
@@ -321,7 +324,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                               question.isAnswered
                                 ? "bg-transparent"
-                                : currentQuestionIndex === index
+                                : question.questionID === availableQuestion?.questionID
                                 ? "bg-gray-800 text-primary"
                                 : "bg-muted-foreground/20 text-muted-foreground"
                             }`}
@@ -384,7 +387,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
 
                   <div className="flex justify-center mt-6">
                     {technicalStatus === "ongoing" &&
-                      currentQuestionIndex < questionList.length - 1 && (
+                      currentQuestionIndex < questionList.length && (
                         <Button
                           className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
                           onClick={nextQuestion}
@@ -395,7 +398,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     {technicalStatus === "testEnd" &&
                       currentQuestionIndex >=
                         questionList.length -
-                          1(
+                          1 && (
                             <Button
                               className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
                               onClick={endTechnicalTest}
