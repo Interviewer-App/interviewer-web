@@ -27,6 +27,7 @@ function InterviewRoomAnalizerOther({
   setCategoryScores,
   categoryScores,
   sessionId,
+  softSkillScore,
   allocation,
   questionList,
   totalScore,
@@ -253,7 +254,7 @@ function InterviewRoomAnalizerOther({
       )}
     </div> */}
 
-      <Card className="flex flex-col">
+      <Card className="flex flex-col max-w-[1600px] mx-auto">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
@@ -311,7 +312,7 @@ function InterviewRoomAnalizerOther({
                     </svg>
                   </div>
                   <p className="text-sm text-muted-foreground text-center">
-                        Weight: {totalScore || 0}%
+                        Weight: {totalScore}%
                   </p>
                 </div>
 
@@ -374,7 +375,7 @@ function InterviewRoomAnalizerOther({
                         fill="none"
                         stroke="hsl(var(--purple-500, 270 91.2% 59.8%))"
                         strokeWidth="10"
-                        strokeDasharray={`${(2 * Math.PI * 45 * ((overollScore || 0) - (totalScore || 0))) / 100} ${2 * Math.PI * 45 * (1 - ((overollScore || 0) - (totalScore || 0)) / 100)}`}
+                        strokeDasharray={`${(2 * Math.PI * 45 * (softSkillScore || 0)) / 100} ${2 * Math.PI * 45 * (1 - (softSkillScore || 0) / 100)}`}
                         strokeDashoffset={2 * Math.PI * 45 * 0.25}
                         transform="rotate(-90 50 50)"
                         strokeLinecap="round"
@@ -391,12 +392,12 @@ function InterviewRoomAnalizerOther({
                         fill="currentColor"
                         style={{ fill: "#8b5cf6" }}
                       >
-                        {Math.round(overollScore-totalScore)}%
+                        {Math.round(softSkillScore)}%
                       </text>
                     </svg>
                   </div>
                   <p className="text-sm text-muted-foreground text-center">
-                    Weight: {overollScore-totalScore || 0}%
+                    Weight: {Math.round(softSkillScore)|| 0}%
                   </p>
                 </div>
 
@@ -414,13 +415,13 @@ function InterviewRoomAnalizerOther({
                             <div className="flex justify-between text-xs">
                               <span>{skill.subCategoryAssignment.name}</span>
                               <span>
-                                {skill.subCategoryAssignment.percentage}/{100}
+                                {skill.score}/{100}
                               </span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-1.5">
                               <div
                                 className="bg-purple-500 h-1.5 rounded-full"
-                                style={{ width: `${(skill.subCategoryAssignment.percentage / 100) * 100}%` }}
+                                style={{ width: `${(skill.score / 100) * 100}%` }}
                               ></div>
                             </div>
                           </div>
@@ -454,7 +455,7 @@ function InterviewRoomAnalizerOther({
                         fill="none"
                         stroke="hsl(var(--green-500, 142 91.2% 59.8%))"
                         strokeWidth="10"
-                        // strokeDasharray={`${(2 * Math.PI * 45 * combinedScorePercentage) / 100} ${2 * Math.PI * 45 * (1 - combinedScorePercentage / 100)}`}
+                        strokeDasharray={`${(2 * Math.PI * 45 * overollScore) / 100} ${2 * Math.PI * 45 * (1 - overollScore / 100)}`}
                         strokeDashoffset={2 * Math.PI * 45 * 0.25}
                         transform="rotate(-90 50 50)"
                         strokeLinecap="round"
@@ -481,7 +482,7 @@ function InterviewRoomAnalizerOther({
                         Technical: {Math.round(totalScore )}%
                       </Badge>
                       <Badge variant="outline" className="bg-purple-100 !text-purple-700 border-purple-200">
-                        Soft Skills: {Math.round(overollScore-totalScore)}%
+                        Soft Skills: {Math.round(softSkillScore)}%
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">Weighted average of all assessment areas</p>
