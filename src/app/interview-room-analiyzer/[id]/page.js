@@ -71,9 +71,10 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [technicalStatus, setTechnicalStatus] = useState("");
   const [elapsedTime, setElapsedTime] = useState(0);
   const [activeTab, setActiveTab] = useState("technical");
+  const [softSkillScore, setSoftSkillScore] = useState(0);
   const [sessionDetails, setSessionDetails] = useState({});
-  const timerRef = useRef(null)
-  const [candidateId,setCandidateId] = useState(null)
+  const timerRef = useRef(null);
+  const [candidateId, setCandidateId] = useState(null);
   const videoCallRef = useRef();
 
   const { toast } = useToast();
@@ -128,22 +129,21 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setElapsedTime((prev) => prev + 1)
-    }, 1000)
+      setElapsedTime((prev) => prev + 1);
+    }, 1000);
 
     return () => {
       if (timerRef.current) {
-        clearInterval(timerRef.current)
+        clearInterval(timerRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   useEffect(() => {
     setNumOfQuestions(questionList.length);
   }, [questionList]);
 
   useEffect(() => {
-    
     socket.emit("joinInterviewSession", {
       sessionId: sessionID,
       userId: userID,
@@ -159,7 +159,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     socket.on("questions", (data) => {
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
-      console.log('questionList', questionList);
+      console.log("questionList", questionList);
     });
 
     socket.on("technicalStatus", (data) => {
@@ -175,7 +175,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       });
       setAnaliyzeResponse(data.metrics);
       setAnsweredQuestionNO(data.questionNumber);
-      setTotalScore(data.totalScore.score);
+      // setTotalScore(data.totalScore.score);
       setNumberOfAnswers(data.totalScore.numberOfAnswers);
       setIsQuestionAvailabe(true);
     });
@@ -184,11 +184,15 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       // debugger;
       setOverollScore(data.totalScore.totalScore);
       setSessionData(data.totalScore.session);
-      setCandidateId( data.totalScore.session.candidateId);
+      setCandidateId(data.totalScore.session.candidateId);
+      
     });
 
     socket.on("categoryScores", (data) => {
+      debugger
       setCategoryScores(data.categoryScores.categoryScores);
+      setTotalScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Technical")?.score);
+      setSoftSkillScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Soft")?.score);
     });
 
     socket.on("participantLeft", (data) => {
@@ -259,7 +263,6 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const handleExternalEndCall = () => {
     videoCallRef.current?.endCall();
   };
-
 
   return (
     <>
@@ -337,15 +340,15 @@ const InterviewRoomAnalizerPage = ({ params }) => {
           {/* Candidate info */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage
-                    src={sessionDetails?.candidate?.user?.avatar}
-                    alt={sessionDetails?.candidate?.user?.firstName}
-                  />
-                  <AvatarFallback className="text-2xl">
-                    {sessionDetails?.candidate?.user?.firstName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+              <Avatar className="h-12 w-12">
+                <AvatarImage
+                  src={sessionDetails?.candidate?.user?.avatar}
+                  alt={sessionDetails?.candidate?.user?.firstName}
+                />
+                <AvatarFallback className="text-2xl">
+                  {sessionDetails?.candidate?.user?.firstName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
               <div>
                 <h2 className="text-lg font-medium">
                   {sessionDetails?.candidate?.user?.firstName}{" "}
@@ -460,6 +463,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             numberOfAnswers={numberOfAnswers}
             numOfQuestions={numOfQuestions}
             totalScore={totalScore}
+
             overollScore={overollScore}
             analiyzeResponse={analiyzeResponse}
             answeredQuestionNo={answeredQuestionNo}
@@ -475,12 +479,13 @@ const InterviewRoomAnalizerPage = ({ params }) => {
           <InterviewRoomAnalizerOther
             totalScore={totalScore}
             overollScore={overollScore}
+            softSkillScore={softSkillScore}
             categoryScores={categoryScores}
             setCategoryScores={setCategoryScores}
             sessionId={sessionId}
             allocation={true}
             questionList={questionList}
-          />  
+          />
         )}
         {activeTab === "ai-analysis" && (
           <InterviewRoomAnalizerCandidateProfile
@@ -488,14 +493,15 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             sessionId={sessionID}
           />
         )}
+        <div className=" h-[100px]"></div>
       </div>
       <VideoCall
-                  sessionId={sessionId}
-                  isCandidate={false}
-                  ref={videoCallRef}
-                  senderId={userID}
-                  role="COMPANY"
-                />
+        sessionId={sessionId}
+        isCandidate={false}
+        ref={videoCallRef}
+        senderId={userID}
+        role="COMPANY"
+      />
     </>
   );
 };
