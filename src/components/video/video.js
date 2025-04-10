@@ -67,6 +67,7 @@ const VideoCall = forwardRef(
     const [isDraggingCandidate, setIsDraggingCandidate] = useState(false);
     const [isDraggingInterviewer, setIsDraggingInterviewer] = useState(false);
     const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(false);
+    const [isRemoteAudioOn, setIsRemoteAudioOn] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const socket = useRef(null);

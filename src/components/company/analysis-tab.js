@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -54,7 +54,9 @@ import {
   User,
   Check,
 } from "lucide-react"
-
+import { fetchAnalyzeDashboard, sortCandidates } from "@/lib/api/interview"
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 
 
@@ -219,7 +221,7 @@ const calculateAverageScore = (candidates, skillType) => {
   return Math.round((totalScore / candidates.length) * 10) / 10
 }
 
-export default function CandidateAnalysisTab({ categoryList , candidates}) {
+export default function CandidateAnalysisTab({ categoryList, interviewId }) {
   // State for sorting and filtering
   const [sortCriteria, setSortCriteria] = useState("overall")
   const [sortDirection, setSortDirection] = useState("desc")
@@ -230,18 +232,49 @@ export default function CandidateAnalysisTab({ categoryList , candidates}) {
   const [isCompareMode, setIsCompareMode] = useState(false)
   const [candidatesToCompare, setCandidatesToCompare] = useState([])
   const [showDetailedView, setShowDetailedView] = useState(false)
+  const [candidates, setCandidates] = useState([]);
+  const [avgOverallScore, setAvgOverallScore] = useState(0);
+  const [avgTechnicalScore, setAvgTechnicalScore] = useState(0);
+  const [avgSoftScore, setAvgSoftScore] = useState(0);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (interviewId) sortTopCandidates();
+  }, [interviewId]);
+
+
+  useEffect(() => {
+    const analyzeDashboard = async () => {
+      try {
+        const response = await fetchAnalyzeDashboard(interviewId);
+        if (response.data) {
+          debugger
+          setAvgOverallScore(response.data.averageOverallScore);
+          setAvgSoftScore(response.data.averageSoftScore);
+          setAvgTechnicalScore(response.data.averageTechnicalScore);
+          // setInterviewStatusDetails(response.data);
+        }
+      } catch (error) {
+        console.log("Error fetching interview status:", error);
+      }
+    };
+
+    if (interviewId) {
+      analyzeDashboard();
+    }
+  }, [interviewId]);
 
   // Calculate average scores
-  const avgTechnicalScore = calculateAverageScore(sampleCandidates, "technicalSkills")
-  const avgSoftScore = calculateAverageScore(sampleCandidates, "softSkills")
-//   const avgOverallScore =
-//   candidates.reduce((sum, candidate) => sum + candidate.overallScore, 0) / candidates.length
-const avgOverallScore = 0
+  // const avgTechnicalScore = calculateAverageScore(sampleCandidates, "technicalSkills")
+  // const avgSoftScore = calculateAverageScore(sampleCandidates, "softSkills")
+  //   const avgOverallScore =
+  //   candidates.reduce((sum, candidate) => sum + candidate.overallScore, 0) / candidates.length
+  // const avgOverallScore = 0
 
   // Sort and filter candidates
   const sortedAndFilteredCandidates = useMemo(() => {
     // First apply search filter
-    let filtered = sampleCandidates.filter(
+    let filtered = candidates.filter(
       (candidate) =>
         candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         candidate.email.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -256,20 +289,20 @@ const avgOverallScore = 0
     return [...filtered].sort((a, b) => {
       let aValue, bValue
 
-    //   if (sortCriteria === "technical") {
-    //     aValue = a.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / a.technicalSkills.length
-    //     bValue = b.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / b.technicalSkills.length
-    //   } else if (sortCriteria === "soft") {
-    //     aValue = a.softSkills.reduce((sum, skill) => sum + skill.score, 0) / a.softSkills.length
-    //     bValue = b.softSkills.reduce((sum, skill) => sum + skill.score, 0) / b.softSkills.length
-    //   } else {
-    //     aValue = a.overallScore
-    //     bValue = b.overallScore
-    //   }
+      //   if (sortCriteria === "technical") {
+      //     aValue = a.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / a.technicalSkills.length
+      //     bValue = b.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) / b.technicalSkills.length
+      //   } else if (sortCriteria === "soft") {
+      //     aValue = a.softSkills.reduce((sum, skill) => sum + skill.score, 0) / a.softSkills.length
+      //     bValue = b.softSkills.reduce((sum, skill) => sum + skill.score, 0) / b.softSkills.length
+      //   } else {
+      //     aValue = a.overallScore
+      //     bValue = b.overallScore
+      //   }
 
       return sortDirection === "desc" ? bValue - aValue : aValue - bValue
     })
-  }, [sampleCandidates, sortCriteria, sortDirection, searchQuery, statusFilter])
+  }, [candidates, sortCriteria, sortDirection, searchQuery, statusFilter])
 
   // Get top candidates
   const topCandidates = useMemo(() => {
@@ -280,7 +313,7 @@ const avgOverallScore = 0
   const toggleCandidateSelection = (candidateId) => {
     setCandidatesToCompare((prev) => {
       if (prev.includes(candidateId)) {
-        return prev.filter((id) => id !== candidateId)
+        return prev.filter((candidateId) => candidateId !== candidateId)
       } else {
         // Limit to 3 candidates for comparison
         if (prev.length >= 3) {
@@ -293,40 +326,68 @@ const avgOverallScore = 0
 
   // Get candidates for comparison
   const candidatesForComparison = useMemo(() => {
-    return sampleCandidates.filter((candidate) => candidatesToCompare.includes(candidate.id))
+    const value = candidates.filter((candidate) => candidatesToCompare.includes(candidate.candidateId))
+    return candidates.filter((candidate) => candidatesToCompare.includes(candidate.candidateId))
   }, [candidatesToCompare])
 
   // Prepare data for the comparison chart
   const comparisonChartData = useMemo(() => {
     if (candidatesForComparison.length === 0) return []
 
-    const skills = [
-      ...new Set(
-        candidatesForComparison.flatMap((candidate) => [
-          ...candidate.technicalSkills.map((skill) => skill.name),
-          ...candidate.softSkills.map((skill) => skill.name),
-        ]),
-      ),
-    ]
 
-    return skills.map((skillName) => {
-      const dataPoint = { name: skillName }
+    const allCategoryNames = [
+      ...new Set(
+        candidatesForComparison.flatMap((candidate) =>
+          candidate.categoryScores.map(
+            (score) => score.categoryAssignment.category.categoryName
+          )
+        )
+      ),
+    ];
+
+    const chartData = allCategoryNames.map((categoryName) => {
+      const dataPoint = { name: categoryName };
 
       candidatesForComparison.forEach((candidate) => {
-        const techSkill = candidate.technicalSkills.find((skill) => skill.name === skillName)
-        const softSkill = candidate.softSkills.find((skill) => skill.name === skillName)
+        const categoryScore = candidate.categoryScores.find(
+          (score) => score.categoryAssignment.category.categoryName === categoryName
+        );
 
-        if (techSkill) {
-          dataPoint[candidate.name] = techSkill.score
-          dataPoint[`${candidate.name} Type`] = "Technical"
-        } else if (softSkill) {
-          dataPoint[candidate.name] = softSkill.score
-          dataPoint[`${candidate.name} Type`] = "Soft"
-        }
-      })
+        dataPoint[candidate.name] = categoryScore?.score ?? 0;
+      });
 
-      return dataPoint
-    })
+      return dataPoint;
+    });
+
+    return chartData;
+
+    // const skills = [
+    //   ...new Set(
+    //     candidatesForComparison.flatMap((candidate) => [
+    //       ...candidate.technicalSkills.map((skill) => skill.name),
+    //       ...candidate.softSkills.map((skill) => skill.name),
+    //     ]),
+    //   ),
+    // ]
+
+    // return skills.map((skillName) => {
+    //   const dataPoint = { name: skillName }
+
+    //   candidatesForComparison.forEach((candidate) => {
+    //     const techSkill = candidate.technicalScore
+    //     const softSkill = candidate.softScore
+
+    //     if (techSkill) {
+    //       dataPoint[candidate.name] = techSkill
+    //       dataPoint[`${candidate.name} Type`] = "Technical"
+    //     } else if (softSkill) {
+    //       dataPoint[candidate.name] = softSkill
+    //       dataPoint[`${candidate.name} Type`] = "Soft"
+    //     }
+    //   })
+
+    //   return dataPoint
+    // })
   }, [candidatesForComparison])
 
   // Toggle status filter
@@ -342,7 +403,7 @@ const avgOverallScore = 0
 
   // Calculate rank for a candidate
   const getCandidateRank = (candidate) => {
-    return sortedAndFilteredCandidates.findIndex((c) => c.id === candidate.id) + 1
+    return sortedAndFilteredCandidates.findIndex((c) => c.candidateId === candidate.candidateId) + 1
   }
 
   // Get color based on score
@@ -376,6 +437,56 @@ const avgOverallScore = 0
         return "bg-gray-500/20 text-gray-500 hover:bg-gray-500/30"
     }
   }
+
+  const sortTopCandidates = async (e) => {
+    let data;
+    try {
+      if (sortCriteria === "overall") {
+        data = {
+          interviewId: interviewId,
+        };
+      } else {
+        data = {
+          interviewId: interviewId,
+          categoryId: sortCriteria,
+          limit: parseInt(topCandidatesCount),
+          type: "category",
+        };
+      }
+      const response = await sortCandidates(data);
+      if (response) {
+        setCandidates(response.data);
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `sorting Faild: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
+  };
 
   // Get medal icon for top 3 candidates
   const getMedalIcon = (rank) => {
@@ -447,14 +558,20 @@ const avgOverallScore = 0
                   <SelectValue placeholder="Select criteria" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="overall">Overall Score</SelectItem>
-                  <SelectItem value="technical">Technical Skills</SelectItem>
-                  <SelectItem value="soft">Soft Skills</SelectItem>
+                  <SelectItem value='overall'>
+                    Overall
+                  </SelectItem>
+                  {categoryList.map((category) => (
+
+                    <SelectItem key={category.key} value={category.key}>
+                      {category.catagory}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="sort-direction">Sort Direction</Label>
               <Select value={sortDirection} onValueChange={(value) => setSortDirection(value)}>
                 <SelectTrigger id="sort-direction">
@@ -465,7 +582,7 @@ const avgOverallScore = 0
                   <SelectItem value="asc">Lowest First</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
 
             <div className="space-y-2">
               <Label htmlFor="top-count">Top Candidates to Display</Label>
@@ -482,6 +599,15 @@ const avgOverallScore = 0
                   <SelectItem value="10">Top 10</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2 flex justify-center items-center">
+              <button
+                onClick={sortTopCandidates}
+                className=" h-11 min-w-[160px] mt-5 md:mt-0 px-5 mr-5 cursor-pointer bg-white rounded-lg text-center text-sm text-black font-semibold"
+              >
+                Sort Candidates
+              </button>
             </div>
 
             <div className="space-y-2">
@@ -503,7 +629,7 @@ const avgOverallScore = 0
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Top Candidates</h2>
           <div className="flex items-center gap-2">
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 gap-1">
                   <Filter className="h-3.5 w-3.5" />
@@ -555,7 +681,7 @@ const avgOverallScore = 0
                   Clear Filters
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
 
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -587,10 +713,10 @@ const avgOverallScore = 0
                       <TableRow>
                         <TableHead className="w-[180px]">Metric</TableHead>
                         {candidatesForComparison.map((candidate) => (
-                          <TableHead key={candidate.id}>
+                          <TableHead key={candidate.candidateId}>
                             <div className="flex flex-col items-center gap-2">
                               <Avatar>
-                                <AvatarImage src={candidate.avatar} alt={candidate.name} />
+                                {/* <AvatarImage src={candidate.avatar} alt={candidate.name} /> */}
                                 <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                               </Avatar>
                               <span>{candidate.name}</span>
@@ -603,7 +729,7 @@ const avgOverallScore = 0
                       <TableRow>
                         <TableCell className="font-medium">Overall Score</TableCell>
                         {candidatesForComparison.map((candidate) => (
-                          <TableCell key={`${candidate.id}-overall`} className="text-center">
+                          <TableCell key={`${candidate.candidateId}-overall`} className="text-center">
                             <span className={`text-lg font-bold ${getScoreColor(candidate.overallScore)}`}>
                               {candidate.overallScore}
                             </span>
@@ -613,7 +739,7 @@ const avgOverallScore = 0
                       <TableRow>
                         <TableCell className="font-medium">Rank</TableCell>
                         {candidatesForComparison.map((candidate) => (
-                          <TableCell key={`${candidate.id}-rank`} className="text-center">
+                          <TableCell key={`${candidate.candidateId}-rank`} className="text-center">
                             <Badge variant="outline">#{getCandidateRank(candidate)}</Badge>
                           </TableCell>
                         ))}
@@ -621,7 +747,7 @@ const avgOverallScore = 0
                       <TableRow>
                         <TableCell className="font-medium">Status</TableCell>
                         {candidatesForComparison.map((candidate) => (
-                          <TableCell key={`${candidate.id}-status`} className="text-center">
+                          <TableCell key={`${candidate.candidateId}-status`} className="text-center">
                             <Badge className={getStatusColor(candidate.status)}>{candidate.status}</Badge>
                           </TableCell>
                         ))}
@@ -629,11 +755,10 @@ const avgOverallScore = 0
                       <TableRow>
                         <TableCell className="font-medium">Technical Skills (Avg)</TableCell>
                         {candidatesForComparison.map((candidate) => {
-                        //   const avgTech =
-                        //     candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                        //     candidate.technicalSkills.length
+                          const avgTech =
+                            candidate.technicalScore
                           return (
-                            <TableCell key={`${candidate.id}-tech`} className="text-center">
+                            <TableCell key={`${candidate.candidateId}-tech`} className="text-center">
                               <span className={`font-bold ${getScoreColor(avgTech)}`}>{avgTech.toFixed(1)}</span>
                             </TableCell>
                           )
@@ -642,11 +767,10 @@ const avgOverallScore = 0
                       <TableRow>
                         <TableCell className="font-medium">Soft Skills (Avg)</TableCell>
                         {candidatesForComparison.map((candidate) => {
-                        //   const avgSoft =
-                        //     candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                        //     candidate.softSkills.length
+                          const avgSoft =
+                            candidate.softScore
                           return (
-                            <TableCell key={`${candidate.id}-soft`} className="text-center">
+                            <TableCell key={`${candidate.candidateId}-soft`} className="text-center">
                               <span className={`font-bold ${getScoreColor(avgSoft)}`}>{avgSoft.toFixed(1)}</span>
                             </TableCell>
                           )
@@ -654,7 +778,7 @@ const avgOverallScore = 0
                       </TableRow>
 
                       {/* Technical skills breakdown */}
-                      {candidatesForComparison[0]?.technicalSkills.map((skill) => (
+                      {/* {candidatesForComparison[0]?.technicalSkills.map((skill) => (
                         <TableRow key={`tech-${skill.name}`}>
                           <TableCell className="font-medium pl-8">
                             {skill.name} <span className="text-xs text-muted-foreground">(Technical)</span>
@@ -662,7 +786,7 @@ const avgOverallScore = 0
                           {candidatesForComparison.map((candidate) => {
                             const candidateSkill = candidate.technicalSkills.find((s) => s.name === skill.name)
                             return (
-                              <TableCell key={`${candidate.id}-${skill.name}`} className="text-center">
+                              <TableCell key={`${candidate.candidateId}-${skill.name}`} className="text-center">
                                 {candidateSkill ? (
                                   <div className="flex flex-col items-center">
                                     <span className={`font-bold ${getScoreColor(candidateSkill.score)}`}>
@@ -682,10 +806,10 @@ const avgOverallScore = 0
                             )
                           })}
                         </TableRow>
-                      ))}
+                      ))} */}
 
                       {/* Soft skills breakdown */}
-                      {candidatesForComparison[0]?.softSkills.map((skill) => (
+                      {/* {candidatesForComparison[0]?.softSkills.map((skill) => (
                         <TableRow key={`soft-${skill.name}`}>
                           <TableCell className="font-medium pl-8">
                             {skill.name} <span className="text-xs text-muted-foreground">(Soft)</span>
@@ -693,7 +817,7 @@ const avgOverallScore = 0
                           {candidatesForComparison.map((candidate) => {
                             const candidateSkill = candidate.softSkills.find((s) => s.name === skill.name)
                             return (
-                              <TableCell key={`${candidate.id}-${skill.name}`} className="text-center">
+                              <TableCell key={`${candidate.candidateId}-${skill.name}`} className="text-center">
                                 {candidateSkill ? (
                                   <div className="flex flex-col items-center">
                                     <span className={`font-bold ${getScoreColor(candidateSkill.score)}`}>
@@ -713,7 +837,7 @@ const avgOverallScore = 0
                             )
                           })}
                         </TableRow>
-                      ))}
+                      ))} */}
                     </TableBody>
                   </Table>
                 </div>
@@ -734,7 +858,7 @@ const avgOverallScore = 0
                         <Legend />
                         {candidatesForComparison.map((candidate, index) => (
                           <Bar
-                            key={candidate.id}
+                            key={candidate.candidateId}
                             dataKey={candidate.name}
                             fill={index === 0 ? "#3b82f6" : index === 1 ? "#10b981" : "#8b5cf6"}
                           />
@@ -761,9 +885,9 @@ const avgOverallScore = 0
             {topCandidates.length > 0 ? (
               topCandidates.map((candidate, index) => (
                 <Card
-                  key={candidate.id}
+                  key={candidate.candidateId}
                   className={
-                    isCompareMode && candidatesToCompare.includes(candidate.id)
+                    isCompareMode && candidatesToCompare.includes(candidate.candidateId)
                       ? "border-blue-500 shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
                       : ""
                   }
@@ -773,7 +897,7 @@ const avgOverallScore = 0
                       <div className="flex items-center gap-3">
                         <div className="relative">
                           <Avatar>
-                            <AvatarImage src={candidate.avatar} alt={candidate.name} />
+                            {/* <AvatarImage src={candidate.avatar} alt={candidate.name} /> */}
                             <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           {index < 3 && <div className="absolute -top-1 -right-1">{getMedalIcon(index + 1)}</div>}
@@ -822,25 +946,21 @@ const avgOverallScore = 0
                             <span className="text-sm">Technical Skills</span>
                             <span
                               className={`text-sm font-medium ${getScoreColor(
-                                // candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                //   candidate.technicalSkills.length,
+                                candidate.technicalScore
                               )}`}
                             >
-                              {/* {(
-                                candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                candidate.technicalSkills.length
+                              {(
+                                candidate.technicalScore
                               ).toFixed(1)
-                              } */}
+                              }
                             </span>
                           </div>
                           <div className="w-full bg-muted h-2 rounded-full">
                             <div
                               className="bg-blue-500 h-full rounded-full"
                               style={{
-                                // width: `${
-                                //   candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                //   candidate.technicalSkills.length
-                                // }%`,
+                                width: `${candidate.technicalScore
+                                  }%`,
                               }}
                             />
                           </div>
@@ -851,24 +971,20 @@ const avgOverallScore = 0
                             <span className="text-sm">Soft Skills</span>
                             <span
                               className={`text-sm font-medium ${getScoreColor(
-                                // candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                //   candidate.softSkills.length,
+                                candidate.softScore
                               )}`}
                             >
-                              {/* {(
-                                candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                candidate.softSkills.length
-                              ).toFixed(1)} */}
+                              {(
+                                candidate.softScore
+                              ).toFixed(1)}
                             </span>
                           </div>
                           <div className="w-full bg-muted h-2 rounded-full">
                             <div
                               className="bg-purple-500 h-full rounded-full"
                               style={{
-                                // width: `${
-                                //   candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                                //   candidate.softSkills.length
-                                // }%`,
+                                width: `${candidate.softScore
+                                  }%`,
                               }}
                             />
                           </div>
@@ -879,11 +995,11 @@ const avgOverallScore = 0
                   <CardFooter className="flex justify-between border-t pt-4">
                     {isCompareMode ? (
                       <Button
-                        variant={candidatesToCompare.includes(candidate.id) ? "default" : "outline"}
-                        className={candidatesToCompare.includes(candidate.id) ? "bg-blue-600 hover:bg-blue-700" : ""}
-                        onClick={() => toggleCandidateSelection(candidate.id)}
+                        variant={candidatesToCompare.includes(candidate.candidateId) ? "default" : "outline"}
+                        className={candidatesToCompare.includes(candidate.candidateId) ? "bg-blue-600 hover:bg-blue-700" : ""}
+                        onClick={() => toggleCandidateSelection(candidate.candidateId)}
                       >
-                        {candidatesToCompare.includes(candidate.id) ? "Selected" : "Select for Comparison"}
+                        {candidatesToCompare.includes(candidate.candidateId) ? "Selected" : "Select for Comparison"}
                       </Button>
                     ) : (
                       <Button variant="outline" onClick={() => setSelectedCandidate(candidate)}>
@@ -930,8 +1046,8 @@ const avgOverallScore = 0
               <TableBody>
                 {sortedAndFilteredCandidates.map((candidate, index) => (
                   <TableRow
-                    key={candidate.id}
-                    className={isCompareMode && candidatesToCompare.includes(candidate.id) ? "bg-blue-500/5" : ""}
+                    key={candidate.candidateId}
+                    className={isCompareMode && candidatesToCompare.includes(candidate.candidateId) ? "bg-blue-500/5" : ""}
                   >
                     <TableCell>
                       <div className="flex items-center justify-center">
@@ -954,23 +1070,19 @@ const avgOverallScore = 0
                       <div className="flex flex-col items-center">
                         <span
                           className={`font-medium ${getScoreColor(
-                            // candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            //   candidate.technicalSkills.length,
+                            candidate.technicalScore
                           )}`}
                         >
-                          {/* {(
-                            candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            candidate.technicalSkills.length
-                          ).toFixed(1)} */}
+                          {(
+                            candidate.technicalScore
+                          ).toFixed(1)}
                         </span>
                         <div className="w-24 bg-muted h-1.5 rounded-full mt-1">
                           <div
                             className="bg-blue-500 h-full rounded-full"
                             style={{
-                            //   width: `${
-                            //     candidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            //     candidate.technicalSkills.length
-                            //   }%`,
+                              width: `${candidate.technicalScore
+                                }%`,
                             }}
                           />
                         </div>
@@ -980,23 +1092,19 @@ const avgOverallScore = 0
                       <div className="flex flex-col items-center">
                         <span
                           className={`font-medium ${getScoreColor(
-                            // candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            //   candidate.softSkills.length,
+                            candidate.softScore
                           )}`}
                         >
-                          {/* {(
-                            candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            candidate.softSkills.length
-                          ).toFixed(1)} */}
+                          {(
+                            candidate.softScore
+                          ).toFixed(1)}
                         </span>
                         <div className="w-24 bg-muted h-1.5 rounded-full mt-1">
                           <div
                             className="bg-purple-500 h-full rounded-full"
                             style={{
-                            //   width: `${
-                            //     candidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            //     candidate.softSkills.length
-                            //   }%`,
+                              width: `${candidate.softScore
+                                }%`,
                             }}
                           />
                         </div>
@@ -1013,12 +1121,12 @@ const avgOverallScore = 0
                     <TableCell className="text-right">
                       {isCompareMode ? (
                         <Button
-                          variant={candidatesToCompare.includes(candidate.id) ? "default" : "outline"}
+                          variant={candidatesToCompare.includes(candidate.candidateId) ? "default" : "outline"}
                           size="sm"
-                          className={candidatesToCompare.includes(candidate.id) ? "bg-blue-600 hover:bg-blue-700" : ""}
-                          onClick={() => toggleCandidateSelection(candidate.id)}
+                          className={candidatesToCompare.includes(candidate.candidateId) ? "bg-blue-600 hover:bg-blue-700" : ""}
+                          onClick={() => toggleCandidateSelection(candidate.candidateId)}
                         >
-                          {candidatesToCompare.includes(candidate.id) ? "Selected" : "Select"}
+                          {candidatesToCompare.includes(candidate.candidateId) ? "Selected" : "Select"}
                         </Button>
                       ) : (
                         <Button variant="outline" size="sm" onClick={() => setSelectedCandidate(candidate)}>
@@ -1091,35 +1199,56 @@ const avgOverallScore = 0
                         Average:{" "}
                         <span
                           className={`font-bold ${getScoreColor(
-                            // selectedCandidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            //   selectedCandidate.technicalSkills.length,
+                            selectedCandidate.technicalScore
                           )}`}
                         >
-                          {/* {(
-                            selectedCandidate.technicalSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            selectedCandidate.technicalSkills.length
-                          ).toFixed(1)} */}
+                          {(
+                            selectedCandidate.technicalScore
+                          ).toFixed(1)}
                         </span>
                       </div>
                     </div>
 
                     <div className="space-y-3">
-                      {selectedCandidate.technicalSkills.map((skill) => (
-                        <div key={skill.name} className="space-y-1">
-                          <div className="flex justify-between">
-                            <span className="text-sm">{skill.name}</span>
-                            <span className={`text-sm font-medium ${getScoreColor(skill.score)}`}>
-                              {skill.score}/{skill.maxScore}
-                            </span>
-                          </div>
-                          <div className="w-full bg-muted h-2 rounded-full">
-                            <div
-                              className={`h-full rounded-full ${getScoreBgColor(skill.score)}`}
-                              style={{ width: `${(skill.score / skill.maxScore) * 100}%` }}
-                            />
-                          </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-sm">Overall Technical</span>
+                          <span
+                            className={`text-sm font-medium ${getScoreColor(
+                              selectedCandidate.categoryScores.find(
+                                (cat) =>
+                                  cat.categoryAssignment.category.categoryName === "Technical"
+                              )?.score || 0
+                            )}`}
+                          >
+                            {
+                              selectedCandidate.categoryScores.find(
+                                (cat) =>
+                                  cat.categoryAssignment.category.categoryName === "Technical"
+                              )?.score
+                            }
+                            /100
+                          </span>
                         </div>
-                      ))}
+                        <div className="w-full bg-muted h-2 rounded-full">
+                          <div
+                            className={`h-full rounded-full ${getScoreBgColor(
+                              selectedCandidate.categoryScores.find(
+                                (cat) =>
+                                  cat.categoryAssignment.category.categoryName === "Technical"
+                              )?.score || 0
+                            )}`}
+                            style={{
+                              width: `${selectedCandidate.categoryScores.find(
+                                (cat) =>
+                                  cat.categoryAssignment.category.categoryName === "Technical"
+                              )?.score || 0
+                                }%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+
                     </div>
                   </TabsContent>
 
@@ -1130,71 +1259,106 @@ const avgOverallScore = 0
                         Average:{" "}
                         <span
                           className={`font-bold ${getScoreColor(
-                            // selectedCandidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            //   selectedCandidate.softSkills.length,
+                            selectedCandidate.softScore
                           )}`}
                         >
-                          {/* {(
-                            selectedCandidate.softSkills.reduce((sum, skill) => sum + skill.score, 0) /
-                            selectedCandidate.softSkills.length
-                          ).toFixed(1)} */}
+                          {(
+                            selectedCandidate.softScore
+                          ).toFixed(1)}
                         </span>
                       </div>
                     </div>
 
                     <div className="space-y-3">
-                      {selectedCandidate.softSkills.map((skill) => (
-                        <div key={skill.name} className="space-y-1">
-                          <div className="flex justify-between">
-                            <span className="text-sm">{skill.name}</span>
-                            <span className={`text-sm font-medium ${getScoreColor(skill.score)}`}>
-                              {skill.score}/{skill.maxScore}
-                            </span>
-                          </div>
-                          <div className="w-full bg-muted h-2 rounded-full">
-                            <div
-                              className={`h-full rounded-full ${getScoreBgColor(skill.score)}`}
-                              style={{ width: `${(skill.score / skill.maxScore) * 100}%` }}
-                            />
-                          </div>
-                        </div>
-                      ))}
+                      {selectedCandidate.categoryScores
+                        .find((cat) => cat.categoryAssignment.category.categoryName === "Soft")
+                        ?.categoryAssignment?.SubCategoryAssignment?.map((sub) => {
+                          const subScoreEntry = sub.SubCategoryScore.find(
+                            (score) => score.categoryScoreId === selectedCandidate.categoryScores.find(
+                              (cat) => cat.categoryAssignment.category.categoryName === "Soft"
+                            )?.categoryScoreId
+                          );
+
+                          const score = subScoreEntry?.score ?? 0;
+                          const maxScore = 100;
+
+                          return (
+                            <div key={sub.id} className="space-y-1">
+                              <div className="flex justify-between">
+                                <span className="text-sm">{sub.name}</span>
+                                <span className={`text-sm font-medium ${getScoreColor(score)}`}>
+                                  {score}/{maxScore}
+                                </span>
+                              </div>
+                              <div className="w-full bg-muted h-2 rounded-full">
+                                <div
+                                  className={`h-full rounded-full ${getScoreBgColor(score)}`}
+                                  style={{ width: `${(score / maxScore) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
                     </div>
                   </TabsContent>
                 </Tabs>
 
-                <div className="h-[200px] pt-4">
+                <div className="h-[300px] pt-4">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={[
-                        ...selectedCandidate.technicalSkills.map((skill) => ({
-                          name: skill.name,
-                          score: skill.score,
-                          type: "Technical",
+                        ...selectedCandidate.categoryScores.map((cat) => ({
+                          name: cat.categoryAssignment.category.categoryName,
+                          score: cat.score,
+                          fill: cat.categoryAssignment.category.color,
                         })),
-                        ...selectedCandidate.softSkills.map((skill) => ({
-                          name: skill.name,
-                          score: skill.score,
-                          type: "Soft",
-                        })),
+                        ...selectedCandidate.categoryScores.flatMap((cat) =>
+                          cat.categoryAssignment.SubCategoryAssignment.map((sub) => {
+                            const subScore = sub.SubCategoryScore.find(
+                              (sc) => sc.categoryScoreId === cat.categoryScoreId
+                            );
+                            return {
+                              name: sub.name,
+                              score: subScore?.score || 0,
+                              fill: sub.color,
+                            };
+                          })
+                        ),
                       ]}
                       margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={50} />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={60} />
                       <YAxis domain={[0, 100]} />
                       <RechartsTooltip
-                        formatter={(value, name, props) => [`${value}/100`, name]}
+                        formatter={(value, name) => [`${value}/100`, name]}
                         labelFormatter={(label) => `Skill: ${label}`}
                       />
                       <Legend />
                       <Bar dataKey="score" name="Score">
-                        {selectedCandidate.technicalSkills.concat(selectedCandidate.softSkills).map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={entry.name in selectedCandidate.technicalSkills ? "#3b82f6" : "#8b5cf6"}
-                          />
-                        ))}
+                        {
+                          [
+                            ...selectedCandidate.categoryScores.map((cat) => ({
+                              name: cat.categoryAssignment.category.categoryName,
+                              score: cat.score,
+                              fill: cat.categoryAssignment.category.color,
+                            })),
+                            ...selectedCandidate.categoryScores.flatMap((cat) =>
+                              cat.categoryAssignment.SubCategoryAssignment.map((sub) => {
+                                const subScore = sub.SubCategoryScore.find(
+                                  (sc) => sc.categoryScoreId === cat.categoryScoreId
+                                );
+                                return {
+                                  name: sub.name,
+                                  score: subScore?.score || 0,
+                                  fill: sub.color,
+                                };
+                              })
+                            ),
+                          ].map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))
+                        }
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
@@ -1203,23 +1367,23 @@ const avgOverallScore = 0
             </div>
 
             <DialogFooter className="flex justify-between items-center">
-              <Badge variant="outline">Interview ID: {selectedCandidate.id}</Badge>
+              {/* <Badge variant="outline">Interview ID: {selectedCandidate.id}</Badge> */}
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setSelectedCandidate(null)}>
                   Close
                 </Button>
                 {isCompareMode ? (
                   <Button
-                    variant={candidatesToCompare.includes(selectedCandidate.id) ? "default" : "outline"}
+                    variant={candidatesToCompare.includes(selectedCandidate.candidateId) ? "default" : "outline"}
                     className={
-                      candidatesToCompare.includes(selectedCandidate.id) ? "bg-blue-600 hover:bg-blue-700" : ""
+                      candidatesToCompare.includes(selectedCandidate.candidateId) ? "bg-blue-600 hover:bg-blue-700" : ""
                     }
                     onClick={() => {
-                      toggleCandidateSelection(selectedCandidate.id)
+                      toggleCandidateSelection(selectedCandidate.candidateId)
                       setSelectedCandidate(null)
                     }}
                   >
-                    {candidatesToCompare.includes(selectedCandidate.id)
+                    {candidatesToCompare.includes(selectedCandidate.candidateId)
                       ? "Remove from Comparison"
                       : "Add to Comparison"}
                   </Button>

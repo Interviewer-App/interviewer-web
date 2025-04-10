@@ -151,6 +151,16 @@ export const sortCandidates = async (data) => {
     }
 }
 
+export const fetchAnalyzeDashboard = async (id) => {
+    try {
+        const response=await axiosInstance.get(`/interview/overall-score-analysis/${id}`)
+        return response;
+    } catch (error) {
+        console.log(`Error sorting candidate`,error)
+        throw error;
+    }
+}
+
 export const reorderInterviewFlow = async (data) => {
     try {
         const response=await axiosInstance.post(`/interview-session/reorder-interview-flow`, data)

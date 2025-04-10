@@ -5062,10 +5062,10 @@ export default function InterviewPreviewPage({ params }) {
                 <div className=" w-full ">
                   <CandidateAnalysisTab
                     categoryList={categoryList}
-                    candidates={candidates}
+                    interviewId={interviewId}
                   />
                 </div>
-                <div className=" w-full  flex flex-col md:flex-row items-center justify-between mt-4">
+                {/* <div className=" w-full  flex flex-col md:flex-row items-center justify-between mt-4">
                   <h1 className=" text-2xl font-semibold text-left w-full">
                     Candidate Analyze
                   </h1>
@@ -5118,8 +5118,8 @@ export default function InterviewPreviewPage({ params }) {
                       Sort Candidates
                     </button>
                   </div>
-                </div>
-                {candidates.length > 0 ? (
+                </div> */}
+                {/* {candidates.length > 0 ? (
                   <div className="mt-5 flex flex-col gap-4 ">
                     {candidates.map((candidate, index) => (
                       <div
@@ -5173,7 +5173,7 @@ export default function InterviewPreviewPage({ params }) {
                   </div>
                 ) : (
                   <p>No candidates available.</p>
-                )}
+                )} */}
               </div>
             </TabsContent>
 
