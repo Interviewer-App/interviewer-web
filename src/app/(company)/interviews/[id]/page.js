@@ -623,7 +623,7 @@ export default function InterviewPreviewPage({ params }) {
           if (response.data.CategoryAssignment) {
             const categories = response.data.CategoryAssignment.map(
               (category) => {
-                const matchingCategory = interviewCategories.find(
+                const matchingCategory = interviewCategories?.find(
                   (cat) => cat.categoryId === category.categoryId
                 );
 
@@ -678,6 +678,9 @@ export default function InterviewPreviewPage({ params }) {
     setTitle(interviewDetail.jobTitle);
     setInterviewCategory(interviewDetail.interviewCategory);
     setQuestionList(interviewDetail?.questions);
+    setUseQuestionnaire(interviewDetail?.flexibleAssignment); 
+    // setTechnicalPercentage(interviewDetail?.technicalPercentage);
+    // setSoftSkillsPercentage(interviewDetail?.softSkillPercentage);
     if (interviewDetail?.requiredSkills) {
       setSkills(interviewDetail.requiredSkills.split(", "));
     } else {
@@ -861,11 +864,11 @@ export default function InterviewPreviewPage({ params }) {
 
   useEffect(() => {
     // console.log("interviewDetail", interviewDetail);
-    const softSkillId = interviewCategories.find(
+    const softSkillId = interviewCategories?.find(
       (category) => category.categoryName === "Soft"
     )?.categoryId;
     if (softSkillId) {
-      const softSkill = interviewDetail.CategoryAssignment.find(
+      const softSkill = interviewDetail.CategoryAssignment?.find(
         (assignment) => assignment.categoryId === softSkillId
       );
       if (softSkill) {
@@ -1047,7 +1050,7 @@ export default function InterviewPreviewPage({ params }) {
         ...prev,
         {
           key: inputCatagory.trim(),
-          catagory: interviewCategories.find(
+          catagory: interviewCategories?.find(
             (cat) => cat.categoryId === inputCatagory.trim()
           )?.categoryName,
           percentage: inputPercentage.trim(),
@@ -1614,7 +1617,7 @@ export default function InterviewPreviewPage({ params }) {
 
   const handleSoftSkillPercentageChange = (skillId, newPercentage) => {
     // Get the current skill
-    const currentSkill = softSkills.find((s) => s.id === skillId);
+    const currentSkill = softSkills?.find((s) => s.id === skillId);
     if (!currentSkill) return;
 
     const oldPercentage = currentSkill.percentage;
@@ -1893,10 +1896,10 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleDeleteSoftSkill = (id) => {
-    const skillToDelete = softSkills.find((s) => s.id === id);
+    const skillToDelete = softSkills?.find((s) => s.id === id);
     if (!skillToDelete) return;
 
-    const remainingSkills = softSkills.filter((s) => s.id !== id);
+    const remainingSkills = softSkills?.filter((s) => s.id !== id);
 
     // Redistribute the deleted skill's percentage among remaining skills
     if (remainingSkills.length > 0) {
@@ -2676,7 +2679,7 @@ export default function InterviewPreviewPage({ params }) {
                   </Badge>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                {editDetails && (<div className="flex items-center space-x-2">
                   <Switch
                     id="use-questionnaire"
                     checked={useQuestionnaire}
@@ -2685,7 +2688,7 @@ export default function InterviewPreviewPage({ params }) {
                   <Label htmlFor="use-questionnaire">
                     Use questionnaire for assessment
                   </Label>
-                </div>
+                </div>)}
 
                 {useQuestionnaire ? (
                   <div className="space-y-4">
@@ -5078,7 +5081,7 @@ export default function InterviewPreviewPage({ params }) {
                         >
                           {selectedSortCategory === "overall"
                             ? "Overall"
-                            : categoryList.find(
+                            : categoryList?.find(
                               (cat) => cat.key === selectedSortCategory
                             )?.catagory || "Select Category"}
                         </Button>
