@@ -37,6 +37,7 @@ import SortableLinks from "@/components/SortableLinks";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaDotCircle } from "react-icons/fa";
 import {
+  AlertCircleIcon,
   Calendar1,
   Check,
   CirclePlus,
@@ -73,6 +74,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { PieChart, Pie, Cell } from "recharts";
+import { Badge } from "@/components/ui/badge";
 
 function InterviewSessionPreviewPage({ params }) {
   const { data: session, status } = useSession();
@@ -83,6 +94,7 @@ function InterviewSessionPreviewPage({ params }) {
   const [isQuestionEdit, setIsQuestionEdit] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
+  const [softSkillData, setSoftSkillData] = useState([]);
   const [tab, setTab] = useState("technical");
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -164,6 +176,26 @@ function InterviewSessionPreviewPage({ params }) {
       color: category.categoryAssignment.category.color,
     }));
     setItems(tabData);
+  }, [sessionDetails]);
+
+  useEffect(() => {
+    if (sessionDetails) {
+      const softSkillData = sessionDetails?.CategoryScore?.find(
+        (category) =>
+          category.categoryAssignment?.category.categoryName === "Soft"
+      ).categoryAssignment?.SubCategoryAssignment;
+
+      if (softSkillData?.length > 0) {
+        const data = softSkillData.map((item) => ({
+          name: item.name,
+          value: item.percentage,
+          color: item.color,
+        }));
+        setSoftSkillData(data);
+      } else {
+        setSoftSkillData([]);
+      }
+    }
   }, [sessionDetails]);
 
   const interviewStart = async (e) => {
@@ -345,7 +377,7 @@ function InterviewSessionPreviewPage({ params }) {
                       href={`/interviews/${interviewId}/candidate-details?candidateId=${encodeURIComponent(
                         sessionDetails?.candidateId
                       )}`}
-                      className=" text-xs border-2 border-black hover:text-blue-500 hover:border-blue-500 text-white bg-[#191e2b] rounded-xs py-1 px-1 cursor-pointer rounded-xl"
+                      className=" text-xs border-2 px-5 border-black hover:text-blue-500 hover:border-blue-500 text-white bg-[#191e2b] rounded-xs py-1 cursor-pointer rounded-xl"
                     >
                       More about Candidatre
                     </Link>
@@ -470,10 +502,10 @@ function InterviewSessionPreviewPage({ params }) {
               </div>
             </div>
 
-            <div className="flex md:flex-row flex-col w-full justify-between">
-              <div className=" bg-slate-500/10 p-5 rounded-lg w-full">
+            <div className="flex md:flex-row flex-col w-full gap-5 justify-between">
+              <div className=" bg-transparent mt-5 p-5 border border-gray-500/40  rounded-lg w-full">
                 <div className="flex justify-between flex-col md:flex-row gap-3 w-full">
-                  <div className="flex bg-slate-600/20 w-fit p-1 rounded-lg align-center gap-2">
+                  <div className="flex bg-gray-600/30 w-fit p-1 rounded-lg align-center gap-2">
                     <button
                       onClick={() => setTab("technical")}
                       className={`text-xs md:text-sm px-4 py-1.5 rounded-lg ${
@@ -491,103 +523,189 @@ function InterviewSessionPreviewPage({ params }) {
                       Soft
                     </button>
                   </div>
-                  <div
-                    className={`${
-                      tab === "technical" ? "block" : "hidden"
-                    } w-full p-1 md:p-2 flex items-center justify-end gap-3`}
-                  >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setGenerateModalOpen(true)}
-                      className="flex items-center gap-1 text-blue-500 !border-blue-500/50 hover:!bg-blue-500/10"
+                  {sessionDetails?.interview?.flexibleAssignment && (
+                    <div
+                      className={`${
+                        tab === "technical" ? "block" : "hidden"
+                      } w-full p-1 md:p-2 flex items-center justify-end gap-3`}
                     >
-                      <Sparkles className="h-4 w-4" />
-                      <span>Generate with AI</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCreateModalOpen(true)}
-                      className="flex items-center gap-1 !text-black !bg-white"
-                    >
-                      <CirclePlus className="mr-2" size={15} />
-                      Add Question
-                    </Button>
-                  </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setGenerateModalOpen(true)}
+                        className="flex items-center gap-1 text-blue-500 !border-blue-500/50 hover:!bg-blue-500/10"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        <span>Generate with AI</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCreateModalOpen(true)}
+                        className="flex items-center gap-1 !text-black !bg-white"
+                      >
+                        <CirclePlus className="mr-2" size={15} />
+                        Add Question
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <div className=" flex justify-between items-start">
                   {tab === "technical" ? (
-                    <div className=" w-full mt-3 border-gray-700/20">
-                      <div className=" w-full flex flex-col md:flex-row items-center justify-between">
-                        <h1 className=" text-2xl font-semibold text-left w-full">
-                          Questions
-                        </h1>
-                      </div>
-                      {sessionDetails.questions?.length > 0 ? (
-                        sessionDetails.questions.map((question, index) => (
-                          <QuestionDisplayCard
-                            forSession={true}
-                            key={index}
-                            index={index}
-                            question={question}
-                            isQuestionEdit={isQuestionEdit}
-                            setIsQuestionEdit={setIsQuestionEdit}
-                          />
-                        ))
-                      ) : (
-                        <div className=" w-full flex flex-col items-center justify-center min-h-[300px] gap-2">
-                          <p>No questions available.</p>
-                          <button
-                            className=" h-11 min-w-[160px] md:mt-0 px-5 mt-5 cursor-pointer border-2 hover:bg-white/30 border-white rounded-lg text-center text-white font-semibold"
-                            onClick={handleImportQuestions}
-                          >
-                            Import questions
-                          </button>
+                    <>
+                      {sessionDetails?.interview?.flexibleAssignment ? (
+                        <div className=" w-full mt-3 border-gray-700/20">
+                          <div className=" w-full flex flex-col md:flex-row items-center justify-between">
+                            <h1 className=" text-2xl font-semibold text-left w-full">
+                              Questions
+                            </h1>
+                          </div>
+                          {sessionDetails.questions?.length > 0 ? (
+                            sessionDetails.questions.map((question, index) => (
+                              <QuestionDisplayCard
+                                forSession={true}
+                                key={index}
+                                index={index}
+                                question={question}
+                                isQuestionEdit={isQuestionEdit}
+                                setIsQuestionEdit={setIsQuestionEdit}
+                              />
+                            ))
+                          ) : (
+                            <div className=" w-full flex flex-col items-center justify-center min-h-[300px] gap-2">
+                              <p>No questions available.</p>
+                              <button
+                                className=" h-11 min-w-[160px] md:mt-0 px-5 mt-5 cursor-pointer border-2 hover:bg-white/30 border-white rounded-lg text-center text-white font-semibold"
+                                onClick={handleImportQuestions}
+                              >
+                                Import questions
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className=" w-[68%] mt-3 border-r-2 border-gray-700/20">
-                      {sessionDetails.CategoryScore.filter(
-                        (category) =>
-                          category.categoryAssignment.category.categoryName !==
-                          "Technical"
-                      ).map((category) => (
-                        <div
-                          key={category.categoryScoreId}
-                          className=" w-full mt-5 "
-                        >
-                          <h1 className=" text-2xl font-semibold text-left w-full">
-                            <FaDotCircle className=" text-blue-700 text-xs inline-block mr-2" />
-                            {category.categoryAssignment.category.categoryName}{" "}
-                            : {category.categoryAssignment.percentage}%{" "}
-                          </h1>
-
-                          <div className=" px-8">
-                            {category.categoryAssignment.SubCategoryAssignment.map(
-                              (subCategory) => (
-                                <div
-                                  key={subCategory.id}
-                                  className=" mt-3 px-5 py-2 rounded-lg border-2 border-gray-600 text-gray-400 bg-gray-500/20"
-                                >
-                                  <h1 className=" font-semibold">
-                                    {subCategory.name}
-                                  </h1>
-                                  <p>{subCategory.percentage}%</p>
-                                </div>
-                              )
-                            )}
+                      ) : (
+                        <div className="mt-3">
+                          <div className=" w-full mt-5 ">
+                            <h1 className=" text-2xl font-semibold text-left w-full">
+                              <FaDotCircle className=" text-blue-700 text-xs inline-block mr-2" />
+                              Technical :{" "}
+                              {
+                                sessionDetails?.CategoryScore?.find(
+                                  (category) =>
+                                    category.categoryAssignment.category
+                                      .categoryName === "Technical"
+                                ).categoryAssignment?.percentage
+                              }
+                              %{" "}
+                            </h1>
+                            <Alert className=" mt-3 px-5 rounded-lg border-2 !border-gray-500/40 !text-gray-400 !bg-gray-500/10">
+                              <AlertCircleIcon className="h-4 w-4" />
+                              <AlertTitle>Manual Assessment</AlertTitle>
+                              <AlertDescription>
+                                You&apos;ve chosen to assess technical expertise
+                                manually during the interview. Prepare your own
+                                questions and evaluation criteria based on the
+                                candidate&apos;s field.
+                              </AlertDescription>
+                            </Alert>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className=" w-[70%] mt-3 border-r-2 border-gray-700/20">
+                        {sessionDetails.CategoryScore.filter(
+                          (category) =>
+                            category.categoryAssignment.category
+                              .categoryName !== "Technical"
+                        ).map((category) => (
+                          <div
+                            key={category.categoryScoreId}
+                            className=" w-full mt-5 "
+                          >
+                            <h1 className=" text-2xl font-semibold text-left w-full">
+                              <FaDotCircle className=" text-blue-700 text-xs inline-block mr-2" />
+                              {
+                                category.categoryAssignment.category
+                                  .categoryName
+                              }{" "}
+                              : {category.categoryAssignment.percentage}%{" "}
+                            </h1>
+
+                            <div className=" px-8">
+                              {category.categoryAssignment.SubCategoryAssignment.map(
+                                (subCategory) => (
+                                  <div
+                                    key={subCategory.id}
+                                    className=" mt-3 px-5 py-2 rounded-lg border-2 border-gray-600/40 text-gray-400 bg-gray-500/10"
+                                  >
+                                    <h1 className=" font-semibold">
+                                      {subCategory.name}
+                                    </h1>
+                                    <Badge className="!bg-blue-500/20 !text-blue-600 px-3 py-1 border !border-blue-600">
+                                      {subCategory.percentage}%
+                                    </Badge>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className=" w-full md:w-[30%] flex justify-center items-center">
+                        <div className=" h-[300px] max-h-[300px] w-full mt-3 border-gray-700/20 overflow-hidden">
+                          <ChartContainer
+                            className=" h-full max-h-[300px] w-full"
+                            config={{
+                              requests: { color: "#6b46c1" },
+                              invitations: { color: "#0ea5e9" },
+                              remaining: { color: "#9999993a" },
+                            }}
+                          >
+                            {sessionDetails?.CategoryScore?.find(
+                              (category) =>
+                                category.categoryAssignment?.category
+                                  .categoryName === "Soft"
+                            ).categoryAssignment?.SubCategoryAssignment
+                              ?.length > 0 ? (
+                              <PieChart>
+                                <Pie
+                                  data={softSkillData}
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius={60}
+                                  outerRadius={80}
+                                  paddingAngle={4}
+                                  dataKey="value"
+                                >
+                                  {softSkillData.map((entry, index) => (
+                                    <Cell
+                                      key={`cell-${index}`}
+                                      fill={entry.color}
+                                    />
+                                  ))}
+                                </Pie>
+                                <ChartTooltip
+                                  content={<ChartTooltipContent />}
+                                />
+                                <ChartLegend content={<ChartLegendContent />} />
+                              </PieChart>
+                            ) : (
+                              <div className="flex items-center text-[#b3b3b3] justify-center h-full">
+                                <p>No schedules available</p>
+                              </div>
+                            )}
+                          </ChartContainer>
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
 
-              <div className="md:w-1/3 w-full mt-3 border border-gray-800 rounded-lg p-4">
+              <div className="md:w-1/3 w-full mt-5 border border-gray-500/40 rounded-lg p-4">
                 <h1 className=" text-2xl font-semibold text-left w-full">
                   Question arrangement
                 </h1>
