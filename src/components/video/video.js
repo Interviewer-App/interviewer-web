@@ -22,6 +22,7 @@ import {
   Phone,
   MessageSquare,
   Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -45,7 +46,7 @@ const VideoCall = forwardRef(
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const [peer, setPeer] = useState(null);
-    const [isMaximized, setIsMaximized] = useState(null);
+    const [isMaximized, setIsMaximized] = useState(false);
     const [isMicOn, setIsMicOn] = useState(true);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
@@ -557,12 +558,10 @@ const VideoCall = forwardRef(
             {/* Candidate video */}
             <div
               ref={candidateVideoRef}
-              className={`w-64 h-48 bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto ${
-                isDraggingCandidate ? "cursor-grabbing" : "cursor-grab"
-              }`}
+              className={ ` ${isMaximized ? 'w-full h-full fixed' : isDraggingCandidate ? "cursor-grabbing w-64 h-48" : "cursor-grab w-64 h-48"} bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto`}
               style={{
-                left: `${candidateVideoPosition.x}px`,
-                top: `${candidateVideoPosition.y}px`,
+                left: `${!isMaximized ? candidateVideoPosition.x : 0}px`,
+                top: `${!isMaximized ? candidateVideoPosition.y : 0}px`,
                 transition: isDraggingCandidate
                   ? "none"
                   : "box-shadow 0.2s ease",
@@ -598,13 +597,22 @@ const VideoCall = forwardRef(
                   {isCandidate ? "Interviewer" : "Candidate"}
                 </div>
                 <div className="absolute top-2 right-2 flex gap-1">
+                  {!isMaximized ? (<Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
+                    onClick={() => {setIsMaximized(true)}}
+                  >
+                    <Maximize2 className="h-3 w-3" />
+                  </Button>):(
                   <Button
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
+                    onClick={() => {setIsMaximized(false)}}
                   >
-                    <Maximize2 className="h-3 w-3" />
-                  </Button>
+                    <Minimize2 className="h-3 w-3" />
+                  </Button>)}
                 </div>
               </div>
             </div>
