@@ -13,8 +13,6 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
-import { set } from "zod";
-import { width } from "@mui/system";
 
 const getRandomLightColor = () => {
   const r = Math.random();
