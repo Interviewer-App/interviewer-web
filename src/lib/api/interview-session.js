@@ -179,6 +179,20 @@ export const addFeedback = async (sessionId, data) => {
   }
 }
 
+export const addMarks = async (data) => {
+  try{
+      const response = await axiosInstance.post(`/interview-session/question-scores`,data);
+      return response;
+  } catch(error){
+      console.log('Error fetching completed comparision:', error);
+      throw error;
+  }
+}
+
+
+
+
+
 
 
 export {
