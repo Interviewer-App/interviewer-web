@@ -255,8 +255,7 @@ const CreateInterview = () => {
   const [editingSubcategory, setEditingSubcategory] = useState(null);
   const [softSkills, setSoftSkills] = useState([]);
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState({
-  });
+  const [aiSuggestions, setAiSuggestions] = useState({});
   const [isAddingSoftSkill, setIsAddingSoftSkill] = useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [softSkillsLoading, setSoftSkillsLoading] = useState(false);
@@ -349,7 +348,6 @@ const CreateInterview = () => {
     }
   };
 
-
   const handleGenerateAISuggestioins = async (e) => {
     e.preventDefault();
     setSuggestionsLoading(true);
@@ -360,10 +358,10 @@ const CreateInterview = () => {
         industry: relatedField,
         experience_level: proficiencyLevel,
         technicalPercentage: technicalPercentage,
-        softSkillsPercentage:softSkillsPercentage,
+        softSkillsPercentage: softSkillsPercentage,
         flexibleAssessment: true,
         softSkills: softSkills,
-        questions: []
+        questions: [],
       };
       const response = await generateRecommondations(data);
       if (response) {
@@ -867,7 +865,7 @@ const CreateInterview = () => {
         industry: relatedField,
         intervieweeType: intervieweeType,
         proficiencyLevel: proficiencyLevel,
-        flexibleAssignment : useQuestionnaire,
+        flexibleAssignment: useQuestionnaire,
         schedules: schedules
           .filter((schedule) => !schedule.isBooked) // Exclude booked schedules, if applicable
           .map((schedule) => {
@@ -1555,8 +1553,12 @@ const CreateInterview = () => {
 
   const handleAcceptSuggestions = () => {
     // Update percentages
-    setTechnicalPercentage(aiSuggestions.summary.recommended_weighting.technical_expertise);
-    setSoftSkillsPercentage(aiSuggestions.summary.recommended_weighting.soft_skills);
+    setTechnicalPercentage(
+      aiSuggestions.summary.recommended_weighting.technical_expertise
+    );
+    setSoftSkillsPercentage(
+      aiSuggestions.summary.recommended_weighting.soft_skills
+    );
 
     // // Add suggested questions
     // const newQuestions = [
@@ -2488,7 +2490,9 @@ const CreateInterview = () => {
                           onCheckedChange={setUseQuestionnaire}
                         />
                         <Label htmlFor="use-questionnaire">
-                          Use questionnaire for assessment
+                          Do you need to use an AI-based or a manual
+                          questionnaire to assess candidates&apos; technical
+                          expertise?
                         </Label>
                       </div>
 
@@ -2625,9 +2629,10 @@ const CreateInterview = () => {
                           <AlertCircleIcon className="h-4 w-4" />
                           <AlertTitle>Manual Assessment</AlertTitle>
                           <AlertDescription>
-                            You&apos;ve chosen to assess technical expertise manually
-                            during the interview. Prepare your own questions and
-                            evaluation criteria based on the candidate&apos;s field.
+                            You&apos;ve chosen to assess technical expertise
+                            manually during the interview. Prepare your own
+                            questions and evaluation criteria based on the
+                            candidate&apos;s field.
                           </AlertDescription>
                         </Alert>
                       )}
@@ -3589,14 +3594,13 @@ const CreateInterview = () => {
                           disabled={showAnalysis}
                         >
                           {suggestionsLoading ? (
-                              <LoaderCircle className="animate-spin" />
-                            ) : (
-                              <>
-                                <Sparkles className="h-4 w-4 text-blue-500" />
-                                <span>Analyze & Suggest Improvements</span>
-                              </>
-                            )}
-                          
+                            <LoaderCircle className="animate-spin" />
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4 text-blue-500" />
+                              <span>Analyze & Suggest Improvements</span>
+                            </>
+                          )}
                         </Button>
                       </div>
 
@@ -3622,14 +3626,23 @@ const CreateInterview = () => {
                                       className="!text-blue-500 !font-bold"
                                     >
                                       Technical:{" "}
-                                      {aiSuggestions.summary.recommended_weighting.technical_expertise}%
+                                      {
+                                        aiSuggestions.summary
+                                          .recommended_weighting
+                                          .technical_expertise
+                                      }
+                                      %
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
-                                      {aiSuggestions.summary.recommended_weighting.technical_expertise >
+                                      {aiSuggestions.summary
+                                        .recommended_weighting
+                                        .technical_expertise >
                                       technicalPercentage
                                         ? "+"
                                         : ""}
-                                      {aiSuggestions.summary.recommended_weighting.technical_expertise -
+                                      {aiSuggestions.summary
+                                        .recommended_weighting
+                                        .technical_expertise -
                                         technicalPercentage}
                                       %
                                     </span>
@@ -3640,14 +3653,20 @@ const CreateInterview = () => {
                                       className="!text-blue-500 !font-bold"
                                     >
                                       Soft Skills:{" "}
-                                      {aiSuggestions.summary.recommended_weighting.soft_skills}%
+                                      {
+                                        aiSuggestions.summary
+                                          .recommended_weighting.soft_skills
+                                      }
+                                      %
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
-                                      {aiSuggestions.summary.recommended_weighting.soft_skills >
+                                      {aiSuggestions.summary
+                                        .recommended_weighting.soft_skills >
                                       softSkillsPercentage
                                         ? "+"
                                         : ""}
-                                      {aiSuggestions.summary.recommended_weighting.soft_skills -
+                                      {aiSuggestions.summary
+                                        .recommended_weighting.soft_skills -
                                         softSkillsPercentage}
                                       %
                                     </span>
@@ -3684,7 +3703,8 @@ const CreateInterview = () => {
                                 </div>
                               )} */}
 
-                              {aiSuggestions.suggested_soft_skills.length > 0 && (
+                              {aiSuggestions.suggested_soft_skills.length >
+                                0 && (
                                 <div>
                                   <h4 className="font-medium">
                                     Suggested Soft Skills to Add
@@ -4301,17 +4321,16 @@ const CreateInterview = () => {
                                 </h4>
 
                                 {generatedSlots.length > 0 && (
-                                <div className="flex justify-center mr-5">
-
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    onClick={addAllGeneratedSlots}
-                                    className="h-8 "
-                                  >
-                                    <SaveAll className="h-4 w-4 mr-1" />
-                                    Add All
-                                  </Button>
+                                  <div className="flex justify-center mr-5">
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      onClick={addAllGeneratedSlots}
+                                      className="h-8 "
+                                    >
+                                      <SaveAll className="h-4 w-4 mr-1" />
+                                      Add All
+                                    </Button>
                                   </div>
                                 )}
                               </div>
