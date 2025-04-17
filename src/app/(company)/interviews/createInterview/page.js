@@ -1594,14 +1594,10 @@ const CreateInterview = () => {
           description: s.description,
           expanded: false,
           percentage: s.percentage,
-          // subcategories: [
-          //   {
-          //     id: `sub${Date.now()}`,
-          //     name: "General Assessment",
-          //     description: "Overall evaluation of this quality",
-          //     percentage: 100,
-          //   },
-          // ],
+          subcategories: s.subcategories.map((sub) => ({
+            name: sub.name,
+            percentage: parseInt(sub.percentage, 10),
+          })),
         })),
       ];
 
