@@ -689,14 +689,16 @@ const InterviewComparision = () => {
                   </div>
                 </div>
 
-                <div className="mt-8 bg-slate-700/10 border-2 border-slate-900 p-6 rounded-lg h-fit">
-                  <h2 className="text-2xl font-bold mb-4 text-slate-500">
+                      
+                  <h2 className="text-2xl font-bold m-4 text-white-500">
                     Score Comparison
                   </h2>
                   <Bar
                     data={generateChartData()}
                     options={{
                       responsive: true,
+                      maintainAspectRatio: true, // Ensures the chart scales properly
+                      indexAxis: "y", // Makes the chart horizontal
                       scales: {
                         y: {
                           beginAtZero: true,
@@ -713,7 +715,7 @@ const InterviewComparision = () => {
                       },
                     }}
                   />
-                </div>
+               
 
                 {/* <div className="flex justify-around mt-10 flex-col md:flex-row space-y-4 md:space-y-0">
       
