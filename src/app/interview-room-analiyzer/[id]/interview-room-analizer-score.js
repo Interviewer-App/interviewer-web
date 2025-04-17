@@ -173,7 +173,7 @@ function InterviewRoomAnalizerScore({
                             </div>
                           </div>
                           <Slider
-                            value={[subCategory.score || 10]}
+                            value={[subCategory.score || 0]}
                             max={100}
                             step={1}
                             id={subCategory.id}
