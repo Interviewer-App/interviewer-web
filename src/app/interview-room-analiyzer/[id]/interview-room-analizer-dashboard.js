@@ -50,6 +50,8 @@ import {
   ChevronRight,
   Code,
   FlaskConical,
+  Loader,
+  Loader2,
   PlusCircle,
   ThumbsDown,
   ThumbsUp,
@@ -138,14 +140,17 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       setCurrentQuestionIndex(questionNumber);
     }, [questionList]);
 
-    useEffect(() => { 
-      if(manualTechnicalMarks < 100 && manualTechnicalMarks > 0) {
-      socket.emit("submitCategoryScore", {
-        sessionId: sessionId,
-        categoryScoreId: categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Technical").categoryScoreId,
-        score: manualTechnicalMarks,
-      });
-    }
+    useEffect(() => {
+      if (manualTechnicalMarks < 100 && manualTechnicalMarks > 0) {
+        socket.emit("submitCategoryScore", {
+          sessionId: sessionId,
+          categoryScoreId: categoryScores.find(
+            (category) =>
+              category.categoryAssignment.category.categoryName === "Technical"
+          ).categoryScoreId,
+          score: manualTechnicalMarks,
+        });
+      }
     }, [manualTechnicalMarks]);
 
     useEffect(() => {
@@ -473,153 +478,159 @@ const InterviewRoomAnalizerDashboard = forwardRef(
 
                 {/* Right panel - Analysis */}
                 {technicalStatus === "ongoing" ? (
-                  <Card className="flex flex-col !bg-transparent">
-                    <CardHeader className="pb-3 border-b border-gray-500/40">
-                      <CardTitle className="text-lg">
-                        Real-time Analysis
-                      </CardTitle>
-                    </CardHeader>
+                  <>
+                    {candidateAnswers ? (
+                      <Card className="flex flex-col !bg-transparent">
+                        <CardHeader className="pb-3 border-b border-gray-500/40">
+                          <CardTitle className="text-lg">
+                            Real-time Analysis
+                          </CardTitle>
+                        </CardHeader>
 
-                    <CardContent className="flex-1 py-4 overflow-auto">
-                      <div className="space-y-4">
-                        {/* Candidate Answer */}
-                        <div className="border border-gray-500/40 rounded-md p-4">
-                          <h4 className="font-medium text-sm mb-2">
-                            Candidate&apos;s Answer
-                          </h4>
-                          <div className="bg-muted/30 rounded-md p-3 min-h-[100px]">
-                            <p className="text-sm">
-                              {candidateAnswers?.answer ||
-                                "Waiting for candidate to respond..."}
-                            </p>
-                          </div>
-                        </div>
+                        <CardContent className="flex-1 py-4 overflow-auto">
+                          <div className="space-y-4">
+                            {/* Candidate Answer */}
+                            <div className="border border-gray-500/40 rounded-md p-4">
+                              <h4 className="font-medium text-sm mb-2">
+                                Candidate&apos;s Answer
+                              </h4>
+                              <div className="bg-muted/30 rounded-md p-3 min-h-[100px]">
+                                <p className="text-sm">
+                                  {candidateAnswers?.answer ||
+                                    "Waiting for candidate to respond..."}
+                                </p>
+                              </div>
+                            </div>
 
-                        {/* Key Strengths and Improvements */}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="border border-gray-500/40 rounded-md p-3">
-                            <h4 className="text-sm font-medium mb-2">
-                              Key Strengths
-                            </h4>
-                            {candidateAnswers?.answer ? (
-                              <ul className="list-disc pl-5 text-sm space-y-1">
-                                {analiyzeResponse.keyStrengths?.map(
-                                  (key, index) => <li key={index}>{key}</li>
-                                ) || "No key strengths found"}
-                              </ul>
-                            ) : (
-                              <p className="text-sm text-muted-foreground italic">
-                                Waiting for candidate response...
-                              </p>
-                            )}
-                          </div>
+                            {/* Key Strengths and Improvements */}
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="border border-gray-500/40 rounded-md p-3">
+                                <h4 className="text-sm font-medium mb-2">
+                                  Key Strengths
+                                </h4>
+                                {candidateAnswers?.answer ? (
+                                  <ul className="list-disc pl-5 text-sm space-y-1">
+                                    {analiyzeResponse.keyStrengths?.map(
+                                      (key, index) => <li key={index}>{key}</li>
+                                    ) || "No key strengths found"}
+                                  </ul>
+                                ) : (
+                                  <p className="text-sm text-muted-foreground italic">
+                                    Waiting for candidate response...
+                                  </p>
+                                )}
+                              </div>
 
-                          <div className="border border-gray-500/40 rounded-md p-3">
-                            <h4 className="text-sm font-medium mb-2">
-                              Improvements
-                            </h4>
-                            {candidateAnswers?.answer ? (
-                              <ul className="list-disc pl-5 text-sm space-y-1">
-                                {analiyzeResponse.areasOfImprovement?.map(
-                                  (key, index) => <li key={index}>{key}</li>
-                                ) || "No areas of improvement found"}
-                              </ul>
-                            ) : (
-                              <p className="text-sm text-muted-foreground italic">
-                                Waiting for candidate response...
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                              <div className="border border-gray-500/40 rounded-md p-3">
+                                <h4 className="text-sm font-medium mb-2">
+                                  Improvements
+                                </h4>
+                                {candidateAnswers?.answer ? (
+                                  <ul className="list-disc pl-5 text-sm space-y-1">
+                                    {analiyzeResponse.areasOfImprovement?.map(
+                                      (key, index) => <li key={index}>{key}</li>
+                                    ) || "No areas of improvement found"}
+                                  </ul>
+                                ) : (
+                                  <p className="text-sm text-muted-foreground italic">
+                                    Waiting for candidate response...
+                                  </p>
+                                )}
+                              </div>
+                            </div>
 
-                        {/* Alignment with requirements */}
-                        <div className="border border-gray-500/40 rounded-md p-3">
-                          <h4 className="text-sm font-medium mb-2">
-                            Alignments with requirements
-                          </h4>
-                          {candidateAnswers?.answer ? (
-                            <p className="text-sm">
-                              {analiyzeResponse?.alignment || ""}
-                            </p>
-                          ) : (
-                            <p className="text-sm text-muted-foreground italic">
-                              Waiting for candidate response...
-                            </p>
-                          )}
-                        </div>
+                            {/* Alignment with requirements */}
+                            <div className="border border-gray-500/40 rounded-md p-3">
+                              <h4 className="text-sm font-medium mb-2">
+                                Alignments with requirements
+                              </h4>
+                              {candidateAnswers?.answer ? (
+                                <p className="text-sm">
+                                  {analiyzeResponse?.alignment || ""}
+                                </p>
+                              ) : (
+                                <p className="text-sm text-muted-foreground italic">
+                                  Waiting for candidate response...
+                                </p>
+                              )}
+                            </div>
 
-                        {/* Follow-up Questions */}
-                        <div className="border border-gray-500/40 rounded-md p-3 bg-muted/20">
-                          <h4 className="text-sm font-medium mb-2">
-                            Followup questions
-                          </h4>
-                          <div className="space-y-2">
-                            {analiyzeResponse.followUpQuestions?.map(
-                              (question, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center justify-between p-2 rounded-md border bg-card hover:bg-muted cursor-pointer text-sm"
-                                >
-                                  <div className=" pr-2">{question}</div>
-                                  <div>
-                                    <AlertDialog>
-                                      <AlertDialogTrigger>
-                                        <TooltipProvider>
-                                          <Tooltip>
-                                            <TooltipTrigger asChild>
-                                              <PlusCircle className="h-4 w-4 text-blue-500 flex-shrink-0 ml-2" />
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                              <p>Add as Next Question</p>
-                                            </TooltipContent>
-                                          </Tooltip>
-                                        </TooltipProvider>
-                                      </AlertDialogTrigger>
+                            {/* Follow-up Questions */}
+                            <div className="border border-gray-500/40 rounded-md p-3 bg-muted/20">
+                              <h4 className="text-sm font-medium mb-2">
+                                Followup questions
+                              </h4>
+                              <div className="space-y-2">
+                                {analiyzeResponse.followUpQuestions?.map(
+                                  (question, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-center justify-between p-2 rounded-md border bg-card hover:bg-muted cursor-pointer text-sm"
+                                    >
+                                      <div className=" pr-2">{question}</div>
+                                      <div>
+                                        <AlertDialog>
+                                          <AlertDialogTrigger>
+                                            <TooltipProvider>
+                                              <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                  <PlusCircle className="h-4 w-4 text-blue-500 flex-shrink-0 ml-2" />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                  <p>Add as Next Question</p>
+                                                </TooltipContent>
+                                              </Tooltip>
+                                            </TooltipProvider>
+                                          </AlertDialogTrigger>
 
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle>
-                                            Are you sure you want to add as next
-                                            question?
-                                          </AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            This action cannot be undone.
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
+                                          <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                              <AlertDialogTitle>
+                                                Are you sure you want to add as
+                                                next question?
+                                              </AlertDialogTitle>
+                                              <AlertDialogDescription>
+                                                This action cannot be undone.
+                                              </AlertDialogDescription>
+                                            </AlertDialogHeader>
 
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel>
-                                            Cancel
-                                          </AlertDialogCancel>
-                                          <AlertDialogAction
-                                            onClick={() => {
-                                              handleFollowUpQuestion(question);
-                                            }}
-                                            className="h-[40px] font-medium"
-                                          >
-                                            Add
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                  </div>
-                                </div>
-                              )
-                            ) || "No follow up questions found"}
-                            {/* <div className="flex items-center justify-between p-2 rounded-md border bg-card hover:bg-muted cursor-pointer text-sm">
+                                            <AlertDialogFooter>
+                                              <AlertDialogCancel>
+                                                Cancel
+                                              </AlertDialogCancel>
+                                              <AlertDialogAction
+                                                onClick={() => {
+                                                  handleFollowUpQuestion(
+                                                    question
+                                                  );
+                                                }}
+                                                className="h-[40px] font-medium"
+                                              >
+                                                Add
+                                              </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                          </AlertDialogContent>
+                                        </AlertDialog>
+                                      </div>
+                                    </div>
+                                  )
+                                ) || "No follow up questions found"}
+                                {/* <div className="flex items-center justify-between p-2 rounded-md border bg-card hover:bg-muted cursor-pointer text-sm">
                         
                         <span>Can you elaborate on your experience with similar challenges?</span>
                         <PlusCircle className="h-4 w-4 text-blue-500 flex-shrink-0 ml-2" />
                       </div> */}
-                          </div>
-                        </div>
+                              </div>
+                            </div>
 
-                        {/* AI Score */}
-                        <div className="border border-gray-500/40 rounded-md p-4">
-                          <div className="flex justify-between items-center mb-3">
-                            <h4 className="font-medium text-sm">AI Score</h4>
-                            <div className="flex items-center">
-                              {/* {editingAiScore === currentQuestion.id ? (
+                            {/* AI Score */}
+                            <div className="border border-gray-500/40 rounded-md p-4">
+                              <div className="flex justify-between items-center mb-3">
+                                <h4 className="font-medium text-sm">
+                                  AI Score
+                                </h4>
+                                <div className="flex items-center">
+                                  {/* {editingAiScore === currentQuestion.id ? (
                           <div className="flex items-center gap-1">
                             <Input
                               type="number"
@@ -651,23 +662,24 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             </div>
                           </div>
                         ) : ( */}
-                              <div className="flex items-center gap-1">
-                                <div
-                                  className={`text-2xl font-bold ${
-                                    (analiyzeResponse.relevanceScore || 0) >= 80
-                                      ? "text-green-600"
-                                      : (analiyzeResponse.relevanceScore ||
-                                          0) >= 60
-                                      ? "text-blue-600"
-                                      : (analiyzeResponse.relevanceScore ||
-                                          0) >= 40
-                                      ? "text-amber-600"
-                                      : "text-red-600"
-                                  }`}
-                                >
-                                  {analiyzeResponse.relevanceScore || 0}%
-                                </div>
-                                {/* <Button
+                                  <div className="flex items-center gap-1">
+                                    <div
+                                      className={`text-2xl font-bold ${
+                                        (analiyzeResponse.relevanceScore ||
+                                          0) >= 80
+                                          ? "text-green-600"
+                                          : (analiyzeResponse.relevanceScore ||
+                                              0) >= 60
+                                          ? "text-blue-600"
+                                          : (analiyzeResponse.relevanceScore ||
+                                              0) >= 40
+                                          ? "text-amber-600"
+                                          : "text-red-600"
+                                      }`}
+                                    >
+                                      {analiyzeResponse.relevanceScore || 0}%
+                                    </div>
+                                    {/* <Button
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
@@ -675,45 +687,71 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             >
                               <Edit2 className="h-4 w-4" />
                             </Button> */}
+                                  </div>
+                                  {/* )} */}
+                                </div>
                               </div>
-                              {/* )} */}
-                            </div>
-                          </div>
 
-                          <div>
-                            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                              <div
-                                className={`h-full rounded-full ${
-                                  (analiyzeResponse.relevanceScore || 0) >= 80
-                                    ? "bg-green-500"
-                                    : (analiyzeResponse.relevanceScore || 0) >=
-                                      60
-                                    ? "bg-blue-500"
-                                    : (analiyzeResponse.relevanceScore || 0) >=
-                                      40
-                                    ? "bg-amber-500"
-                                    : "bg-red-500"
-                                }`}
-                                style={{
-                                  width: `${
-                                    analiyzeResponse.relevanceScore || 0
-                                  }%`,
-                                }}
-                              />
-                            </div>
-                            <div className="flex justify-between mt-1">
-                              <span className="text-xs text-muted-foreground">
-                                Poor
-                              </span>
-                              <span className="text-xs text-muted-foreground">
-                                Excellent
-                              </span>
+                              <div>
+                                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full ${
+                                      (analiyzeResponse.relevanceScore || 0) >=
+                                      80
+                                        ? "bg-green-500"
+                                        : (analiyzeResponse.relevanceScore ||
+                                            0) >= 60
+                                        ? "bg-blue-500"
+                                        : (analiyzeResponse.relevanceScore ||
+                                            0) >= 40
+                                        ? "bg-amber-500"
+                                        : "bg-red-500"
+                                    }`}
+                                    style={{
+                                      width: `${
+                                        analiyzeResponse.relevanceScore || 0
+                                      }%`,
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex justify-between mt-1">
+                                  <span className="text-xs text-muted-foreground">
+                                    Poor
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">
+                                    Excellent
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      <Card className="flex flex-col !bg-transparent">
+                        <CardHeader className="pb-3 border-b border-gray-500/40">
+                          <CardTitle className="text-lg">
+                            Real-time Analysis
+                          </CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="flex-1 py-4 overflow-auto">
+                          <div className="flex flex-col items-center justify-center h-full space-y-8">
+                            <div className="text-center max-w-md">
+                              <Loader2 className="h-10 mx-auto w-10 text-muted-foreground mb-4 animate-spin" />
+                              <h3 className="text-xl font-medium mb-3">
+                                Waiting for candidate to respond...
+                              </h3>
+                              <p className="text-muted-foreground mb-6">
+                                The analysis will be displayed here once the
+                                candidate provides their answer.
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </>
                 ) : (
                   <Card className="flex flex-col !bg-transparent">
                     <CardHeader className="pb-3 border-b border-gray-500/40">
@@ -767,9 +805,9 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         Technical Skills Assessment
                       </CardTitle>
                       <CardDescription>
-                        Technical Skills Assessment&quot; is a test to evaluate the
-                        candidate&apos;s technical skills and knowledge in the
-                        relevant field.
+                        Technical Skills Assessment&quot; is a test to evaluate
+                        the candidate&apos;s technical skills and knowledge in
+                        the relevant field.
                       </CardDescription>
                     </div>
                   </CardHeader>
