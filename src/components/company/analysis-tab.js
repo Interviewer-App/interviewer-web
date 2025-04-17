@@ -248,7 +248,6 @@ export default function CandidateAnalysisTab({ categoryList, interviewId }) {
       try {
         const response = await fetchAnalyzeDashboard(interviewId);
         if (response.data) {
-          debugger
           setAvgOverallScore(response.data.averageOverallScore);
           setAvgSoftScore(response.data.averageSoftScore);
           setAvgTechnicalScore(response.data.averageTechnicalScore);
