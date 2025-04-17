@@ -87,6 +87,13 @@ import {
 import { AlertDialog } from "@radix-ui/react-alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { addFeedback } from "@/lib/api/interview";
+import { Terminal } from "lucide-react"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 
 function SessionHistoryPage() {
   const params = useParams();
@@ -1166,6 +1173,15 @@ function SessionHistoryPage() {
                             </>
                           )}
                         </Button>
+                      </div>
+                      <div className="m-3">
+                      <Alert className="border !border-red-600">
+                        <Terminal className="h-4 w-4" />
+                        <AlertTitle>Heads up!</AlertTitle>
+                        <AlertDescription>
+                        Please note that the feedback provided here will be visible to the candidate.
+                        </AlertDescription>
+                      </Alert>
                       </div>
                       {isEditing ? (
                         <Textarea
