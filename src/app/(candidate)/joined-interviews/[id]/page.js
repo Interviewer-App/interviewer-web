@@ -176,6 +176,47 @@ const JoinedInterviewsDetails = ({ params }) => {
     }
   }
 
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "toBeConducted":
+        return (
+          <Badge
+            variant="outline"
+            className=" !text-orange-400 !border-orange-400/30 py-1 px-4 bg-orange-400/10"
+          >
+            To Be Conducted
+          </Badge>
+        );
+      case "ongoing":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-emerald-400 py-1 px-4 !border-emerald-400/30 !bg-emerald-400/10"
+          >
+            Ongoing
+          </Badge>
+        );
+      case "completed":
+        return (
+          <Badge
+            variant="outline"
+            className="!text-green-600 !border-green-600/30 bg-green-600/10 py-1 px-4"
+          >
+            Completed
+          </Badge>
+        );
+      default:
+        return (
+          <Badge
+            variant="outline"
+            className="!text-gray-500 !border-gray-500/30 bg-gray-500/10 py-1 px-4"
+          >
+            {status}
+          </Badge>
+        );
+    }
+  };
+
   return (
     <SidebarInset>
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -299,7 +340,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                           <Target className="h-5 w-5 text-muted-foreground mt-0.5" />
                           <div>
                             <p className="text-sm text-muted-foreground">Status</p>
-                            <Badge className="mt-1" variant="outline">{sessionDetails?.interviewStatus || ""}</Badge>
+                            {getStatusBadge(sessionDetails?.interviewStatus)}
                           </div>
                         </div>
                         <div className="flex items-start gap-3">
@@ -385,7 +426,7 @@ const JoinedInterviewsDetails = ({ params }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
-                  <CardHeader className="pb-2">
+                  <CardHeader className="pb-5">
                     <CardTitle className="flex items-center gap-2">
                       <ThumbsUp className="h-5 w-5 text-emerald-500" />
                       Strengths
@@ -393,10 +434,10 @@ const JoinedInterviewsDetails = ({ params }) => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {sessionScoreDetails.aiAnalysis.strengths.map((point, index) => (
+                      {sessionDetails?.aiAnalysis?.strengths?.map((point, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                          <span>{point}</span>
+                          <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-1" />
+                          <span className=" text-base text-muted-foreground">{point}</span>
                         </li>
                       ))}
                     </ul>
@@ -404,7 +445,7 @@ const JoinedInterviewsDetails = ({ params }) => {
                 </Card>
 
                 <Card>
-                  <CardHeader className="pb-2">
+                  <CardHeader className="pb-5">
                     <CardTitle className="flex items-center gap-2">
                       <Lightbulb className="h-5 w-5 text-amber-500" />
                       Areas for Improvement
@@ -412,10 +453,10 @@ const JoinedInterviewsDetails = ({ params }) => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {sessionScoreDetails.aiAnalysis.areasToImprove.map((point, index) => (
+                      {sessionDetails?.aiAnalysis?.areasToImprove?.map((point, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                          <span>{point}</span>
+                          <span className=" text-base text-muted-foreground">{point}</span>
                         </li>
                       ))}
                     </ul>
