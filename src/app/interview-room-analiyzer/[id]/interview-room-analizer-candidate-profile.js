@@ -130,7 +130,6 @@ function InterviewRoomAnalizerCandidateProfile({candidateId,sessionId}) {
   useEffect(() => {
     console.log("Candidate ID:", candidateId);
     console.log("Session ID:", sessionId);
-    // debugger
     const fetchCandidateDetails = async () => {
       try {
         const response = await getCandidateById(candidateId);
@@ -377,15 +376,17 @@ function InterviewRoomAnalizerCandidateProfile({candidateId,sessionId}) {
   const getScoreColor = (score) => {
     if (score >= 90) return "!text-green-500";
     if (score >= 80) return "!text-blue-500";
-    if (score >= 70) return "!text-amber-500";
+    if (score >= 70) return "!text-yellow-300";
+    if (score >= 45) return "!text-orange-500";
     return "!text-red-500";
   };
 
   // Get background color based on score
   const getScoreBgColor = (score) => {
-    if (score >= 90) return "!bg-green-500";
-    if (score >= 80) return "!bg-blue-500";
-    if (score >= 70) return "!bg-amber-500";
+    if (score >= 90) return "!text-green-500";
+    if (score >= 80) return "!text-blue-500";
+    if (score >= 70) return "!text-yellow-300";
+    if (score >= 45) return "!text-orange-500";
     return "!bg-red-500";
   };
 
@@ -621,12 +622,14 @@ function InterviewRoomAnalizerCandidateProfile({candidateId,sessionId}) {
                           fill="none"
                           stroke={
                             (sessionDetails.score ?? 0).toFixed(2) >= 90
-                              ? "#10b981"
-                              : (sessionDetails.score ?? 0).toFixed(2) >= 80
-                              ? "#3b82f6"
-                              : (sessionDetails.score ?? 0).toFixed(2) >= 70
-                              ? "#f59e0b"
-                              : "#ef4444"
+                                ? "#10b981"
+                                : (sessionDetails.score ?? 0).toFixed(2) >= 80
+                                  ? "#3b82f6"
+                                  : (sessionDetails.score ?? 0).toFixed(2) >= 70
+                                    ? "#fde047"
+                                  : (sessionDetails.score ?? 0).toFixed(2) >= 45
+                                    ? "#f97316"
+                                    : "#ef4444"
                           }
                           strokeWidth="10"
                           strokeDasharray={`${
