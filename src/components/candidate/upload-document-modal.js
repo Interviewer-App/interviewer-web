@@ -24,6 +24,14 @@ import { uploadDocumet } from "@/lib/api/users";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { AlertCircle } from "lucide-react"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 const UploadDocumentModal = ({ setModalOpen }) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -93,6 +101,13 @@ const UploadDocumentModal = ({ setModalOpen }) => {
           <h1 className="text-2xl font-semibold text-[#f3f3f3] pb-5">
             Upload Document or CV
           </h1>
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle >Heads up!</AlertTitle>
+            <AlertDescription>
+            Please upload your CV in PDF format only.
+            </AlertDescription>
+          </Alert>
           <button
             onClick={() => setModalOpen(false)}
             className="absolute top-5 right-5 text-[#f3f3f3]"
