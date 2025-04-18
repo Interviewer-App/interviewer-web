@@ -45,9 +45,27 @@ export default function GenerateQuestionModal({
     if (forSession) {
       setSessionID(details.sessionId);
       setJobRole(details.interview.jobTitle);
+      if (typeof details?.interview?.requiredSkills === "string") {
+        const skillsArray = details.interview.requiredSkills
+          .split(",")
+          .map((skill, index) => ({
+            key: index,
+            label: skill.trim(),
+          }));
+        setKeywords(skillsArray);
+      }
     } else {
       setInterviewId(details.interviewID);
       setJobRole(details.jobTitle);
+      if (typeof details?.requiredSkills === "string") {
+        const skillsArray = details.requiredSkills
+          .split(",")
+          .map((skill, index) => ({
+            key: index,
+            label: skill.trim(),
+          }));
+        setKeywords(skillsArray);
+      }
     }
   }, [details]);
 
