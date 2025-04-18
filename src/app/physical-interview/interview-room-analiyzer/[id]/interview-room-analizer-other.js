@@ -144,7 +144,7 @@ function InterviewRoomAnalizerOther({
                         <p>{subCategory.score}/100</p>
                       </div>
                       <Slider
-                        defaultValue={[subCategory.score || 10]}
+                        defaultValue={[subCategory.score || 0]}
                         max={100}
                         step={1}
                         id={subCategory.id}
