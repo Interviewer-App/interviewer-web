@@ -55,6 +55,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const dashboardRef = useRef();
   const [technicalStatus, setTechnicalStatus] = useState('');
   const [softSkillScore, setSoftSkillScore] = useState(0);
+  const [manualScoreChange, setManualScoreChange] = useState(0);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -138,7 +139,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       socket.off("participantLeft");
       socket.off("typingUpdate");
     };
-  }, []);
+  }, [manualScoreChange, sessionID, userID]);
 
   const handleTabChange = (tab) => {
     setTab(tab);
@@ -231,6 +232,8 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             setTypingAnswer={setTypingAnswer}
             ref={dashboardRef}
             userID={userID}
+            setManualScoreChange={setManualScoreChange}
+            manualScoreChange={manualScoreChange}
           />
         )}
         {tab === "SCORE" && (
