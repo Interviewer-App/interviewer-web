@@ -69,3 +69,23 @@ export const importQuestions = async (sessionId) => {
         throw error;
     }
 }
+
+export const addSuggestedOrOriginalQuestionForSession = async (data) => {
+    try{
+        const response = await axiosInstance.post(`/interview-session/add-suggested-or-original`, data);
+        return response;
+    } catch(error){
+        console.log('Error adding question question:', error);
+        throw error;
+    }
+}
+
+export const addSuggestedOrOriginalQuestionForInterview = async (data) => {
+    try{
+        const response = await axiosInstance.post(`/interview/add-suggested-or-original`, data);
+        return response;
+    } catch(error){
+        console.log('Error adding question question:', error);
+        throw error;
+    }
+}
