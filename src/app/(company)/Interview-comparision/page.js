@@ -231,6 +231,7 @@ const InterviewComparision = () => {
           data: c1Scores,
           backgroundColor: "rgba(54, 162, 235, 0.2)",
           borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
    
         },
         {
@@ -238,6 +239,7 @@ const InterviewComparision = () => {
           data: c2Scores,
           backgroundColor: "rgba(234, 179, 8, 0.2)",
           borderColor: "rgba(234, 179, 8, 1)",
+          borderWidth: 1,
    
         },
       ],
@@ -734,8 +736,8 @@ const InterviewComparision = () => {
                 <h2 className="text-2xl font-bold m-4 text-white-500">
                   Score Comparison
                 </h2>
-                <div className="flex flex-row w-full gap-4">
-                  <div className="w-[60%]  items-center flex flex-col border border-red-400/40 rounded-lg p-4">
+                <div className="flex flex-row w-full gap-6">
+                  <div className="w-[60%]  items-center flex flex-col  rounded-lg p-4 bg-slate-700/10 border-2 !border-slate-900">
                   <h2 className="font-semibold text-white-500">
                   Overall Score Comparison
                 </h2>
@@ -781,7 +783,7 @@ const InterviewComparision = () => {
                     />
                   </div>
 
-                  <div className="w-[40%]  items-center flex flex-col border border-red-400/40 rounded-lg p-4 ">
+                  <div className="w-[40%]  items-center flex flex-col  bg-slate-700/10 border-2 border-slate-900 rounded-lg p-4 ">
                   <h2 className=" text-white-500 font-semibold">
                   SoftSkills Score Comparison
                 </h2>
@@ -854,7 +856,7 @@ const InterviewComparision = () => {
                 </div> */}
 
                 {/* Recommendation Section */}
-                <div className="mt-8 bg-slate-700/10 border-2 border-slate-900 p-8 rounded-lg">
+                <div className="mt-8  border-2 border-slate-900 p-8 rounded-lg bg-slate-700/10 ">
                   <h2 className="text-2xl font-bold mb-4 text-slate-500">
                     Recommendation
                   </h2>
