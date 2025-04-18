@@ -1065,7 +1065,7 @@ const InterviewRoomPage = ({ params }) => {
                               )}
                             </div>
                           </div>
-                        ) :  (
+                        ) : (
                           <div className=" flex min-h-[300px] justify-center flex-col items-center h-full">
                             <p className=" text-xl font-semibold">
                               Your answer has been submitted.
@@ -1088,9 +1088,13 @@ const InterviewRoomPage = ({ params }) => {
                     socket={socket}
                     time={formatTime(questionCountDown)}
                   />
-                ) : (<div className=" flex justify-center items-center w-full h-full">
-                  <p className=" text-2xl font-semibold">Technical interview is ongoing..</p>
-                </div>) }
+                ) : (
+                  <div className=" flex justify-center items-center w-full h-full">
+                    <p className=" text-2xl font-semibold">
+                      Technical interview is ongoing..
+                    </p>
+                  </div>
+                )}
               </div>
             ) : technicalStatus === "completed" ? (
               <div>
@@ -1158,6 +1162,47 @@ const InterviewRoomPage = ({ params }) => {
                   </div>
                 </div>
               </div>
+            ) : technicalStatus === "testEnd" ? (
+              // <div>
+              //   <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
+              //     <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">
+              //       You have Successfully Completed Your Technical Evaluation
+              //     </h1>
+              //     <div className=" w-full flex flex-col justify-center] items-center">
+              //       <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+              //         Please wait while the company concludes the interview
+              //         session.
+              //       </p>
+              //       <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+              //         Kindly remain available
+              //       </p>
+              //     </div>
+              //   </div>
+              // </div>
+              <div className=" w-full h-lvh flex flex-col justify-center items-center">
+              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+                <div className=" w-full flex flex-col justify-center items-center mb-14">
+                  <div className=" w-full flex flex-col justify-center items-center">
+                    <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+                    <h1 className=" font-semibold text-3xl py-3">
+                    You have Successfully Completed Your Technical Evaluation
+                    </h1>
+                  </div>
+                </div>
+                <div className=" w-full flex flex-col justify-center items-center mb-16">
+                  <PuffLoader color="#ffffff" />
+                </div>
+                <div className=" w-full flex flex-col justify-center] items-center">
+                  <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+                  Please wait while the company concludes the interview
+                  session.
+                  </p>
+                  <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+                  Kindly remain available. Please hold on...
+                  </p>
+                </div>
+              </div>
+            </div>
             ) : (
               <div className=" w-full h-lvh flex flex-col justify-center items-center">
                 <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
@@ -1202,7 +1247,8 @@ const InterviewRoomPage = ({ params }) => {
             </div>
             <div className=" px-3">
               <div className=" bg-muted-foreground/20 text-white text-sm p-3 rounded-lg mt-4">
-              Your interviewer will guide you through the technical assessment and answer any questions you may have.
+                Your interviewer will guide you through the technical assessment
+                and answer any questions you may have.
               </div>
             </div>
           </div>
