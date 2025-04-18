@@ -43,6 +43,7 @@ import {
   Hourglass,
   AlertCircle,
   SaveAll,
+  CircleX,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -135,7 +136,12 @@ import {
 } from "@/lib/api/interview";
 import { deleteInterview } from "@/lib/api/interview";
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, redirect, useSearchParams } from "next/navigation";
+import {
+  usePathname,
+  useRouter,
+  redirect,
+  useSearchParams,
+} from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
 import InviteCandidateModal from "@/components/company/invite-candidate-modal";
 import { getInterviewCategoryCompanyById } from "@/lib/api/interview-category";
@@ -199,6 +205,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
+  addSuggestedOrOriginalQuestionForInterview,
   createQuestionForInterview,
   deleteInterviewQuestion,
   updateInterviewQuestion,
@@ -254,6 +261,8 @@ export default function InterviewPreviewPage({ params }) {
   const [interviewOverview, setInterviewOverview] = useState({});
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createTechnicalSkillModalOpen, setCreateTechnicalSkillModalOpen] =
+    useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
   const [interviewCategories, setInterviewCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
@@ -296,6 +305,7 @@ export default function InterviewPreviewPage({ params }) {
   const [todayCandidates, setTodayCandidates] = useState(0);
   const [isAddTimeSlotDialogOpen, setIsAddTimeSlotDialogOpen] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
+  const [addQuestionLoading, setAddQuestionLoading] = useState(false);
   // useEffect(() => {
   //   console.log('interviewIddddd',)
   // }, [interviewId])
@@ -362,9 +372,16 @@ export default function InterviewPreviewPage({ params }) {
     percentage: 0,
     subcategories: [],
   });
+  const [newTechnicalSubSkill, setNewTechnicalSubSkill] = useState({
+    name: "",
+    description: "",
+    percentage: 0,
+    subcategories: [],
+  });
   const [isSoftSkillPromptOpen, setIsSoftSkillPromptOpen] = useState(false);
   const [softSkillPrompt, setSoftSkillPrompt] = useState("");
   const [editingSoftSkill, setEditingSoftSkill] = useState(null);
+  const [editingTechnicalSkill, setEditingTechnicalSkill] = useState(null);
   const [isGeneratingSchedule, setIsGeneratingSchedule] = useState(false);
 
   // Add new state for subcategory management
@@ -385,6 +402,8 @@ export default function InterviewPreviewPage({ params }) {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState({});
   const [isAddingSoftSkill, setIsAddingSoftSkill] = useState(false);
+  const [isAddingTechnicalSubSkill, setIsAddingTechnicalSubSkill] =
+    useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [softSkillsLoading, setSoftSkillsLoading] = useState(false);
   const [newQuestion, setNewQuestion] = useState("");
@@ -393,6 +412,7 @@ export default function InterviewPreviewPage({ params }) {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [isQuestionPromptOpen, setIsQuestionPromptOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState(null);
   const [questionGenerationLoading, setQuestionGenerationLoading] =
     useState(false);
   const [questions, setQuestions] = useState([
@@ -416,19 +436,200 @@ export default function InterviewPreviewPage({ params }) {
   });
   const dashboardRef = useRef();
 
-
   const searchParams = useSearchParams();
 
   // Get initial tab from query param or default to 'overview'
   const [activeTab, setActiveTab] = useState("overview");
   const tabParam = searchParams.get("tab");
+  const [technicalSubCategories, setTechnicalSubCategories] = useState([
+    {
+      id: "cm9av0nn3000gu78okiruw8gj",
+      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
+      name: "Frontend Development",
+      color: "#EF2A2C",
+      percentage: 25,
+      createdAt: "2025-04-10T04:30:11.630Z",
+      updatedAt: "2025-04-10T04:30:11.630Z",
+      subCategoryParameters: [
+        {
+          id: "cm9av0nn3000hu78oxf0prr4s",
+          name: "React.js",
+          subAssignmentId: "cm9av0nn3000gu78okiruw8gj",
+          percentage: 40,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn3000iu78objcfg62k",
+          name: "Next.js",
+          subAssignmentId: "cm9av0nn3000gu78okiruw8gj",
+          percentage: 35,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn3000ju78oa0lj03wk",
+          name: "Tailwind CSS",
+          subAssignmentId: "cm9av0nn3000gu78okiruw8gj",
+          percentage: 25,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+      ],
+    },
+    {
+      id: "cm9av0nn3000ku78o2c8juhnk",
+      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
+      name: "Backend Development",
+      color: "#A7DEEB",
+      percentage: 30,
+      createdAt: "2025-04-10T04:30:11.630Z",
+      updatedAt: "2025-04-10T04:30:11.630Z",
+      subCategoryParameters: [
+        {
+          id: "cm9av0nn4000lu78oucqye86l",
+          name: "Node.js",
+          subAssignmentId: "cm9av0nn3000ku78o2c8juhnk",
+          percentage: 45,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000mu78oz2nzmzgj",
+          name: "Express.js",
+          subAssignmentId: "cm9av0nn3000ku78o2c8juhnk",
+          percentage: 35,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000nu78ozu0qsccy",
+          name: "MongoDB",
+          subAssignmentId: "cm9av0nn3000ku78o2c8juhnk",
+          percentage: 20,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+      ],
+    },
+    {
+      id: "cm9av0nn4000ou78ocfytikr6",
+      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
+      name: "Mobile Development",
+      color: "#8E4894",
+      percentage: 20,
+      createdAt: "2025-04-10T04:30:11.630Z",
+      updatedAt: "2025-04-10T04:30:11.630Z",
+      subCategoryParameters: [
+        {
+          id: "cm9av0nn4000pu78oc8g8c9h1",
+          name: "React Native",
+          subAssignmentId: "cm9av0nn4000ou78ocfytikr6",
+          percentage: 50,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000qu78ocq3sv9dj",
+          name: "Expo",
+          subAssignmentId: "cm9av0nn4000ou78ocfytikr6",
+          percentage: 30,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000ru78oma001ukf",
+          name: "NativeWind",
+          subAssignmentId: "cm9av0nn4000ou78ocfytikr6",
+          percentage: 20,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+      ],
+    },
+    {
+      id: "cm9av0nn4000su78ofih5d1a2",
+      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
+      name: "DevOps & Tools",
+      color: "#9CBC8C",
+      percentage: 15,
+      createdAt: "2025-04-10T04:30:11.630Z",
+      updatedAt: "2025-04-10T04:30:11.630Z",
+      subCategoryParameters: [
+        {
+          id: "cm9av0nn4000tu78o5o6c1xij",
+          name: "Git & GitHub",
+          subAssignmentId: "cm9av0nn4000su78ofih5d1a2",
+          percentage: 60,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000uu78owmpwr9ku",
+          name: "CI/CD Basics",
+          subAssignmentId: "cm9av0nn4000su78ofih5d1a2",
+          percentage: 40,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+      ],
+    },
+    {
+      id: "cm9av0nn4000vu78o5ahf956g",
+      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
+      name: "Testing",
+      color: "#CBBC5B",
+      percentage: 10,
+      createdAt: "2025-04-10T04:30:11.630Z",
+      updatedAt: "2025-04-10T04:30:11.630Z",
+      subCategoryParameters: [
+        {
+          id: "cm9av0nn4000wu78ota2kx972",
+          name: "Unit Testing",
+          subAssignmentId: "cm9av0nn4000vu78o5ahf956g",
+          percentage: 50,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000xu78od7zwpmed",
+          name: "Integration Testing",
+          subAssignmentId: "cm9av0nn4000vu78o5ahf956g",
+          percentage: 30,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+        {
+          id: "cm9av0nn4000yu78ojn11i2k2",
+          name: "Jest",
+          subAssignmentId: "cm9av0nn4000vu78o5ahf956g",
+          percentage: 20,
+          description: null,
+          createdAt: "2025-04-10T04:30:11.630Z",
+          updatedAt: "2025-04-10T04:30:11.630Z",
+        },
+      ],
+    },
+  ]);
 
   useEffect(() => {
     if (tabParam) {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
-
 
   useEffect(() => {
     const fetchInterviewCategories = async () => {
@@ -678,7 +879,7 @@ export default function InterviewPreviewPage({ params }) {
     setTitle(interviewDetail.jobTitle);
     setInterviewCategory(interviewDetail.interviewCategory);
     setQuestionList(interviewDetail?.questions);
-    setUseQuestionnaire(interviewDetail?.flexibleAssignment); 
+    setUseQuestionnaire(interviewDetail?.flexibleAssignment);
     // setTechnicalPercentage(interviewDetail?.technicalPercentage);
     // setSoftSkillsPercentage(interviewDetail?.softSkillPercentage);
     if (interviewDetail?.requiredSkills) {
@@ -686,7 +887,12 @@ export default function InterviewPreviewPage({ params }) {
     } else {
       setSkills([]);
     }
-  }, [interviewDetail, createModalOpen, editingQuestion, editingQuestionDetails]);
+  }, [
+    interviewDetail,
+    createModalOpen,
+    editingQuestion,
+    editingQuestionDetails,
+  ]);
 
   useEffect(() => {
     const fetchOverviewData = async () => {
@@ -723,8 +929,6 @@ export default function InterviewPreviewPage({ params }) {
   }, [interviewId]);
 
   useEffect(() => {
-
-
     const fetchInterviewTimeSlots = async () => {
       try {
         // const session = await getSession();
@@ -835,7 +1039,7 @@ export default function InterviewPreviewPage({ params }) {
             label: "Sessions",
             data: [
               interviewStatusDetails.totalSchedules -
-              interviewStatusDetails.completedSchedules,
+                interviewStatusDetails.completedSchedules,
               interviewStatusDetails.completedSchedules,
             ],
             backgroundColor: [
@@ -1174,10 +1378,12 @@ export default function InterviewPreviewPage({ params }) {
           companyId: interviewDetail.companyID,
         });
         toast({
-          title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
-            } Successfully!`,
-          description: `The interview has been ${status === "ACTIVE" ? "published" : "unpublished"
-            } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
+          title: `Interview ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } Successfully!`,
+          description: `The interview has been ${
+            status === "ACTIVE" ? "published" : "unpublished"
+          } and is now ${status === "ACTIVE" ? "available" : "not available"}.`,
           action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
         });
       }
@@ -1657,7 +1863,52 @@ export default function InterviewPreviewPage({ params }) {
     );
   };
 
+  const handleTechnicalSkillPercentageChange = (skillId, newPercentage) => {
+    // Get the current skill
+    const currentSkill = technicalSubCategories?.find((s) => s.id === skillId);
+    if (!currentSkill) return;
+
+    const oldPercentage = currentSkill.percentage;
+    const percentageDiff = newPercentage - oldPercentage;
+
+    // If there's only one skill, it should always be 100%
+    if (technicalSubCategories.length === 1) {
+      setTechnicalSubCategories([
+        { ...technicalSubCategories[0], percentage: 100 },
+      ]);
+      return;
+    }
+
+    // Calculate how much to adjust other skills
+    const otherSkills = technicalSubCategories.filter((s) => s.id !== skillId);
+    const totalOtherPercentage = otherSkills.reduce(
+      (sum, s) => sum + s.percentage,
+      0
+    );
+
+    if (totalOtherPercentage <= 0) return;
+
+    // Proportionally adjust other skills
+    const adjustmentFactor = percentageDiff / totalOtherPercentage;
+
+    setTechnicalSubCategories(
+      technicalSubCategories.map((skill) => {
+        if (skill.id === skillId) {
+          return { ...skill, percentage: newPercentage };
+        } else {
+          // Ensure no skill goes below 5%
+          const adjustedPercentage = Math.max(
+            5,
+            skill.percentage - skill.percentage * adjustmentFactor
+          );
+          return { ...skill, percentage: adjustedPercentage };
+        }
+      })
+    );
+  };
+
   const handleAddQuestion = async () => {
+    setAddQuestionLoading(true);
     try {
       const questionDataforInterview = {
         question: newQuestion,
@@ -1671,10 +1922,11 @@ export default function InterviewPreviewPage({ params }) {
       // }
 
       if (response) {
-        setNewQuestion("");
-        setNewQuestionTimeDuration(0);
-        setNewQuestionType("OPEN_ENDED");
-        setCreateModalOpen(false);
+        // setNewQuestion("");
+        // setNewQuestionTimeDuration(0);
+        // setNewQuestionType("OPEN_ENDED");
+        // setCreateModalOpen(false);
+        setSuggestions(response.data);
       }
     } catch (err) {
       if (err.response) {
@@ -1705,10 +1957,11 @@ export default function InterviewPreviewPage({ params }) {
         });
       }
     } finally {
-      setNewQuestion("");
-      setNewQuestionTimeDuration(0);
-      setNewQuestionType("OPEN_ENDED");
-      setCreateModalOpen(false);
+      setAddQuestionLoading(false);
+      // setNewQuestion("");
+      // setNewQuestionTimeDuration(0);
+      // setNewQuestionType("OPEN_ENDED");
+      // setCreateModalOpen(false);
     }
   };
 
@@ -1895,6 +2148,41 @@ export default function InterviewPreviewPage({ params }) {
     );
   };
 
+  const handleEditTechnicalSkill = (id, name, description) => {
+    setTechnicalSubCategories(
+      technicalSubCategories.map((s) =>
+        s.id === id ? { ...s, name, description } : s
+      )
+    );
+  };
+
+  const handleDeleteTechnicalSkill = (id) => {
+    const skillToDelete = technicalSubCategories?.find((s) => s.id === id);
+    if (!skillToDelete) return;
+
+    const remainingSkills = technicalSubCategories?.filter((s) => s.id !== id);
+
+    // Redistribute the deleted skill's percentage among remaining skills
+    if (remainingSkills.length > 0) {
+      const percentageToDistribute = skillToDelete.percentage;
+      const totalRemainingPercentage = remainingSkills.reduce(
+        (sum, s) => sum + s.percentage,
+        0
+      );
+
+      const updatedSkills = remainingSkills.map((skill) => {
+        const proportion = skill.percentage / totalRemainingPercentage;
+        const newPercentage =
+          skill.percentage + percentageToDistribute * proportion;
+        return { ...skill, percentage: newPercentage };
+      });
+
+      setTechnicalSubCategories(updatedSkills);
+    } else {
+      setTechnicalSubCategories([]);
+    }
+  };
+
   const handleDeleteSoftSkill = (id) => {
     const skillToDelete = softSkills?.find((s) => s.id === id);
     if (!skillToDelete) return;
@@ -1950,6 +2238,247 @@ export default function InterviewPreviewPage({ params }) {
     params.set("tab", value);
 
     router.replace(`?${params.toString()}`);
+  };
+
+  const handleAcceptAddQuestionSuggestions = async (e) => {
+    e.preventDefault();
+    try {
+      const acceptSuggestionsData = {
+        interviewId: interviewId,
+        useSuggested: true,
+        originalQuestion: suggestions.originalQuestion,
+        suggestedQuestion: suggestions.suggestedQuestion,
+      };
+
+      const response = await addSuggestedOrOriginalQuestionForInterview(
+        acceptSuggestionsData
+      );
+
+      if (response) {
+        setCreateModalOpen(false);
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Question create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setNewQuestion("");
+      setNewQuestionTimeDuration(0);
+      setNewQuestionType("OPEN_ENDED");
+      setCreateModalOpen(false);
+      setSuggestions(null);
+    }
+  };
+
+  const handleIgnoreSuggestions = async (e) => {
+    e.preventDefault();
+
+    try {
+      const ignoreSuggestionsData = {
+        interviewId: interviewId,
+        useSuggested: false,
+        originalQuestion: suggestions.originalQuestion,
+        // suggestedQuestion: suggestions.suggestedQuestion,
+      };
+
+      const response = await addSuggestedOrOriginalQuestionForInterview(
+        ignoreSuggestionsData
+      );
+
+      if (response) {
+        setCreateModalOpen(false);
+      }
+    } catch (err) {
+      if (err.response) {
+        const { data } = err.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Question create failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setNewQuestion("");
+      setNewQuestionTimeDuration(0);
+      setNewQuestionType("OPEN_ENDED");
+      setCreateModalOpen(false);
+      setSuggestions(null);
+    }
+  };
+
+  const handleAddSoftSkill = () => {
+    if (newSoftSkill.name.trim() && newSoftSkill.description.trim()) {
+      // Create default subcategories if none provided
+      const subcategories =
+        newSoftSkill.subcategories.length > 0
+          ? newSoftSkill.subcategories
+          : [
+              {
+                id: `sub${Date.now()}`,
+                name: "General Assessment",
+                description: "Overall evaluation of this quality",
+                percentage: 100,
+              },
+            ];
+
+      // Calculate default percentage for the new skill
+      let newSkillPercentage = newSoftSkill.percentage || 20; // Default to 20% for the new skill
+
+      // Adjust existing skills to make room for the new one
+      const totalExistingPercentage = softSkills.reduce(
+        (sum, skill) => sum + skill.percentage,
+        0
+      );
+      const adjustmentFactor =
+        (100 - newSkillPercentage) / totalExistingPercentage;
+
+      const updatedSkills = softSkills.map((skill) => {
+        const adjustedPercentage = Math.max(
+          5,
+          Math.round(skill.percentage * adjustmentFactor)
+        );
+        return { ...skill, percentage: adjustedPercentage };
+      });
+
+      // Ensure the total is exactly 100%
+      const totalAdjustedPercentage = updatedSkills.reduce(
+        (sum, skill) => sum + skill.percentage,
+        0
+      );
+      newSkillPercentage = 100 - totalAdjustedPercentage;
+
+      setSoftSkills([
+        ...updatedSkills,
+        {
+          id: `s${Date.now()}`,
+          name: newSoftSkill.name,
+          description: newSoftSkill.description,
+          expanded: false,
+          percentage: newSkillPercentage,
+          subcategories,
+        },
+      ]);
+
+      // Reset form
+      setNewSoftSkill({
+        name: "",
+        description: "",
+        percentage: 20,
+        subcategories: [],
+      });
+      setIsAddingSoftSkill(false);
+    }
+  };
+
+  const handleAddTechnicalSubSkill = () => {
+    if (
+      newTechnicalSubSkill.name.trim() &&
+      newTechnicalSubSkill.description.trim()
+    ) {
+      // Create default subcategories if none provided
+      const subcategories =
+        newTechnicalSubSkill.subcategories.length > 0
+          ? newTechnicalSubSkill.subcategories
+          : [
+              {
+                id: `sub${Date.now()}`,
+                name: "General Assessment",
+                description: "Overall evaluation of this quality",
+                percentage: 100,
+              },
+            ];
+
+      // Calculate default percentage for the new skill
+      let newSkillPercentage = newTechnicalSubSkill.percentage || 20; // Default to 20% for the new skill
+
+      // Adjust existing skills to make room for the new one
+      const totalExistingPercentage = technicalSubCategories.reduce(
+        (sum, skill) => sum + skill.percentage,
+        0
+      );
+      const adjustmentFactor =
+        (100 - newSkillPercentage) / totalExistingPercentage;
+
+      const updatedSkills = technicalSubCategories.map((skill) => {
+        const adjustedPercentage = Math.max(
+          5,
+          Math.round(skill.percentage * adjustmentFactor)
+        );
+        return { ...skill, percentage: adjustedPercentage };
+      });
+
+      // Ensure the total is exactly 100%
+      const totalAdjustedPercentage = updatedSkills.reduce(
+        (sum, skill) => sum + skill.percentage,
+        0
+      );
+      newSkillPercentage = 100 - totalAdjustedPercentage;
+
+      setTechnicalSubCategories([
+        ...updatedSkills,
+        {
+          id: `s${Date.now()}`,
+          name: newTechnicalSubSkill.name,
+          description: newTechnicalSubSkill.description,
+          expanded: false,
+          percentage: newSkillPercentage,
+          subcategories,
+        },
+      ]);
+
+      // Reset form
+      setNewTechnicalSubSkill({
+        name: "",
+        description: "",
+        percentage: 20,
+        subcategories: [],
+      });
+      setIsAddingTechnicalSubSkill(false);
+      setCreateTechnicalSkillModalOpen(false);
+    }
   };
 
   return (
@@ -2014,12 +2543,15 @@ export default function InterviewPreviewPage({ params }) {
                 size="sm"
                 className="flex items-center gap-1 dark:bg-yellow-700"
                 onClick={handleViewInvitaions}
-              >Send Invitation <ArrowUpRight className="h-4 w-4" /> </Button>
+              >
+                Send Invitation <ArrowUpRight className="h-4 w-4" />{" "}
+              </Button>
               {interviewDetail.status !== "ACTIVE" ? (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
-                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
                   >
                     <LuCircleCheckBig className="h-4 w-4" />
                     Publish
@@ -2050,8 +2582,9 @@ export default function InterviewPreviewPage({ params }) {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger
-                    className={` ${tab === "edit" || tab === "settings" ? "hidden" : "block"
-                      } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
+                    className={` ${
+                      tab === "edit" || tab === "settings" ? "hidden" : "block"
+                    } flex items-center gap-1 h-9 rounded-md text-sm px-3 bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90`}
                   >
                     <Trash2 className="h-4 w-4" />
                     Unpublish
@@ -2112,11 +2645,11 @@ export default function InterviewPreviewPage({ params }) {
                   {interviewSessions.filter(
                     (session) => session.interviewStatus === "ongoing"
                   ).length > 0 && (
-                      <div className=" relative flex items-center justify-center h-full w-2.5 ">
-                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                        <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                      </div>
-                    )}
+                    <div className=" relative flex items-center justify-center h-full w-2.5 ">
+                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                      <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                    </div>
+                  )}
                   Interview Sessions
                 </div>
               </TabsTrigger>
@@ -2442,10 +2975,11 @@ export default function InterviewPreviewPage({ params }) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card
-                    className={`overflow-hidden border-2 transition-all ${technicalPercentage >= 50
+                    className={`overflow-hidden border-2 transition-all ${
+                      technicalPercentage >= 50
                         ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
                         : "border-muted"
-                      }`}
+                    }`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
@@ -2504,12 +3038,14 @@ export default function InterviewPreviewPage({ params }) {
                                 fill="none"
                                 stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                                 strokeWidth="10"
-                                strokeDasharray={`${(2 * Math.PI * 45 * technicalPercentage) / 100
-                                  } ${2 *
+                                strokeDasharray={`${
+                                  (2 * Math.PI * 45 * technicalPercentage) / 100
+                                } ${
+                                  2 *
                                   Math.PI *
                                   45 *
                                   (1 - technicalPercentage / 100)
-                                  }`}
+                                }`}
                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                 transform="rotate(-90 50 50)"
                                 strokeLinecap="round"
@@ -2557,10 +3093,11 @@ export default function InterviewPreviewPage({ params }) {
                   </Card>
 
                   <Card
-                    className={`overflow-hidden border-2 transition-all ${softSkillsPercentage >= 50
+                    className={`overflow-hidden border-2 transition-all ${
+                      softSkillsPercentage >= 50
                         ? "!border-blue-500 !shadow-[0_0_2px_#3b82f6,0_0_4px_#3b82f6]"
                         : "border-muted"
-                      }`}
+                    }`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
@@ -2616,13 +3153,15 @@ export default function InterviewPreviewPage({ params }) {
                                 fill="none"
                                 stroke="hsl(var(--blue-500, 217 91.2% 59.8%))"
                                 strokeWidth="10"
-                                strokeDasharray={`${(2 * Math.PI * 45 * softSkillsPercentage) /
+                                strokeDasharray={`${
+                                  (2 * Math.PI * 45 * softSkillsPercentage) /
                                   100
-                                  } ${2 *
+                                } ${
+                                  2 *
                                   Math.PI *
                                   45 *
                                   (1 - softSkillsPercentage / 100)
-                                  }`}
+                                }`}
                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                 transform="rotate(-90 50 50)"
                                 strokeLinecap="round"
@@ -2679,16 +3218,18 @@ export default function InterviewPreviewPage({ params }) {
                   </Badge>
                 </div>
 
-                {editDetails && (<div className="flex items-center space-x-2">
-                  <Switch
-                    id="use-questionnaire"
-                    checked={useQuestionnaire}
-                    onCheckedChange={setUseQuestionnaire}
-                  />
-                  <Label htmlFor="use-questionnaire">
-                    Use questionnaire for assessment
-                  </Label>
-                </div>)}
+                {editDetails && (
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="use-questionnaire"
+                      checked={useQuestionnaire}
+                      onCheckedChange={setUseQuestionnaire}
+                    />
+                    <Label htmlFor="use-questionnaire">
+                      Use questionnaire for assessment
+                    </Label>
+                  </div>
+                )}
 
                 {useQuestionnaire ? (
                   <div className="space-y-4">
@@ -2830,6 +3371,109 @@ export default function InterviewPreviewPage({ params }) {
                             </DropdownMenu>
                           </div>
                         </div>
+                        {suggestions && (
+                          <Card className="border !border-blue-500/50 !bg-transparent">
+                            <CardContent className="p-4 space-y-4">
+                              <div className="flex items-center space-x-2">
+                                <Sparkles className="h-5 w-5 text-blue-500" />
+                                <h3 className="text-lg font-medium">
+                                  AI Suggestions
+                                </h3>
+                              </div>
+
+                              <p className=" text-muted-foreground text-sm">
+                                {suggestions?.message}
+                              </p>
+
+                              <div className="space-y-2">
+                                <div>
+                                  <h4 className="font-medium">
+                                    Recommended question
+                                  </h4>
+                                  <div className=" text-muted-foreground text-sm flex items-start justify-start mt-2">
+                                    <Plus className="h-4 w-4 text-green-500 flex-shrink-0 mt-1 inline-block mr-2" />
+                                    {suggestions?.suggestedQuestion?.question}
+                                  </div>
+                                  <div className=" mt-2 ml-6">
+                                    <Badge
+                                      variant="outline"
+                                      className="!text-blue-500 !font-bold"
+                                    >
+                                      {suggestions?.suggestedQuestion?.type
+                                        .toLowerCase()
+                                        .split("-")
+                                        .map(
+                                          (word) =>
+                                            word.charAt(0).toUpperCase() +
+                                            word.slice(1)
+                                        )
+                                        .join(" ")}
+                                    </Badge>
+                                    <Badge
+                                      variant="outline"
+                                      className="!text-blue-500 !font-bold ml-2"
+                                    >
+                                      {
+                                        suggestions?.suggestedQuestion
+                                          ?.estimatedTime
+                                      }
+                                    </Badge>
+                                  </div>
+                                </div>
+                                <div className=" pt-3">
+                                  <h4 className="font-medium">
+                                    OriginalQuestion question
+                                  </h4>
+                                  <div className=" text-muted-foreground text-sm flex items-start justify-start mt-2">
+                                    <CircleX className="h-4 w-4 text-red-500 flex-shrink-0 mt-1 inline-block mr-2" />
+                                    {suggestions?.originalQuestion?.question}
+                                  </div>
+                                  <div className=" mt-2 ml-6">
+                                    <Badge
+                                      variant="outline"
+                                      className="!text-blue-500 !font-bold"
+                                    >
+                                      {suggestions?.originalQuestion?.type
+                                        .toLowerCase()
+                                        .split("_")
+                                        .map(
+                                          (word) =>
+                                            word.charAt(0).toUpperCase() +
+                                            word.slice(1)
+                                        )
+                                        .join(" ")}
+                                    </Badge>
+                                    <Badge
+                                      variant="outline"
+                                      className="!text-blue-500 !font-bold ml-2"
+                                    >
+                                      {
+                                        suggestions?.originalQuestion
+                                          ?.estimatedTime
+                                      }
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex justify-end space-x-3 pt-2">
+                                <Button
+                                  variant="outline"
+                                  onClick={handleIgnoreSuggestions}
+                                >
+                                  Ignore & Add My Question
+                                </Button>
+                                <Button
+                                  type="button"
+                                  onClick={handleAcceptAddQuestionSuggestions}
+                                  className="bg-blue-600 hover:bg-blue-700"
+                                >
+                                  <Check className="h-4 w-4 mr-2" />
+                                  Apply Suggestions
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
                         <div className="flex justify-end space-x-2 mt-5">
                           <Button
                             variant="outline"
@@ -2837,12 +3481,19 @@ export default function InterviewPreviewPage({ params }) {
                           >
                             Cancel
                           </Button>
-                          <Button
-                            onClick={handleAddQuestion}
-                            className="bg-blue-600 hover:bg-blue-700"
-                          >
-                            Add Question
-                          </Button>
+                          {!suggestions && (
+                            <Button
+                              onClick={handleAddQuestion}
+                              className="bg-blue-600 hover:bg-blue-700"
+                              disabled={addQuestionLoading}
+                            >
+                              {addQuestionLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <span>Add Question</span>
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </div>
                     )}
@@ -2855,7 +3506,7 @@ export default function InterviewPreviewPage({ params }) {
                         >
                           <CardContent className="p-4">
                             {editingQuestion ===
-                              question.interviewQuestionID ? (
+                            question.interviewQuestionID ? (
                               <div className="space-y-3">
                                 <Label htmlFor="question-text">Question</Label>
                                 <Textarea
@@ -2995,7 +3646,8 @@ export default function InterviewPreviewPage({ params }) {
                                       </TooltipTrigger>
                                       <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
                                         <p className=" w-[500px] text-gray-300 ">
-                                          {question.explanation || "No explanation"}
+                                          {question.explanation ||
+                                            "No explanation"}
                                         </p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -3052,23 +3704,458 @@ export default function InterviewPreviewPage({ params }) {
                     </div>
                   </div>
                 ) : (
-                  // <Alert>
-                  //   <AlertCircleIcon className="h-4 w-4" />
-                  //   <AlertTitle>Flexible Assessment</AlertTitle>
-                  //   <AlertDescription>
-                  //     You can generate technical test questions once the
-                  //     interview session has been created.
-                  //   </AlertDescription>
-                  // </Alert>
-                  <Alert>
-                    <AlertCircleIcon className="h-4 w-4" />
-                    <AlertTitle>Manual Assessment</AlertTitle>
-                    <AlertDescription>
-                      You&apos;ve chosen to assess technical expertise manually
-                      during the interview. Prepare your own questions and
-                      evaluation criteria based on the candidate&apos;s field.
-                    </AlertDescription>
-                  </Alert>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium">Qualities to Technical Assess</h3>
+                      <div className="flex space-x-2">
+                        {/* {!isQuestionPromptOpen && ( */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsQuestionPromptOpen(true)}
+                          className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                        >
+                          <Sparkles className="h-4 w-4" />
+                          <span>Generate with AI</span>
+                        </Button>
+                        {/* )} */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCreateTechnicalSkillModalOpen(true)}
+                          className="flex items-center gap-1"
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span>Add Technical Skill</span>
+                        </Button>
+                      </div>
+                    </div>
+                    <Alert>
+                      <AlertCircleIcon className="h-4 w-4" />
+                      <AlertTitle>Manual Assessment</AlertTitle>
+                      <AlertDescription>
+                        You&apos;ve chosen to assess technical expertise
+                        manually during the interview. Prepare your own
+                        questions and evaluation criteria based on the
+                        candidate&apos;s field.
+                      </AlertDescription>
+                    </Alert>
+                    {createTechnicalSkillModalOpen && (
+                      <Card className="overflow-hidden border border-blue-500/20">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center mb-3">
+                            <h4 className="font-medium">Add New Quality</h4>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setIsAddingTechnicalSubSkill(false);
+                                setNewTechnicalSubSkill({
+                                  name: "",
+                                  description: "",
+                                  percentage: 20,
+                                  subcategories: [],
+                                });
+                                setCreateTechnicalSkillModalOpen(false);
+                              }}
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="space-y-2">
+                              <Label htmlFor="new-skill-name">
+                                Quality Name
+                              </Label>
+                              <Input
+                                id="new-skill-name"
+                                value={newTechnicalSubSkill.name}
+                                onChange={(e) =>
+                                  setNewTechnicalSubSkill({
+                                    ...newTechnicalSubSkill,
+                                    name: e.target.value,
+                                  })
+                                }
+                                placeholder="e.g. Critical Thinking"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="new-skill-description">
+                                Description
+                              </Label>
+                              <Textarea
+                                id="new-skill-description"
+                                value={newTechnicalSubSkill.description}
+                                onChange={(e) =>
+                                  setNewTechnicalSubSkill({
+                                    ...newTechnicalSubSkill,
+                                    description: e.target.value,
+                                  })
+                                }
+                                placeholder="Describe what you're looking for in this quality"
+                                className="min-h-[80px]"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <Label htmlFor="new-skill-percentage">
+                                  Weight
+                                </Label>
+                                <Badge className="!bg-blue-500/20 !text-blue-600 px-4 py-1 border !border-blue-600">
+                                  {newTechnicalSubSkill.percentage}%
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    setNewTechnicalSubSkill({
+                                      ...newTechnicalSubSkill,
+                                      percentage: Math.max(
+                                        5,
+                                        newTechnicalSubSkill.percentage - 5
+                                      ),
+                                    })
+                                  }
+                                  className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                                  disabled={
+                                    newTechnicalSubSkill.percentage <= 5
+                                  }
+                                >
+                                  <span className="sr-only">Decrease</span>-
+                                </Button>
+                                <div className="w-full bg-muted/30 h-1.5 rounded-full overflow-hidden">
+                                  <div
+                                    className="bg-blue-500 h-full rounded-full"
+                                    style={{
+                                      width: `${newTechnicalSubSkill.percentage}%`,
+                                    }}
+                                  ></div>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    setNewTechnicalSubSkill({
+                                      ...newTechnicalSubSkill,
+                                      percentage: Math.min(
+                                        95,
+                                        newTechnicalSubSkill.percentage + 5
+                                      ),
+                                    })
+                                  }
+                                  className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                                  disabled={
+                                    newTechnicalSubSkill.percentage >= 95
+                                  }
+                                >
+                                  <span className="sr-only">Increase</span>+
+                                </Button>
+                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                Other qualities will be adjusted automatically
+                                to maintain 100% total
+                              </p>
+                            </div>
+
+                            <div className="flex justify-end space-x-2 mt-4">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                  setIsAddingTechnicalSubSkill(false);
+                                  setNewTechnicalSubSkill({
+                                    name: "",
+                                    description: "",
+                                    percentage: 20,
+                                    subcategories: [],
+                                  });
+                                  setCreateTechnicalSkillModalOpen(false);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type="button"
+                                onClick={handleAddTechnicalSubSkill}
+                                className="bg-blue-600 hover:bg-blue-700"
+                                disabled={
+                                  !newTechnicalSubSkill.name.trim() ||
+                                  !newTechnicalSubSkill.description.trim()
+                                }
+                              >
+                                Add Quality
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                    <div className="space-y-3">
+                      {technicalSubCategories.map((skill) => (
+                        <Card key={skill.id} className="overflow-hidden">
+                          <CardContent className="p-4">
+                            {editingTechnicalSkill === skill.id ? (
+                              <div className="space-y-3">
+                                <div className="space-y-2">
+                                  <Label htmlFor={`edit-name-${skill.id}`}>
+                                    Quality Name
+                                  </Label>
+                                  <Input
+                                    id={`edit-name-${skill.id}`}
+                                    value={skill.name}
+                                    onChange={(e) =>
+                                      handleEditTechnicalSkill(
+                                        skill.id,
+                                        e.target.value,
+                                        skill.description
+                                      )
+                                    }
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label htmlFor={`edit-desc-${skill.id}`}>
+                                    Description
+                                  </Label>
+                                  <Textarea
+                                    id={`edit-desc-${skill.id}`}
+                                    value={skill.description}
+                                    onChange={(e) =>
+                                      handleEditTechnicalSkill(
+                                        skill.id,
+                                        skill.name,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="min-h-[80px]"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <div className="flex items-center justify-between">
+                                    <Label
+                                      htmlFor={`edit-percentage-${skill.id}`}
+                                    >
+                                      Percentage of Soft Skills
+                                    </Label>
+                                    <Badge
+                                      variant="outline"
+                                      className="!bg-blue-500/20 !text-blue-600 px-4 py-1 border !border-blue-600"
+                                    >
+                                      {Math.round(skill.percentage)}%
+                                    </Badge>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleTechnicalSkillPercentageChange(
+                                          skill.id,
+                                          Math.max(5, skill.percentage - 5)
+                                        )
+                                      }
+                                      className="h-8 w-8 p-0"
+                                      disabled={skill.percentage <= 5}
+                                    >
+                                      -
+                                    </Button>
+                                    <Input
+                                      id={`edit-percentage-${skill.id}`}
+                                      type="number"
+                                      min="5"
+                                      max="95"
+                                      value={Math.round(skill.percentage)}
+                                      onChange={() =>
+                                        handleTechnicalSkillPercentageChange(
+                                          skill.id,
+                                          Math.min(
+                                            95,
+                                            Math.max(
+                                              5,
+                                              Number.parseInt(e.target.value) ||
+                                                5
+                                            )
+                                          )
+                                        )
+                                      }
+                                      className="w-16 text-center"
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={(e) =>
+                                        handleTechnicalSkillPercentageChange(
+                                          skill.id,
+                                          Math.min(95, skill.percentage + 5)
+                                        )
+                                      }
+                                      className="h-8 w-8 p-0"
+                                      disabled={skill.percentage >= 95}
+                                    >
+                                      +
+                                    </Button>
+                                  </div>
+                                  <div className="w-full bg-muted/30 h-1.5 rounded-full overflow-hidden">
+                                    <div
+                                      className="bg-blue-500/40 h-full rounded-full"
+                                      style={{
+                                        width: `${skill.percentage}%`,
+                                      }}
+                                    ></div>
+                                  </div>
+                                </div>
+                                <div className="flex justify-end space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                      setEditingTechnicalSkill(null)
+                                    }
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    className="bg-blue-600 hover:bg-blue-700"
+                                    onClick={() =>
+                                      setEditingTechnicalSkill(null)
+                                    }
+                                  >
+                                    Save
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div>
+                                <div className="flex justify-between items-start">
+                                  <div className="flex-1">
+                                    <div className="flex items-center">
+                                      <h4 className="font-medium">
+                                        {skill.name}
+                                      </h4>
+                                      <Badge
+                                        variant="outline"
+                                        className="ml-2 !bg-blue-500/20 !text-blue-600 px-2 py-[1px] border !border-blue-600 !text-[12px]"
+                                      >
+                                        {Math.round(skill.percentage)}%
+                                      </Badge>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                      {skill.description}
+                                    </p>
+
+                                    {/* Add percentage slider for each skill */}
+                                    <div className="mt-2">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-xs text-muted-foreground">
+                                          Weight:
+                                        </span>
+                                        <div className="flex items-center gap-1">
+                                          <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleTechnicalSkillPercentageChange(
+                                                skill.id,
+                                                Math.max(
+                                                  5,
+                                                  skill.percentage - 5
+                                                )
+                                              )
+                                            }
+                                            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                                            disabled={skill.percentage <= 5}
+                                          >
+                                            <span className="sr-only">
+                                              Decrease
+                                            </span>
+                                            -
+                                          </Button>
+                                          <span className="text-xs font-medium w-8 text-center">
+                                            {Math.round(skill.percentage)}%
+                                          </span>
+                                          <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleTechnicalSkillPercentageChange(
+                                                skill.id,
+                                                Math.min(
+                                                  95,
+                                                  skill.percentage + 5
+                                                )
+                                              )
+                                            }
+                                            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                                            disabled={skill.percentage >= 95}
+                                          >
+                                            <span className="sr-only">
+                                              Increase
+                                            </span>
+                                            +
+                                          </Button>
+                                        </div>
+                                      </div>
+                                      <div className="w-full bg-muted/90 h-1 mt-1 rounded-full overflow-hidden">
+                                        <div
+                                          className="bg-white/50 h-full rounded-full"
+                                          style={{
+                                            width: `${skill.percentage}%`,
+                                          }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="flex space-x-1 ml-4">
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() =>
+                                        setEditingTechnicalSkill(skill.id)
+                                      }
+                                      className="h-8 w-8"
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                      <span className="sr-only">Edit</span>
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() =>
+                                        handleDeleteTechnicalSkill(skill.id)
+                                      }
+                                      className="h-8 w-8 text-destructive hover:text-destructive/90"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                      <span className="sr-only">Delete</span>
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+
+                      {technicalSubCategories.length === 0 && (
+                        <div className="text-center p-4 border border-dashed rounded-md">
+                          <p className="text-muted-foreground">
+                            No technical skills added yet. Add technical skills
+                            or generate with AI.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -3720,9 +4807,9 @@ export default function InterviewPreviewPage({ params }) {
                                         className="border border-gray-500/40 rounded-md p-3 bg-muted/10"
                                       >
                                         {editingSubcategory &&
-                                          editingSubcategory.skillId ===
+                                        editingSubcategory.skillId ===
                                           skill.id &&
-                                          editingSubcategory.subcategoryId ===
+                                        editingSubcategory.subcategoryId ===
                                           subcategory.id ? (
                                           <div className="space-y-3">
                                             <div className="space-y-2">
@@ -3795,7 +4882,7 @@ export default function InterviewPreviewPage({ params }) {
                                                       Math.max(
                                                         1,
                                                         subcategory.percentage -
-                                                        5
+                                                          5
                                                       )
                                                     );
                                                   }}
@@ -3842,7 +4929,7 @@ export default function InterviewPreviewPage({ params }) {
                                                       Math.min(
                                                         100,
                                                         subcategory.percentage +
-                                                        5
+                                                          5
                                                       )
                                                     )
                                                   }
@@ -4461,14 +5548,15 @@ export default function InterviewPreviewPage({ params }) {
                             const sessionDate = new Date(session.scheduledDate);
                             return (
                               sessionDate.getFullYear() ===
-                              today.getFullYear() &&
+                                today.getFullYear() &&
                               sessionDate.getMonth() === today.getMonth() &&
                               sessionDate.getDate() === today.getDate()
                             );
                           }
                         );
-                        return `${todaySessions.length} session${todaySessions.length === 1 ? "" : "s"
-                          } scheduled for today`;
+                        return `${todaySessions.length} session${
+                          todaySessions.length === 1 ? "" : "s"
+                        } scheduled for today`;
                       })()}
                     </CardDescription>
                   </CardHeader>
@@ -4529,12 +5617,12 @@ export default function InterviewPreviewPage({ params }) {
                                           className={cn(
                                             "!bg-blue-600 hover:bg-blue-100 !text-blue-950",
                                             session.interviewStatus ===
-                                            "ongoing" && "!bg-blue-600",
+                                              "ongoing" && "!bg-blue-600",
                                             session.interviewStatus ===
-                                            "toBeConducted" &&
-                                            "!bg-orange-600",
+                                              "toBeConducted" &&
+                                              "!bg-orange-600",
                                             session.interviewStatus ===
-                                            "completed" && "!bg-green-600"
+                                              "completed" && "!bg-green-600"
                                           )}
                                         >
                                           <div className="flex items-center gap-1">
@@ -4680,7 +5768,7 @@ export default function InterviewPreviewPage({ params }) {
               <>
                 <Card
                   className="border-blue-500/20 overflow-hidden"
-                //  onClick={() => setInviteModalOpen(true)}
+                  //  onClick={() => setInviteModalOpen(true)}
                 >
                   <CardHeader className="bg-blue-500/5 border-b border-blue-500/20 pb-4">
                     <div className="flex justify-between items-center">
