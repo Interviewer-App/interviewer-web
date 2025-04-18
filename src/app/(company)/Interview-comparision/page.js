@@ -420,9 +420,9 @@ const InterviewComparision = () => {
                       <SelectContent className="bg-gray-800 border-gray-700">
                         <SelectGroup>
                           <SelectLabel className="text-gray-400">Candidates</SelectLabel>
-                          {candidates?.map((candidate) => (
+                          {candidates?.filter((candidate) => candidate.candidate.user.email != secondCandidateName).map((candidate) => (
                             <SelectItem key={candidate.sessionId} value={candidate.candidate.user.email} className="text-gray-200">
-                              ({candidate.candidate.user.email})
+                              {candidate.candidate.user.email}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -447,9 +447,9 @@ const InterviewComparision = () => {
                       <SelectContent className="bg-gray-800 border-gray-700">
                         <SelectGroup>
                           <SelectLabel className="text-gray-400">Candidates</SelectLabel>
-                          {candidates?.map((candidate) => (
+                          {candidates?.filter((candidate) => candidate.candidate.user.email != firstCandidateName).map((candidate) => (
                             <SelectItem key={candidate.sessionId} value={candidate.candidate.user.email} className="text-gray-200">
-                              ({candidate.candidate.user.email})
+                              {candidate.candidate.user.email}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -537,15 +537,24 @@ const InterviewComparision = () => {
 
 
             {!isLoading && isComparePressed && (
-            <div className="animate-fade-in">
+              
+            <div className="animate-fade-in"> 
+             <div className="flex items-center justify-between my-8 ">
+                  <h1 className="text-3xl font-semibold">
+                    Compare Between Candidates
+                  </h1>
+                </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
                 <CandidateProfileCard 
                   candidate={comparisonResult} 
-                  colorTheme="indigo" 
+                  colorTheme="indigo"
+                  candidateNumber="c1"
                 />
                 <CandidateProfileCard 
                   candidate={comparisonResult} 
                   colorTheme="purple" 
+                  candidateNumber="c2"
                 />
               </div>
               
@@ -555,12 +564,12 @@ const InterviewComparision = () => {
 
             {isComparePressed && (
               <>
-                <div className="flex items-center justify-between mt-8 ">
+                {/* <div className="flex items-center justify-between mt-8 ">
                   <h1 className="text-3xl font-semibold">
                     Compare Between Candidates
                   </h1>
-                </div>
-                <div className="flex justify-between mt-8 md:flex-row flex-col gap-8">
+                </div> */}
+                {/* <div className="flex justify-between mt-8 md:flex-row flex-col gap-8">
                   <div className="bg-blue-700/10 border-2 border-blue-900  p-8 md:w-1/2 w-full rounded-lg">
                     <h2 className="text-2xl font-bold mb-4 text-blue-500">
                       First Candidate
@@ -579,12 +588,7 @@ const InterviewComparision = () => {
                             {comparisonResult.overall.score.c1.toFixed(2)}%
                           </span>
                         </div>
-                        {/* <div>
-                          <strong>Time Spent:</strong>{" "}
-                          <span className=" text-gray-500">
-                            {comparisonResult.overall.time.c1} mins
-                          </span>
-                        </div> */}
+
                       </div>
                     )}
 
@@ -641,12 +645,7 @@ const InterviewComparision = () => {
                             {comparisonResult.overall.score.c2.toFixed(2) || 0}%
                           </span>
                         </div>
-                        {/* <div>
-                          <strong>Time Spent:</strong>{" "}
-                          <span className=" text-gray-500">
-                            {comparisonResult.overall.time.c2 || 0} mins
-                          </span>
-                        </div> */}
+
                       </div>
                     )}
 
@@ -667,9 +666,7 @@ const InterviewComparision = () => {
                       )}
                     </div>
 
-                    {/* Display weaknesses for the first candidate */}
 
-                    {/* Display weaknesses for the second candidate */}
                     <div className="mt-4">
                       <h3 className="font-semibold text-xl">Weaknesses</h3>
                       {comparisonResult?.strengths?.c2?.weaknesses ? (
@@ -687,7 +684,7 @@ const InterviewComparision = () => {
                       )}
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                       
                   <h2 className="text-2xl font-bold m-4 text-white-500">
