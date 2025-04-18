@@ -34,7 +34,7 @@ import { Plus, LoaderCircle, Info, BarChart3, LineChart, PieChart, Loader2 } fro
 
 import { Pie } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
-import { Bar } from "react-chartjs-2";
+import { Bar,Radar  } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -44,6 +44,10 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
 } from "chart.js";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +56,10 @@ import ComparisonCharts from "@/components/ComparisonCharts";
 
 // Register chart components
 ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -200,6 +208,42 @@ const InterviewComparision = () => {
       ],
     };
   };
+  
+  const generateRadarChartData = () => {
+    if (!comparisonResult?.categories) return { labels: [], datasets: [] };
+  
+
+    const softCategory = comparisonResult.categories.find(cat => cat.subCategories && cat.subCategories.length > 0);
+    
+    if (!softCategory || !softCategory.subCategories) {
+      return { labels: [], datasets: [] };
+    }
+  
+    const labels = softCategory.subCategories.map(subCat => subCat.name);
+    const c1Scores = softCategory.subCategories.map(subCat => subCat.score?.c1 || 0);
+    const c2Scores = softCategory.subCategories.map(subCat => subCat.score?.c2 || 0);
+  
+    return {
+      labels,
+      datasets: [
+        {
+          label: firstCandidateName,
+          data: c1Scores,
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          borderColor: "rgba(54, 162, 235, 1)",
+   
+        },
+        {
+          label: secondCandidateName,
+          data: c2Scores,
+          backgroundColor: "rgba(234, 179, 8, 0.2)",
+          borderColor: "rgba(234, 179, 8, 1)",
+   
+        },
+      ],
+    };
+  };
+  
 
   const doughnutChartData = {
     labels: ["Strengths", "Weaknesses"], // The labels for each section
@@ -686,33 +730,94 @@ const InterviewComparision = () => {
                   </div>
                 </div> */}
 
-                      
-                  <h2 className="text-2xl font-bold m-4 text-white-500">
-                    Score Comparison
-                  </h2>
-                  <Bar
-                    data={generateChartData()}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: true, // Ensures the chart scales properly
-                      indexAxis: "y", // Makes the chart horizontal
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          title: {
-                            display: true,
-                            text: "Scores",
+                  
+                <h2 className="text-2xl font-bold m-4 text-white-500">
+                  Score Comparison
+                </h2>
+                <div className="flex flex-row w-full gap-4">
+                  <div className="w-[60%]  items-center flex flex-col border border-red-400/40 rounded-lg p-4">
+                  <h2 className="font-semibold text-white-500">
+                  Overall Score Comparison
+                </h2>
+                    <Bar
+                      data={generateChartData()}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: "y",
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            title: {
+                              display: true,
+                              text: "Scores",
+                              color: '#ffffff' // White title
+                            },
+                            ticks: {
+                              color: '#ffffff' // White y-axis labels
+                            },
+                            grid: {
+                              color: 'rgba(255, 255, 255, 0.1)' // Light grid lines
+                            }
+                          },
+                          x: {
+                            ticks: {
+                              autoSkip: false,
+                              color: '#ffffff' // White x-axis labels
+                            },
+                            grid: {
+                              color: 'rgba(255, 255, 255, 0.1)' // Light grid lines
+                            }
                           },
                         },
-                        x: {
-                          ticks: {
-                            autoSkip: false,
-                          },
+                        plugins: {
+                          legend: {
+                            labels: {
+                              color: '#ffffff' // White legend text
+                            }
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div className="w-[40%]  items-center flex flex-col border border-red-400/40 rounded-lg p-4 ">
+                  <h2 className=" text-white-500 font-semibold">
+                  SoftSkills Score Comparison
+                </h2>
+                    <Radar
+                      data={generateRadarChartData()}
+                      options={{
+                        scales: {
+                          r: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                              stepSize: 20,
+                              color: '#ffffff' // White ticks
+                            },
+                            angleLines: {
+                              color: 'rgba(255, 255, 255, 0.2)' // White grid lines
+                            },
+                            grid: {
+                              color: 'rgba(255, 255, 255, 0.1)' // Lighter grid lines
+                            },
+                            pointLabels: {
+                              color: '#ffffff' // White labels
+                            }
+                          }
                         },
-                      },
-                    }}
-                  />
-               
+                        plugins: {
+                          legend: {
+                            labels: {
+                              color: '#ffffff' // White legend
+                            }
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
 
                 {/* <div className="flex justify-around mt-10 flex-col md:flex-row space-y-4 md:space-y-0">
       
