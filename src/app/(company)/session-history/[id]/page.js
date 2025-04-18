@@ -1815,13 +1815,13 @@ function SessionHistoryPage() {
                                                   {question.questionText}
                                                 </span>
                                                 <span className=" text-base">
-                                                {question?.score || 0} / {question?.maxScore || 0}
+                                                {question?.interviewResponses?.score?.score/ sessionDetails?.questions?.length || 0} / {100 / sessionDetails?.questions?.length}
                                                 </span>
                                               </div>
                                               <div className=" w-full text-sm items-center text-gray-500">
                                                 Answer:{" "}
                                                 <span>
-                                                  {question.answer ||
+                                                  {question?.interviewResponses?.responseText ||
                                                     "no given answer"}
                                                 </span>
                                               </div>
