@@ -49,7 +49,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const sessionID = searchParams.get("sessionID");
   const pages = ["candidate.Name", "candidate.Email"];
   const [candidateAnswers, setCandidateAnswers] = useState();
-  const [analiyzeResponse, setAnaliyzeResponse] = useState({});
+  const [analiyzeResponse, setAnaliyzeResponse] = useState(null);
   const [isSubmitAnswers, setIsSubmitAnswers] = useState(true);
   const [numOfQuestions, setNumOfQuestions] = useState(0);
   const [answeredQuestionNo, setAnsweredQuestionNO] = useState(0);
@@ -482,6 +482,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
             sessionId={sessionId}
             allocation={true}
             questionList={questionList}
+            sessionDetails={sessionDetails}
           />
         )}
         {activeTab === "ai-analysis" && (
