@@ -170,7 +170,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
         sessionId: sessionId,
       };
       socket.emit("nextQuestion", data);
-      setAnaliyzeResponse({});
+      setAnaliyzeResponse(null);
       setTypingAnswer("typing...");
       setCurrentQuestionIndex((prev) => prev + 1);
     };
@@ -180,7 +180,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
         sessionId: sessionId,
       };
       socket.emit("endTest", data);
-      setAnaliyzeResponse({});
+      setAnaliyzeResponse(null);
       setTypingAnswer("typing...");
     };
 
@@ -214,6 +214,10 @@ const InterviewRoomAnalizerDashboard = forwardRef(
         setCurrentQuestionIndex((prev) => prev - 1);
       }
     };
+
+    useEffect(() => {
+      console.log('analiyzeResponse', analiyzeResponse);
+    }, [analiyzeResponse]);
 
     return (
       <div className=" w-[90%] max-w-[1600px] bg-black mx-auto h-full p-6">
@@ -477,9 +481,9 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 </Card>
 
                 {/* Right panel - Analysis */}
-                {technicalStatus === "ongoing" ? (
+                {technicalStatus === "ongoing" || technicalStatus === "testEnd" ? (
                   <>
-                    {candidateAnswers ? (
+                    {analiyzeResponse ? (
                       <Card className="flex flex-col !bg-transparent">
                         <CardHeader className="pb-3 border-b border-gray-500/40">
                           <CardTitle className="text-lg">
@@ -510,7 +514,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                 </h4>
                                 {candidateAnswers?.answer ? (
                                   <ul className="list-disc pl-5 text-sm space-y-1">
-                                    {analiyzeResponse.keyStrengths?.map(
+                                    {analiyzeResponse?.keyStrengths?.map(
                                       (key, index) => <li key={index}>{key}</li>
                                     ) || "No key strengths found"}
                                   </ul>
@@ -527,7 +531,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                 </h4>
                                 {candidateAnswers?.answer ? (
                                   <ul className="list-disc pl-5 text-sm space-y-1">
-                                    {analiyzeResponse.areasOfImprovement?.map(
+                                    {analiyzeResponse?.areasOfImprovement?.map(
                                       (key, index) => <li key={index}>{key}</li>
                                     ) || "No areas of improvement found"}
                                   </ul>
@@ -561,7 +565,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                 Followup questions
                               </h4>
                               <div className="space-y-2">
-                                {analiyzeResponse.followUpQuestions?.map(
+                                {analiyzeResponse?.followUpQuestions?.map(
                                   (question, index) => (
                                     <div
                                       key={index}
@@ -665,19 +669,19 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                   <div className="flex items-center gap-1">
                                     <div
                                       className={`text-2xl font-bold ${
-                                        (analiyzeResponse.relevanceScore ||
+                                        (analiyzeResponse?.relevanceScore ||
                                           0) >= 80
                                           ? "text-green-600"
-                                          : (analiyzeResponse.relevanceScore ||
+                                          : (analiyzeResponse?.relevanceScore ||
                                               0) >= 60
                                           ? "text-blue-600"
-                                          : (analiyzeResponse.relevanceScore ||
+                                          : (analiyzeResponse?.relevanceScore ||
                                               0) >= 40
                                           ? "text-amber-600"
                                           : "text-red-600"
                                       }`}
                                     >
-                                      {analiyzeResponse.relevanceScore || 0}%
+                                      {analiyzeResponse?.relevanceScore || 0}%
                                     </div>
                                     {/* <Button
                               size="icon"
@@ -696,20 +700,20 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                 <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                                   <div
                                     className={`h-full rounded-full ${
-                                      (analiyzeResponse.relevanceScore || 0) >=
+                                      (analiyzeResponse?.relevanceScore || 0) >=
                                       80
                                         ? "bg-green-500"
-                                        : (analiyzeResponse.relevanceScore ||
+                                        : (analiyzeResponse?.relevanceScore ||
                                             0) >= 60
                                         ? "bg-blue-500"
-                                        : (analiyzeResponse.relevanceScore ||
+                                        : (analiyzeResponse?.relevanceScore ||
                                             0) >= 40
                                         ? "bg-amber-500"
                                         : "bg-red-500"
                                     }`}
                                     style={{
                                       width: `${
-                                        analiyzeResponse.relevanceScore || 0
+                                        analiyzeResponse?.relevanceScore || 0
                                       }%`,
                                     }}
                                   />
