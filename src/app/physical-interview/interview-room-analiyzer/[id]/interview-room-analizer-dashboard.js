@@ -36,8 +36,14 @@ import CirculerProgress from "@/components/interview-room-analiyzer/circuler-pro
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 import { useState } from "react";
 import InterviewRoomAnalizerOther from "./interview-room-analizer-other";
-import { ArrowUpRight, Share } from "lucide-react";
-import { Button } from "@/components/ui/button"
+import {
+  ArrowUpRight,
+  CircleCheckBig,
+  Share,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -46,14 +52,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { addMarks } from "@/lib/api/interview-session";
 import { useToast } from "@/hooks/use-toast";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 
 const InterviewRoomAnalizerDashboard = forwardRef(
-  
   (
     {
       analiyzeResponse,
@@ -67,7 +74,9 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       categoryScores,
       setCategoryScores,
       technicalStatus,
-      userID
+      userID,
+      setManualScoreChange,
+      manualScoreChange,
     },
     ref
   ) => {
@@ -80,13 +89,13 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     const [score, setScore] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedQuestionID, setSelectedQuestionID] = useState(null); // New state for selected questionID
-    const { toast } = useToast()
-    
+    const { toast } = useToast();
+
     useEffect(() => {
       if (availableQuestion?.estimatedTimeMinutes) {
         const totalSeconds = availableQuestion.estimatedTimeMinutes * 60;
         setQuestionCountDown(totalSeconds); // Initialize countdown in seconds
-    
+
         const interval = setInterval(() => {
           setQuestionCountDown((prevCountDown) => {
             if (prevCountDown <= 1) {
@@ -96,11 +105,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
             return prevCountDown - 1;
           });
         }, 1000); // Update every second
-    
+
         return () => clearInterval(interval);
       }
     }, [availableQuestion]);
-    
+
     // Format time as MM:SS
     const formatTime = (seconds) => {
       const minutes = Math.floor(seconds / 60)
@@ -167,155 +176,167 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       const questions = [
         {
           id: 1,
-          questionText: "Explain the difference between let, const, and var in JavaScript.",
+          questionText:
+            "Explain the difference between let, const, and var in JavaScript.",
           estimatedTimeMinutes: 5,
-          explanation: "This question tests the candidate's understanding of variable declaration and scoping in JavaScript.",
-          isAnswered: false
+          explanation:
+            "This question tests the candidate's understanding of variable declaration and scoping in JavaScript.",
+          isAnswered: false,
         },
         {
           id: 2,
-          questionText: "What is the Virtual DOM in React and how does it improve performance?",
+          questionText:
+            "What is the Virtual DOM in React and how does it improve performance?",
           estimatedTimeMinutes: 7,
-          explanation: "This evaluates the candidate's knowledge of React's core optimization mechanism.",
-          isAnswered: false
+          explanation:
+            "This evaluates the candidate's knowledge of React's core optimization mechanism.",
+          isAnswered: false,
         },
         {
           id: 3,
-          questionText: "Describe how you would implement a debounce function in JavaScript.",
+          questionText:
+            "Describe how you would implement a debounce function in JavaScript.",
           estimatedTimeMinutes: 10,
-          explanation: "Tests understanding of event handling and performance optimization techniques.",
-          isAnswered: false
+          explanation:
+            "Tests understanding of event handling and performance optimization techniques.",
+          isAnswered: false,
         },
         {
           id: 4,
-          questionText: "What are React hooks and how do they differ from class components?",
+          questionText:
+            "What are React hooks and how do they differ from class components?",
           estimatedTimeMinutes: 8,
-          explanation: "Assesses knowledge of modern React patterns and state management.",
-          isAnswered: false
+          explanation:
+            "Assesses knowledge of modern React patterns and state management.",
+          isAnswered: false,
         },
         {
           id: 5,
-          questionText: "Explain the concept of closures in JavaScript with an example.",
+          questionText:
+            "Explain the concept of closures in JavaScript with an example.",
           estimatedTimeMinutes: 6,
-          explanation: "Tests fundamental JavaScript knowledge and scoping understanding.",
-          isAnswered: false
-        }
+          explanation:
+            "Tests fundamental JavaScript knowledge and scoping understanding.",
+          isAnswered: false,
+        },
       ];
-    
+
       // Create HTML content with navigation logic
-      const htmlContent = 
-        '<html>' +
-          '<head>' +
-            '<title>Interview Questions</title>' +
-            '<style>' +
-              'body {' +
-                'font-family: Arial, sans-serif;' +
-                'background-color: #1a1a1a;' +
-                'color: #d1d5db;' +
-                'padding: 20px;' +
-                'margin: 0;' +
-                'display: flex;' +
-                'flex-direction: column;' +
-                'align-items: center;' +
-                'justify-content: center;' +
-                'height: 100vh;' +
-              '}' +
-              'h1 {' +
-                'color: #ffffff;' +
-                'font-size: 24px;' +
-                'margin-bottom: 20px;' +
-              '}' +
-              '.question-container {' +
-                'background-color: #2d2d2d;' +
-                'padding: 20px;' +
-                'border-radius: 8px;' +
-                'border: 1px solid #4b5563;' +
-                'width: 80%;' +
-                'max-width: 600px;' +
-              '}' +
-              '.question-text {' +
-                'font-size: 18px;' +
-                'margin-bottom: 15px;' +
-              '}' +
-              '.details {' +
-                'font-size: 14px;' +
-                'color: #9ca3af;' +
-              '}' +
-              '.navigation {' +
-                'margin-top: 20px;' +
-                'display: flex;' +
-                'justify-content: space-between;' +
-                'width: 80%;' +
-                'max-width: 600px;' +
-              '}' +
-              'button {' +
-                'padding: 10px 20px;' +
-                'background-color: #3b82f6;' +
-                'color: white;' +
-                'border: none;' +
-                'border-radius: 5px;' +
-                'cursor: pointer;' +
-                'font-size: 14px;' +
-              '}' +
-              'button:disabled {' +
-                'background-color: #6b7280;' +
-                'cursor: not-allowed;' +
-              '}' +
-              'button:hover:not(:disabled) {' +
-                'background-color: #2563eb;' +
-              '}' +
-            '</style>' +
-          '</head>' +
-          '<body>' +
-          '<h1>Interview Questions</h1>' +
-          '<div id="questionCounter" style="font-size: 16px; color: #9ca3af; margin-bottom: 20px;"></div>' + // Add this line
-          '<div class="question-container" id="questionContainer"></div>' +
-            '<div class="navigation">' +
-              '<button id="prevBtn">Previous</button>' +
-              '<button id="nextBtn">Next</button>' +
-            '</div>' +
-            '<script>' +
-              'const questions = ' + JSON.stringify(questions) + ';' +
-              'let currentIndex = 0;' +
-              
-              'function displayQuestion(index) {' +
-              'const question = questions[index];' +
-              'const container = document.getElementById("questionContainer");' +
-              'const counter = document.getElementById("questionCounter");' + // Add this line
-              'counter.innerHTML = "Question " + (index + 1) + " of " + questions.length;' + // Add this line
-              'container.innerHTML = ' +
-              '"<div class=\\"question-text\\">" + question.questionText + "</div>" + ' +
-              '"<div class=\\"details\\">" + ' +
-              '"Estimated Time: " + question.estimatedTimeMinutes + " minutes<br>" + ' +
-              '"Explanation: " + question.explanation + ' +
-              '"</div>";' +
-              'const prevBtn = document.getElementById("prevBtn");' +
-              'const nextBtn = document.getElementById("nextBtn");' +
-              'prevBtn.disabled = index === 0;' +
-              'nextBtn.disabled = index === questions.length - 1;' +
-              '}' +
-          
-              'displayQuestion(currentIndex);' +
-              
-              'document.getElementById("prevBtn").addEventListener("click", () => {' +
-                'if (currentIndex > 0) {' +
-                  'currentIndex--;' +
-                  'displayQuestion(currentIndex);' +
-                '}' +
-              '});' +
-              
-              'document.getElementById("nextBtn").addEventListener("click", () => {' +
-                'if (currentIndex < questions.length - 1) {' +
-                  'currentIndex++;' +
-                  'displayQuestion(currentIndex);' +
-                '}' +
-              '});' +
-            '</script>' +
-          '</body>' +
-        '</html>';
-    
+      const htmlContent =
+        "<html>" +
+        "<head>" +
+        "<title>Interview Questions</title>" +
+        "<style>" +
+        "body {" +
+        "font-family: Arial, sans-serif;" +
+        "background-color: #1a1a1a;" +
+        "color: #d1d5db;" +
+        "padding: 20px;" +
+        "margin: 0;" +
+        "display: flex;" +
+        "flex-direction: column;" +
+        "align-items: center;" +
+        "justify-content: center;" +
+        "height: 100vh;" +
+        "}" +
+        "h1 {" +
+        "color: #ffffff;" +
+        "font-size: 24px;" +
+        "margin-bottom: 20px;" +
+        "}" +
+        ".question-container {" +
+        "background-color: #2d2d2d;" +
+        "padding: 20px;" +
+        "border-radius: 8px;" +
+        "border: 1px solid #4b5563;" +
+        "width: 80%;" +
+        "max-width: 600px;" +
+        "}" +
+        ".question-text {" +
+        "font-size: 18px;" +
+        "margin-bottom: 15px;" +
+        "}" +
+        ".details {" +
+        "font-size: 14px;" +
+        "color: #9ca3af;" +
+        "}" +
+        ".navigation {" +
+        "margin-top: 20px;" +
+        "display: flex;" +
+        "justify-content: space-between;" +
+        "width: 80%;" +
+        "max-width: 600px;" +
+        "}" +
+        "button {" +
+        "padding: 10px 20px;" +
+        "background-color: #3b82f6;" +
+        "color: white;" +
+        "border: none;" +
+        "border-radius: 5px;" +
+        "cursor: pointer;" +
+        "font-size: 14px;" +
+        "}" +
+        "button:disabled {" +
+        "background-color: #6b7280;" +
+        "cursor: not-allowed;" +
+        "}" +
+        "button:hover:not(:disabled) {" +
+        "background-color: #2563eb;" +
+        "}" +
+        "</style>" +
+        "</head>" +
+        "<body>" +
+        "<h1>Interview Questions</h1>" +
+        '<div id="questionCounter" style="font-size: 16px; color: #9ca3af; margin-bottom: 20px;"></div>' + // Add this line
+        '<div class="question-container" id="questionContainer"></div>' +
+        '<div class="navigation">' +
+        '<button id="prevBtn">Previous</button>' +
+        '<button id="nextBtn">Next</button>' +
+        "</div>" +
+        "<script>" +
+        "const questions = " +
+        JSON.stringify(questions) +
+        ";" +
+        "let currentIndex = 0;" +
+        "function displayQuestion(index) {" +
+        "const question = questions[index];" +
+        'const container = document.getElementById("questionContainer");' +
+        'const counter = document.getElementById("questionCounter");' + // Add this line
+        'counter.innerHTML = "Question " + (index + 1) + " of " + questions.length;' + // Add this line
+        "container.innerHTML = " +
+        '"<div class=\\"question-text\\">" + question.questionText + "</div>" + ' +
+        '"<div class=\\"details\\">" + ' +
+        '"Estimated Time: " + question.estimatedTimeMinutes + " minutes<br>" + ' +
+        '"Explanation: " + question.explanation + ' +
+        '"</div>";' +
+        'const prevBtn = document.getElementById("prevBtn");' +
+        'const nextBtn = document.getElementById("nextBtn");' +
+        "prevBtn.disabled = index === 0;" +
+        "nextBtn.disabled = index === questions.length - 1;" +
+        "}" +
+        "displayQuestion(currentIndex);" +
+        'document.getElementById("prevBtn").addEventListener("click", () => {' +
+        "if (currentIndex > 0) {" +
+        "currentIndex--;" +
+        "displayQuestion(currentIndex);" +
+        "}" +
+        "});" +
+        'document.getElementById("nextBtn").addEventListener("click", () => {' +
+        "if (currentIndex < questions.length - 1) {" +
+        "currentIndex++;" +
+        "displayQuestion(currentIndex);" +
+        "}" +
+        "});" +
+        "</script>" +
+        "</body>" +
+        "</html>";
+
       // Open a new window with the questions
-      const newWindow = window.open("", "InterviewQuestions", "width=800,height=600,scrollbars=yes,resizable=yes");
+      const newWindow = window.open(
+        "",
+        "InterviewQuestions",
+        "width=800,height=600,scrollbars=yes,resizable=yes"
+      );
       if (newWindow) {
         newWindow.document.write(htmlContent);
         newWindow.document.close();
@@ -324,33 +345,23 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       }
     };
 
-
-    const handleAddMarks = async () => {
-      if (!selectedQuestionID) {
-        toast({
-          title: "Error",
-          description: "No question selected.",
-          variant: "destructive",
-        });
+    const handleAddMarks = async (id, score) => {
+      if (!id) {
         return;
       }
+      setManualScoreChange(score);
 
       const payload = {
-        questionID: selectedQuestionID, // Use the selected questionID
-        feedback: feedback,
-        score: parseInt(score, 10),
+        questionID: id,
+        feedback: "hi",
+        score: parseInt(score, 10) || 0,
       };
 
       try {
-        const response = await addMarks(payload);
-        toast({
-          description: "Your marks have been submitted successfully.",
+        socket.emit("submitQuestionScore", {
+          sessionId: sessionId,
+          questionScore: payload,
         });
-        // Reset the form and close the dialog
-        setIsDialogOpen(false);
-        setFeedback("");
-        setScore("");
-        setSelectedQuestionID(null); // Reset selected questionID
       } catch (error) {
         toast({
           title: "Uh oh! Something went wrong.",
@@ -360,14 +371,20 @@ const InterviewRoomAnalizerDashboard = forwardRef(
       }
     };
 
-    // Function to open dialog with the correct questionID
     const openDialogForQuestion = (questionID) => {
-      setSelectedQuestionID(questionID); // Set the selected questionID
-      setFeedback(""); // Reset feedback
-      setScore(""); // Reset score
-      setIsDialogOpen(true); // Open the dialog
+      setSelectedQuestionID(questionID); 
+      setFeedback(""); 
+      setScore(""); 
+      setIsDialogOpen(true); 
     };
 
+    const getScoreColor = (score) => {
+      if (score >= 90) return "!text-green-500";
+      if (score >= 80) return "!text-blue-500";
+      if (score >= 70) return "!text-yellow-300";
+      if (score >= 45) return "!text-orange-500";
+      return "!text-red-500";
+    };
 
     return (
       <div className=" h-[90vh] w-full bg-black">
@@ -376,7 +393,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={60}>
                 <div className=" h-full w-full overflow-y-auto p-6 relative">
-                  {technicalStatus === 'testEnd' && (
+                  {technicalStatus === "testEnd" && (
                     <button
                       variant="secondary"
                       className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
@@ -386,49 +403,48 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                     </button>
                   )}
 
-
-                  {technicalStatus === 'toBeConducted' && (<button
-                    variant="secondary"
-                    className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
-                    onClick={startTechnicalQuestions}
-                  >
-                    Start Technical Test
-                  </button>)}
-                 
-
-
-                  {technicalStatus === 'ongoing' && (
-                    <>
+                  {technicalStatus === "toBeConducted" && (
                     <button
-                    variant="secondary"
-                    className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
-                    onClick={nextQuestion}
-                  >
-                    Next Question
-                  </button>
-
-                    <button
-                    variant="secondary"
-                    className="absolute top-0 right-48 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
-                    onClick={openTestOnNewTab}
-                  >
-                    Share <ArrowUpRight className="inline-block" width={15} />
-                  </button>
-                    </>
-                    
-                
-
+                      variant="secondary"
+                      className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
+                      onClick={startTechnicalQuestions}
+                    >
+                      Start Technical Test
+                    </button>
                   )}
 
+                  {technicalStatus === "ongoing" && (
+                    <>
+                      <button
+                        variant="secondary"
+                        className="absolute top-0 right-6 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[130px]"
+                        onClick={nextQuestion}
+                      >
+                        Next Question
+                      </button>
 
+                      <button
+                        variant="secondary"
+                        className="absolute top-0 right-48 mt-6 bg-white rounded-lg text-center text-sm text-black font-semibold h-11 w-[150px]"
+                        onClick={openTestOnNewTab}
+                      >
+                        Share{" "}
+                        <ArrowUpRight className="inline-block" width={15} />
+                      </button>
+                    </>
+                  )}
 
                   <h1 className=" text-3xl font-semibold">Question List</h1>
-                  {technicalStatus === "ongoing" && (<div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] p-4 rounded-lg">
-                    <h1 className=" text-2xl font-semibold">{formatTime(questionCountDown)}</h1>
-                    <p className=" text-sm text-justify pt-3">
-                      {typingAnswer}
-                    </p>
-                  </div>)}
+                  {technicalStatus === "ongoing" && (
+                    <div className=" bg-[#b378ff]/20 mt-5 text-gray-400 border-2 border-[#b378ff] p-4 rounded-lg">
+                      <h1 className=" text-2xl font-semibold">
+                        {formatTime(questionCountDown)}
+                      </h1>
+                      <p className=" text-sm text-justify pt-3">
+                        {typingAnswer}
+                      </p>
+                    </div>
+                  )}
 
                   <div className=" mt-5 w-full">
                     {questionList.map((question, index) => (
@@ -436,11 +452,11 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         className=" bg-gray-700/20 mt-5 text-gray-400 border-2 border-gray-700 py-2 px-4 rounded-lg justify-between"
                         key={index}
                       >
-                          <div>
-                            <div className="flex justify-between">
+                        <div>
+                          <div className="flex justify-between">
                             <div className=" flex justify-start items-center">
                               <h1 className="text-md text-gray-400 font-semibold">
-                                Question  :
+                                Question :
                               </h1>
                               <h1 className="text-md text-gray-400 font-semibold px-2 ">
                                 {question.estimatedTimeMinutes} min
@@ -448,10 +464,10 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <span className=" text-[10px] text-orange-500 cursor-pointer border-orange-500 py-1 rounded-full w-[100px] px-1 border-2 flex items-center justify-center ">
-                                      <RiInformation2Line className=" text-sm mr-1" />{" "}
+                                    <Badge className="!bg-orange-500/10 !text-orange-600 mb-0 px-3 py-1 border !border-orange-600">
+                                      <RiInformation2Line className="text-orange-500 h-4 mr-1" />
                                       Explanation
-                                    </span>
+                                    </Badge>
                                   </TooltipTrigger>
                                   <TooltipContent className="!bg-black p-4 rounded-lg !border-2 !border-gray-700">
                                     <p className=" w-[500px] text-gray-300">
@@ -461,9 +477,26 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                 </Tooltip>
                               </TooltipProvider>
                             </div>
-                              <div>
-                              <div className="flex items-center space-x-3"> {/* Added space-x-3 for gap */}
-                              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <div>
+                              <div className="flex items-center space-x-3">
+                                <span className="text-base font-semibold rounded-md p-2">
+                                  {question.isAnswered && (
+                                    <Badge className="!bg-green-500/10 !text-green-600 mb-0 px-3 py-1 border !border-green-600  mr-2">
+                                      <CircleCheckBig className="text-green-500 h-4" />
+                                      Answered
+                                    </Badge>
+                                  )}
+                                  <span
+                                    className={`${getScoreColor(
+                                      question?.questionScore?.score || 0
+                                    )}`}
+                                  >
+                                    {question?.questionScore?.score || 0}
+                                  </span>
+                                  /100
+                                </span>
+                                {/* Added space-x-3 for gap */}
+                                {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <DialogTrigger asChild>
                                   <Button onClick={() => openDialogForQuestion(question.questionID)}>
                                 {question.isAnswered ? "Edit Marks" : "Add Marks"}
@@ -511,33 +544,70 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                                       </Button>
                                     </DialogFooter>
                                   </DialogContent>
-                                </Dialog>
-                                
+                                </Dialog> */}
                                 {/* Display marks only if the question is answered and has a score */}
-                                {question.isAnswered && question.questionScore?.score !== undefined && (
-                                  <span className="text-sm text-orange-500 font-semibold bg-black border border-gray-500 rounded-md p-2">
-                                    {question.questionScore.score}/100
-                                  </span>
-                                )}
-                                </div>
+                                {/* {question.isAnswered &&
+                                  question.questionScore?.score !==
+                                    undefined && (
+                                    <span className="text-sm text-orange-500 font-semibold bg-black border border-gray-500 rounded-md p-2">
+                                      {question?.questionScore?.score}/100
+                                    </span>
+                                  )} */}
                               </div>
-                              </div>
-                          
-
-                            <div className=" mr-9 text-justify text-sm pt-3">
-                              {question.questionText}
                             </div>
                           </div>
+
+                          <div className=" mr-9 text-justify text-sm pt-3">
+                            {question.questionText}
+                          </div>
+                        </div>
                         <div>
-                          {question.isAnswered && (
-                            <IoMdCheckmarkCircleOutline className="text-green-500 text-[22px]" />
-                          )}
+                          <Badge className="!bg-blue-500/20 !text-blue-600 px-3 py-1 border !border-blue-600">
+                            {question.estimatedTimeMinutes} minutes
+                          </Badge>
+                          <Badge className="!bg-blue-500/20 !text-blue-600 px-3 py-1 border !border-blue-600 ml-2">
+                            {question.type
+                              .toLowerCase()
+                              .split("_")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() + word.slice(1)
+                              )
+                              .join(" ")}
+                          </Badge>
+                        </div>
+                        <div className=" mt-5">
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="flex items-center gap-2">
+                              <ThumbsDown className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground">
+                                Poor
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">
+                                Excellent
+                              </span>
+                              <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          </div>
+                          <Slider
+                            value={[question?.questionScore?.score || 0]}
+                            max={100}
+                            step={1}
+                            id={"technical-manual-marks"}
+                            // marks={question?.questionScore?.score || 0}
+                            // enableColor={true}
+                            onValueChange={(value) =>
+                              handleAddMarks(question.questionID, value[0])
+                            }
+                            className="mb-4"
+                          />
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-               
               </ResizablePanel>
               <ResizableHandle />
               {/* <ResizablePanel defaultSize={40} className="bg-black px-3">
@@ -553,7 +623,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={140}>
-            {technicalStatus === 'toBeConducted' || technicalStatus === 'completed' ? (
+            {technicalStatus === "toBeConducted" ||
+            technicalStatus === "completed" ? (
               <div className=" h-full overflow-y-auto p-6 overflow-x-hidden">
                 <InterviewRoomAnalizerOther
                   categoryScores={categoryScores}
@@ -566,7 +637,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
               <div className=" h-full overflow-y-auto p-6 overflow-x-hidden relative">
                 <div className=" absolute top-4 right-4 w-[100px] h-[100px]">
                   <CirculerProgress
-                    marks={analiyzeResponse.relevanceScore}
+                    marks={analiyzeResponse?.relevanceScore}
                     catorgory="Score"
                     titleSize="text-lg"
                     subTitleSize="text-[10px]"
@@ -702,6 +773,6 @@ const InterviewRoomAnalizerDashboard = forwardRef(
   }
 );
 
-InterviewRoomAnalizerDashboard.displayName = 'InterviewRoomAnalizerDashboard';
+InterviewRoomAnalizerDashboard.displayName = "InterviewRoomAnalizerDashboard";
 
 export default InterviewRoomAnalizerDashboard;
