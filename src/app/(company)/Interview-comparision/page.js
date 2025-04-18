@@ -757,8 +757,8 @@ const InterviewComparision = () => {
                     <div className="space-y-2  text-lg">
                       <div className=" text-gray-500 py-2">
                         <strong className=" text-white">Best Candidate:</strong>{" "}
-                        {comparisonResult[comparisonResult.recommendation.best] || 
-         comparisonResult.recommendation.best}
+                        {comparisonResult[comparisonResult.recommendation.best] ||
+                          comparisonResult.recommendation.best}
                       </div>
                       <div className="py-2">
                         <strong>Reason</strong>{" "}
