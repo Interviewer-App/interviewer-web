@@ -736,8 +736,8 @@ const InterviewComparision = () => {
                 <h2 className="text-2xl font-bold m-4 text-white-500">
                   Score Comparison
                 </h2>
-                <div className="flex flex-row w-full gap-6">
-                  <div className="w-[60%]  items-center flex flex-col  rounded-lg p-4 bg-slate-700/10 border-2 !border-slate-900">
+                <div className="flex md:flex-row w-full gap-6 flex-col">
+                  <div className="md:w-[60%]   w-full items-center flex flex-col  rounded-lg p-4 bg-slate-700/10 border-2 !border-slate-900">
                   <h2 className="font-semibold text-white-500">
                   Overall Score Comparison
                 </h2>
@@ -783,7 +783,7 @@ const InterviewComparision = () => {
                     />
                   </div>
 
-                  <div className="w-[40%]  items-center flex flex-col  bg-slate-700/10 border-2 border-slate-900 rounded-lg p-4 ">
+                  <div className="md:w-[40%] w-full  items-center flex flex-col  bg-slate-700/10 border-2 border-slate-900 rounded-lg p-4 ">
                   <h2 className=" text-white-500 font-semibold">
                   SoftSkills Score Comparison
                 </h2>
