@@ -467,7 +467,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             </Button>
                           )}
                         {technicalStatus === "testEnd" &&
-                          currentQuestionIndex >= questionList.length - 1 && (
+                          currentQuestionIndex >= questionList.length - 1 && 
+                          (
                             <Button
                               className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
                               onClick={endTechnicalTest}
@@ -781,7 +782,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             variant="outline"
                             size="lg"
                             className="w-full mb-4"
-                            onClick={() => setActiveTab("overall")}
+                            onClick={() => setActiveTab("soft")}
                           >
                             Evaluate soft skills
                           </Button>
