@@ -1163,22 +1163,6 @@ const InterviewRoomPage = ({ params }) => {
                 </div>
               </div>
             ) : technicalStatus === "testEnd" ? (
-              // <div>
-              //   <div className="flex flex-col h-lvh w-full justify-center item-center bg-black text-white">
-              //     <h1 className=" px-8 text-lg md:text-3xl font-semibold w-full text-center">
-              //       You have Successfully Completed Your Technical Evaluation
-              //     </h1>
-              //     <div className=" w-full flex flex-col justify-center] items-center">
-              //       <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-              //         Please wait while the company concludes the interview
-              //         session.
-              //       </p>
-              //       <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-              //         Kindly remain available
-              //       </p>
-              //     </div>
-              //   </div>
-              // </div>
               <div className=" w-full h-lvh flex flex-col justify-center items-center">
               <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
                 <div className=" w-full flex flex-col justify-center items-center mb-14">
