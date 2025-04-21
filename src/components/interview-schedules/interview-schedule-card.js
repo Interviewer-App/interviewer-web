@@ -126,7 +126,10 @@ export default function InterviewScheduleCard({
     //     </TooltipContent>
     //   </Tooltip>
     // </TooltipProvider>
-    <Card key={interview.id} className="overflow-hidden">
+    <Card key={interview.id} className="overflow-hidden relative">
+       <div className="absolute top-4 right-4 bg-slate-800 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+      {interview.interviewMedium}
+    </div>
       <CardContent className="p-0">
         {/* <div className={cn(
                         "py-2 px-4",
@@ -150,7 +153,7 @@ export default function InterviewScheduleCard({
             }}
           ></p>
           <div className="flex flex-wrap gap-2 mt-4 ">
-            <span className="flex items-center text-xs ">Starts on </span>
+            <span className="flex items-center text-xs ">Starts on: </span>
             <div className="flex items-center text-xs bg-white/10 px-3 py-1 rounded-full">
             
               <CalendarIcon className="h-3 w-3 mr-1" />
