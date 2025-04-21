@@ -60,6 +60,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 const InterviewRoomAnalizerDashboard = forwardRef(
   (
@@ -216,8 +217,16 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     };
 
     useEffect(() => {
-      console.log('analiyzeResponse', analiyzeResponse);
+      console.log("analiyzeResponse", analiyzeResponse);
     }, [analiyzeResponse]);
+
+    const handleSubCategoryMarksChange = (subcategory, value) => {
+      socket.emit("submitSubCategoryScore", {
+        sessionId: sessionId,
+        subCategoryScoreId: subcategory.id,
+        score: value[0],
+      });
+    };
 
     return (
       <div className=" w-[90%] max-w-[1600px] bg-black mx-auto h-full p-6">
@@ -317,7 +326,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                       variant="outline"
                       size="lg"
                       className="w-full mb-4"
-                      onClick={() => setActiveTab("overall")}
+                      onClick={() => setActiveTab("soft")}
                     >
                       Evaluate soft skills
                     </Button>
@@ -467,8 +476,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                             </Button>
                           )}
                         {technicalStatus === "testEnd" &&
-                          currentQuestionIndex >= questionList.length - 1 && 
-                          (
+                          currentQuestionIndex >= questionList.length - 1 && (
                             <Button
                               className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
                               onClick={endTechnicalTest}
@@ -482,7 +490,8 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                 </Card>
 
                 {/* Right panel - Analysis */}
-                {technicalStatus === "ongoing" || technicalStatus === "testEnd" ? (
+                {technicalStatus === "ongoing" ||
+                technicalStatus === "testEnd" ? (
                   <>
                     {analiyzeResponse ? (
                       <Card className="flex flex-col !bg-transparent">
@@ -802,76 +811,191 @@ const InterviewRoomAnalizerDashboard = forwardRef(
               </div>
             ) : (
               <div className=" w-[90%] max-w-[1600px] bg-black mx-auto h-full p-6">
-                <Card className="flex flex-col">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <div>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <User className="h-5 w-5" />
-                        Technical Skills Assessment
-                      </CardTitle>
-                      <CardDescription>
-                        Technical Skills Assessment&quot; is a test to evaluate
-                        the candidate&apos;s technical skills and knowledge in
-                        the relevant field.
-                      </CardDescription>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-1 overflow-hidden">
-                    <div className="space-y-6">
-                      <div className="space-y-6">
-                        <div className="space-y-3">
-                          <div>
-                            <div className="flex justify-between items-center">
-                              <h3 className="font-medium">
-                                Technical Skills Assessment
-                              </h3>
-                              <span className="text-sm font-medium">
-                                {manualTechnicalMarks}/100
-                              </span>
-                            </div>
-                          </div>
+                {categoryScores.filter(
+                  (category) =>
+                    category.categoryAssignment.category.categoryName ===
+                    "Technical"
+                ).length > 0 ? (
+                  <Card className="flex flex-col">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <div>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <User className="h-5 w-5" />
+                          Technical Skills Assessment
+                        </CardTitle>
+                        <CardDescription>
+                          Technical Skills Assessment&quot; is a test to
+                          evaluate the candidate&apos;s technical skills and
+                          knowledge in the relevant field.
+                          <p className=" pt-2">
+                            Average Score: {totalScore.toFixed(2)}/{100}
+                          </p>
+                        </CardDescription>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-hidden">
+                      <ScrollArea className="h-[600px] pr-4">
+                        <div className="space-y-6">
+                          {categoryScores
+                            .filter(
+                              (category) =>
+                                category.categoryAssignment.category
+                                  .categoryName === "Technical"
+                            )
+                            .map((category, index) => (
+                              <div key={index} className="space-y-6">
+                                {category.subCategoryScores.map(
+                                  (subCategory) => (
+                                    <div
+                                      key={subCategory.id}
+                                      className="space-y-3"
+                                    >
+                                      <div>
+                                        <div className="flex justify-between items-center">
+                                          <h3 className="font-medium">
+                                            {
+                                              subCategory.subCategoryAssignment
+                                                .name
+                                            }
+                                          </h3>
+                                          <span className="text-sm font-medium">
+                                            {subCategory.score}/{100}
+                                          </span>
+                                        </div>
+                                      </div>
 
-                          <div>
-                            <div className="flex justify-between items-center mb-2">
-                              <div className="flex items-center gap-2">
-                                <ThumbsDown className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-xs text-muted-foreground">
-                                  Poor
-                                </span>
+                                      <div>
+                                        <div className="flex justify-between items-center mb-2">
+                                          <div className="flex items-center gap-2">
+                                            <ThumbsDown className="h-4 w-4 text-muted-foreground" />
+                                            <span className="text-xs text-muted-foreground">
+                                              Poor
+                                            </span>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                            <span className="text-xs text-muted-foreground">
+                                              Excellent
+                                            </span>
+                                            <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+                                          </div>
+                                        </div>
+                                        <Slider
+                                          value={[subCategory.score || 0]}
+                                          max={100}
+                                          step={1}
+                                          id={subCategory.id}
+                                          marks={subCategory.score}
+                                          // enableColor={true}
+                                          onValueChange={(value) =>
+                                            handleSubCategoryMarksChange(
+                                              subCategory,
+                                              value
+                                            )
+                                          }
+                                          className="mb-4"
+                                        />
+                                      </div>
+                                      <div className=" mt-2">
+                                        <Badge className=" !text-blue-600 mr-1 !bg-black font-bold !border-blue-600">
+                                          Weight -{" "}
+                                          {
+                                            subCategory.subCategoryAssignment
+                                              .percentage
+                                          }
+                                          %
+                                        </Badge>
+                                      </div>
+
+                                      <Separator />
+                                    </div>
+                                  )
+                                )}
                               </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-muted-foreground">
-                                  Excellent
+                            ))}
+                        </div>
+                      </ScrollArea>
+                    </CardContent>
+                    <CardFooter className="border-t border-gray-500/40 pt-4 flex justify-between">
+                      <Button
+                        className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
+                        onClick={endTechnicalTest}
+                      >
+                        End technical test
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ) : (
+                  <Card className="flex flex-col">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <div>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <User className="h-5 w-5" />
+                          Technical Skills Assessment
+                        </CardTitle>
+                        <CardDescription>
+                          Technical Skills Assessment&quot; is a test to
+                          evaluate the candidate&apos;s technical skills and
+                          knowledge in the relevant field.
+                        </CardDescription>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-hidden">
+                      <div className="space-y-6">
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <div>
+                              <div className="flex justify-between items-center">
+                                <h3 className="font-medium">
+                                  Technical Skills Assessment
+                                </h3>
+                                <span className="text-sm font-medium">
+                                  {manualTechnicalMarks}/100
                                 </span>
-                                <ThumbsUp className="h-4 w-4 text-muted-foreground" />
                               </div>
                             </div>
-                            <Slider
-                              value={[manualTechnicalMarks || 0]}
-                              max={100}
-                              step={1}
-                              id={"technical-manual-marks"}
-                              marks={manualTechnicalMarks}
-                              // enableColor={true}
-                              onValueChange={(value) =>
-                                setManualTechnicalMarks(value[0])
-                              }
-                              className="mb-4"
-                            />
+
+                            <div>
+                              <div className="flex justify-between items-center mb-2">
+                                <div className="flex items-center gap-2">
+                                  <ThumbsDown className="h-4 w-4 text-muted-foreground" />
+                                  <span className="text-xs text-muted-foreground">
+                                    Poor
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-muted-foreground">
+                                    Excellent
+                                  </span>
+                                  <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              </div>
+                              <Slider
+                                value={[manualTechnicalMarks || 0]}
+                                max={100}
+                                step={1}
+                                id={"technical-manual-marks"}
+                                marks={manualTechnicalMarks}
+                                // enableColor={true}
+                                onValueChange={(value) =>
+                                  setManualTechnicalMarks(value[0])
+                                }
+                                className="mb-4"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="border-t border-gray-500/40 pt-4 flex justify-between">
-                    <Button
-                      className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
-                      onClick={endTechnicalTest}
-                    >
-                      End technical test
-                    </Button>
-                  </CardFooter>
-                </Card>
+                    </CardContent>
+                    <CardFooter className="border-t border-gray-500/40 pt-4 flex justify-between">
+                      <Button
+                        className="!bg-indigo-600 hover:!bg-indigo-700 !text-white"
+                        onClick={endTechnicalTest}
+                      >
+                        End technical test
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                )}
               </div>
             )}
           </>
