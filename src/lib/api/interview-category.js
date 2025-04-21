@@ -69,7 +69,6 @@ export const addNoteForCategory = async (categoryScoreId, data) => {
         console.log('Error updating category:', error);
         throw error;
     }
-}
-  
+} 
 
 export {fetchInterCategories,createCategory,deleteCategory,updateCategory};
