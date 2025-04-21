@@ -66,6 +66,7 @@ const InterviewSchedulePage = () => {
   }, []);
 
   const fetchPublishedInterviews = async () => {
+    // debugger
     setLoading(true);
     try {
       // console.log("interviewCategory", interviewCategory);
@@ -228,7 +229,7 @@ const InterviewSchedulePage = () => {
                   </div>
                   <div className=" w-full mt-6">
                     <span className=" text-xl font-semibold text-gray-400">
-                      Interview catorgory
+                      Interview Medium
                     </span>
                     <RadioGroup
                       defaultValue={interviewCategory}
