@@ -72,8 +72,6 @@ export const generateSoftSkills = async (data) => {
   }
 };
 
-
-
 export const generateRecommondations = async (data) => {
   try {
     const response = await axiosInstance.post(`/ai/generate-recommendation`, data);
@@ -83,3 +81,14 @@ export const generateRecommondations = async (data) => {
     throw error;
   }
 };
+
+export const generateTechnicalSkills = async (data) => {
+  try {
+    const response = await axiosInstance.post(`/ai/generate-technicalskills`, data);
+    return response;
+  } catch (error) {
+    console.log("Error generate technical skills:", error);
+    throw error;
+  }
+};
+
