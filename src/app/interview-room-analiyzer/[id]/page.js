@@ -186,6 +186,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     });
 
     socket.on("categoryScores", (data) => {
+      // debugger
       setCategoryScores(data.categoryScores.categoryScores);
       setTotalScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Technical")?.score);
       setSoftSkillScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Soft")?.score);
@@ -355,7 +356,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
                 </p>
               </div>
             </div>
-            {technicalStatus !== "toBeConducted" && (
+            {/* {technicalStatus !== "toBeConducted" && ( */}
               <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
@@ -389,7 +390,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
-            )}
+            {/* // )} */}
           </div>
         </main>
         {/* <div className=" w-full h-[10%] bg-gray-900 py-3 flex justify-between items-center px-6">
@@ -498,6 +499,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         isCandidate={false}
         ref={videoCallRef}
         senderId={userID}
+        videoView={false}
         role="COMPANY"
       />
     </>
