@@ -42,7 +42,7 @@ import { Label } from "@/components/ui/label";
 import socketChat from "@/lib/utils/socket";
 
 const VideoCall = forwardRef(
-  ({ sessionId, isCandidate, senderId, role }, ref) => {
+  ({ sessionId, isCandidate, senderId, role, videoView }, ref) => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const [peer, setPeer] = useState(null);
