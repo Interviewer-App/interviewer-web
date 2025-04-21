@@ -236,7 +236,6 @@ function SessionHistoryPage() {
   }, [sessionId, toast]);
 
   useEffect(() => {
-    // debugger
     const fetchCandidateDetails = async () => {
       try {
         const response = await getCandidateById(candidateId);
