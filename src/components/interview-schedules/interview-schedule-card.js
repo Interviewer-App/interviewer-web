@@ -127,9 +127,12 @@ export default function InterviewScheduleCard({
     //   </Tooltip>
     // </TooltipProvider>
     <Card key={interview.id} className="overflow-hidden relative">
-       <div className="absolute top-4 right-4 bg-slate-800 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
-      {interview.interviewMedium}
-    </div>
+      <div
+        className={`absolute top-4 right-4 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md ${interview.interviewMedium === 'PHYSICAL' ? 'bg-green-950' : 'bg-blue-950'
+          }`}
+      >
+        {interview.interviewMedium}
+      </div>
       <CardContent className="p-0">
         {/* <div className={cn(
                         "py-2 px-4",
