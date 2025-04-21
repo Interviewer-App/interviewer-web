@@ -44,6 +44,7 @@ const InterviewSchedulePage = () => {
   const [sordBy, setSortBy] = useState("");
   const [datePosted, setDatePosted] = useState("");
   const [interviewCategory, setInterviewCategory] = useState("");
+  const [interviewMedium, setInterviewMedium] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [keyWords, setKeyWords] = useState("");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -73,11 +74,12 @@ const InterviewSchedulePage = () => {
       const response = await getPublishedInterview(
         sordBy,
         datePosted,
-        interviewCategory,
+        interviewMedium,
         jobTitle,
         keyWords
       );
       setInterviews(response.data);
+      console.log("interviews", response.data);
       setIsAnyInterviews(response.data.length > 0);
 
     } catch (error) {
@@ -103,7 +105,7 @@ const InterviewSchedulePage = () => {
     // Reset all filter states to their initial values
     setSortBy("");
     setDatePosted("");
-    setInterviewCategory("");
+    setInterviewMedium("");
     setJobTitle("");
     setKeyWords("");
 
@@ -122,7 +124,7 @@ const InterviewSchedulePage = () => {
 
   useEffect(() => {
     fetchPublishedInterviews();
-  }, [sordBy, datePosted, interviewCategory, jobTitle, keyWords]);
+  }, [sordBy, datePosted, interviewMedium, jobTitle, keyWords]);
 
 
   if (status === "loading") {
@@ -232,20 +234,17 @@ const InterviewSchedulePage = () => {
                       Interview Medium
                     </span>
                     <RadioGroup
-                      defaultValue={interviewCategory}
-                      onValueChange={setInterviewCategory}
+                      defaultValue={interviewMedium}
+                      onValueChange={setInterviewMedium}
                     >
                       <div className=" w-full flex space-x-8 mt-5 px-5">
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Technical" id="Technical" />
-                          <Label htmlFor="Technical">Technical</Label>
+                          <RadioGroupItem value="PHYSICAL" id="PHYSICAL" />
+                          <Label htmlFor="PHYSICAL">Physical</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value="Behavioural"
-                            id="Behavioural"
-                          />
-                          <Label htmlFor="Behavioural">Behavioural</Label>
+                          <RadioGroupItem value="VIRTUAL" id="VIRTUAL" />
+                          <Label htmlFor="VIRTUAL">Virtual</Label>
                         </div>
                       </div>
                     </RadioGroup>
