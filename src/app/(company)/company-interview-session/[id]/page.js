@@ -585,20 +585,8 @@ function InterviewSessionPreviewPage({ params }) {
                           )}
                         </div>
                       ) : (
-                        <div className="mt-3">
+                        <div className="mt-3 w-full">
                           <div className=" w-full mt-5 ">
-                            <h1 className=" text-2xl font-semibold text-left w-full">
-                              <FaDotCircle className=" text-blue-700 text-xs inline-block mr-2" />
-                              Technical :{" "}
-                              {
-                                sessionDetails?.CategoryScore?.find(
-                                  (category) =>
-                                    category.categoryAssignment.category
-                                      .categoryName === "Technical"
-                                ).categoryAssignment?.percentage
-                              }
-                              %{" "}
-                            </h1>
                             <Alert className=" mt-3 px-5 rounded-lg border-2 !border-gray-500/40 !text-gray-400 !bg-gray-500/10">
                               <AlertCircleIcon className="h-4 w-4" />
                               <AlertTitle>Manual Assessment</AlertTitle>
@@ -609,6 +597,45 @@ function InterviewSessionPreviewPage({ params }) {
                                 candidate&apos;s field.
                               </AlertDescription>
                             </Alert>
+                            <div className=" w-full mt-3">
+                              {sessionDetails?.CategoryScore?.filter(
+                                (category) =>
+                                  category.categoryAssignment.category
+                                    .categoryName === "Technical"
+                              ).map((category) => (
+                                <div
+                                  key={category.categoryScoreId}
+                                  className=" w-full mt-5 "
+                                >
+                                  <h1 className=" text-2xl font-semibold text-left w-full">
+                                    <FaDotCircle className=" text-blue-700 text-xs inline-block mr-2" />
+                                    {
+                                      category.categoryAssignment.category
+                                        .categoryName
+                                    }{" "}
+                                    : {category.categoryAssignment.percentage}%{" "}
+                                  </h1>
+
+                                  <div className=" px-8">
+                                    {category.categoryAssignment.SubCategoryAssignment.map(
+                                      (subCategory) => (
+                                        <div
+                                          key={subCategory.id}
+                                          className=" mt-3 px-5 py-2 flex  rounded-lg border-2 border-gray-600/40 text-gray-400 bg-gray-500/10"
+                                        >
+                                          <Badge className="!bg-blue-500/20 mr-2 !text-blue-600 px-3 py-1 border !border-blue-600">
+                                            {subCategory.percentage}%
+                                          </Badge>
+                                          <h1 className=" font-semibold">
+                                            {subCategory.name}
+                                          </h1>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       )}
@@ -639,14 +666,14 @@ function InterviewSessionPreviewPage({ params }) {
                                 (subCategory) => (
                                   <div
                                     key={subCategory.id}
-                                    className=" mt-3 px-5 py-2 rounded-lg border-2 border-gray-600/40 text-gray-400 bg-gray-500/10"
+                                    className=" mt-3 px-5 py-2 flex rounded-lg border-2 border-gray-600/40 text-gray-400 bg-gray-500/10"
                                   >
+                                    <Badge className="!bg-blue-500/20 mr-2 !text-blue-600 px-3 py-1 border !border-blue-600">
+                                      {subCategory.percentage}%
+                                    </Badge>
                                     <h1 className=" font-semibold">
                                       {subCategory.name}
                                     </h1>
-                                    <Badge className="!bg-blue-500/20 !text-blue-600 px-3 py-1 border !border-blue-600">
-                                      {subCategory.percentage}%
-                                    </Badge>
                                   </div>
                                 )
                               )}
