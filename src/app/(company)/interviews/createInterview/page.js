@@ -4509,6 +4509,7 @@ const CreateInterview = () => {
                                     size="sm"
                                     onClick={() => removeSchedule(sch.id)}
                                     className="ml-2 h-6 w-6 p-0 text-destructive"
+                                    type="button"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                     <span className="sr-only">Remove</span>
