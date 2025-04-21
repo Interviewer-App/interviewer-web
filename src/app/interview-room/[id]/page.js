@@ -2,7 +2,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import socket from "../../../lib/utils/socket";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import Image from "next/image";
@@ -80,6 +80,7 @@ const InterviewRoomPage = ({ params }) => {
   const [isTechnicalOngoing, setIsTechnicalOngoing] = useState(false);
   const [technicalStatus, setTechnicalStatus] = useState("");
   const [isParticipantJoined, setIsParticipantJoined] = useState(false);
+  const [videoView, setVideoView] = useState(false);
   // const boxRef = useRef(null);
 
   const {
@@ -121,6 +122,22 @@ const InterviewRoomPage = ({ params }) => {
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
+
+  useEffect(() => {
+    if (isParticipantJoined) {
+      if (
+        technicalStatus !== "ongoing" &&
+        technicalStatus !== "completed" &&
+        technicalStatus !== "testEnd"
+      ) {
+        setVideoView(true);
+      } else {
+        setVideoView(false);
+      }
+    } else {
+      setVideoView(false);
+    }
+  }, [technicalStatus, isParticipantJoined]);
 
   useEffect(() => {
     if (question?.estimatedTimeMinutes) {
@@ -1164,37 +1181,13 @@ const InterviewRoomPage = ({ params }) => {
               </div>
             ) : technicalStatus === "testEnd" ? (
               <div className=" w-full h-lvh flex flex-col justify-center items-center">
-              <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-                <div className=" w-full flex flex-col justify-center items-center mb-14">
-                  <div className=" w-full flex flex-col justify-center items-center">
-                    <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
-                    <h1 className=" font-semibold text-3xl py-3">
-                    You have Successfully Completed Your Technical Evaluation
-                    </h1>
-                  </div>
-                </div>
-                <div className=" w-full flex flex-col justify-center items-center mb-16">
-                  <PuffLoader color="#ffffff" />
-                </div>
-                <div className=" w-full flex flex-col justify-center] items-center">
-                  <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-                  Please wait while the company concludes the interview
-                  session.
-                  </p>
-                  <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-                  Kindly remain available. Please hold on...
-                  </p>
-                </div>
-              </div>
-            </div>
-            ) : (
-              <div className=" w-full h-lvh flex flex-col justify-center items-center">
                 <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
                   <div className=" w-full flex flex-col justify-center items-center mb-14">
                     <div className=" w-full flex flex-col justify-center items-center">
                       <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
                       <h1 className=" font-semibold text-3xl py-3">
-                        Time now: {timeNow}
+                        You have Successfully Completed Your Technical
+                        Evaluation
                       </h1>
                     </div>
                   </div>
@@ -1203,16 +1196,40 @@ const InterviewRoomPage = ({ params }) => {
                   </div>
                   <div className=" w-full flex flex-col justify-center] items-center">
                     <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-                      Waiting for the company to start the interview session.
-                      Please hold on until the session begins.
+                      Please wait while the company concludes the interview
+                      session.
                     </p>
                     <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-                      Generating interview questions. Please hold on...
+                      Kindly remain available. Please hold on...
                     </p>
                   </div>
                 </div>
               </div>
-            )}
+            ) : // <div className=" w-full h-lvh flex flex-col justify-center items-center">
+            //   <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+            //     <div className=" w-full flex flex-col justify-center items-center mb-14">
+            //       <div className=" w-full flex flex-col justify-center items-center">
+            //         <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
+            //         <h1 className=" font-semibold text-3xl py-3">
+            //           Time now: {timeNow}
+            //         </h1>
+            //       </div>
+            //     </div>
+            //     <div className=" w-full flex flex-col justify-center items-center mb-16">
+            //       <PuffLoader color="#ffffff" />
+            //     </div>
+            //     <div className=" w-full flex flex-col justify-center] items-center">
+            //       <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+            //         Waiting for the company to start the interview session.
+            //         Please hold on until the session begins.
+            //       </p>
+            //       <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+            //         Generating interview questions. Please hold on...
+            //       </p>
+            //     </div>
+            //   </div>
+            // </div>
+            null}
           </div>
           <div className=" w-[20%] max-w-[400px] h-lvh bg-black border-l rounded-lg border-gray-500/40">
             <div className=" px-4 py-4 border-b border-gray-500/40">
@@ -1226,6 +1243,7 @@ const InterviewRoomPage = ({ params }) => {
                 sessionId={sessionId}
                 isCandidate={true}
                 senderId={userId}
+                videoView={videoView}
                 role="CANDIDATE"
               />
             </div>
