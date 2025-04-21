@@ -44,6 +44,8 @@ import {
   AlertCircle,
   SaveAll,
   CircleX,
+  CircleCheckBig,
+  AlertTriangleIcon,
 } from "lucide-react";
 import { GiDiamondTrophy } from "react-icons/gi";
 import Trophy from "@/assets/analyze/trophy.png";
@@ -131,6 +133,7 @@ const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
 import {
   getInterviewById,
   interviewStatus,
+  saveInterviewSubCategories,
   sortCandidates,
   updateInterview,
 } from "@/lib/api/interview";
@@ -221,6 +224,7 @@ import {
   generateInterviewQuestions,
   generateRecommondations,
   generateSoftSkills,
+  generateTechnicalSkills,
 } from "@/lib/api/ai";
 
 import {
@@ -231,6 +235,7 @@ import CandidateAnalysisTab from "@/components/company/analysis-tab";
 import SkillsInput from "@/components/inputs/skillsInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TimeSlotsTab from "@/components/company/time-slots-tab";
+import { set } from "react-hook-form";
 
 export default function InterviewPreviewPage({ params }) {
   const { data: session } = useSession();
@@ -441,189 +446,13 @@ export default function InterviewPreviewPage({ params }) {
   // Get initial tab from query param or default to 'overview'
   const [activeTab, setActiveTab] = useState("overview");
   const tabParam = searchParams.get("tab");
-  const [technicalSubCategories, setTechnicalSubCategories] = useState([
-    {
-      id: "cm9av0nn3000gu78okiruw8gj",
-      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
-      name: "Frontend Development",
-      color: "#EF2A2C",
-      percentage: 25,
-      createdAt: "2025-04-10T04:30:11.630Z",
-      updatedAt: "2025-04-10T04:30:11.630Z",
-      subCategoryParameters: [
-        {
-          id: "cm9av0nn3000hu78oxf0prr4s",
-          name: "React.js",
-          subAssignmentId: "cm9av0nn3000gu78okiruw8gj",
-          percentage: 40,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn3000iu78objcfg62k",
-          name: "Next.js",
-          subAssignmentId: "cm9av0nn3000gu78okiruw8gj",
-          percentage: 35,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn3000ju78oa0lj03wk",
-          name: "Tailwind CSS",
-          subAssignmentId: "cm9av0nn3000gu78okiruw8gj",
-          percentage: 25,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-      ],
-    },
-    {
-      id: "cm9av0nn3000ku78o2c8juhnk",
-      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
-      name: "Backend Development",
-      color: "#A7DEEB",
-      percentage: 30,
-      createdAt: "2025-04-10T04:30:11.630Z",
-      updatedAt: "2025-04-10T04:30:11.630Z",
-      subCategoryParameters: [
-        {
-          id: "cm9av0nn4000lu78oucqye86l",
-          name: "Node.js",
-          subAssignmentId: "cm9av0nn3000ku78o2c8juhnk",
-          percentage: 45,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000mu78oz2nzmzgj",
-          name: "Express.js",
-          subAssignmentId: "cm9av0nn3000ku78o2c8juhnk",
-          percentage: 35,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000nu78ozu0qsccy",
-          name: "MongoDB",
-          subAssignmentId: "cm9av0nn3000ku78o2c8juhnk",
-          percentage: 20,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-      ],
-    },
-    {
-      id: "cm9av0nn4000ou78ocfytikr6",
-      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
-      name: "Mobile Development",
-      color: "#8E4894",
-      percentage: 20,
-      createdAt: "2025-04-10T04:30:11.630Z",
-      updatedAt: "2025-04-10T04:30:11.630Z",
-      subCategoryParameters: [
-        {
-          id: "cm9av0nn4000pu78oc8g8c9h1",
-          name: "React Native",
-          subAssignmentId: "cm9av0nn4000ou78ocfytikr6",
-          percentage: 50,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000qu78ocq3sv9dj",
-          name: "Expo",
-          subAssignmentId: "cm9av0nn4000ou78ocfytikr6",
-          percentage: 30,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000ru78oma001ukf",
-          name: "NativeWind",
-          subAssignmentId: "cm9av0nn4000ou78ocfytikr6",
-          percentage: 20,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-      ],
-    },
-    {
-      id: "cm9av0nn4000su78ofih5d1a2",
-      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
-      name: "DevOps & Tools",
-      color: "#9CBC8C",
-      percentage: 15,
-      createdAt: "2025-04-10T04:30:11.630Z",
-      updatedAt: "2025-04-10T04:30:11.630Z",
-      subCategoryParameters: [
-        {
-          id: "cm9av0nn4000tu78o5o6c1xij",
-          name: "Git & GitHub",
-          subAssignmentId: "cm9av0nn4000su78ofih5d1a2",
-          percentage: 60,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000uu78owmpwr9ku",
-          name: "CI/CD Basics",
-          subAssignmentId: "cm9av0nn4000su78ofih5d1a2",
-          percentage: 40,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-      ],
-    },
-    {
-      id: "cm9av0nn4000vu78o5ahf956g",
-      parentAssignmentId: "cm9av0nn3000fu78omokid8k2",
-      name: "Testing",
-      color: "#CBBC5B",
-      percentage: 10,
-      createdAt: "2025-04-10T04:30:11.630Z",
-      updatedAt: "2025-04-10T04:30:11.630Z",
-      subCategoryParameters: [
-        {
-          id: "cm9av0nn4000wu78ota2kx972",
-          name: "Unit Testing",
-          subAssignmentId: "cm9av0nn4000vu78o5ahf956g",
-          percentage: 50,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000xu78od7zwpmed",
-          name: "Integration Testing",
-          subAssignmentId: "cm9av0nn4000vu78o5ahf956g",
-          percentage: 30,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-        {
-          id: "cm9av0nn4000yu78ojn11i2k2",
-          name: "Jest",
-          subAssignmentId: "cm9av0nn4000vu78o5ahf956g",
-          percentage: 20,
-          description: null,
-          createdAt: "2025-04-10T04:30:11.630Z",
-          updatedAt: "2025-04-10T04:30:11.630Z",
-        },
-      ],
-    },
-  ]);
+  const [technicalSubCategories, setTechnicalSubCategories] = useState([]);
+  const [generateTechnicalSkillsLoading, setGenerateTechnicalSkillsLoading] =
+    useState(false);
+  const [isEditTechnicalSkills, setIsEditTechnicalSkills] = useState(false);
+  const [isEditSoftSkills, setIsEditSoftSkills] = useState(false);
+  const [technicalAssignmentId, setTechnicalAssignmentId] = useState(null);
+  const [softAssignmentId, setSoftAssignmentId] = useState(null);
 
   useEffect(() => {
     if (tabParam) {
@@ -1071,6 +900,9 @@ export default function InterviewPreviewPage({ params }) {
     const softSkillId = interviewCategories?.find(
       (category) => category.categoryName === "Soft"
     )?.categoryId;
+    const technicalSkillId = interviewCategories?.find(
+      (category) => category.categoryName === "Technical"
+    )?.categoryId;
     if (softSkillId) {
       const softSkill = interviewDetail.CategoryAssignment?.find(
         (assignment) => assignment.categoryId === softSkillId
@@ -1079,8 +911,19 @@ export default function InterviewPreviewPage({ params }) {
         setSoftSkills(softSkill.SubCategoryAssignment);
         setSoftSkillsPercentage(softSkill.percentage);
         setTechnicalPercentage(100 - softSkill.percentage);
+        setSoftAssignmentId(softSkill.assignmentId);
       }
     }
+    if (technicalSkillId) {
+      const techSkill = interviewDetail.CategoryAssignment?.find(
+        (assignment) => assignment.categoryId === technicalSkillId
+      );
+      if (techSkill) {
+        setTechnicalAssignmentId(techSkill.assignmentId);
+        setTechnicalSubCategories(techSkill.SubCategoryAssignment);
+      }
+    }
+
   }, [interviewCategories, categoryList, interviewDetail]);
 
   useEffect(() => {
@@ -1657,6 +1500,7 @@ export default function InterviewPreviewPage({ params }) {
           }))
         );
         setSoftSkillsLoading(false);
+        setIsEditSoftSkills(true);
       }
     } catch (err) {
       setSoftSkillsLoading(false);
@@ -1861,6 +1705,8 @@ export default function InterviewPreviewPage({ params }) {
         }
       })
     );
+
+    setIsEditSoftSkills(true);
   };
 
   const handleTechnicalSkillPercentageChange = (skillId, newPercentage) => {
@@ -2208,6 +2054,7 @@ export default function InterviewPreviewPage({ params }) {
     } else {
       setSoftSkills([]);
     }
+    setIsEditSoftSkills(true);
   };
 
   const handleStartSession = (sessionId) => {
@@ -2410,6 +2257,7 @@ export default function InterviewPreviewPage({ params }) {
         subcategories: [],
       });
       setIsAddingSoftSkill(false);
+      setIsEditSoftSkills(true);
     }
   };
 
@@ -2478,6 +2326,130 @@ export default function InterviewPreviewPage({ params }) {
       });
       setIsAddingTechnicalSubSkill(false);
       setCreateTechnicalSkillModalOpen(false);
+      setIsEditTechnicalSkills(true);
+    }
+  };
+
+  const handleGenerateTechnicalSkills = async (e) => {
+    e.preventDefault();
+    setGenerateTechnicalSkillsLoading(true);
+
+    const data = {
+      position: interviewDetail.jobTitle,
+      qualifications: interviewDetail.jobDescription,
+      industry: interviewDetail.industry,
+      experience_level: interviewDetail.proficiencyLevel,
+    };
+
+    try {
+      const response = await generateTechnicalSkills(data);
+
+      if (response) {
+        setTechnicalSubCategories(
+          response.data.technicalkills.map((skill, index) => ({
+            ...skill,
+            expanded: false,
+            id: `s${index + 1}`,
+          }))
+        );
+        setIsEditTechnicalSkills(true);
+        setGenerateTechnicalSkillsLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Technical skills Generation failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setGenerateTechnicalSkillsLoading(false);
+    }
+  };
+
+  const handleSaveInterviewSubCategories = async (id, type) => {
+    // e.preventDefault();
+    // setGenerateTechnicalSkillsLoading(true);
+
+    let data = null;
+
+    if (!id) return;
+    if (type === "Technical") {
+    data = {
+      subcategories: technicalSubCategories.map((skill) => ({
+        name: skill.name,
+        percentage: skill.percentage
+      })),
+    };
+    } else {
+    data = {
+        subcategories: softSkills.map((skill) => ({
+          name: skill.name,
+          percentage: parseInt(skill.percentage)
+        })),
+      };
+    }
+
+    try {
+      const response = await saveInterviewSubCategories(id, data);
+
+      if (response) {
+        toast({
+          variant: "default",
+          title: "Success!",
+          description: "Skills updated successfully.",
+        });
+        setIsEditTechnicalSkills(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Skills updation failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     }
   };
 
@@ -2516,7 +2488,7 @@ export default function InterviewPreviewPage({ params }) {
             </div>
 
             <div className="flex items-center space-x-3">
-              {activeTab === "insights" &&
+              {/* {activeTab === "insights" &&
                 (editDetails ? (
                   <Button
                     variant="outline"
@@ -2537,7 +2509,7 @@ export default function InterviewPreviewPage({ params }) {
                     <Edit className="h-4 w-4" />
                     Edit
                   </Button>
-                ))}
+                ))} */}
               <Button
                 variant="outline"
                 size="sm"
@@ -2965,13 +2937,59 @@ export default function InterviewPreviewPage({ params }) {
               <div className="space-y-8">
                 {/* Percentage Allocation */}
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold">
-                    Assessment Weighting
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">
+                      Assessment Weighting
+                    </h2>
+                    {activeTab === "insights" &&
+                      (editDetails ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-1  text-green-500 !border-green-500/50 hover:!text-green-400 hover:!bg-green-500/20"
+                          onClick={handleSaveChanges}
+                        >
+                          <SaveAll className="h-4 w-4" />
+                          Save Changes
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-1 border !border-gray-400/40"
+                          onClick={() => setEditDetails(true)}
+                        >
+                          <Edit className="h-4 w-4" />
+                          Edit
+                        </Button>
+                      ))}
+                  </div>
+                  {/* <p className="text-sm text-muted-foreground mb-4">
                     Adjust the percentage allocation between technical expertise
                     and soft skills assessment. The total must equal 100%.
-                  </p>
+                  </p> */}
+                {editDetails && (
+                  <>
+                    <Alert>
+                      <AlertCircleIcon className="h-4 w-4 !border-gray-400/50" />
+                      <AlertTitle>Warning</AlertTitle>
+                      <AlertDescription>
+                        Adjust the percentage allocation between technical
+                        expertise and soft skills assessment. The total must
+                        equal 100%.
+                      </AlertDescription>
+                    </Alert>
+                    <Alert className="border !border-yellow-500/50 !bg-yellow-500/10">
+                      <AlertTriangleIcon className="h-4 w-4" />
+                      <AlertTitle>Unsaved Changes</AlertTitle>
+                      <AlertDescription>
+                        You have modified the assignment weightage. To save your
+                        changes, please click <strong>Save Changes</strong>. If
+                        you don't, your updates will be discarded.
+                      </AlertDescription>
+                    </Alert>
+                  </>
+                )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card
@@ -3241,7 +3259,7 @@ export default function InterviewPreviewPage({ params }) {
                             variant="outline"
                             size="sm"
                             onClick={() => setIsQuestionPromptOpen(true)}
-                            className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                            className="flex items-center gap-1  text-blue-500 !border-blue-500/50 hover:!text-blue-400 hover:!bg-blue-500/20"
                           >
                             <Sparkles className="h-4 w-4" />
                             <span>Generate with AI</span>
@@ -3291,7 +3309,7 @@ export default function InterviewPreviewPage({ params }) {
                             variant="outline"
                             size="sm"
                             onClick={handleGenerateQuestions}
-                            className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                            className="flex items-center gap-1  text-blue-500 !border-blue-500/50 hover:!text-blue-400 hover:!bg-blue-500/20"
                           >
                             {isGeneratingQuestions ? (
                               <LoaderCircle className="animate-spin" />
@@ -3706,17 +3724,39 @@ export default function InterviewPreviewPage({ params }) {
                 ) : (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium">Qualities to Technical Assess</h3>
+                      <h3 className="text-lg font-medium">
+                        Qualities to Technical Assess
+                      </h3>
                       <div className="flex space-x-2">
-                        {/* {!isQuestionPromptOpen && ( */}
+                        {isEditTechnicalSkills && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => handleSaveInterviewSubCategories(technicalAssignmentId, "Technical")}
+                            className="flex items-center gap-1  text-green-500 !border-green-500/50 hover:!text-green-400 hover:!bg-green-500/20"
+                          >
+                            <>
+                              <SaveAll className="h-4 w-4" />
+                              <span>Save Changes</span>
+                            </>
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setIsQuestionPromptOpen(true)}
-                          className="flex items-center gap-1 text-blue-500 border-blue-500/50 hover:bg-blue-500/10"
+                          onClick={handleGenerateTechnicalSkills}
+                          className="flex items-center gap-1  text-blue-500 !border-blue-500/50 hover:!text-blue-400 hover:!bg-blue-500/20"
                         >
-                          <Sparkles className="h-4 w-4" />
-                          <span>Generate with AI</span>
+                          {generateTechnicalSkillsLoading ? (
+                            <LoaderCircle className="animate-spin" />
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4" />
+                              <span>
+                                {isEditTechnicalSkills && "Re-"}Generate with AI
+                              </span>
+                            </>
+                          )}
                         </Button>
                         {/* )} */}
                         <Button
@@ -3740,6 +3780,18 @@ export default function InterviewPreviewPage({ params }) {
                         candidate&apos;s field.
                       </AlertDescription>
                     </Alert>
+                    {isEditTechnicalSkills && (
+                      <Alert className="border !border-yellow-500/50 !bg-yellow-500/10">
+                        <AlertTriangleIcon className="h-4 w-4" />
+                        <AlertTitle>Unsaved Changes</AlertTitle>
+                        <AlertDescription>
+                          You have made changes to your technical skills. To
+                          keep these changes, please click{" "}
+                          <strong>Save Changes</strong>. Otherwise, your updates
+                          will be lost.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                     {createTechnicalSkillModalOpen && (
                       <Card className="overflow-hidden border border-blue-500/20">
                         <CardContent className="p-4">
@@ -4169,6 +4221,18 @@ export default function InterviewPreviewPage({ params }) {
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-medium">Qualities to Assess</h3>
                   <div className="flex space-x-2">
+                    {isEditSoftSkills && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) =>handleSaveInterviewSubCategories(softAssignmentId, "Soft")}
+                        className="flex items-center gap-1  text-green-500 !border-green-500/50 hover:!text-green-400 hover:!bg-green-500/20"
+                      >
+                        <SaveAll className="h-4 w-4 text-green-500" />
+                        <span>Save Changes</span>
+                      </Button>
+                    )}
                     <Button
                       type="button"
                       variant="outline"
@@ -4181,7 +4245,9 @@ export default function InterviewPreviewPage({ params }) {
                       ) : (
                         <>
                           <Sparkles className="h-4 w-4 text-blue-500" />
-                          <span>Generate with AI</span>
+                          <span>
+                            {isEditSoftSkills && "Re-"}Generate with AI
+                          </span>
                         </>
                       )}
                     </Button>
@@ -4197,6 +4263,17 @@ export default function InterviewPreviewPage({ params }) {
                     </Button>
                   </div>
                 </div>
+                {isEditSoftSkills && (
+                  <Alert className="border !border-yellow-500/50 !bg-yellow-500/10">
+                    <AlertTriangleIcon className="h-4 w-4" />
+                    <AlertTitle>Unsaved Changes</AlertTitle>
+                    <AlertDescription>
+                      You have made changes to your soft skills. To keep these
+                      changes, please click <strong>Save Changes</strong>.
+                      Otherwise, your updates will be lost.
+                    </AlertDescription>
+                  </Alert>
+                )}
                 {isAddingSoftSkill && (
                   <Card className="overflow-hidden border border-blue-500/20">
                     <CardContent className="p-4">
