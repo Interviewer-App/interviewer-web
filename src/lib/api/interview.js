@@ -213,3 +213,13 @@ export const addFeedback = async (sessionId,data) => {
         throw error;
     }
 }
+
+export const saveInterviewSubCategories = async (categoryAssignmentId, data) => {
+    try {
+        const response=await axiosInstance.post(`/interview/category-assignment/${categoryAssignmentId}/subcategories`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error creating Interview subcategories`,error)
+        throw error;
+    }
+}
