@@ -124,6 +124,19 @@ const InterviewRoomPage = ({ params }) => {
   // }, []);
 
   useEffect(() => {
+    window.addEventListener(
+      "beforeunload",
+      console.log("back from inreview room")
+    );
+    return () => {
+      window.removeEventListener(
+        "beforeunload",
+        console.log("back from inreview room")
+      );
+    };
+  }, []);
+
+  useEffect(() => {
     if (isParticipantJoined) {
       if (
         technicalStatus !== "ongoing" &&
@@ -1106,10 +1119,31 @@ const InterviewRoomPage = ({ params }) => {
                     time={formatTime(questionCountDown)}
                   />
                 ) : (
-                  <div className=" flex justify-center items-center w-full h-full">
-                    <p className=" text-2xl font-semibold">
-                      Technical interview is ongoing..
-                    </p>
+                  <div className=" w-full h-lvh flex flex-col justify-center items-center">
+                    <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
+                      <div className=" w-full flex flex-col justify-center items-center mb-14">
+                        <div className=" w-full flex flex-col justify-center items-center">
+                          <h1 className=" text-lg">
+                            Technical interview is ongoing
+                          </h1>
+                          <h1 className=" font-semibold text-3xl py-3">
+                            Time now: {timeNow}
+                          </h1>
+                        </div>
+                      </div>
+                      <div className=" w-full flex flex-col justify-center items-center mb-16">
+                        <PuffLoader color="#ffffff" />
+                      </div>
+                      <div className=" w-full flex flex-col justify-center] items-center">
+                        <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
+                          Waiting for the interviewer to send the next question.
+                          Please hold on until the questionnaire starts.
+                        </p>
+                        <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
+                          Please wait while we proceed...
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1205,31 +1239,7 @@ const InterviewRoomPage = ({ params }) => {
                   </div>
                 </div>
               </div>
-            ) : // <div className=" w-full h-lvh flex flex-col justify-center items-center">
-            //   <div className="flex flex-col h-lvh w-full justify-center item-center bg-background text-white">
-            //     <div className=" w-full flex flex-col justify-center items-center mb-14">
-            //       <div className=" w-full flex flex-col justify-center items-center">
-            //         <h1 className=" text-lg">scheduled Time: 9:55:19 AM</h1>
-            //         <h1 className=" font-semibold text-3xl py-3">
-            //           Time now: {timeNow}
-            //         </h1>
-            //       </div>
-            //     </div>
-            //     <div className=" w-full flex flex-col justify-center items-center mb-16">
-            //       <PuffLoader color="#ffffff" />
-            //     </div>
-            //     <div className=" w-full flex flex-col justify-center] items-center">
-            //       <p className=" w-[75%] mx-auto text-center font-semibold text-xl pt-5">
-            //         Waiting for the company to start the interview session.
-            //         Please hold on until the session begins.
-            //       </p>
-            //       <p className=" w-[25%] mx-auto text-center text-sm py-2 text-lightred">
-            //         Generating interview questions. Please hold on...
-            //       </p>
-            //     </div>
-            //   </div>
-            // </div>
-            null}
+            ) : null}
           </div>
           <div className=" w-[20%] max-w-[400px] h-lvh bg-black border-l rounded-lg border-gray-500/40">
             <div className=" px-4 py-4 border-b border-gray-500/40">
