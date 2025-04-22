@@ -42,7 +42,7 @@ import { Label } from "@/components/ui/label";
 import socketChat from "@/lib/utils/socket";
 
 const VideoCall = forwardRef(
-  ({ sessionId, isCandidate, senderId, role, videoView }, ref) => {
+  ({ sessionId, isCandidate, senderId, role, videoView, handleBackNavigation }, ref) => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const [peer, setPeer] = useState(null);
@@ -512,10 +512,12 @@ const VideoCall = forwardRef(
 
       activeCalls.current.forEach((call) => call.close());
 
-      if (isCandidate) {
-        router.push("/my-interviews");
-        // window.location.href = '/my-interviews';
-      }
+      handleBackNavigation(role);
+
+      // if (isCandidate) {
+      //   router.push("/my-interviews");
+      //   // window.location.href = '/my-interviews';
+      // }
     };
 
     const handleChatButtonClick = () => {
@@ -569,7 +571,7 @@ const VideoCall = forwardRef(
                 </div>
               </div>
             ) : (
-              <div className={`fixed inset-0 pointer-events-none z-50`}>
+              <div className={`fixed inset-0 pointer-events-none z-40`}>
                 <div className="w-full h-lvh relative flex items-center justify-center bg-gray-500 rounded-lg">
                   <video
                     ref={remoteVideoRef}
@@ -611,7 +613,7 @@ const VideoCall = forwardRef(
             )}
           </>
         ) : (
-          <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="fixed inset-0 pointer-events-none z-40">
             {/* Candidate video */}
             <div
               ref={candidateVideoRef}
@@ -740,7 +742,7 @@ const VideoCall = forwardRef(
         <div
           className={`fixed z-50 bottom-0 left-0 right-0 bg-gray-900 py-4 px-4 flex justify-center gap-4 transition-transform duration-300 `}
         >
-          <div className="absolute top-1/2 -translate-y-1/2 left-4 text-white z-50">
+          <div className="absolute top-1/2 -translate-y-1/2 left-4 text-white z-40">
             <span className="font-medium text-xl">
               {formatTime(callDuration)}
             </span>
