@@ -208,9 +208,9 @@ const VideoCall = forwardRef(
       return () => clearInterval(interval);
     }, []);
 
-    useEffect(() => {
-      console.log("Video available:", isRemoteVideoOn );
-    }, );
+    // useEffect(() => {
+    //   console.log("Video available:", isRemoteVideoOn);
+    // });
 
     useEffect(() => {
       if (remoteStream) {
@@ -220,13 +220,13 @@ const VideoCall = forwardRef(
           const handleTrackEnded = () => {
             setIsRemoteVideoOn(track.enabled);
           };
-          
-          track.addEventListener('enabled', handleTrackEnded);
-          track.addEventListener('disabled', handleTrackEnded);
-          
+
+          track.addEventListener("enabled", handleTrackEnded);
+          track.addEventListener("disabled", handleTrackEnded);
+
           return () => {
-            track.removeEventListener('enabled', handleTrackEnded);
-            track.removeEventListener('disabled', handleTrackEnded);
+            track.removeEventListener("enabled", handleTrackEnded);
+            track.removeEventListener("disabled", handleTrackEnded);
           };
         }
       }
@@ -263,16 +263,28 @@ const VideoCall = forwardRef(
               setRemoteStream(remoteStream);
               remoteVideoRef.current.srcObject = remoteStream;
 
-              remoteStream.getVideoTracks().forEach(track => {
-                track.addEventListener('enabled', () => setIsRemoteVideoOn(true));
-                track.addEventListener('disabled', () => setIsRemoteVideoOn(false));
-                track.addEventListener('ended', () => setIsRemoteVideoOn(false));
+              remoteStream.getVideoTracks().forEach((track) => {
+                track.addEventListener("enabled", () =>
+                  setIsRemoteVideoOn(true)
+                );
+                track.addEventListener("disabled", () =>
+                  setIsRemoteVideoOn(false)
+                );
+                track.addEventListener("ended", () =>
+                  setIsRemoteVideoOn(false)
+                );
               });
 
-              remoteStream.getAudioTracks().forEach(track => {
-                track.addEventListener('enabled', () => setIsRemoteAudioOn(true));
-                track.addEventListener('disabled', () => setIsRemoteAudioOn(false));
-                track.addEventListener('ended', () => setIsRemoteAudioOn(false));
+              remoteStream.getAudioTracks().forEach((track) => {
+                track.addEventListener("enabled", () =>
+                  setIsRemoteAudioOn(true)
+                );
+                track.addEventListener("disabled", () =>
+                  setIsRemoteAudioOn(false)
+                );
+                track.addEventListener("ended", () =>
+                  setIsRemoteAudioOn(false)
+                );
               });
             });
             call.on("close", () => {
@@ -310,7 +322,6 @@ const VideoCall = forwardRef(
               setIsRemoteVideoOn(hasVideo);
             });
           });
-          
         } catch (error) {
           console.error("Error accessing media devices:", error);
         }
@@ -530,35 +541,87 @@ const VideoCall = forwardRef(
       <div className="bg-black relative h-full w-auto">
         {/* Video containers */}
         {isCandidate ? (
-          <div className={`flex-col flex items-center justify-center gap-5`}>
-            <div className="w-full relative flex items-center justify-center bg-gray-500 rounded-lg">
-              <video
-                ref={remoteVideoRef}
-                autoPlay
-                className="h-full w-auto object-contain rounded-lg"
-              />
-              <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
-                You ({isCandidate ? "Interviewer" : "Candidate"})
+          <>
+            {!videoView ? (
+              <div
+                className={`flex-col flex items-center justify-center gap-5`}
+              >
+                <div className="w-full relative flex items-center justify-center bg-gray-500 rounded-lg">
+                  <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    className="h-full w-auto object-contain rounded-lg"
+                  />
+                  <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
+                    You ({isCandidate ? "Interviewer" : "Candidate"})
+                  </div>
+                </div>
+                <div className="w-full relative flex items-center justify-center bg-black">
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    muted
+                    className="h-full w-auto object-contain rounded-lg"
+                  />
+                  <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
+                    You ({isCandidate ? "Candidate" : "Interviewer"})
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="w-full relative flex items-center justify-center bg-black">
-              <video
-                ref={localVideoRef}
-                autoPlay
-                muted
-                className="h-full w-auto object-contain rounded-lg"
-              />
-              <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
-                You ({isCandidate ? "Candidate" : "Interviewer"})
+            ) : (
+              <div className={`fixed inset-0 pointer-events-none z-50`}>
+                <div className="w-full h-lvh relative flex items-center justify-center bg-gray-500 rounded-lg">
+                  <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    className="h-full w-auto object-contain rounded-lg"
+                  />
+                  <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
+                    You ({isCandidate ? "Interviewer" : "Candidate"})
+                  </div>
+                </div>
+                <div
+                  className={`w-32 h-24 bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto ${
+                    isDraggingInterviewer ? "cursor-grabbing" : "cursor-grab"
+                  }`}
+                  style={{
+                    left: `${interviewerVideoPosition.x}px`,
+                    top: `${interviewerVideoPosition.y}px`,
+                    transition: isDraggingInterviewer
+                      ? "none"
+                      : "box-shadow 0.2s ease",
+                    boxShadow: isDraggingInterviewer
+                      ? "0 8px 16px rgba(0,0,0,0.2)"
+                      : "0 4px 8px rgba(0,0,0,0.1)",
+                  }}
+                  onMouseDown={(e) => handleDragStart(e, false)}
+                  onTouchStart={(e) => handleDragStart(e, false)}
+                >
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    muted
+                    className="h-full w-auto object-contain rounded-md"
+                  />
+                  <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 text-xs text-white">
+                    You ({isCandidate ? "Candidate" : "Interviewer"})
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         ) : (
           <div className="fixed inset-0 pointer-events-none z-50">
             {/* Candidate video */}
             <div
               ref={candidateVideoRef}
-              className={ ` ${isMaximized ? 'w-full h-full fixed' : isDraggingCandidate ? "cursor-grabbing w-64 h-48" : "cursor-grab w-64 h-48"} bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto`}
+              className={` ${
+                isMaximized
+                  ? "w-full h-full fixed"
+                  : isDraggingCandidate
+                  ? "cursor-grabbing w-64 h-48"
+                  : "cursor-grab w-64 h-48"
+              } bg-black rounded-md overflow-hidden shadow-lg border border-border absolute pointer-events-auto`}
               style={{
                 left: `${!isMaximized ? candidateVideoPosition.x : 0}px`,
                 top: `${!isMaximized ? candidateVideoPosition.y : 0}px`,
@@ -597,22 +660,29 @@ const VideoCall = forwardRef(
                   {isCandidate ? "Interviewer" : "Candidate"}
                 </div>
                 <div className="absolute top-2 right-2 flex gap-1">
-                  {!isMaximized ? (<Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
-                    onClick={() => {setIsMaximized(true)}}
-                  >
-                    <Maximize2 className="h-3 w-3" />
-                  </Button>):(
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
-                    onClick={() => {setIsMaximized(false)}}
-                  >
-                    <Minimize2 className="h-3 w-3" />
-                  </Button>)}
+                  {!isMaximized ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
+                      onClick={() => {
+                        setIsMaximized(true);
+                      }}
+                    >
+                      <Maximize2 className="h-3 w-3" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 bg-black/50 text-white hover:bg-black/70"
+                      onClick={() => {
+                        setIsMaximized(false);
+                      }}
+                    >
+                      <Minimize2 className="h-3 w-3" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
