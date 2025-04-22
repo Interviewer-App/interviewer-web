@@ -223,3 +223,13 @@ export const saveInterviewSubCategories = async (categoryAssignmentId, data) => 
         throw error;
     }
 }
+
+export const saveInterviewPercentageSave = async (interviewId, data) => {
+    try {
+        const response=await axiosInstance.patch(`/interview/interviews/${interviewId}/assignment`, data)
+        return response;
+    } catch (error) {
+        console.log(`Error updating interview weightage`,error)
+        throw error;
+    }
+}
