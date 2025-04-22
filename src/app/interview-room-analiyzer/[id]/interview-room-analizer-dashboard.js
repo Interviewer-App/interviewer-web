@@ -92,6 +92,10 @@ const InterviewRoomAnalizerDashboard = forwardRef(
     const [manualTechnicalMarks, setManualTechnicalMarks] = useState(0);
 
     useEffect(() => {
+      console.log("categoryScores", categoryScores);
+    }, [categoryScores]);
+
+    useEffect(() => {
       if (availableQuestion?.estimatedTimeMinutes) {
         const totalSeconds = availableQuestion.estimatedTimeMinutes * 60;
         setQuestionCountDown(totalSeconds); // Initialize countdown in seconds
@@ -815,7 +819,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                   (category) =>
                     category.categoryAssignment.category.categoryName ===
                     "Technical"
-                ).length > 0 ? (
+                ).subCategoryScores?.length > 0 ? (
                   <Card className="flex flex-col">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <div>
@@ -824,7 +828,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                           Technical Skills Assessment
                         </CardTitle>
                         <CardDescription>
-                          Technical Skills Assessment&quot; is a test to
+                          Technical Skills Assessment is a test to
                           evaluate the candidate&apos;s technical skills and
                           knowledge in the relevant field.
                           <p className=" pt-2">
@@ -933,7 +937,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                           Technical Skills Assessment
                         </CardTitle>
                         <CardDescription>
-                          Technical Skills Assessment&quot; is a test to
+                          Technical Skills Assessment is a test to
                           evaluate the candidate&apos;s technical skills and
                           knowledge in the relevant field.
                         </CardDescription>
