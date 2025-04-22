@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import socket from "../../../lib/utils/socket";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, use } from "react";
 import CirculerProgress from "@/components/interview-room-analiyzer/circuler-progress";
 import { analiyzeQuestion } from "@/lib/api/ai";
 import ResponsiveAppBar from "@/components/ui/CandidateNavBar";
@@ -76,6 +76,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const timerRef = useRef(null);
   const [candidateId, setCandidateId] = useState(null);
   const videoCallRef = useRef();
+    const [interviewStatus, setInterviewStatus] = useState(null);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -87,12 +88,38 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   }, [params]);
 
   useEffect(() => {
+    const data = {
+      sessionId: sessionID,
+      role: "COMPANY",
+    };
 
-    window.addEventListener('beforeunload', console.log("back from inreview room analyzer"));
+    window.addEventListener("beforeunload", socket.emit("leaveSession", data));
     return () => {
-      window.removeEventListener('beforeunload', console.log("back from inreview room analyzer"));
+      window.removeEventListener(
+        "beforeunload",
+        socket.emit("leaveSession", data)
+      );
     };
   }, []);
+
+  useEffect(() => {
+    if(interviewStatus?.isCandidateJoined){
+      toast({
+        variant: "info",
+        title: "Candidate Joined",
+        description: `Candidate has joined the meeting`,
+        action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+      });
+    }
+    if(!interviewStatus?.isCandidateJoined){
+      toast({
+        variant: "info",
+        title: "Candidate Left",
+        description: `Candidate has left the meeting`,
+        action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
+      });
+    }
+  }, [interviewStatus]);
 
   useEffect(() => {
     const fetchSessionData = async () => {
@@ -164,6 +191,10 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       }
     });
 
+    socket.on("sessionStat", (data) => {
+      setInterviewStatus(data);
+    });
+
     socket.on("questions", (data) => {
       setQuestionList(data.questions);
       setIsQuestionAvailabe(true);
@@ -190,14 +221,23 @@ const InterviewRoomAnalizerPage = ({ params }) => {
       setOverollScore(data.totalScore.totalScore);
       setSessionData(data.totalScore.session);
       setCandidateId(data.totalScore.session.candidateId);
-      
     });
 
     socket.on("categoryScores", (data) => {
       // debugger
       setCategoryScores(data.categoryScores.categoryScores);
-      setTotalScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Technical")?.score);
-      setSoftSkillScore(data.categoryScores.categoryScores.find((category) => category.categoryAssignment.category.categoryName === "Soft")?.score);
+      setTotalScore(
+        data.categoryScores.categoryScores.find(
+          (category) =>
+            category.categoryAssignment.category.categoryName === "Technical"
+        )?.score
+      );
+      setSoftSkillScore(
+        data.categoryScores.categoryScores.find(
+          (category) =>
+            category.categoryAssignment.category.categoryName === "Soft"
+        )?.score
+      );
     });
 
     socket.on("participantLeft", (data) => {
@@ -269,23 +309,31 @@ const InterviewRoomAnalizerPage = ({ params }) => {
     videoCallRef.current?.endCall();
   };
 
+  const handleBackNavigation = (role) => {
+    const data = {
+      sessionId: sessionID,
+      role: role,
+    };
+
+    socket.emit("leaveSession", data);
+    router.push(`/company-interview-session/${sessionId}`);
+  };
+
   return (
     <>
       <div className="  bg-black min-h-screen flex flex-col">
         <header className="border-b border-border/40 bg-background/95 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
           <div className=" px-6 flex h-14 items-center w-full justify-between">
             <div className="flex items-center gap-4">
-              <Button
+              {/* <Button
                 variant="outline"
                 size="sm"
                 className="gap-2"
-                onClick={() =>
-                  router.push(`/company-interview-session/${sessionId}`)
-                }
+                onClick={() => handleBackNavigation("COMPANY")}
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back
-              </Button>
+              </Button> */}
               <div>
                 <h1 className="text-lg font-semibold">
                   {sessionDetails?.interview?.jobTitle}
@@ -365,39 +413,39 @@ const InterviewRoomAnalizerPage = ({ params }) => {
               </div>
             </div>
             {/* {technicalStatus !== "toBeConducted" && ( */}
-              <Tabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                className="w-auto"
-              >
-                <TabsList>
-                  <TabsTrigger
-                    value="technical"
-                    className="flex items-center gap-2"
-                  >
-                    <Code className="h-4 w-4" />
-                    Technical
-                  </TabsTrigger>
-                  <TabsTrigger value="soft" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Soft Skills
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="overall"
-                    className="flex items-center gap-2"
-                  >
-                    <BarChart3 className="h-4 w-4" />
-                    Overall Score
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="ai-analysis"
-                    className="flex items-center gap-2"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Candidate Profile
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-auto"
+            >
+              <TabsList>
+                <TabsTrigger
+                  value="technical"
+                  className="flex items-center gap-2"
+                >
+                  <Code className="h-4 w-4" />
+                  Technical
+                </TabsTrigger>
+                <TabsTrigger value="soft" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Soft Skills
+                </TabsTrigger>
+                <TabsTrigger
+                  value="overall"
+                  className="flex items-center gap-2"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  Overall Score
+                </TabsTrigger>
+                <TabsTrigger
+                  value="ai-analysis"
+                  className="flex items-center gap-2"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Candidate Profile
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
             {/* // )} */}
           </div>
         </main>
@@ -508,6 +556,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         ref={videoCallRef}
         senderId={userID}
         videoView={false}
+        handleBackNavigation={handleBackNavigation}
         role="COMPANY"
       />
     </>
