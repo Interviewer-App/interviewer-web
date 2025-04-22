@@ -45,13 +45,14 @@ import CirculerProgress from "@/components/interview-room-analiyzer/circuler-pro
 import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { StreamVideoCall } from "@/components/video/StreamVideoCall";
 import VideoCall from "@/components/video/video";
-import { Mic, Pause, RefreshCw } from "lucide-react";
+import { Mic, Pause, RefreshCw, TriangleAlert } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { set } from "react-hook-form";
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -81,6 +82,7 @@ const InterviewRoomPage = ({ params }) => {
   const [technicalStatus, setTechnicalStatus] = useState("");
   const [isParticipantJoined, setIsParticipantJoined] = useState(false);
   const [videoView, setVideoView] = useState(false);
+  const [interviewStatus, setInterviewStatus] = useState(null);
   // const boxRef = useRef(null);
 
   const {
@@ -122,19 +124,6 @@ const InterviewRoomPage = ({ params }) => {
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
-
-  useEffect(() => {
-    window.addEventListener(
-      "beforeunload",
-      console.log("back from inreview room")
-    );
-    return () => {
-      window.removeEventListener(
-        "beforeunload",
-        console.log("back from inreview room")
-      );
-    };
-  }, []);
 
   useEffect(() => {
     if (isParticipantJoined) {
@@ -236,6 +225,10 @@ const InterviewRoomPage = ({ params }) => {
       }
     });
 
+    socket.on("sessionStat", (data) => {
+      setInterviewStatus(data);
+    });
+
     socket.on("hasOtherParticipants", (data) => {
       setIsParticipantJoined(true);
     });
@@ -249,6 +242,21 @@ const InterviewRoomPage = ({ params }) => {
       socket.off("technicalStatus");
       socket.off("participantJoined");
       socket.off("hasOtherParticipants");
+    };
+  }, []);
+
+  useEffect(() => {
+    const data = {
+      sessionId: sessionID,
+      role: "COMPANY",
+    };
+
+    window.addEventListener("beforeunload", socket.emit("leaveSession", data));
+    return () => {
+      window.removeEventListener(
+        "beforeunload",
+        socket.emit("leaveSession", data)
+      );
     };
   }, []);
 
@@ -331,6 +339,16 @@ const InterviewRoomPage = ({ params }) => {
       redirect(loginURL);
     }
   }
+
+  const handleBackNavigation = (role) => {
+    const data = {
+      sessionId: sessionID,
+      role: role,
+    };
+
+    socket.emit("leaveSession", data);
+    router.push(`/my-interviews`);
+  };
 
   // const handleMouseDown = (e) => {
   //   e.preventDefault();
@@ -970,6 +988,34 @@ const InterviewRoomPage = ({ params }) => {
       </div> */}
       {isParticipantJoined ? (
         <div className=" flex flex-row justify-between items-center w-full h-lvh ">
+          {!interviewStatus?.isCompanyJoined && (<div className=" w-full h-lvh bg-black z-50 fixed top-0 left-0 ">
+            <div className="flex flex-col h-full w-full justify-center items-center bg-background text-white">
+              {/* Header */}
+              <div className="mb-10 text-center">
+                <h1 className="text-2xl font-semibold">Host Disconnected</h1>
+                <p className="text-sm mt-2 text-gray-300">
+                  We're currently unable to connect with the meeting host.
+                </p>
+              </div>
+
+              {/* Icon */}
+              <div className="mb-10">
+                <TriangleAlert className="text-yellow-500 w-12 h-12" />
+              </div>
+
+              {/* Message */}
+              <div className="text-center w-[80%] md:w-[50%]">
+                <p className="text-lg font-medium mb-3">
+                  It looks like the interviewer is experiencing connection
+                  issues.
+                </p>
+                <p className="text-sm text-gray-400">
+                  Please remain on this page. The session will continue once the
+                  host reconnects.
+                </p>
+              </div>
+            </div>
+          </div>)}
           <div className=" w-[80%]">
             {technicalStatus === "ongoing" ? (
               <div className=" bg-black h-lvh w-full">
@@ -1254,6 +1300,7 @@ const InterviewRoomPage = ({ params }) => {
                 isCandidate={true}
                 senderId={userId}
                 videoView={videoView}
+                handleBackNavigation={handleBackNavigation}
                 role="CANDIDATE"
               />
             </div>
