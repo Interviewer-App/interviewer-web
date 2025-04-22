@@ -87,6 +87,14 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   }, [params]);
 
   useEffect(() => {
+
+    window.addEventListener('beforeunload', console.log("back from inreview room analyzer"));
+    return () => {
+      window.removeEventListener('beforeunload', console.log("back from inreview room analyzer"));
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchSessionData = async () => {
       try {
         const response = await getInterviewSessionById(sessionId);
