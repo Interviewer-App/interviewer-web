@@ -133,6 +133,7 @@ const QuillEditor = dynamic(() => import("@/components/quillEditor"), {
 import {
   getInterviewById,
   interviewStatus,
+  saveInterviewPercentageSave,
   saveInterviewSubCategories,
   sortCandidates,
   updateInterview,
@@ -923,7 +924,6 @@ export default function InterviewPreviewPage({ params }) {
         setTechnicalSubCategories(techSkill.SubCategoryAssignment);
       }
     }
-
   }, [interviewCategories, categoryList, interviewDetail]);
 
   useEffect(() => {
@@ -1262,93 +1262,60 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleSaveChanges = async (e) => {
-    // e.preventDefault();
-    // try {
-    //   const response = await updateInterview(interviewId, {
-    //     jobDescription: description,
-    //     jobTitle: title,
-    //     requiredSkills: skills.join(", "),
-    //     interviewCategory,
-    //     startDate: new Date(dateRange.from).toISOString(),
-    //     endDate: new Date(dateRange.to).toISOString(),
-    //     categoryAssignments: categoryList.map((catagory) => {
-    //       return {
-    //         categoryId: catagory.key,
-    //         percentage: parseFloat(catagory.percentage),
-    //       };
-    //     }),
-    //     schedules: scheduleList
-    //       .filter((schedule) => !schedule.isBooked)
-    //       .map((schedule) => {
-    //         const startDate = new Date(schedule.date);
-    //         const endDate = new Date(schedule.date);
+    e.preventDefault();
+    try {
+      const response = await saveInterviewPercentageSave(interviewId, {
+        flexibleAssignment: useQuestionnaire,
+        categoryAssignments: [
+          {
+            assignmentId: technicalAssignmentId,
+            percentage: technicalPercentage,
+          },
+          {
+            assignmentId: softAssignmentId,
+            percentage: softSkillsPercentage,
+          },
+        ],
+      });
 
-    //         const [startHours, startMinutes] = schedule.startTime
-    //           .split(":")
-    //           .map(Number);
-    //         const localStart = new Date(
-    //           startDate.setHours(startHours, startMinutes, 0, 0)
-    //         );
+      if (response) {
+        toast({
+          variant: "default",
+          title: "Success!",
+          description: "Interview details have been updated successfully.",
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
+        setEditDetails(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
 
-    //         const [endHours, endMinutes] = schedule.endTime
-    //           .split(":")
-    //           .map(Number);
-    //         const localend = new Date(
-    //           endDate.setHours(endHours, endMinutes, 0, 0)
-    //         );
-
-    //         const startDateUtc = localStart.toISOString();
-    //         const endDateUtc = localend.toISOString();
-
-    //         return {
-    //           startTime: startDateUtc,
-    //           endTime: endDateUtc,
-    //         };
-    //       }),
-    //   });
-
-    //   if (response) {
-    //     setEditDetails(false);
-    //     socket.emit("publishInterview", {
-    //       interviewId: interviewId,
-    //       companyId: interviewDetail.companyID,
-    //     });
-    //     toast({
-    //       variant: "default",
-    //       title: "Success!",
-    //       description: "Interview details have been updated successfully.",
-    //       action: <ToastAction altText="Close">Close</ToastAction>,
-    //     });
-    //   }
-    // } catch (error) {
-    //   if (error.response) {
-    //     const { data } = error.response;
-
-    //     if (data && data.message) {
-    //       toast({
-    //         variant: "destructive",
-    //         title: "Uh oh! Something went wrong.",
-    //         description: `Interview update failed: ${data.message}`,
-    //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-    //       });
-    //     } else {
-    //       toast({
-    //         variant: "destructive",
-    //         title: "Uh oh! Something went wrong.",
-    //         description: "An unexpected error occurred. Please try again.",
-    //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-    //       });
-    //     }
-    //   } else {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "Uh oh! Something went wrong.",
-    //       description:
-    //         "An unexpected error occurred. Please check your network and try again.",
-    //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-    //     });
-    //   }
-    // }
+        if (data && data.message) {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: `Interview update failed: ${data.message}`,
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "An unexpected error occurred. Please try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description:
+            "An unexpected error occurred. Please check your network and try again.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    }
     setEditDetails(false);
   };
 
@@ -1492,10 +1459,12 @@ export default function InterviewPreviewPage({ params }) {
       const response = await generateSoftSkills(data);
       if (response) {
         // const data = response.data.skills;
+        console.log("softskills", response.data.softskills);
         setSoftSkills(
           response.data.softskills.map((skill, index) => ({
             ...skill,
             expanded: false,
+            subCategoryParameters: skill.subcategories,
             id: `s${index + 1}`,
           }))
         );
@@ -2389,24 +2358,29 @@ export default function InterviewPreviewPage({ params }) {
   };
 
   const handleSaveInterviewSubCategories = async (id, type) => {
-    // e.preventDefault();
-    // setGenerateTechnicalSkillsLoading(true);
-
     let data = null;
 
     if (!id) return;
     if (type === "Technical") {
-    data = {
-      subcategories: technicalSubCategories.map((skill) => ({
-        name: skill.name,
-        percentage: skill.percentage
-      })),
-    };
+      data = {
+        subcategories: technicalSubCategories.map((skill) => ({
+          name: skill.name,
+          percentage: skill.percentage,
+        })),
+      };
     } else {
-    data = {
+      data = {
         subcategories: softSkills.map((skill) => ({
           name: skill.name,
-          percentage: parseInt(skill.percentage)
+          percentage: parseInt(skill.percentage),
+          color: getRandomHexColor(),
+          subCategoryParameters: skill.subCategoryParameters?.map(
+            (subSkill) => ({
+              name: subSkill.name,
+              percentage: parseInt(subSkill.percentage),
+              description: subSkill.description || "",
+            })
+          ),
         })),
       };
     }
@@ -2420,7 +2394,12 @@ export default function InterviewPreviewPage({ params }) {
           title: "Success!",
           description: "Skills updated successfully.",
         });
-        setIsEditTechnicalSkills(false);
+        if (type === "Technical") {
+          setIsEditTechnicalSkills(false);
+        }
+        if (type === "Soft") {
+          setIsEditSoftSkills(false);
+        }
       }
     } catch (error) {
       if (error.response) {
@@ -2451,6 +2430,15 @@ export default function InterviewPreviewPage({ params }) {
         });
       }
     }
+  };
+
+  const getRandomHexColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   };
 
   return (
@@ -2941,7 +2929,7 @@ export default function InterviewPreviewPage({ params }) {
                     <h2 className="text-xl font-semibold">
                       Assessment Weighting
                     </h2>
-                    {activeTab === "insights" &&
+                    {activeTab === "insights" && interviewSessions.length === 0 &&
                       (editDetails ? (
                         <Button
                           variant="outline"
@@ -2968,28 +2956,29 @@ export default function InterviewPreviewPage({ params }) {
                     Adjust the percentage allocation between technical expertise
                     and soft skills assessment. The total must equal 100%.
                   </p> */}
-                {editDetails && (
-                  <>
-                    <Alert>
-                      <AlertCircleIcon className="h-4 w-4 !border-gray-400/50" />
-                      <AlertTitle>Warning</AlertTitle>
-                      <AlertDescription>
-                        Adjust the percentage allocation between technical
-                        expertise and soft skills assessment. The total must
-                        equal 100%.
-                      </AlertDescription>
-                    </Alert>
-                    <Alert className="border !border-yellow-500/50 !bg-yellow-500/10">
-                      <AlertTriangleIcon className="h-4 w-4" />
-                      <AlertTitle>Unsaved Changes</AlertTitle>
-                      <AlertDescription>
-                        You have modified the assignment weightage. To save your
-                        changes, please click <strong>Save Changes</strong>. If
-                        you don't, your updates will be discarded.
-                      </AlertDescription>
-                    </Alert>
-                  </>
-                )}
+                  {editDetails && (
+                    <>
+                      <Alert>
+                        <AlertCircleIcon className="h-4 w-4 !border-gray-400/50" />
+                        <AlertTitle>Warning</AlertTitle>
+                        <AlertDescription>
+                          Adjust the percentage allocation between technical
+                          expertise and soft skills assessment. The total must
+                          equal 100%.
+                        </AlertDescription>
+                      </Alert>
+                      <Alert className="border !border-yellow-500/50 !bg-yellow-500/10">
+                        <AlertTriangleIcon className="h-4 w-4" />
+                        <AlertTitle>Unsaved Changes</AlertTitle>
+                        <AlertDescription>
+                          You have modified the assignment weightage. To save
+                          your changes, please click{" "}
+                          <strong>Save Changes</strong>. If you don't, your
+                          updates will be discarded.
+                        </AlertDescription>
+                      </Alert>
+                    </>
+                  )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card
@@ -3732,7 +3721,12 @@ export default function InterviewPreviewPage({ params }) {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={(e) => handleSaveInterviewSubCategories(technicalAssignmentId, "Technical")}
+                            onClick={(e) =>
+                              handleSaveInterviewSubCategories(
+                                technicalAssignmentId,
+                                "Technical"
+                              )
+                            }
                             className="flex items-center gap-1  text-green-500 !border-green-500/50 hover:!text-green-400 hover:!bg-green-500/20"
                           >
                             <>
@@ -4226,7 +4220,12 @@ export default function InterviewPreviewPage({ params }) {
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={(e) =>handleSaveInterviewSubCategories(softAssignmentId, "Soft")}
+                        onClick={(e) =>
+                          handleSaveInterviewSubCategories(
+                            softAssignmentId,
+                            "Soft"
+                          )
+                        }
                         className="flex items-center gap-1  text-green-500 !border-green-500/50 hover:!text-green-400 hover:!bg-green-500/20"
                       >
                         <SaveAll className="h-4 w-4 text-green-500" />
@@ -4545,7 +4544,10 @@ export default function InterviewPreviewPage({ params }) {
                               </Button>
                               <Button
                                 className="bg-blue-600 hover:bg-blue-700"
-                                onClick={() => setEditingSoftSkill(null)}
+                                onClick={() => {
+                                  setEditingSoftSkill(null);
+                                  setIsEditSoftSkills(true);
+                                }}
                               >
                                 Save
                               </Button>
