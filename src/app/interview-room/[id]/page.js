@@ -2,7 +2,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import socket from "../../../lib/utils/socket";
-import { useEffect, useState, useRef, use } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import Image from "next/image";
@@ -53,6 +53,29 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { set } from "react-hook-form";
+// import ZoomComponentView from "@/components/zoom";
+import dynamic from 'next/dynamic';
+// import ZoomComponent from "@/components/Zoom/join";
+const ZoomComponent = dynamic(() => import('@/components/Zoom/join'), {
+  ssr: false, // ⛔ disables server-side rendering for Zoom component
+});
+
+const ZoomComponentView = dynamic(() => import('@/components/zoom'), {
+  ssr: false, // ⛔ disables server-side rendering for Zoom component
+});
+
+const ZoomWrapper = dynamic(
+  () => import('@/components/zoom'),
+  {
+    ssr: false,
+    loading: () => <div className="text-center p-8">Loading Meeting...</div>
+  }
+);
+
+import { getData } from "@/data/getToken";
+import Script from "next/script";
+import VideochatClientWrapper from "@/components/VideochatClientWrapper";
+
 
 const InterviewRoomPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -84,6 +107,7 @@ const InterviewRoomPage = ({ params }) => {
   const [videoView, setVideoView] = useState(false);
   const [interviewStatus, setInterviewStatus] = useState(null);
   // const boxRef = useRef(null);
+  const jwt = getData(sessionID);
 
   const {
     isListening,
@@ -970,6 +994,18 @@ const InterviewRoomPage = ({ params }) => {
     //   </ResizablePanelGroup>
     // </>
     <div className=" w-full relative h-lvh bg-black text-white">
+      {/* <ZoomComponentView/> */}
+      {/* <ZoomWrapper /> */}
+      {/* <ZoomComponent/> */}
+
+{/* Zoom Meeting */}
+
+      {/* <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <VideochatClientWrapper slug={sessionID} JWT={jwt} />
+        <Script src="/coi-serviceworker.js" strategy="beforeInteractive" />
+      </main> */}
+
+
       {/* <div
         ref={boxRef}
         onMouseDown={handleMouseDown}
