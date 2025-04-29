@@ -2973,7 +2973,7 @@ export default function InterviewPreviewPage({ params }) {
                         <AlertDescription>
                           You have modified the assignment weightage. To save
                           your changes, please click{" "}
-                          <strong>Save Changes</strong>. If you don't, your
+                          <strong>Save Changes</strong>. If you don&apos;t, your
                           updates will be discarded.
                         </AlertDescription>
                       </Alert>
