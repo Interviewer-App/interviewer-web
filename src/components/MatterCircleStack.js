@@ -164,7 +164,7 @@ const MatterCircleStack = () => {
       }
 
       const emojiCount =
-        window.innerWidth > 1024 ? 40 : window.innerWidth > 768 ? 40 : 25;
+        window.innerWidth > 1024 ? 60 : window.innerWidth > 768 ? 40 : 25;
       const emojiScale = window.innerWidth > 1024 ? 0.13 : 0.13;
       const emojiOralScale = window.innerWidth > 1024 ? 35 : 25;
       const emojiForce = window.innerWidth > 1024 ? 0.01 : 0.003;
@@ -840,7 +840,7 @@ const MatterCircleStack = () => {
       {showResult && (
         <div
           // onClick={handleCloseRankWindow}
-          className="absolute top-0 h-full w-full bg-black rounded-xl flex flex-col justify-center items-center !z-20"
+          className="absolute top-0 h-full w-full bg-black rounded-[25px] flex flex-col justify-center items-center !z-20"
         >
           <div
             onClick={handleCloseRankWindow}
@@ -1171,7 +1171,7 @@ const MatterCircleStack = () => {
       {isEmojiClicked && (
         <div
           onClick={() => setIsEmojiClicked(false)}
-          className="absolute top-0 h-full w-full bg-black rounded-xl text-8xl flex flex-col justify-center items-center"
+          className="absolute top-0 h-full w-full bg-black rounded-[25px] text-8xl flex flex-col justify-center items-center"
         >
           <motion.div
             className=" w-[45%] lg:w-[40%] max-w-[200px] text-black min-w-[200px] lg:min-w-[250px] lg:max-w-[300px] bg-[#FFFFFF] border-2 border-white rounded-lg p-3 lg:p-5 flex flex-col items-center "
