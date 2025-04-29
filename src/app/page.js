@@ -300,7 +300,7 @@ export default function Home() {
   const beneficiaryGroups = [
     {
       title: "💼 For Founders & Hiring Managers",
-      color: "bg-[#FFE6E6]",
+      color: "bg-benefit-card1-background",
       benefits: [
         {
           title: "Recruiters & HR Teams",
@@ -318,7 +318,7 @@ export default function Home() {
     },
     {
       title: "💰 For Investors & Decision-Makers",
-      color: "bg-[#F1FFE6]",
+      color: "bg-benefit-card2-background",
       benefits: [
         {
           title: "Venture Capitalists & Angel Investors",
@@ -336,7 +336,7 @@ export default function Home() {
     },
     {
       title: "🤝 For Partners & Collaborators",
-      color: "bg-[#E6F6FF]",
+      color: "bg-benefit-card3-background",
       benefits: [
         {
           title: "Agencies & Freelancers",
@@ -354,7 +354,7 @@ export default function Home() {
     },
     {
       title: "🎓 For Educators & Skill Seekers",
-      color: "bg-[#F4E6FF]",
+      color: "bg-benefit-card4-background",
       benefits: [
         {
           title: "Students & Job Seekers",
@@ -950,7 +950,7 @@ export default function Home() {
       </div> */}
 
 
-      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
+      {/* <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[35px] py-[35px] bg-transparent md:bg-benefits-card-background rounded-[10px]">
           <div className="max-w-[591px]">
             <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
@@ -1029,6 +1029,90 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+          </div>
+
+        </div>
+      </div> */}
+      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto py-[35px] bg-transparent rounded-[10px]">
+          <div className="max-w-[1166px] mx-auto">
+            <h1 className="text-center w-full text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
+              Who Can Benefit from Skillchecker?
+            </h1>
+            <p className="text-center text-black dark:text-white text-base leading-[25px] md:leading-[25px] pt-[15px]">
+              At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you&apos;re a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
+            </p>
+          </div>
+
+
+
+          <div className="">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-11 py-[32px]">
+              {beneficiaryGroups.map((group, index) => (
+                <div key={index} className={`tilt-card transition-all duration-300 ease-out ${group.color} hover:scale-105 min-h-[303px] rounded-[20px] px-3 py-5`}
+                  ref={(el) => (cardRefs.current[index] = el)}
+                  onMouseMove={(e) => handleMouseMove(e, index)}
+                  onMouseLeave={() => handleMouseLeave(index)}
+                >
+                  <div
+                    ref={(el) => (glowRefs.current[index] = el)}
+                    className="glow opacity-0 transition-opacity duration-300 absolute inset-0 rounded-[20px]"
+                  ></div>
+                  <div
+                    ref={(el) => (contentRefs.current[index] = el)}
+                    className="tilt-card-content p-4 h-full relative z-10"
+                  >
+                    <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 border-white bg-[#ffffff] dark:md:bg-black rounded-[50px] px-[5px] py-[6px]">
+                      {group.title}
+                    </h1>
+
+                    <ul className="space-y-3">
+                      {group.benefits.map((benefit, benefitIndex) => (
+                        <li key={benefitIndex} className="flex pt-[20px]">
+                          <span className="mr-2 text-black">•</span>
+                          <div className="text-sm text-black">
+                            <span className="font-bold ">{benefit.title} – </span>
+                            <span className="text-black">{benefit.description}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+              ))}
+            </div>
+
+            {/* <div className="flex flex-col items-center space-y-3">
+              <div className="flex flex-wrap justify-center gap-3 w-full">
+                {widerAudiences.slice(0, 2).map((category, index) => (
+                  <div
+                    key={index}
+                    className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center text-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black rounded-[10px] md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm"
+                  >
+                    <span className="text-black dark:text-white md:font-bold">{category.title}</span>
+                  </div>
+                ))}
+              </div> */}
+
+              {/* <div className="flex flex-wrap justify-center gap-3 w-full">
+                {widerAudiences.slice(2, 4).map((category, index) => (
+                  <div
+                    key={index}
+                    className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] dark:bg-[#3b3b3d] md:bg-white md:border-2 md:border-black rounded-[10px] md:dark:border-[#545454] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center"
+                  >
+                    <span className="text-black dark:text-white md:font-bold">{category.title}</span>
+                  </div>
+                ))}
+              </div> */}
+
+              {/* <div className="flex justify-center w-full">
+                <div className="w-full transition-all duration-300 ease-out hover:scale-95 md:w-auto inline-flex items-center justify-center bg-[#f4f4f4] md:bg-black md:text-white dark:bg-[#f4f4f4] dark:text-black text-black  md:border-4 md:border-[#000] md:dark:border-[#545454] rounded-[10px] md:rounded-full py-7 px-3 md:py-2 md:px-4 text-sm text-center">
+                  <span className=" md:font-bold">{widerAudiences[4].title}</span>
+                </div>
+              </div> */}
+            {/* </div> */}
 
           </div>
 
@@ -1209,7 +1293,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
+      {/* <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
         <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-footer-background text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
@@ -1224,14 +1308,12 @@ export default function Home() {
                 <span className="cursor-pointer hover:underline" onClick={() => { pageRedirection('/privacy-policy') }} >
                   Privacy policy{" "} <FiArrowUpRight className=" inline-block" />
                 </span>
-                {/* <span className="ml-2">
-                  policy{" "} <FiArrowUpRight className=" inline-block" />
-                </span> */}
+
               </span>
             </div>
 
             <div className="flex gap-3 mt-3 md:mt-0 flex-col md:flex-row items-center justify-center md:justify-between">
-              {/* <input placeholder="Email" type="text" className="w-full md:min-w-[235px] h-[50px] bg-transparent text-black py-2 md:py-4 px-5 md:px-5 text-sm  font-medium border-black border-2 focus:border-black active:border-black target:border-black before:border-black after:border-black" /> */}
+             
 
               <button onClick={requestDemo} className="bg-[#ffffff] text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
@@ -1241,9 +1323,44 @@ export default function Home() {
         </div>
 
         <div className=" w-[80%] mx-auto mt-5 mb-5 ">
-          {/* <hr className=" opacity-15 mb-5" /> */}
+
           <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
             &#169;2025 &nbsp; Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved
+          </span>
+
+        </div>
+      </div> */}
+      <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
+        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-footer-background md:rounded-full text-black mb-4">
+          <div className="flex justify-center md:justify-between py-6 md:px-20 flex-wrap flex-col md:flex-row items-center ">
+            <div className="flex flex-col justify-center items-center">
+              <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
+                <Image src={logo} alt="logo" width="180" height="24" onClick={() => { pageRedirection('/') }} />
+              </div>
+              <span className="text-xs text-center inline-block mt-2 " >
+                <span className="mr-2 cursor-pointer hover:underline" onClick={() => { pageRedirection('/terms-conditions') }}>
+                  Terms and conditions{" "}<FiArrowUpRight className=" inline-block" onClick={() => { pageRedirection('/privacy-policy') }} />
+                </span>
+               
+                <span className="cursor-pointer hover:underline" onClick={() => { pageRedirection('/privacy-policy') }} >
+                  Privacy policy{" "} <FiArrowUpRight className=" inline-block" />
+                </span>
+
+              </span>
+            </div>
+
+            <div className="flex gap-3 mt-3 md:mt-0 flex-col md:flex-row items-center justify-center md:justify-between">
+              <button onClick={requestDemo} className="bg-[#ffffff] text-black py-[12px] px-[20px] rounded-full text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
+                Request a Demo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className=" w-[80%] mx-auto mt-10 md:mt-16 mb-10 md:mb-20 ">
+
+          <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
+            2025&nbsp;Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved
           </span>
 
         </div>
