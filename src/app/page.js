@@ -910,7 +910,7 @@ export default function Home() {
               <img src="/landing_page/feature-icons/crown.png" alt="Users" width="50" height="50" />
               <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
-                You're Still in Control
+                You&apos;re Still in Control
               </h3>
               <p className="text-black text-[16px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
