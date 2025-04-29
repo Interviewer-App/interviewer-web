@@ -312,7 +312,7 @@ export default function Home() {
   const beneficiaryGroups = [
     {
       title: "💼 For Founders & Hiring Managers",
-      color: "bg-benefit-card1-background",
+      color: "bg-[#e8f7fe]",
       benefits: [
         {
           title: "Recruiters & HR Teams",
@@ -330,7 +330,7 @@ export default function Home() {
     },
     {
       title: "💰 For Investors & Decision-Makers",
-      color: "bg-benefit-card2-background",
+      color: "bg-[#fbf6db]",
       benefits: [
         {
           title: "Venture Capitalists & Angel Investors",
@@ -348,7 +348,7 @@ export default function Home() {
     },
     {
       title: "🤝 For Partners & Collaborators",
-      color: "bg-benefit-card3-background",
+      color: "bg-[#ece1f6]",
       benefits: [
         {
           title: "Agencies & Freelancers",
@@ -366,7 +366,7 @@ export default function Home() {
     },
     {
       title: "🎓 For Educators & Skill Seekers",
-      color: "bg-benefit-card4-background",
+      color: "bg-[#fef3e8]",
       benefits: [
         {
           title: "Students & Job Seekers",
@@ -1429,7 +1429,7 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fafafa] relative overflow-hidden pt-3 md:pt-10 ">
-        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-footer-background md:rounded-full text-black mb-4">
+        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-[#70c8ff] md:rounded-full text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 md:px-20 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
