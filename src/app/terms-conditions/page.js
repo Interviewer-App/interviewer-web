@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiHandPointing } from "react-icons/pi";
+import logo from "../../assets/landing_page/logo.png";
 
 export default function TermsAndConditions() {
     const { data: session, status } = useSession();
@@ -316,38 +317,65 @@ export default function TermsAndConditions() {
 
 
             <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
-                <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-footer-background text-black mb-4">
-                    <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
+                    <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-footer-background rounded-full text-black mb-4">
+                      <div className="flex justify-center md:justify-between py-6 px-20 flex-wrap flex-col md:flex-row items-center ">
                         <div className="flex flex-col justify-center items-center">
-                            <div className="flex justify-center md:justify-start text-sm text-center w-full">
-                                <Image src="/landing_page/logo.png" alt="logo" width="180" height="24" />
-                            </div>
-                            <span className="text-xs text-center inline-block mt-2">
-                                <span className="mr-2 cursor-pointer hover:underline" onClick={() => { pageRedirection('/terms-conditions') }}>
-                                    Terms and conditions{" "}<FiArrowUpRight className=" inline-block" onClick={() => { pageRedirection('/privacy-policy') }} />
-                                </span>
-
-                                <span className="cursor-pointer hover:underline" onClick={() => { pageRedirection('/privacy-policy') }} >
-                                    Privacy policy{" "} <FiArrowUpRight className=" inline-block" />
-                                </span>
+                          <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
+                            <Image
+                              src={logo}
+                              alt="logo"
+                              width="180"
+                              height="24"
+                              onClick={() => {
+                                pageRedirection("/");
+                              }}
+                            />
+                          </div>
+                          <span className="text-xs text-center inline-block mt-2 ">
+                            <span
+                              className="mr-2 cursor-pointer hover:underline"
+                              onClick={() => {
+                                pageRedirection("/terms-conditions");
+                              }}
+                            >
+                              Terms and conditions{" "}
+                              <FiArrowUpRight
+                                className=" inline-block"
+                                onClick={() => {
+                                  pageRedirection("/privacy-policy");
+                                }}
+                              />
                             </span>
+            
+                            <span
+                              className="cursor-pointer hover:underline"
+                              onClick={() => {
+                                pageRedirection("/privacy-policy");
+                              }}
+                            >
+                              Privacy policy <FiArrowUpRight className=" inline-block" />
+                            </span>
+                          </span>
                         </div>
-
+            
                         <div className="flex gap-3 mt-3 md:mt-0 flex-col md:flex-row items-center justify-center md:justify-between">
-                            <button onClick={requestDemo} className="bg-[#ffffff] text-black py-[12px] px-[20px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
-                                Request a Demo
-                            </button>
+                          <button
+                            onClick={requestDemo}
+                            className="bg-[#ffffff] text-black py-[12px] px-[20px] rounded-full text-xs md:text-base font-bold  shadow-[4px_4px_0px_black] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black"
+                          >
+                            Request a Demo
+                          </button>
                         </div>
+                      </div>
                     </div>
-                </div>
-
-                <div className=" w-[80%] mx-auto mt-5 mb-5 ">
-                    <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
-                        &#169;2025 &nbsp; Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved
-                    </span>
-
-                </div>
-            </div>
+            
+                    <div className=" w-[80%] mx-auto mt-16 mb-20 ">
+                      <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
+                        2025&nbsp;Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All
+                        rights reserved
+                      </span>
+                    </div>
+                  </div>
         </div>
     );
 }
