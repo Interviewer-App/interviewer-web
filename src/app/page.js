@@ -413,42 +413,42 @@ export default function Home() {
   ];
   const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
   // let currentThemeIndex = 0;
-  // useEffect(() => {
-  //   const savedTheme = localStorage.getItem('theme') || 'default';
-  //   document.documentElement.setAttribute('data-theme', savedTheme);
-  //   setTheme(savedTheme);
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    setTheme(savedTheme);
 
-  //   const currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
-  //   setCurrentThemeIndex(currentThemeIndex);
-  //   // Check if a theme is already saved in localStorage
-  //   // const savedTheme = localStorage.getItem("theme");
+    const currentThemeIndex = themes.indexOf(localStorage.getItem('theme'));
+    setCurrentThemeIndex(currentThemeIndex);
+    // Check if a theme is already saved in localStorage
+    // const savedTheme = localStorage.getItem("theme");
 
-  //   if (savedTheme === "dark") {
-  //     // If "dark" is saved, enable dark mode
-  //     setIsDarkMode(true);
-  //     document.documentElement.classList.add("dark");
-  //   } else if ((savedTheme === "default") || (savedTheme === "theme1") || (savedTheme === "theme2") || (savedTheme === "theme3") || (savedTheme === "theme4") || (savedTheme === "theme5")) {
-  //     // If "light" is saved, enable light mode
-  //     setIsDarkMode(false);
-  //     document.documentElement.classList.remove("dark");
-  //   } else {
-  //     // If no theme is saved, use the system's preferred theme
-  //     const prefersDarkMode = window.matchMedia(
-  //       "(prefers-color-scheme: dark)"
-  //     ).matches;
-  //     setIsDarkMode(prefersDarkMode);
-  //     document.documentElement.classList.toggle("dark", prefersDarkMode);
-  //     if (prefersDarkMode) {
-  //       setTheme('dark');
-  //       document.documentElement.setAttribute('data-theme', 'dark');
-  //       // localStorage.setItem('theme', newTheme);
-  //     } else {
-  //       setTheme(savedTheme);
-  //       document.documentElement.setAttribute('data-theme', savedTheme);
-  //     }
+    if (savedTheme === "dark") {
+      // If "dark" is saved, enable dark mode
+      setIsDarkMode(true);
+      document.documentElement.classList.add("dark");
+    } else if ((savedTheme === "default") || (savedTheme === "theme1") || (savedTheme === "theme2") || (savedTheme === "theme3") || (savedTheme === "theme4") || (savedTheme === "theme5")) {
+      // If "light" is saved, enable light mode
+      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    } else {
+      // If no theme is saved, use the system's preferred theme
+      const prefersDarkMode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setIsDarkMode(prefersDarkMode);
+      document.documentElement.classList.toggle("dark", prefersDarkMode);
+      if (prefersDarkMode) {
+        setTheme('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+        // localStorage.setItem('theme', newTheme);
+      } else {
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
 
-  //   }
-  // }, []);
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -927,13 +927,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto ">
-          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[30px]">
-            <MatterCircleStack />
-          </div>
-        </div>
-      </div>
+      
 
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
@@ -968,6 +962,14 @@ export default function Home() {
 
 
               ))}
+          </div>
+        </div>
+      </div>
+
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[30px]">
+            <MatterCircleStack />
           </div>
         </div>
       </div>

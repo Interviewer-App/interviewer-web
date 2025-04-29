@@ -1030,7 +1030,7 @@ const InterviewRoomPage = ({ params }) => {
               <div className="mb-10 text-center">
                 <h1 className="text-2xl font-semibold">Host Disconnected</h1>
                 <p className="text-sm mt-2 text-gray-300">
-                  We're currently unable to connect with the meeting host.
+                  We&apos;re currently unable to connect with the meeting host.
                 </p>
               </div>
 
