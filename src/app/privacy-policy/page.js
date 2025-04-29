@@ -351,7 +351,7 @@ export default function PrivacyPolicy() {
 
             <p>
               If you have any questions about this Privacy Policy, please
-              contact us at support@skillchecker.ai.
+              contact us at <a href="mailto:support@skillchecker.ai" target="_blank" className=" text-blue-500 italic underline">support@skillchecker.ai</a>.
             </p>
           </section>
         </main>
