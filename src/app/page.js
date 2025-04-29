@@ -1138,12 +1138,12 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto py-[35px] bg-transparent rounded-[10px]">
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-transparent rounded-[10px]">
           <div className="max-w-[1166px] mx-auto">
-            <h1 className="text-center w-full text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
+            <h1 className="text-center w-full text-black font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
             </h1>
-            <p className="text-center text-black dark:text-white text-base leading-[25px] md:leading-[25px] pt-[15px]">
+            <p className="text-center text-black text-base leading-[25px] md:leading-[25px] pt-[15px]">
               At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you&apos;re a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
             </p>
           </div>
