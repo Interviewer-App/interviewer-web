@@ -218,6 +218,18 @@ export default function Home() {
     }
   ];
 
+  const features = [
+    { title: "🧑‍💻 1 to 1 Video calling features", desc: "Talk face to face with zero hassle. Our smooth video call setup makes remote interviews feel personal and professional  like you're in the same room." },
+    { title: "🧑‍💼 Flexible for Online & Onsite Interviews", desc: "Whether you're interviewing from across the globe or across the table, we've got you covered." },
+    { title: "⚡ Rapid fire AI generated questions", desc: "No need to spend hours crafting interview questions. Our AI does it for you . generating sharp, role specific questions in seconds so you can focus on what really matters: finding the right fit." },
+    { title: "🔥 Real Time Answer Validation", desc: "Catch red flags and gold star answers as they happen. Our real time tech keeps you one step ahead no more guesswork." },
+    { title: "📊 Complete candidate analytics", desc: "View detailed analytics and scores that actually matter. Know exactly who stands out and why." },
+    { title: "🧑‍🚀🧑‍🚀 Compare talents", desc: "Compare candidates like a pro. See who's truly the best fit with our visual, no nonsense comparison tools." },
+    { title: "🔎 CV Analyser", desc: "Drop a resume, and voilà! , our AI breaks it down. Get the real story behind every CV without lifting a finger." },
+    { title: "🗣️ Post interview feedback", desc: "Once the interview’s done, we deliver smart, tailored feedback to both sides .so candidates know where they stand, and companies get insights to fine tune their hiring. Clear. Actionable. No fluff." },
+    { title: "🚀 Advanced Dashboard", desc: "Manage everything . interviews, candidates, feedback, insights ,from one slick, powerful dashboard. It’s your hiring HQ." },
+  ];
+
   const featuresOne = [
     { title: "Streamlined Interviews", desc: "Simplify your hiring process from start to finish." },
     { title: "Real-World Scenarios", desc: "Test skills in action, not just on paper." },
@@ -849,25 +861,115 @@ export default function Home() {
       </div>
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
-            <div className={` bg-[#f4f4f4] px-[15px] py-[10px] flex justify-center items-center flex-col rounded-[7px] min-h-[92px] transition-all duration-300`}>
+        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px] py-[32px]">
+
+            <div className={` bg-[#c2e7ff] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
               {/* Original Content */}
-              <h3 className="font-bold text-[12px] text-black dark:text-white leading-[20px] text-center transition-opacity duration-300 
-                      group-hover:opacity-0">
+              <img src="/landing_page/feature-icons/users-three.png" alt="Users" width="50" height="50" />
+              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+                      group-hover:opacity-0 mt-3">
                 Evaluate Anyone in Any Field
               </h3>
-              <p className="text-black dark:text-white text-[12px] leading-[18px] 
-                      mt-[6px] transition-opacity duration-300 group-hover:opacity-0">
+              <p className="text-black text-[16px] leading-[20px]  text-center
+                      transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Evaluate candidates across any role or industry with our real time
                 AI driven assessments.
               </p>
             </div>
+
+            <div className={` bg-[#ffeb9c] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ecdd99]`}>
+              {/* Original Content */}
+              <img src="/landing_page/feature-icons/seal-check.png" alt="Users" width="50" height="50" />
+              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+                      group-hover:opacity-0 mt-3">
+                Decisions at a Glance
+              </h3>
+              <p className="text-black  text-[16px] leading-[20px] text-center
+                      transition-opacity duration-300 group-hover:opacity-0 mt-3">
+                No digging through files. SkillChecker transforms raw data into clean visuals so you can make decisions at a glance.
+              </p>
+            </div>
+
+            <div className={` bg-[#ffccd7] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ffb1c2]`}>
+              {/* Original Content */}
+              <img src="/landing_page/feature-icons/fire.png" alt="Users" width="50" height="50" />
+              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+                      group-hover:opacity-0 mt-3">
+                10x Faster. <br />
+                100% More Confident
+              </h3>
+              <p className="text-black text-[16px] leading-[20px]  text-center
+                      transition-opacity duration-300 group-hover:opacity-0 mt-3">
+                Why waste weeks? Our AI scans, scores, and ranks talent in minutes with the precision of a seasoned expert. Faster decisions, fewer regrets.
+              </p>
+            </div>
+
+            <div className={` bg-[#e6ccff] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#cbafe6]`}>
+              {/* Original Content */}
+              <img src="/landing_page/feature-icons/crown.png" alt="Users" width="50" height="50" />
+              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+                      group-hover:opacity-0 mt-3">
+                You're Still in Control
+              </h3>
+              <p className="text-black text-[16px] leading-[20px]  text-center
+                      transition-opacity duration-300 group-hover:opacity-0 mt-3">
+                Unlike other tools, You don&apos;t lose control, you gain superpowers.
+                you&apos;re the boss. SkillChecker gives you the perfect blend of AI logic and human judgment.
+              </p>
+            </div>
+
+
           </div>
         </div>
       </div>
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[30px]">
+            <MatterCircleStack />
+          </div>
+        </div>
+      </div>
+
+
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto md:py-[35px] rounded-[10px]">
+          <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
+          Powerful features that will make skill verification <br/>
+          Fast, Fair, and Foolproof
+          </h1>
+          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-3 md:gap-[42px] mt-[20px] md:mt-[60px]`}>
+              {features.map((item, index) => (
+                <div key={index} >
+
+                  <div
+                    className={` bg-[#fff] px-[20px] py-[10px] 
+                      flex justify-center items-center flex-col md:border-2 border-[#f1f1f1] 
+                       rounded-[25px] min-h-[92px] md:min-h-[171px] 
+                      transition-all duration-300`}
+                  >
+                    <h3 className="font-bold text-[20px] text-black 
+                      leading-[33px] text-center transition-opacity duration-300 
+                      group-hover:opacity-0">
+                      {item.title}
+                    </h3>
+                    <p className="text-black text-[16px] leading-[24px] text-center 
+                      mt-[6px] transition-opacity duration-300 group-hover:opacity-0">
+                      {item.desc}
+                    </p>
+
+                    
+                  </div>
+                </div>
+
+
+              ))}
+          </div>
+        </div>
+      </div>
+
+      {/* <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-skills-card-background rounded-[10px]">
           <h1 className="text-center text-black dark:text-white font-bold text-xl leading-[28px] md:leading-[28px]">
             Skills Checked. Risks Eliminated. Possibilities Unlocked.
@@ -876,15 +978,13 @@ export default function Home() {
           <div>
             {object.map((section, index) => (
               <div key={index} className="pt-[25px] md:pt-[35px]">
-                {/* Title with Click Handler for Mobile */}
                 <h1
-                  onClick={() => toggleSection(index)} // Toggle visibility on click
+                  onClick={() => toggleSection(index)}
                   className={`text-center md:text-start text-black md:dark:text-white font-bold text-base leading-[20px] md:leading-[20px] cursor-pointer sm:cursor-auto border-2 border-black rounded-[50px] px-[15px] py-[15px] md:border-none md:rounded-none md:px-0 md:py-0 ${section.color} md:bg-transparent`}
                 >
                   {section.titleHead}
                 </h1>
 
-                {/* Features Grid - Conditionally Rendered */}
                 {(expandedSections[index] || true) && (
                   <div className={`grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-6 md:mt-[15px] ${expandedSections[index] ? 'mt-[15px]' : ''}`}>
                     {section.features.map((item, idx) => (
@@ -896,7 +996,6 @@ export default function Home() {
                       ${expandedSections[index] ? '' : 'hidden md:block'}
                       transition-all duration-300`}
                       >
-                        {/* Original Content */}
                         <h3 className="font-bold text-[12px] text-black dark:text-white 
                       leading-[20px] text-start transition-opacity duration-300 
                       group-hover:opacity-0">
@@ -907,7 +1006,6 @@ export default function Home() {
                           {item.desc}
                         </p>
 
-                        {/* Hover Content */}
                         <div className="absolute inset-0 flex items-center justify-center 
                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 
                       bg-black bg-opacity-75 text-white text-[14px] font-medium 
@@ -923,7 +1021,7 @@ export default function Home() {
           </div>
 
         </div>
-      </div>
+      </div> */}
 
 
 
@@ -1034,7 +1132,7 @@ export default function Home() {
 
         </div>
       </div> */}
-      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto py-[35px] bg-transparent rounded-[10px]">
           <div className="max-w-[1166px] mx-auto">
             <h1 className="text-center w-full text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
@@ -1330,7 +1428,7 @@ export default function Home() {
 
         </div>
       </div> */}
-      <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative overflow-hidden pt-3 md:pt-10 ">
         <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-footer-background md:rounded-full text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 md:px-20 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">

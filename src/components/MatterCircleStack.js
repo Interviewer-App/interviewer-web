@@ -831,7 +831,7 @@ const MatterCircleStack = () => {
 
   return (
     <div
-      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-[7px]"
+      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-[30px]"
       id="matter-circle-stack"
       ref={containerRef}
       style={{ backgroundColor: bgColor }}
