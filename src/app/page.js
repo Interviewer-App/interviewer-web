@@ -608,7 +608,7 @@ export default function Home() {
 
   return (
     <div className=" w-full">
-      <div className=" w-full text-black bg-background dark:text-white">
+      <div className=" w-full text-black bg-[#fafafa] dark:text-white">
         <header className=" w-full ">
           <div className=" w-[90%] max-w-[1500px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-12 mx-auto">
             <div>
@@ -617,8 +617,8 @@ export default function Home() {
                   <Image
                     src="/landing_page/logo-dark.png"
                     alt="logo"
-                    width={464}
-                    height={82}
+                    width={339}
+                    height={60}
                     onClick={() => { pageRedirection('/') }}
                     className="cursor-pointer"
                   />
@@ -626,8 +626,8 @@ export default function Home() {
                   <Image
                     src="/landing_page/logo.png"
                     alt="logo"
-                    width={464}
-                    height={82}
+                    width={339}
+                    height={60}
                     onClick={() => { pageRedirection('/') }}
                     className="cursor-pointer"
                   />
@@ -653,16 +653,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex justify-center items-center">
+            {/* <div className="flex justify-center items-center">
               <div className="sm:flex justify-center items-center gap-4 mt-4 hidden ">
                 <button
                   onClick={() => handleThemeChange('default')}
                   className={`w-8 h-8 rounded-full bg-[#ffffff] ${theme === 'default' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
-                {/* <button
-                  onClick={() => handleThemeChange('theme1')}
-                  className="w-8 h-8 rounded-full bg-[#DDDDDD]"
-                ></button> */}
                 <button
                   onClick={() => handleThemeChange('theme2')}
                   className={`w-8 h-8 rounded-full bg-[#D1F8FF] ${theme === 'theme2' ? 'border-2 border-gray-400' : ''}`}
@@ -684,25 +680,52 @@ export default function Home() {
                   className={`w-8 h-8 rounded-full bg-[#161618] ${theme === 'dark' ? 'border-2 border-gray-400' : ''}`}
                 ></button>
               </div>
-              {/* <button
-                  onClick={() => handleThemeChangeMobile()}
-                className="bg-black dark:bg-white w-11 h-11 md:w-16 md:h-16 rounded-full flex justify-center items-center transition-all duration-300 sm:hidden"
-              >
-                <PiHandPointing size={24} color="#fff" />
-              </button> */}
+              
               <button
                 onClick={() => handleThemeChangeMobile()}
                 className="w-11 h-11 md:w-16 md:h-16 rounded-full flex justify-center items-center transition-all duration-300 sm:hidden "
                 style={{ backgroundColor: getButtonBgColor() }}
               >
-                {/* { isDarkMode ? <PiHandPointing size={24} color="#fff" /> : <PiHandPointing size={24} color="#000" /> } */}
                 <PiHandPointing size={24} color="#000" />
               </button>
-            </div>
+            </div> */}
           </div>
         </header>
 
-        <div className="flex flex-col lg:flex-row w-[90%] lg:w-[90%] max-w-[1500px] mx-auto gap-6">
+        <div className="w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] bg-[#fff] rounded-[25px] lg:w-[90%] gap-6">
+          <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full h-[506px]">
+            <h1 className="font-bohemian-soul text-center lg:text-center leading-[65px] text-[48px] md:text-[48px] md:leading-[30px] text-black dark:text-black">
+              Validate Skills, Elevate Teams
+              {/* <br />
+              No Expertise Needed. */}
+            </h1>
+
+            <p className="max-w-[368px] md:max-w-[908px] text-xs md:text-[16px] text-center lg:text-center pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
+              The Skillchecker is an AI powered tool that helps you evaluate skills in any field, especially those outside your expertise.
+              <br /><br />
+              Whether you are hiring, investing, or Collaborating,
+              it gives you the confidence to make smart
+              decisions when evaluating someone&apos;s skills
+              without needing an external expert every time.
+            </p>
+
+            <div className="flex gap-4 pt-[15px] md:pt-[40px] justify-between">
+              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
+                Request a Demo
+              </button>
+              <a
+                href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
+                className="relative bg-white hover:bg-[#575757] hover:text-white hover:dark:text-white dark:text-black py-[12px] px-[16px] text-xs md:text-base font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all rounded-[125px]"
+              >
+                Contact us now
+                <span className="absolute top-5 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                <span className="absolute top-5 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="flex flex-col lg:flex-row w-[90%] lg:w-[90%] max-w-[1500px] mx-auto gap-6">
           <div className="flex flex-col justify-center lg:justify-start items-center lg:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black w-full lg:max-w-[418px] lg:min-h-[418px] flex-shrink-0">
             <h1 className="font-bohemian-soul text-center lg:text-start leading-[30px] text-[24px] md:text-[24px] md:leading-[30px] text-black dark:text-black">
               Evaluate Skills in Any Field.
@@ -725,11 +748,6 @@ export default function Home() {
               <button onClick={requestDemo} className="bg-request-demo-background hover:bg-request-demo-background-hover text-black hover:text-request-demo-text-hover py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black">
                 Request a Demo
               </button>
-              {/* <button onClick={requestDemo} className="bg-[#000] dark:bg-white relative text-white dark:text-black py-[12px] px-[20px] text-xs md:text-base font-bold border-2 border-white dark:border-black ">
-                Contact us now
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-              </button> */}
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
                 className="relative bg-white hover:bg-[#575757] hover:text-white hover:dark:text-white dark:text-black py-[12px] px-[16px] text-xs md:text-base font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -739,10 +757,10 @@ export default function Home() {
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
               </a>
             </div>
-          </div>
+          </div> */}
 
-          {/* Right side - Blue card taking remaining space */}
-          <div className="flex flex-col lg:flex-row items-center border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 text-black justify-between gap-4">
+        {/* Right side - Blue card taking remaining space */}
+        {/* <div className="flex flex-col lg:flex-row items-center border-black border-[3px] rounded-[10px] bg-[#d4f0ff] w-full p-3 text-black justify-between gap-4">
 
 
 
@@ -791,8 +809,8 @@ export default function Home() {
               </p>
             </div>
 
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
 
         {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black">
@@ -830,7 +848,26 @@ export default function Home() {
         </div> */}
       </div>
 
-      <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-[32px]">
+            <div className={` bg-[#f4f4f4] px-[15px] py-[10px] flex justify-center items-center flex-col rounded-[7px] min-h-[92px] transition-all duration-300`}>
+              {/* Original Content */}
+              <h3 className="font-bold text-[12px] text-black dark:text-white leading-[20px] text-center transition-opacity duration-300 
+                      group-hover:opacity-0">
+                Evaluate Anyone in Any Field
+              </h3>
+              <p className="text-black dark:text-white text-[12px] leading-[18px] 
+                      mt-[6px] transition-opacity duration-300 group-hover:opacity-0">
+                Evaluate candidates across any role or industry with our real time
+                AI driven assessments.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-skills-card-background rounded-[10px]">
           <h1 className="text-center text-black dark:text-white font-bold text-xl leading-[28px] md:leading-[28px]">
             Skills Checked. Risks Eliminated. Possibilities Unlocked.
@@ -1183,7 +1220,7 @@ export default function Home() {
                 <span className="mr-2 cursor-pointer hover:underline" onClick={() => { pageRedirection('/terms-conditions') }}>
                   Terms and conditions{" "}<FiArrowUpRight className=" inline-block" onClick={() => { pageRedirection('/privacy-policy') }} />
                 </span>
-               
+
                 <span className="cursor-pointer hover:underline" onClick={() => { pageRedirection('/privacy-policy') }} >
                   Privacy policy{" "} <FiArrowUpRight className=" inline-block" />
                 </span>
