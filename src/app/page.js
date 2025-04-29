@@ -704,8 +704,11 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] bg-[#fff] rounded-[25px] lg:w-[90%] gap-6">
-          <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full h-[506px]">
+        <div className="relative w-[90%] max-w-[1500px] mx-auto md:px-[25px]  bg-[#fff] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
+          <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden">
+          <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
+          </div>
+          <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full min-h-[506px]">
             <h1 className="font-bohemian-soul text-center lg:text-center leading-[65px] text-[48px] md:text-[48px] md:leading-[30px] text-black dark:text-black">
               Validate Skills, Elevate Teams
               {/* <br />
@@ -862,7 +865,7 @@ export default function Home() {
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px] py-[32px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px] py-[20px]">
 
             <div className={` bg-[#c2e7ff] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
               {/* Original Content */}
