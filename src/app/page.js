@@ -942,7 +942,7 @@ export default function Home() {
 
                   <div
                     className={` bg-[#fff] px-[20px] py-[10px] 
-                      flex justify-center items-center flex-col md:border-2 border-[#f1f1f1] 
+                      flex justify-center items-center flex-col border-2 border-[#f1f1f1] 
                        rounded-[25px] min-h-[92px] md:min-h-[171px] 
                       transition-all duration-300`}
                   >
