@@ -42,8 +42,11 @@ const bohemianSoul = localfont({
 });
 
 export const metadata = {
-  title: "Skillchecker",
-  description: "Skills Checked. Risks Eliminated. Possibilities Unlocked.",
+  title: "Skillchecker.ai – Smart AI Hiring Tool for Modern Teams | Coullax",
+  description: "Revolutionize your hiring process with Skillchecker.ai – an AI-powered interview platform that analyzes answers in real time, generates tailored questions, compares candidates, and provides actionable insights. Built by Coullax to help you hire smarter, faster, and with confidence.",
+  keywords: "AI hiring tool, Skillchecker.ai, AI interview platform, real-time answer analysis, technical interview generator, CV analyzer, candidate comparison, smart hiring, Coullax, AI recruitment, automated interviews, modern hiring solutions",
+  author: "Coullax",
+  robots: "index, follow",
 };
 
 export default function RootLayout({ children }) {
