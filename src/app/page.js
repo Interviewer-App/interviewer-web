@@ -709,7 +709,7 @@ export default function Home() {
           <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
           </div>
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full min-h-[506px]">
-            <h1 className="font-bohemian-soul text-center lg:text-center leading-[65px] text-[48px] md:text-[48px] md:leading-[30px] text-black dark:text-black">
+            <h1 className="font-bohemian-soul text-center lg:text-center leading-[45px] text-[38px] md:text-[48px] md:leading-[55px] text-black dark:text-black">
               Validate Skills, Elevate Teams
               {/* <br />
               No Expertise Needed. */}
