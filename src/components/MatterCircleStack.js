@@ -1294,7 +1294,7 @@ const MatterCircleStack = () => {
 
       {!(isEmojiClicked || showResult) && (
         <div className="absolute bottom-2 lg:bottom-3 left-3 transform flex flex-col justify-center items-center px-3 pb-3 bg-[#ffffff] rounded-lg">
-          <h1 className=" text-xs font-semibold relative text-center my-2 w-full">
+          <h1 className=" text-xs font-semibold text-black relative text-center my-2 w-full">
             Change Field
           </h1>
           <motion.button

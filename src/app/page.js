@@ -560,6 +560,7 @@ export default function Home() {
   };
 
   const requestDemo = async () => {
+    // console.log("Request Demo clicked");
     router.push("https://tally.so/r/wQko91");
   };
   const pageRedirection = async (path) => {
@@ -714,7 +715,7 @@ export default function Home() {
         </header>
 
         <div className="relative w-[90%] max-w-[1500px] mx-auto md:px-[25px]  bg-[#fff] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
-          <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden">
+          <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden pointer-events-none">
           <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
           </div>
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full min-h-[506px]">
@@ -733,7 +734,7 @@ export default function Home() {
               without needing an external expert every time.
             </p>
 
-            <div className="flex gap-4 pt-[15px] md:pt-[40px] justify-between">
+            <div className="z-50 flex gap-4 pt-[15px] md:pt-[40px] justify-between">
               <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
                 Request a Demo
               </button>
@@ -872,9 +873,9 @@ export default function Home() {
         </div> */}
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px]">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px] py-[20px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px]">
 
             <div className={` bg-[#c2e7ff] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
               {/* Original Content */}
@@ -939,13 +940,13 @@ export default function Home() {
       
 
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto md:py-[35px] rounded-[10px]">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
+        <div className=" w-[90%] max-w-[1500px] mx-auto rounded-[10px]">
           <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
           Powerful features that will make skill verification <br/>
           Fast, Fair, and Foolproof
           </h1>
-          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-3 md:gap-[42px] mt-[20px] md:mt-[60px]`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[42px] mt-10 md:mt-[60px]`}>
               {features.map((item, index) => (
                 <div key={index} >
 
@@ -975,7 +976,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px]">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
           <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[30px]">
             <MatterCircleStack />
@@ -1146,13 +1147,13 @@ export default function Home() {
 
         </div>
       </div> */}
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
         <div className=" w-[90%] max-w-[1500px] mx-auto bg-transparent rounded-[10px]">
           <div className="max-w-[1166px] mx-auto">
             <h1 className="text-center w-full text-black font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
             </h1>
-            <p className="text-center text-black text-base leading-[25px] md:leading-[25px] pt-[15px]">
+            <p className="text-center text-black text-sm md:text-base leading-[25px] md:leading-[25px] pt-[15px]">
               At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you&apos;re a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
             </p>
           </div>
@@ -1160,7 +1161,7 @@ export default function Home() {
 
 
           <div className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-11 py-[32px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[40px] md:gap-[60px] py-[35px]">
               {beneficiaryGroups.map((group, index) => (
                 <div key={index} className={`tilt-card transition-all duration-300 ease-out ${group.color} hover:scale-105 min-h-[303px] rounded-[20px] px-3 py-5`}
                   ref={(el) => (cardRefs.current[index] = el)}
@@ -1442,7 +1443,7 @@ export default function Home() {
 
         </div>
       </div> */}
-      <div className=" w-full bg-[#fafafa] relative overflow-hidden pt-3 md:pt-10 ">
+      <div className=" w-full bg-[#fafafa] relative overflow-hidden pt-10 md:pt-[60px] ">
         <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-[#70c8ff] md:rounded-full text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 md:px-20 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
@@ -1469,7 +1470,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className=" w-[80%] mx-auto mt-10 md:mt-16 mb-10 md:mb-20 ">
+        <div className=" w-[80%] mx-auto mt-10 md:mt-[65px] mb-10 md:mb-[80px] ">
 
           <span className="flex justify-center items-center text-sm text-center w-full text-black dark:text-white">
             2025&nbsp;Skillchecker.ai&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;All rights reserved
