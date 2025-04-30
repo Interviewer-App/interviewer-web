@@ -560,6 +560,7 @@ export default function Home() {
   };
 
   const requestDemo = async () => {
+    // console.log("Request Demo clicked");
     router.push("https://tally.so/r/wQko91");
   };
   const pageRedirection = async (path) => {
@@ -714,7 +715,7 @@ export default function Home() {
         </header>
 
         <div className="relative w-[90%] max-w-[1500px] mx-auto md:px-[25px]  bg-[#fff] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
-          <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden">
+          <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden pointer-events-none">
           <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
           </div>
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full min-h-[506px]">
