@@ -734,7 +734,7 @@ export default function Home() {
               without needing an external expert every time.
             </p>
 
-            <div className="flex gap-4 pt-[15px] md:pt-[40px] justify-between">
+            <div className="z-50 flex gap-4 pt-[15px] md:pt-[40px] justify-between">
               <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
                 Request a Demo
               </button>
