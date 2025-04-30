@@ -414,7 +414,8 @@ export default function Home() {
   const themes = ['default', 'theme2', 'theme3', 'theme4', 'theme5', 'dark'];
   // let currentThemeIndex = 0;
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'default';
+    // const savedTheme = localStorage.getItem('theme') || 'default';
+    const savedTheme ='default'
     document.documentElement.setAttribute('data-theme', savedTheme);
     setTheme(savedTheme);
 
@@ -625,7 +626,7 @@ export default function Home() {
           <div className=" w-[90%] max-w-[1500px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-12 mx-auto">
             <div>
               <div className="hidden md:block">
-                {isDarkMode ? (
+                {/* {isDarkMode ? (
                   <Image
                     src="/landing_page/logo-dark.png"
                     alt="logo"
@@ -643,7 +644,15 @@ export default function Home() {
                     onClick={() => { pageRedirection('/') }}
                     className="cursor-pointer"
                   />
-                )}
+                )} */}
+                <Image
+                    src="/landing_page/logo.png"
+                    alt="logo"
+                    width={339}
+                    height={60}
+                    onClick={() => { pageRedirection('/') }}
+                    className="cursor-pointer"
+                  />
               </div>
 
               <div className="block md:hidden">
