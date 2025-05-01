@@ -987,8 +987,8 @@ export default function Home() {
               <MatterCircleStack />
             </div>
 
-            <div className=" w-full min-h-[398px] lg:min-h-0 lg:max-w-[243px] bg-[#FFFFFF] rounded-[7px] justify-center h-full">
-              <h2 className="font-bold text-black lg:mt-9 lg:mb-9  mt-9 mb-9 text-center text-2xl">
+            <div className=" w-full min-h-[398px] lg:min-h-0 lg:max-w-[243px] bg-[#FFFFFF] rounded-[30px] justify-center h-full">
+              <h2 className="font-bold text-black lg:mt-0 lg:mb-9  mt-7 mb-9 text-center text-2xl">
                 How Skillchecker works?
               </h2>
 
