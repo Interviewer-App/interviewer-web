@@ -873,7 +873,7 @@ export default function Home() {
         </div> */}
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[60px]">
+      <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[60px] ">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px]">
 
@@ -941,7 +941,7 @@ export default function Home() {
 
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto rounded-[10px]">
+        <div className=" w-[90%] max-w-[1500px] mx-auto rounded-[10px] ">
           <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
           Powerful features that will make skill verification <br/>
           Fast, Fair, and Foolproof
@@ -949,13 +949,13 @@ export default function Home() {
           <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[42px] mt-10 md:mt-[60px] px-8`}>
               {features.map((item, index) => (
                 <div key={index} >
-                  <div className="flex justify-center items-center bg-[#e7e7e7] rounded-t-[20px] min-h-[334px] border-black border-[1px] ">
+                  <div className="flex justify-center items-center bg-[#e7e7e7] rounded-t-[20px]  border-black border-[1px] ">
 
-                  <Image src={`/landing_page/features/feature${index+1}.png`} alt="Users" width={350} height={50} />
+                  <Image src={`/landing_page/features/feature${index+1}.png`} alt="Users" width={450} height={50} className="rounded-t-[20px]" />
                   </div>
-                  <hr/>
+                  {/* <hr/> */}
                   <div
-                    className={` bg-[#fff] px-[20px] py-[20px] 
+                    className={` bg-[#fff] px-[20px] py-[25px] 
                       flex justify-start items-center flex-col border-b-[1px] border-r-[1px] border-l-[1px] border-[#000] 
                        rounded-b-[20px] min-h-[92px] md:min-h-[183px] 
                       transition-all duration-300`}
@@ -1197,7 +1197,7 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-transparent rounded-[10px]">
+        <div className=" w-[90%] max-w-[1500px] mx-auto bg-transparent rounded-[10px] ">
           <div className="max-w-[1166px] mx-auto">
             <h1 className="text-center w-full text-black font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
@@ -1493,7 +1493,7 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fafafa] relative overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-[#70c8ff] md:rounded-full text-black mb-4">
+        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-[#70c8ff] md:rounded-full text-black mb-4 ">
           <div className="flex justify-center md:justify-between py-6 md:px-20 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
