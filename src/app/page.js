@@ -219,15 +219,15 @@ export default function Home() {
   ];
 
   const features = [
-    { title: "🧑‍💻 1 to 1 Video calling features", desc: "Talk face to face with zero hassle. Our smooth video call setup makes remote interviews feel personal and professional  like you're in the same room." },
-    { title: "🧑‍💼 Flexible for Online & Onsite Interviews", desc: "Whether you're interviewing from across the globe or across the table, we've got you covered." },
-    { title: "⚡ Rapid fire AI generated questions", desc: "No need to spend hours crafting interview questions. Our AI does it for you . generating sharp, role specific questions in seconds so you can focus on what really matters: finding the right fit." },
-    { title: "🔥 Real Time Answer Validation", desc: "Catch red flags and gold star answers as they happen. Our real time tech keeps you one step ahead no more guesswork." },
-    { title: "📊 Complete candidate analytics", desc: "View detailed analytics and scores that actually matter. Know exactly who stands out and why." },
-    { title: "🧑‍🚀🧑‍🚀 Compare talents", desc: "Compare candidates like a pro. See who's truly the best fit with our visual, no nonsense comparison tools." },
-    { title: "🔎 CV Analyser", desc: "Drop a resume, and voilà! , our AI breaks it down. Get the real story behind every CV without lifting a finger." },
-    { title: "🗣️ Post interview feedback", desc: "Once the interview’s done, we deliver smart, tailored feedback to both sides .so candidates know where they stand, and companies get insights to fine tune their hiring. Clear. Actionable. No fluff." },
-    { title: "🚀 Advanced Dashboard", desc: "Manage everything . interviews, candidates, feedback, insights ,from one slick, powerful dashboard. It’s your hiring HQ." },
+    { title: "1 to 1 Video calling features", desc: "Talk face to face with zero hassle. Our smooth video call setup makes remote interviews feel personal and professional  like you're in the same room." },
+    { title: "Flexible for Online & Onsite Interviews", desc: "Whether you're interviewing from across the globe or across the table, we've got you covered." },
+    { title: "Rapid fire AI generated questions", desc: "No need to spend hours crafting interview questions. Our AI does it for you . generating sharp, role specific questions in seconds so you can focus on what really matters: finding the right fit." },
+    { title: "Real Time Answer Validation", desc: "Catch red flags and gold star answers as they happen. Our real time tech keeps you one step ahead no more guesswork." },
+    { title: "Complete candidate analytics", desc: "View detailed analytics and scores that actually matter. Know exactly who stands out and why." },
+    { title: "Compare talents", desc: "Compare candidates like a pro. See who's truly the best fit with our visual, no nonsense comparison tools." },
+    { title: "CV Analyser", desc: "Drop a resume, and voilà! , our AI breaks it down. Get the real story behind every CV without lifting a finger." },
+    { title: "Post interview feedback", desc: "Once the interview’s done, we deliver smart, tailored feedback to both sides .so candidates know where they stand, and companies get insights to fine tune their hiring. Clear. Actionable. No fluff." },
+    { title: "Advanced Dashboard", desc: "Manage everything . interviews, candidates, feedback, insights ,from one slick, powerful dashboard. It’s your hiring HQ." },
   ];
 
   const featuresOne = [
@@ -714,18 +714,18 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="relative w-[90%] max-w-[1500px] mx-auto md:px-[25px]  bg-[#fff] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
+        <div className="relative w-[90%] max-w-[1500px] mx-auto md:px-[25px]  bg-[#000] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
           <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden pointer-events-none">
           <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
           </div>
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full min-h-[506px]">
-            <h1 className="font-bohemian-soul text-center lg:text-center leading-[45px] text-[38px] md:text-[48px] md:leading-[55px] text-black dark:text-black">
+            <h1 className="font-bohemian-soul text-center lg:text-center leading-[45px] text-[38px] md:text-[48px] md:leading-[55px] text-white">
               Validate Skills, Elevate Teams
               {/* <br />
               No Expertise Needed. */}
             </h1>
 
-            <p className="max-w-[368px] md:max-w-[908px] text-xs md:text-[16px] text-center lg:text-center pt-[15px] md:pt-[30px] leading-[18px] text-black dark:text-black font-puls">
+            <p className="max-w-[368px] md:max-w-[908px] text-xs md:text-[16px] text-center lg:text-center pt-[15px] md:pt-[30px] leading-[18px] text-white dark:text-black font-puls">
               The Skillchecker is an AI powered tool that helps you evaluate skills in any field, especially those outside your expertise.
               <br /><br />
               Whether you are hiring, investing, or Collaborating,
@@ -735,12 +735,12 @@ export default function Home() {
             </p>
 
             <div className="z-50 flex gap-4 pt-[15px] md:pt-[40px] justify-between">
-              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
+              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
                 Request a Demo
               </button>
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
-                className="relative bg-white hover:bg-[#575757] hover:text-white hover:dark:text-white dark:text-black py-[12px] px-[16px] text-xs md:text-base font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_black]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all rounded-[125px]"
+                className="relative bg-white  dark:text-black py-[12px] px-[16px] text-xs md:text-base font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all rounded-[125px]"
               >
                 Contact us now
                 <span className="absolute top-5 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
@@ -873,59 +873,59 @@ export default function Home() {
         </div> */}
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px]">
+      <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[60px]">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px]">
 
-            <div className={` bg-[#c2e7ff] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
+            <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/users-three.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 Evaluate Anyone in Any Field
               </h3>
-              <p className="text-black text-[16px] leading-[20px]  text-center
+              <p className="text-white text-[16px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Evaluate candidates across any role or industry with our real time
                 AI driven assessments.
               </p>
             </div>
 
-            <div className={` bg-[#ffeb9c] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ecdd99]`}>
+            <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ecdd99]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/seal-check.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 Decisions at a Glance
               </h3>
-              <p className="text-black  text-[16px] leading-[20px] text-center
+              <p className="text-white  text-[16px] leading-[20px] text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 No digging through files. SkillChecker transforms raw data into clean visuals so you can make decisions at a glance.
               </p>
             </div>
 
-            <div className={` bg-[#ffccd7] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ffb1c2]`}>
+            <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ffb1c2]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/fire.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 10x Faster. <br />
                 100% More Confident
               </h3>
-              <p className="text-black text-[16px] leading-[20px]  text-center
+              <p className="text-white text-[16px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Why waste weeks? Our AI scans, scores, and ranks talent in minutes with the precision of a seasoned expert. Faster decisions, fewer regrets.
               </p>
             </div>
 
-            <div className={` bg-[#e6ccff] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#cbafe6]`}>
+            <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#cbafe6]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/crown.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-black leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 You&apos;re Still in Control
               </h3>
-              <p className="text-black text-[16px] leading-[20px]  text-center
+              <p className="text-white text-[16px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Unlike other tools, You don&apos;t lose control, you gain superpowers.
                 you&apos;re the boss. SkillChecker gives you the perfect blend of AI logic and human judgment.
@@ -946,23 +946,27 @@ export default function Home() {
           Powerful features that will make skill verification <br/>
           Fast, Fair, and Foolproof
           </h1>
-          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[42px] mt-10 md:mt-[60px]`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[42px] mt-10 md:mt-[60px] px-8`}>
               {features.map((item, index) => (
                 <div key={index} >
+                  <div className="flex justify-center items-center bg-[#e7e7e7] rounded-t-[20px] min-h-[334px] border-black border-[1px] ">
 
+                  <Image src={`/landing_page/features/feature${index+1}.png`} alt="Users" width={350} height={50} />
+                  </div>
+                  <hr/>
                   <div
-                    className={` bg-[#fff] px-[20px] py-[10px] 
-                      flex justify-center items-center flex-col border-2 border-[#f1f1f1] 
-                       rounded-[25px] min-h-[92px] md:min-h-[171px] 
+                    className={` bg-[#fff] px-[20px] py-[20px] 
+                      flex justify-start items-center flex-col border-b-[1px] border-r-[1px] border-l-[1px] border-[#000] 
+                       rounded-b-[20px] min-h-[92px] md:min-h-[183px] 
                       transition-all duration-300`}
                   >
                     <h3 className="font-bold text-[20px] text-black 
                       leading-[33px] text-center transition-opacity duration-300 
-                      group-hover:opacity-0">
+                      ">
                       {item.title}
                     </h3>
                     <p className="text-black text-[16px] leading-[24px] text-center 
-                      mt-[6px] transition-opacity duration-300 group-hover:opacity-0">
+                      mt-[10px] transition-opacity duration-300 group-hover:opacity-0">
                       {item.desc}
                     </p>
 
@@ -978,11 +982,56 @@ export default function Home() {
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px]">
         <div className=" w-[90%] max-w-[1500px] mx-auto ">
-          <div className=" lg:col-span-2 flex min-h-[418px] flex-col justify-start items-start border-black  border-[3px] rounded-[30px]">
-            <MatterCircleStack />
+          <div className=" flex flex-col lg:flex-row items-center justify-between lg:col-span-2 min-h-[418px] border-black  border-[3px] rounded-[30px] gap-4 bg-[#fff]">
+            <div className=" w-full ">
+              <MatterCircleStack />
+            </div>
+
+            <div className=" w-full min-h-[398px] lg:min-h-0 lg:max-w-[243px] bg-[#FFFFFF] rounded-[7px] justify-center h-full">
+              <h2 className="font-bold text-black lg:mt-9 lg:mb-9  mt-9 mb-9 text-center text-2xl">
+                How Skillchecker works?
+              </h2>
+
+              <ul className="lg:text-xs md:text-sm lg:space-y-4 lg:mb-9 lg:mt-9 mx-4 font-semibold space-y-5 mb-12 mt-12 flex flex-col justify-center items-center text-black">
+                <li className="flex items-start">
+                  <span className="lg:text-xs mr-1 md:text-sm">1.</span>
+                  <span>
+                    Skillchecker evaluates
+                    Technical Skills
+                    and gives a score
+                  </span>
+                </li>
+
+                <li className="flex items-start">
+                  <span className="md:text-sm lg:text-xs mr-1">2.</span>
+                  <span>
+                    You evaluate soft skills, such as
+                    cultural fit, problem-solving,
+                    and teamwork, and assign a
+                    score.
+                  </span>
+                </li>
+
+                <li className="flex items-start">
+                  <span className="md:text-sm lg:text-xs mr-1">3.</span>
+                  <span>
+                    Then, Skillchecker ranks the
+                    talent pool based on the
+                    overall score.
+                  </span>
+                </li>
+              </ul>
+
+              <p className="md:text-sm lg:text-xs text-center mx-6 font-semibold lg:mt-0  lg:mb-0 mt-9 mb-9 text-black">
+                Play around with the interactive preview
+                on <span className=" lg:hidden inline-block">above</span><span className=" hidden lg:inline-block">the left</span> to see how it works in action!
+              </p>
+            </div>
           </div>
         </div>
       </div>
+
+
 
       {/* <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
         <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-skills-card-background rounded-[10px]">
