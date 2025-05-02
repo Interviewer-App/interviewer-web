@@ -907,7 +907,7 @@ export default function Home() {
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ffb1c2]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/fire.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[17px] text-white leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[17px] text-white leading-[17px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 10x Faster. <br />
                 100% More Confident
