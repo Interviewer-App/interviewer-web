@@ -624,7 +624,7 @@ export default function Home() {
     <div className=" w-full">
       <div className=" w-full text-black bg-[#fafafa] dark:text-white">
         <header className=" w-full ">
-          <div className=" w-[90%] max-w-[1500px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-12 mx-auto">
+          <div className=" w-[90%] max-w-[1280px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-12 mx-auto">
             <div>
               <div className="hidden md:block">
                 {/* {isDarkMode ? (
@@ -714,7 +714,7 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="relative w-[90%] max-w-[1500px] mx-auto md:px-[25px]  bg-[#000] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
+        <div className="relative w-[90%] max-w-[1280px] mx-auto md:px-[25px]  bg-[#000] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
           <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden pointer-events-none">
           <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
           </div>
@@ -750,7 +750,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* <div className="flex flex-col lg:flex-row w-[90%] lg:w-[90%] max-w-[1500px] mx-auto gap-6">
+        {/* <div className="flex flex-col lg:flex-row w-[90%] lg:w-[90%] max-w-[1280px] mx-auto gap-6">
           <div className="flex flex-col justify-center lg:justify-start items-center lg:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black w-full lg:max-w-[418px] lg:min-h-[418px] flex-shrink-0">
             <h1 className="font-bohemian-soul text-center lg:text-start leading-[30px] text-[24px] md:text-[24px] md:leading-[30px] text-black dark:text-black">
               Evaluate Skills in Any Field.
@@ -837,7 +837,7 @@ export default function Home() {
           </div> */}
         {/* </div> */}
 
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1500px] mx-auto gap-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[90%] md:w-[90%] max-w-[1280px] mx-auto gap-8">
           <div className="flex flex-col justify-center md:justify-start items-center md:items-start border-black border-[3px] rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] bg-title-card-background dark:bg-title-card-background dark:text-black">
             <h1 className="font-bohemian-soul text-center md:text-start leading-[28px] text-[25px] md:text-[25px] md:leading-[30px] font-bold text-black dark:text-black">
               <span>Evaluate Skills in Any Field.</span><br />
@@ -874,7 +874,7 @@ export default function Home() {
       </div>
 
       <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+        <div className=" w-[90%] max-w-[1280px] mx-auto ">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px]">
 
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
@@ -941,7 +941,7 @@ export default function Home() {
 
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto rounded-[10px] ">
+        <div className=" w-[90%] max-w-[1280px] mx-auto rounded-[10px] ">
           <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
           Powerful features that will make skill verification <br/>
           Fast, Fair, and Foolproof
@@ -981,7 +981,7 @@ export default function Home() {
       </div>
 
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px]">
-        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+        <div className=" w-[90%] max-w-[1280px] mx-auto ">
           <div className=" flex flex-col lg:flex-row items-center justify-between lg:col-span-2 min-h-[418px] border-black  border-[3px] rounded-[30px] gap-4 bg-[#fff]">
             <div className=" w-full ">
               <MatterCircleStack />
@@ -1034,7 +1034,7 @@ export default function Home() {
 
 
       {/* <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-[25px] md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[25px] md:py-[35px] md:bg-skills-card-background rounded-[10px]">
+        <div className=" w-[90%] max-w-[1280px] mx-auto md:px-[25px] md:py-[35px] md:bg-skills-card-background rounded-[10px]">
           <h1 className="text-center text-black dark:text-white font-bold text-xl leading-[28px] md:leading-[28px]">
             Skills Checked. Risks Eliminated. Possibilities Unlocked.
           </h1>
@@ -1090,7 +1090,7 @@ export default function Home() {
 
 
       {/* <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-[45px] md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto ">
+        <div className=" w-[90%] max-w-[1280px] mx-auto ">
           <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl  leading-[24px] md:leading-[28px] mb-[30px]">
             Powerful features that will make skill verification <br />
             Fast, Fair, and Foolproof
@@ -1113,7 +1113,7 @@ export default function Home() {
 
 
       {/* <div className=" w-full bg-background relative text-white dark:text-black overflow-hidden pt-3 md:pt-10 ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto md:px-[35px] py-[35px] bg-transparent md:bg-benefits-card-background rounded-[10px]">
+        <div className=" w-[90%] max-w-[1280px] mx-auto md:px-[35px] py-[35px] bg-transparent md:bg-benefits-card-background rounded-[10px]">
           <div className="max-w-[591px]">
             <h1 className="text-center md:text-start text-black dark:text-white font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
@@ -1197,7 +1197,7 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" w-[90%] max-w-[1500px] mx-auto bg-transparent rounded-[10px] ">
+        <div className=" w-[90%] max-w-[1280px] mx-auto bg-transparent rounded-[10px] ">
           <div className="max-w-[1166px] mx-auto">
             <h1 className="text-center w-full text-black font-bold text-xl leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
@@ -1366,7 +1366,7 @@ export default function Home() {
           alt="bg"
           className=" absolute w-full h-[130vh] top-0 left-0 -z-10"
         />
-        <div className=" mt-16 w-[90%] max-w-[1500px] mx-auto">
+        <div className=" mt-16 w-[90%] max-w-[1280px] mx-auto">
           <p className=" text-center uppercase text-gray-500 font-semibold text-xl pb-5 md:py-8">
             Pricing
           </p>
@@ -1390,7 +1390,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="isolate mx-auto grid grid-cols-1 gap-8 lg:grid-cols-3 mt-10 w-4/5 max-w-[1500px] place-items-center">
+        <div className="isolate mx-auto grid grid-cols-1 gap-8 lg:grid-cols-3 mt-10 w-4/5 max-w-[1280px] place-items-center">
           {premiumDetails.map((detail) => (
             <PremiuCard
               key={detail.id}
@@ -1456,7 +1456,7 @@ export default function Home() {
         </div>
       </div> */}
       {/* <div className=" w-full bg-background relative overflow-hidden pt-3 md:pt-10 ">
-        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto  bg-footer-background text-black mb-4">
+        <div className=" md:w-[90%] md:max-w-[1280px] md:mx-auto  bg-footer-background text-black mb-4">
           <div className="flex justify-center md:justify-between py-6 px-8 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
@@ -1493,7 +1493,7 @@ export default function Home() {
         </div>
       </div> */}
       <div className=" w-full bg-[#fafafa] relative overflow-hidden pt-10 md:pt-[60px] ">
-        <div className=" md:w-[90%] md:max-w-[1500px] md:mx-auto bg-[#70c8ff] md:rounded-full text-black mb-4 ">
+        <div className=" md:w-[90%] md:max-w-[1280px] md:mx-auto bg-[#70c8ff] md:rounded-full text-black mb-4 ">
           <div className="flex justify-center md:justify-between py-6 md:px-20 flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
