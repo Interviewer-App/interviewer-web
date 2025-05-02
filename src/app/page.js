@@ -624,7 +624,7 @@ export default function Home() {
     <div className=" w-full">
       <div className=" w-full text-black bg-[#fafafa] dark:text-white">
         <header className=" w-full ">
-          <div className=" w-[90%] max-w-[1280px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-12 mx-auto">
+          <div className=" w-[90%] max-w-[1280px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-[65px] mx-auto">
             <div>
               <div className="hidden md:block">
                 {/* {isDarkMode ? (
