@@ -735,12 +735,12 @@ export default function Home() {
             </p>
 
             <div className="z-50 flex gap-4 pt-[15px] md:pt-[40px] justify-between">
-              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-[14.3px] font-bold  shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
+              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-[14px] font-bold  shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
                 Request a Demo
               </button>
               <a
                 href="mailto:director@coullax.com?subject=Contact%20Request&body=Hello,%20I%20would%20like%20to%20get%20in%20touch..."
-                className="relative bg-white  dark:text-black py-[12px] px-[16px] text-xs md:text-base font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all rounded-[125px]"
+                className="relative bg-white  dark:text-black py-[12px] px-[16px] text-xs md:text-[14px] font-bold inline-block border-2 text-center border-black text-black shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all rounded-[125px]"
               >
                 Contact us now
                 <span className="absolute top-5 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
