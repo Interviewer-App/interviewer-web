@@ -875,7 +875,7 @@ export default function Home() {
 
       <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[35px] ">
         <div className=" w-[90%] max-w-[1280px] mx-auto ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[34.6px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[35px] md:min-h-[252px]">
 
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
               {/* Original Content */}
@@ -957,7 +957,7 @@ export default function Home() {
                   <div
                     className={` bg-[#fff] px-[20px] py-[25px] 
                       flex justify-start items-center flex-col border-b-[1px] border-r-[1px] border-l-[1px] border-[#000] 
-                       rounded-b-[20px] min-h-[92px] md:min-h-[183px] 
+                       rounded-b-[20px] min-h-[92px] md:min-h-[214px] 
                       transition-all duration-300`}
                   >
                     <h3 className="font-bold text-[17px] text-black 
