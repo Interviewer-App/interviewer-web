@@ -716,16 +716,16 @@ export default function Home() {
 
         <div className="relative w-[90%] max-w-[1280px] mx-auto md:px-[25px]  bg-[#000] rounded-[25px] lg:w-[90%] gap-6 overflow-hidden min-h-[506px]">
           <div className="absolute top-0 left-0 z-0 h-full w-full lg:block hidden pointer-events-none">
-          <Image src={require('../../public/icons/LangingPageHeroSection.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
+          <Image src={require('../../public/icons/LangingPageHeroSection2.png')} alt="landing_page_hero_Image" className="w-full h-full object-fill rounded-[25px] bg-fit" />
           </div>
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 py-11 md:px-[30px]  md:py-[45.5px] w-full min-h-[506px]">
-            <h1 className="font-bohemian-soul text-center lg:text-center leading-[45px] text-[38px] md:text-[48px] md:leading-[55px] text-white">
+            <h1 className="font-bohemian-soul text-center lg:text-center leading-[45px] text-[38px] md:text-[42px] md:leading-[55px] text-white">
               Validate Skills, Elevate Teams
               {/* <br />
               No Expertise Needed. */}
             </h1>
 
-            <p className="max-w-[368px] md:max-w-[908px] text-xs md:text-[16px] text-center lg:text-center pt-[15px] md:pt-[30px] leading-[18px] text-white dark:text-black font-puls">
+            <p className="max-w-[368px] md:max-w-[908px] text-xs md:text-[14px] text-center lg:text-center pt-[15px] md:pt-[30px] leading-[18px] text-white dark:text-black font-puls">
               The Skillchecker is an AI powered tool that helps you evaluate skills in any field, especially those outside your expertise.
               <br /><br />
               Whether you are hiring, investing, or Collaborating,
@@ -735,7 +735,7 @@ export default function Home() {
             </p>
 
             <div className="z-50 flex gap-4 pt-[15px] md:pt-[40px] justify-between">
-              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-base font-bold  shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
+              <button onClick={requestDemo} className="bg-[#afe6ff] text-black py-[12px] px-[16px] text-xs md:text-[14.3px] font-bold  shadow-[4px_4px_0px_#434343]  active:shadow-none active:translate-x-1 active:translate-y-1 transition-all border-2 border-black rounded-[125px]">
                 Request a Demo
               </button>
               <a
@@ -873,18 +873,18 @@ export default function Home() {
         </div> */}
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[60px] ">
+      <div className=" w-full bg-[#fafafa] relative text-white overflow-hidden pt-10 md:pt-[35px] ">
         <div className=" w-[90%] max-w-[1280px] mx-auto ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[40px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[34.6px]">
 
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#b8ddf4]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/users-three.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[17px] text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 Evaluate Anyone in Any Field
               </h3>
-              <p className="text-white text-[16px] leading-[20px]  text-center
+              <p className="text-white text-[14px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Evaluate candidates across any role or industry with our real time
                 AI driven assessments.
@@ -894,11 +894,11 @@ export default function Home() {
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ecdd99]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/seal-check.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[20px] text-white leading-[17px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 Decisions at a Glance
               </h3>
-              <p className="text-white  text-[16px] leading-[20px] text-center
+              <p className="text-white  text-[14px] leading-[20px] text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 No digging through files. SkillChecker transforms raw data into clean visuals so you can make decisions at a glance.
               </p>
@@ -907,12 +907,12 @@ export default function Home() {
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#ffb1c2]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/fire.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[17px] text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 10x Faster. <br />
                 100% More Confident
               </h3>
-              <p className="text-white text-[16px] leading-[20px]  text-center
+              <p className="text-white text-[14px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Why waste weeks? Our AI scans, scores, and ranks talent in minutes with the precision of a seasoned expert. Faster decisions, fewer regrets.
               </p>
@@ -921,11 +921,11 @@ export default function Home() {
             <div className={` bg-[#000] px-[15px] py-[30px] flex justify-start items-center flex-col rounded-[30px] min-h-[92px] transition-all duration-300 md:min-h-[252px] border-[1px] border-[#cbafe6]`}>
               {/* Original Content */}
               <img src="/landing_page/feature-icons/crown.png" alt="Users" width="50" height="50" />
-              <h3 className="font-semibold text-[20px] text-white leading-[20px] text-center transition-opacity duration-300 
+              <h3 className="font-semibold text-[17px] text-white leading-[17px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-3">
                 You&apos;re Still in Control
               </h3>
-              <p className="text-white text-[16px] leading-[20px]  text-center
+              <p className="text-white text-[14px] leading-[20px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-3">
                 Unlike other tools, You don&apos;t lose control, you gain superpowers.
                 you&apos;re the boss. SkillChecker gives you the perfect blend of AI logic and human judgment.
@@ -940,13 +940,13 @@ export default function Home() {
       
 
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[51.9px] ">
         <div className=" w-[90%] max-w-[1280px] mx-auto rounded-[10px] ">
           <h1 className="text-center text-black font-bold text-xl leading-[28px] md:leading-[28px]">
           Powerful features that will make skill verification <br/>
           Fast, Fair, and Foolproof
           </h1>
-          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[42px] mt-10 md:mt-[60px] px-8`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[51.9px] mt-10 md:mt-[51.9px] px-8`}>
               {features.map((item, index) => (
                 <div key={index} >
                   <div className="flex justify-center items-center bg-[#e7e7e7] rounded-t-[20px]  border-black border-[1px] ">
@@ -960,12 +960,12 @@ export default function Home() {
                        rounded-b-[20px] min-h-[92px] md:min-h-[183px] 
                       transition-all duration-300`}
                   >
-                    <h3 className="font-bold text-[20px] text-black 
+                    <h3 className="font-bold text-[17px] text-black 
                       leading-[33px] text-center transition-opacity duration-300 
                       ">
                       {item.title}
                     </h3>
-                    <p className="text-black text-[16px] leading-[24px] text-center 
+                    <p className="text-black text-[13.8px] leading-[24px] text-center 
                       mt-[10px] transition-opacity duration-300 group-hover:opacity-0">
                       {item.desc}
                     </p>
@@ -980,7 +980,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px]">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[51.9px]">
         <div className=" w-[90%] max-w-[1280px] mx-auto ">
           <div className=" flex flex-col lg:flex-row items-center justify-between lg:col-span-2 min-h-[418px] border-black  border-[3px] rounded-[30px] gap-4 bg-[#fff]">
             <div className=" w-full ">
@@ -1196,13 +1196,13 @@ export default function Home() {
 
         </div>
       </div> */}
-      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[60px] ">
+      <div className=" w-full bg-[#fafafa] relative text-white dark:text-black overflow-hidden pt-10 md:pt-[51.9px] ">
         <div className=" w-[90%] max-w-[1280px] mx-auto bg-transparent rounded-[10px] ">
           <div className="max-w-[1166px] mx-auto">
-            <h1 className="text-center w-full text-black font-bold text-xl leading-[50px] md:leading-[50px]">
+            <h1 className="text-center w-full text-black font-bold text-[18px] leading-[50px] md:leading-[50px]">
               Who Can Benefit from Skillchecker?
             </h1>
-            <p className="text-center text-black text-sm md:text-base leading-[25px] md:leading-[25px] pt-[15px]">
+            <p className="text-center text-black text-[14px] md:text-base leading-[25px] md:leading-[25px] pt-[15px]">
               At Skillchecker, we empower businesses of all sizes to enhance their hiring processes. Whether you&apos;re a startup looking to build a strong team or an established company aiming to refine your recruitment strategy, our platform is designed to support you.
             </p>
           </div>
