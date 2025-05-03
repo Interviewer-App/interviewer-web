@@ -946,18 +946,18 @@ export default function Home() {
           Powerful features that will make skill verification <br/>
           Fast, Fair, and Foolproof
           </h1>
-          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[51.9px] mt-10 md:mt-[51.9px] px-8`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-[28px] md:gap-[51px] mt-10 md:mt-[51.9px] px-[29px]`}>
               {features.map((item, index) => (
-                <div key={index} >
+                <div key={index} className="min-h-[290px]">
                   <div className="flex justify-center items-center bg-[#e7e7e7] rounded-t-[20px]  border-black border-[1px] ">
 
                   <Image src={`/landing_page/features/feature${index+1}.png`} alt="Users" width={450} height={50} className="rounded-t-[20px]" />
                   </div>
                   {/* <hr/> */}
                   <div
-                    className={` bg-[#fff] px-[20px] py-[25px] 
+                    className={` bg-[#fff] px-[17px] pt-[22px] 
                       flex justify-start items-center flex-col border-b-[1px] border-r-[1px] border-l-[1px] border-[#000] 
-                       rounded-b-[20px] min-h-[92px] md:min-h-[214px] 
+                       rounded-b-[20px] min-h-[92px] md:min-h-[158px] 
                       transition-all duration-300`}
                   >
                     <h3 className="font-bold text-[17px] text-black 
@@ -965,7 +965,7 @@ export default function Home() {
                       ">
                       {item.title}
                     </h3>
-                    <p className="text-black text-[13.8px] leading-[24px] text-center 
+                    <p className="text-black text-[14px] leading-[24px] text-center 
                       mt-[10px] transition-opacity duration-300 group-hover:opacity-0">
                       {item.desc}
                     </p>
@@ -1210,7 +1210,7 @@ export default function Home() {
 
 
           <div className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[40px] md:gap-[60px] py-[35px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[40px] md:gap-[52px] py-[35px]">
               {beneficiaryGroups.map((group, index) => (
                 <div key={index} className={`tilt-card transition-all duration-300 ease-out ${group.color} hover:scale-105 min-h-[303px] rounded-[20px] px-3 py-5`}
                   ref={(el) => (cardRefs.current[index] = el)}
@@ -1223,15 +1223,15 @@ export default function Home() {
                   ></div>
                   <div
                     ref={(el) => (contentRefs.current[index] = el)}
-                    className="tilt-card-content p-4 h-full relative z-10"
+                    className="tilt-card-content p-1 h-full relative z-10"
                   >
-                    <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 border-white bg-[#ffffff] dark:md:bg-black rounded-[50px] px-[5px] py-[6px]">
+                    <h1 className="text-center text-black dark:md:text-white text-sm font-bold leading-[20px] md:leading-[20px] border-2 border-white bg-[#ffffff] dark:md:bg-black rounded-[50px] px-[5px] py-[6px] mb-[22px]">
                       {group.title}
                     </h1>
 
                     <ul className="space-y-3">
                       {group.benefits.map((benefit, benefitIndex) => (
-                        <li key={benefitIndex} className="flex pt-[20px]">
+                        <li key={benefitIndex} className="flex">
                           <span className="mr-2 text-black">•</span>
                           <div className="text-sm text-black">
                             <span className="font-bold ">{benefit.title} – </span>
