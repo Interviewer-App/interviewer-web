@@ -22,11 +22,12 @@
   /* --primary-color: #121212; */
   --secondary-color: #000000;
   --accent-color: #007bff;
-  --background-color: #ffffff;
-  --title-card-background: #ffe582;
-  --footer-background: #70c8ff;
+  --background-color: #fafafa;
+  --title-card-background: #ffffff;
+  --title-card-text-color: #000000;
+  --footer-background: #afe6ff;
   --skills-card-background: #f0f0f0;
-  --features-card-background: #e7effc;
+  --features-card-background: #e7e7e7;
   --benefits-card-background: #fcf5e7;
   --benefit-card1-background: #e8f7fe;
   --benefit-card2-background: #fbf6db;
@@ -44,6 +45,7 @@
   --accent-color: #bb86fc;
   --background-color: #161618;
   --title-card-background: #82e0ff;
+  --title-card-text-color: #000000;
   --footer-background: #82e0ff;
   --skills-card-background: #1f1e20;
   --features-card-background: #3b3b3d;
@@ -63,6 +65,7 @@
   --accent-color: #0056b3;
   --background-color: #DDDDDD;
   --title-card-background: #ffe582;
+  --title-card-text-color: #000000;
   --footer-background: #ffe582;
   --skills-card-background: #f0f0f0;
   --features-card-background: #e7effc;
@@ -80,16 +83,17 @@
   /* --primary-color: #fff3e0; */
   --secondary-color: #fb8c00;
   --accent-color: #ef6c00;
-  --background-color: #D1F8FF;
-  --title-card-background: #a6e197;
-  --footer-background: #a6e197;
+  --background-color: #e2fbff;
+  --title-card-background: #86d0df;
+  --title-card-text-color: #000000;
+  --footer-background: #afe6ff;
   --skills-card-background: #c3ecf3;
-  --features-card-background: #ffffff;
+  --features-card-background: #72d4df;
   --benefits-card-background: #e3ffd5;
-  --benefit-card1-background: #ffffff;
-  --benefit-card2-background: #f1ffe6;
-  --benefit-card3-background: #e6f6ff;
-  --benefit-card4-background: #f4e6ff;
+  --benefit-card1-background: #e8f7fe;
+  --benefit-card2-background: #fbf6db;
+  --benefit-card3-background: #ece1f6;
+  --benefit-card4-background: #fef3e8;
   --request-demo-background:#e7f5fc;
   --request-demo-background-hover:#3CC1FF;
   --request-demo-text-hover:#000;
@@ -101,15 +105,16 @@
   --secondary-color: #2e7d32;
   --accent-color: #1b5e20;
   --background-color: #DDFFD1;
-  --title-card-background:#d3b4ff;
-  --footer-background: #d3b4ff;
+  --title-card-background:#9ee3a2;
+  --title-card-text-color: #000000;
+  --footer-background: #afe6ff;
   --skills-card-background: #d3f0c8;
-  --features-card-background: #ffffff;
+  --features-card-background: #9bd586;
   --benefits-card-background: #d9ebff;
-  --benefit-card1-background: #ffffff;
-  --benefit-card2-background: #ddffd1;
-  --benefit-card3-background: #e6f6ff;
-  --benefit-card4-background: #f4e6ff;
+  --benefit-card1-background: #e8f7fe;
+  --benefit-card2-background: #fbf6db;
+  --benefit-card3-background: #ece1f6;
+  --benefit-card4-background: #fef3e8;
   --request-demo-background: #ccffd5;
   --request-demo-background-hover:#6FFF89;
   --request-demo-text-hover:#000;
@@ -120,16 +125,17 @@
   /* --primary-color: #ede7f6; */
   --secondary-color: #673ab7;
   --accent-color: #311b92;
-  --background-color: #FFF8D1;
-  --title-card-background: #ffb3b5;
-  --footer-background: #ffb3b5;
+  --background-color: #fff9d7;
+  --title-card-background: #ffd570;
+  --title-card-text-color: #000000;
+  --footer-background: #f5d68d;
   --skills-card-background: #f2ebc2;
-  --features-card-background: #ffffff;
+  --features-card-background: #f5d68d;
   --benefits-card-background: #e5dcff;
-  --benefit-card1-background: #ffffff;
-  --benefit-card2-background: #f1ffe6;
-  --benefit-card3-background: #e6f6ff;
-  --benefit-card4-background: #f4e6ff;
+  --benefit-card1-background: #e8f7fe;
+  --benefit-card2-background: #fbf6db;
+  --benefit-card3-background: #ece1f6;
+  --benefit-card4-background: #fef3e8;
   --request-demo-background: #fff4cc;
   --request-demo-background-hover:#FFD231;
   --request-demo-text-hover:#000;
@@ -139,16 +145,17 @@
   /* --primary-color: #ede7f6; */
   --secondary-color: #673ab7;
   --accent-color: #311b92;
-  --background-color: #FEDBDB;
-  --title-card-background: #82dbff;
-  --footer-background: #82DBFF;
+  --background-color: #fff1f1;
+  --title-card-background: #e1a3bc;
+  --title-card-text-color: #000000;
+  --footer-background: #e1a3bc;
   --skills-card-background: #ffefef;
-  --features-card-background: #ffffff;
+  --features-card-background: #e1a3bc;
   --benefits-card-background: #e9fcfd;
-  --benefit-card1-background: #ffffff;
-  --benefit-card2-background: #f1ffe6;
-  --benefit-card3-background: #e6f6ff;
-  --benefit-card4-background: #f4e6ff;
+  --benefit-card1-background: #e8f7fe;
+  --benefit-card2-background: #fbf6db;
+  --benefit-card3-background: #ece1f6;
+  --benefit-card4-background: #fef3e8;
   --request-demo-background: #bdccff;
   --request-demo-background-hover:#3060FF;
   --request-demo-text-hover:#ffffff;
@@ -669,4 +676,117 @@ body {
     transform: skewX(-25deg);
     left: 100%;
   }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes float1 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(5px, -15px);
+  }
+}
+
+@keyframes float2 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-5px, -10px);
+  }
+}
+
+@keyframes float3 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(3px, -12px);
+  }
+}
+
+@keyframes float4 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-3px, -18px);
+  }
+}
+
+@keyframes float5 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, -14px);
+  }
+}
+
+@keyframes float6 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-4px, -16px);
+  }
+}
+
+@keyframes float7 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(2px, -10px);
+  }
+}
+
+@keyframes float8 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-2px, -14px);
+  }
+}
+
+.animate-float1 {
+  animation: float1 6s ease-in-out infinite;
+}
+
+.animate-float2 {
+  animation: float2 7s ease-in-out infinite;
+}
+
+.animate-float3 {
+  animation: float3 5s ease-in-out infinite;
+}
+
+.animate-float4 {
+  animation: float4 6.5s ease-in-out infinite;
+}
+
+.animate-float5 {
+  animation: float5 5.5s ease-in-out infinite;
+}
+
+.animate-float6 {
+  animation: float6 7.5s ease-in-out infinite;
+}
+
+.animate-float7 {
+  animation: float7 6s ease-in-out infinite;
+}
+
+.animate-float8 {
+  animation: float8 5s ease-in-out infinite;
 }
