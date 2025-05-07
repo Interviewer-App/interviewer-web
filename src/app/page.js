@@ -13,6 +13,7 @@ import samsung from "../assets/landing/samsung.png";
 import dropbox from "../assets/landing/dropbox.png";
 import airbnb from "../assets/landing/airbnb.png";
 import logo from "../assets/landing_page/logo.png";
+import logoDark from "../assets/landing_page/logo-dark.png";
 import { BiLike } from "react-icons/bi";
 import { FaAward } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
@@ -626,8 +627,8 @@ export default function Home() {
       isFullWidth: true,
     },
   ];
-  // const themes = ["default", "theme2", "theme3", "theme4", "theme5", "dark"];
-  const themes = ["default", "theme2", "theme3", "theme4", "theme5"];
+  const themes = ["default", "theme2", "theme3", "theme4", "theme5", "dark"];
+
   // let currentThemeIndex = 0;
   useEffect(() => {
     // const savedTheme = localStorage.getItem('theme') || 'default';
@@ -792,7 +793,7 @@ export default function Home() {
       theme3: "#DDFFD1",
       theme4: "#FFF8D1",
       theme5: "#FEDBDB",
-      dark: "#000000",
+      dark: "#16161a",
     };
     return themeColors[theme] || "#ffffff";
   };
@@ -866,16 +867,29 @@ export default function Home() {
                     className="cursor-pointer"
                   />
                 )} */}
-                <Image
-                  src="/landing_page/logo.png"
-                  alt="logo"
-                  width={395}
-                  height={70}
-                  onClick={() => {
-                    pageRedirection("/");
-                  }}
-                  className="cursor-pointer"
-                />
+                {isDarkMode ? (
+                  <Image
+                    src="/landing_page/logo-dark.png"
+                    alt="logo"
+                    width={395}
+                    height={70}
+                    onClick={() => {
+                      pageRedirection("/");
+                    }}
+                    className="cursor-pointer"
+                  />
+                ) : (
+                  <Image
+                    src="/landing_page/logo.png"
+                    alt="logo"
+                    width={395}
+                    height={70}
+                    onClick={() => {
+                      pageRedirection("/");
+                    }}
+                    className="cursor-pointer"
+                  />
+                )}
               </div>
 
               <div className="block md:hidden">
@@ -901,48 +915,52 @@ export default function Home() {
               <div className="sm:flex justify-center items-center gap-[40px] hidden py-[16px] ">
                 <button
                   onClick={() => handleThemeChange("default")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] bg-[#ffffff] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#ffffff] ${
                     theme === "default"
                       ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] active:shadow-none"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme2")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] bg-[#D1F8FF] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#D1F8FF] ${
                     theme === "theme2"
                       ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] active:shadow-none"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme3")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] bg-[#DDFFD1] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#DDFFD1] ${
                     theme === "theme3"
                       ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] active:shadow-none"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme4")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] bg-[#FFF8D1] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FFF8D1] ${
                     theme === "theme4"
                       ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] active:shadow-none"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme5")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] bg-[#FEDBDB] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FEDBDB] ${
                     theme === "theme5"
                       ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] active:shadow-none"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
                   }`}
                 ></button>
-                {/* <button
-                  onClick={() => handleThemeChange('dark')}
-                  className={`w-8 h-8 rounded-full border-[1px] border-[#000] bg-[#161618] ${theme === 'dark' ? 'border-2 border-gray-400' : 'shadow-[3px_3px_0px_#434343] active:shadow-none'}`}
-                ></button> */}
+                <button
+                  onClick={() => handleThemeChange("dark")}
+                  className={`w-8 h-8 rounded-full border-[1px] border-[#000] dark:border-[#fff] bg-[#161618] ${
+                    theme === "dark"
+                      ? "border-2 border-gray-400"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                  }`}
+                ></button>
               </div>
 
               <button
@@ -968,14 +986,46 @@ export default function Home() {
             />
 
           </div> */}
-          <Image src={require('../../public/landing_page/avatars/imoji1.png')} alt="avatar1" className="absolute top-0 left-1/3 translate-x-8 z-10 hidden lg:block lg:w-[130px] lg:h-[130px] object-cover rounded-full animate-float1" />
-          <Image src={require('../../public/landing_page/avatars/imoji2.png')} alt="avatar2" className="absolute bottom-14 right-16 translate-x-8 z-10 hidden lg:block lg:w-[140px] lg:h-[140px] object-cover rounded-full animate-float2" />
-          <Image src={require('../../public/landing_page/avatars/imoji3.png')} alt="avatar3" className="absolute top-14 right-28 z-10 hidden lg:block lg:w-[120px] lg:h-[120px] object-cover rounded-full animate-float3" />
-          <Image src={require('../../public/landing_page/avatars/imoji4.png')} alt="avatar4" className="absolute bottom-4 right-64 z-10 hidden lg:block lg:w-[120px] lg:h-[120px] object-cover rounded-full animate-float4" />
-          <Image src={require('../../public/landing_page/avatars/imoji5.png')} alt="avatar5" className="absolute top-10 left-40 z-10 hidden lg:block lg:w-[120px] lg:h-[120px] object-cover rounded-full animate-float5" />
-          <Image src={require('../../public/landing_page/avatars/imoji6.png')} alt="avatar6" className="absolute bottom-11 left-24 z-10 hidden lg:block lg:w-[160px] lg:h-[160px] object-cover rounded-full animate-float6" />
-          <Image src={require('../../public/landing_page/avatars/imoji7.png')} alt="avatar7" className="absolute top-2 right-1/3 translate-x-10 z-10 hidden lg:block lg:w-[130px] lg:h-[130px] object-cover rounded-full animate-float7" />
-          <Image src={require('../../public/landing_page/avatars/imoji8.png')} alt="avatar8" className="absolute bottom-1 left-1/4 translate-x-2 z-10 hidden lg:block lg:w-[130px] lg:h-[130px] object-cover rounded-full animate-float8" />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji1.png")}
+            alt="avatar1"
+            className="absolute top-0 left-1/3 translate-x-8 z-10 hidden lg:block lg:w-[130px] lg:h-[130px] object-cover rounded-full animate-float1"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji2.png")}
+            alt="avatar2"
+            className="absolute bottom-14 right-16 translate-x-8 z-10 hidden lg:block lg:w-[140px] lg:h-[140px] object-cover rounded-full animate-float2"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji3.png")}
+            alt="avatar3"
+            className="absolute top-14 right-28 z-10 hidden lg:block lg:w-[120px] lg:h-[120px] object-cover rounded-full animate-float3"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji4.png")}
+            alt="avatar4"
+            className="absolute bottom-4 right-64 z-10 hidden lg:block lg:w-[120px] lg:h-[120px] object-cover rounded-full animate-float4"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji5.png")}
+            alt="avatar5"
+            className="absolute top-10 left-40 z-10 hidden lg:block lg:w-[120px] lg:h-[120px] object-cover rounded-full animate-float5"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji6.png")}
+            alt="avatar6"
+            className="absolute bottom-11 left-24 z-10 hidden lg:block lg:w-[160px] lg:h-[160px] object-cover rounded-full animate-float6"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji7.png")}
+            alt="avatar7"
+            className="absolute top-2 right-1/3 translate-x-10 z-10 hidden lg:block lg:w-[130px] lg:h-[130px] object-cover rounded-full animate-float7"
+          />
+          <Image
+            src={require("../../public/landing_page/avatars/imoji8.png")}
+            alt="avatar8"
+            className="absolute bottom-1 left-1/4 translate-x-2 z-10 hidden lg:block lg:w-[130px] lg:h-[130px] object-cover rounded-full animate-float8"
+          />
           <ConfettiAnimation />
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 md:px-[45px] w-full ">
             <h1 className="font-bohemian-soul z-[40] text-center lg:text-center leading-[45px] text-[38px] md:text-[42px] md:leading-[45px] text-title-card-text-color">
@@ -1141,7 +1191,7 @@ export default function Home() {
         <div className=" w-[90%] max-w-[1280px] mx-auto ">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[35px] md:min-h-[252px]">
             <div
-              className={` bg-[#fff] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
+              className={` bg-[#fff] dark:bg-[#16161a] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
             >
               {/* Original Content */}
               <img
@@ -1151,13 +1201,13 @@ export default function Home() {
                 height="44"
               />
               <h3
-                className="font-extrabold text-[17px] text-black leading-[20px] text-center transition-opacity duration-300 
+                className="font-extrabold text-[17px] text-black dark:text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-[8px]"
               >
                 Evaluate Anyone in <br /> Any Field
               </h3>
               <p
-                className="text-black text-[14px] leading-[17px]  text-center
+                className="text-black dark:text-white text-[14px] leading-[17px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-[13px]"
               >
                 Evaluate candidates across any role or industry with our real
@@ -1166,7 +1216,7 @@ export default function Home() {
             </div>
 
             <div
-              className={` bg-[#fff] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
+              className={` bg-[#fff] dark:bg-[#16161a] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
             >
               {/* Original Content */}
               <img
@@ -1176,13 +1226,15 @@ export default function Home() {
                 height="44"
               />
               <h3
-                className="font-extrabold text-[17px] text-black leading-[20px] text-center transition-opacity duration-300 
+                className="font-extrabold text-[17px] text-black dark:text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-[8px]"
               >
-                Decisions at a Glance<br className=" hidden md:block"/><br className=" hidden md:block"/>
+                Decisions at a Glance
+                <br className=" hidden md:block" />
+                <br className=" hidden md:block" />
               </h3>
               <p
-                className="text-black text-[14px] leading-[17px] text-center
+                className="text-black dark:text-white text-[14px] leading-[17px] text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-[13px]"
               >
                 No digging through files. SkillChecker transforms raw data into
@@ -1191,7 +1243,7 @@ export default function Home() {
             </div>
 
             <div
-              className={` bg-[#fff] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
+              className={` bg-[#fff] dark:bg-[#16161a] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
             >
               {/* Original Content */}
               <img
@@ -1201,14 +1253,14 @@ export default function Home() {
                 height="44"
               />
               <h3
-                className="font-extrabold text-[17px] text-black leading-[20px] text-center transition-opacity duration-300 
+                className="font-extrabold text-[17px] text-black dark:text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-[8px]"
               >
                 10x Faster. <br />
                 100% More Confident
               </h3>
               <p
-                className="text-black text-[14px] leading-[17px]  text-center
+                className="text-black dark:text-white text-[14px] leading-[17px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-[13px]"
               >
                 Why waste weeks? Our AI scans, scores, and ranks talent in
@@ -1218,7 +1270,7 @@ export default function Home() {
             </div>
 
             <div
-              className={` bg-[#fff] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
+              className={` bg-[#fff] dark:bg-[#16161a] p-[20px] flex justify-start items-center flex-col rounded-[26px] min-h-[92px] transition-all duration-300 md:min-h-[218px] border-[1px] border-black`}
             >
               {/* Original Content */}
               <img
@@ -1228,13 +1280,15 @@ export default function Home() {
                 height="44"
               />
               <h3
-                className="font-extrabold text-[17px] text-black leading-[20px] text-center transition-opacity duration-300 
+                className="font-extrabold text-[17px] text-black dark:text-white leading-[20px] text-center transition-opacity duration-300 
                       group-hover:opacity-0 mt-[8px]"
               >
-                You&apos;re Still in Control<br className=" hidden md:block" /><br className=" hidden md:block"/>
+                You&apos;re Still in Control
+                <br className=" hidden md:block" />
+                <br className=" hidden md:block" />
               </h3>
               <p
-                className="text-black text-[14px] leading-[17px]  text-center
+                className="text-black dark:text-white text-[14px] leading-[17px]  text-center
                       transition-opacity duration-300 group-hover:opacity-0 mt-[13px]"
               >
                 Unlike other tools, You don&apos;t lose control, you gain
@@ -1301,11 +1355,11 @@ export default function Home() {
                 </div>
 
                 {/* Text Section */}
-                <div className="flex flex-col flex-grow bg-white px-[17px] py-[22px] justify-start items-center border-t-[1px] border-black">
-                  <h3 className="font-bold text-[17px] text-black leading-[17px] text-center">
+                <div className="flex flex-col flex-grow bg-white dark:bg-[#525252] px-[17px] py-[22px] justify-start items-center border-t-[1px] border-black">
+                  <h3 className="font-bold text-[17px] text-black dark:text-white leading-[17px] text-center">
                     {item.title}
                   </h3>
-                  <p className="text-black text-[14px] leading-[21px] text-center mt-[28px]">
+                  <p className="text-black dark:text-white text-[14px] leading-[21px] text-center mt-[28px]">
                     {item.desc}
                   </p>
                 </div>
@@ -1556,19 +1610,21 @@ export default function Home() {
                     ref={(el) => (contentRefs.current[index] = el)}
                     className="tilt-card-content p-1 h-full relative z-10"
                   >
-                    <h1 className="text-center text-black dark:md:text-white text-[12px] font-bold leading-[21px] md:leading-[21px] border-2 border-white bg-[#ffffff] dark:md:bg-black rounded-[50px] px-[5px] py-[6px] mb-[22px]">
+                    <h1 className="text-center text-black text-[12px] font-bold leading-[21px] md:leading-[21px] border-2 border-white bg-[#ffffff] rounded-[50px] px-[5px] py-[6px] mb-[22px]">
                       {group.title}
                     </h1>
 
                     <ul className="space-y-3">
                       {group.benefits.map((benefit, benefitIndex) => (
                         <li key={benefitIndex} className="flex">
-                          <span className="mr-2 text-black">•</span>
-                          <div className="text-[12px] leading-[17px] text-black">
+                          <span className="mr-2 text-black dark:text-white">
+                            •
+                          </span>
+                          <div className="text-[12px] leading-[17px] text-black dark:text-white">
                             <span className="font-bold ">
                               {benefit.title} -{" "}
                             </span>
-                            <span className="text-black">
+                            <span className="text-black dark:text-white">
                               {benefit.description}
                             </span>
                           </div>
@@ -1829,17 +1885,29 @@ export default function Home() {
           <div className="flex justify-center md:justify-between py-[23px] md:px-[43px] flex-wrap flex-col md:flex-row items-center ">
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center md:justify-start text-sm text-center w-full cursor-pointer">
-                <Image
-                  src={logo}
-                  alt="logo"
-                  width="180"
-                  height="24"
-                  onClick={() => {
-                    pageRedirection("/");
-                  }}
-                />
+                {theme === "dark" ? (
+                  <Image
+                    src={logoDark}
+                    alt="logo"
+                    width="180"
+                    height="24"
+                    onClick={() => {
+                      pageRedirection("/");
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={logo}
+                    alt="logo"
+                    width="180"
+                    height="24"
+                    onClick={() => {
+                      pageRedirection("/");
+                    }}
+                  />
+                )}
               </div>
-              <span className="text-xs text-center inline-block mt-2 ">
+              <span className="text-xs text-center inline-block mt-2 text-black dark:text-white">
                 <span
                   className="mr-2 cursor-pointer hover:underline"
                   onClick={() => {
