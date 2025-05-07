@@ -1617,14 +1617,14 @@ export default function Home() {
                     <ul className="space-y-3">
                       {group.benefits.map((benefit, benefitIndex) => (
                         <li key={benefitIndex} className="flex">
-                          <span className="mr-2 text-black dark:text-white">
+                          <span className="mr-2 text-black ">
                             •
                           </span>
-                          <div className="text-[12px] leading-[17px] text-black dark:text-white">
+                          <div className="text-[12px] leading-[17px] text-black ">
                             <span className="font-bold ">
                               {benefit.title} -{" "}
                             </span>
-                            <span className="text-black dark:text-white">
+                            <span className="text-black ">
                               {benefit.description}
                             </span>
                           </div>
