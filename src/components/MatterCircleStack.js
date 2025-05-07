@@ -831,7 +831,7 @@ const MatterCircleStack = () => {
 
   return (
     <div
-      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-[30px]"
+      className="relative w-full h-full min-h-[480px] lg:min-h-[418px] rounded-[20px] md:rounded-[30px]"
       id="matter-circle-stack"
       ref={containerRef}
       style={{ backgroundColor: bgColor }}
@@ -840,7 +840,7 @@ const MatterCircleStack = () => {
       {showResult && (
         <div
           // onClick={handleCloseRankWindow}
-          className="absolute top-0 h-full w-full bg-black rounded-[25px] flex flex-col justify-center items-center !z-20"
+          className="absolute top-0 h-full w-full bg-black rounded-[18px] md:rounded-[25px] flex flex-col justify-center items-center !z-20"
         >
           <div
             onClick={handleCloseRankWindow}
@@ -1171,7 +1171,7 @@ const MatterCircleStack = () => {
       {isEmojiClicked && (
         <div
           onClick={() => setIsEmojiClicked(false)}
-          className="absolute top-0 h-full w-full bg-black rounded-[25px] text-8xl flex flex-col justify-center items-center"
+          className="absolute top-0 h-full w-full bg-black rounded-[18px] md:rounded-[25px] text-8xl flex flex-col justify-center items-center"
         >
           <motion.div
             className=" w-[45%] lg:w-[40%] max-w-[200px] text-black min-w-[200px] lg:min-w-[250px] lg:max-w-[300px] bg-[#FFFFFF] border-2 border-white rounded-lg p-3 lg:p-5 flex flex-col items-center "
