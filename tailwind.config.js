@@ -16,6 +16,7 @@ module.exports = {
 				accent: "var(--accent-color)",
 				background: "var(--background-color)",
 				"title-card-background": "var(--title-card-background)",
+				"title-card-text-color": "var(--title-card-text-color)",
 				"features-card-background": "var(--features-card-background)",
 				"benefits-card-background": "var(--benefits-card-background)",
 				"benefit-card1-background": "var(--benefit-card1-background)",
