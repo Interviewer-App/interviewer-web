@@ -35,6 +35,7 @@ import { Moon, Sun } from "lucide-react";
 import { LuMoon, LuSun, Hand } from "react-icons/lu";
 import { PiHandPointing } from "react-icons/pi";
 import ConfettiAnimation from "@/components/confetti-animation";
+import { useTypewriter, Cursor } from "react-simple-typewriter";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -841,6 +842,13 @@ export default function Home() {
     glow.style.opacity = "0";
   };
 
+  const [typeEffect] = useTypewriter({
+    words: ["Validate Skills, Elevate Teams", "Hire with Confidence."],
+    loop: {},
+    typeSpeed: 100,
+    deleteSpeed: 20,
+  });
+
   return (
     <div className=" w-full bg-background">
       <div className=" w-full text-black dark:text-white">
@@ -1029,7 +1037,8 @@ export default function Home() {
           <ConfettiAnimation />
           <div className="flex flex-col justify-center lg:justify-center items-center lg:items-center rounded-[10px] px-4 md:px-[45px] w-full ">
             <h1 className="font-bohemian-soul z-[40] text-center lg:text-center leading-[45px] text-[38px] md:text-[42px] md:leading-[45px] text-title-card-text-color">
-              Validate Skills, Elevate Teams
+              {/* Validate Skills, Elevate Teams */}
+              {typeEffect}<Cursor cursorColor={isDarkMode ? '#fff' : '#000'} />
               {/* <br />
               No Expertise Needed. */}
             </h1>
