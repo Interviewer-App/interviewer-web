@@ -923,50 +923,50 @@ export default function Home() {
               <div className="sm:flex justify-center items-center gap-[40px] hidden py-[16px] ">
                 <button
                   onClick={() => handleThemeChange("default")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#ffffff] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#ffffff] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "default"
-                      ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                      ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none "
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme2")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#D1F8FF] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#D1F8FF] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme2"
-                      ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                      ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme3")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#DDFFD1] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#DDFFD1] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme3"
-                      ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                      ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme4")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FFF8D1] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FFF8D1] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme4"
-                      ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                      ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme5")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FEDBDB] ${
+                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FEDBDB] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme5"
-                      ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                      ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
                   }`}
                 ></button>
                 <button
                   onClick={() => handleThemeChange("dark")}
-                  className={`w-8 h-8 rounded-full border-[1px] border-[#000] dark:border-[#fff] bg-[#161618] ${
+                  className={`w-8 h-8 rounded-full border-[1px] border-[#000] dark:border-[#fff] bg-[#333333] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "dark"
-                      ? "border-2 border-gray-400"
-                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none"
+                      ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
+                      : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
                   }`}
                 ></button>
               </div>
