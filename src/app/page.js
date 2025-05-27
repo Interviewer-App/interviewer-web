@@ -782,7 +782,7 @@ export default function Home() {
 
   const requestDemo = async () => {
     // console.log("Request Demo clicked");
-    router.push("https://tally.so/r/wQko91");
+    router.push("https://calendar.app.google/odHquURtoTfrR1va8");
   };
   const pageRedirection = async (path) => {
     router.push(`${path}`);

@@ -18,7 +18,7 @@ import { LayoutDashboard, Users, ArrowUpRight, ArrowDownRight, Filter, CheckCirc
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Loading from "@/app/loading";
-import { usePathname } from "next/navigation";
+import { usePathname , redirect} from "next/navigation";
 import { useSession } from "next-auth/react";
 
 // Mock data for the dashboard
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       </>
     );
   } else {
-    if (session.user.role !== "CANDIDATE") {
+    if (session.user.role !== "ADMIN") {
       const loginURL = `/login?redirect=${encodeURIComponent(pathname)}`;
       redirect(loginURL);
     }
