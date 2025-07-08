@@ -223,11 +223,9 @@ const CreateInterview = () => {
   const router = useRouter();
   const [interviewMedium, setInterviewMedium] = useState("VIRTUAL");
   const [hasDevice, setHasDevice] = useState(true);
-  const [hasAutomated, setHasAutomated] = useState(false);
   const [intervieweeType, setIntervieweeType] = useState("EMPLOYEE");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [technicalPercentage, setTechnicalPercentage] = useState(60);
-  const [totalAutomatedQuestions, setTotalAutomatedQuestions] = useState(0);
   const [softSkillsPercentage, setSoftSkillsPercentage] = useState(40);
   const [useQuestionnaire, setUseQuestionnaire] = useState(true);
   const [newSoftSkill, setNewSoftSkill] = useState({
@@ -262,6 +260,9 @@ const CreateInterview = () => {
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(false);
   const [softSkillsLoading, setSoftSkillsLoading] = useState(false);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [hasAutomated, setHasAutomated] = useState(false);
+  const [totalAutomatedQuestions, setTotalAutomatedQuestions] = useState(0);
+
 
   useEffect(() => {
     if (technicalCategoryId && categoryList.length === 0) {
@@ -1165,10 +1166,6 @@ const CreateInterview = () => {
     setSoftSkillsPercentage(100 - newValue);
   };
 
-  const handleAutomatedQuestionsChange = (value) => {
-    setTotalAutomatedQuestions(value[0]); // Slider returns an array even with single value
-  };
-
   const handleSoftSkillsPercentageChange = (value) => {
     const newValue = value[0];
     setSoftSkillsPercentage(newValue);
@@ -1617,6 +1614,11 @@ const CreateInterview = () => {
     }
 
     setShowAnalysis(false);
+  };
+
+
+  const handleAutomatedQuestionsChange = (value) => {
+    setTotalAutomatedQuestions(value[0]); // Slider returns an array even with single value
   };
 
   return (
