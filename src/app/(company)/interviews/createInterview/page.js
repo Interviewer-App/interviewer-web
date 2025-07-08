@@ -223,9 +223,11 @@ const CreateInterview = () => {
   const router = useRouter();
   const [interviewMedium, setInterviewMedium] = useState("VIRTUAL");
   const [hasDevice, setHasDevice] = useState(true);
+  const [hasAutomated, setHasAutomated] = useState(false);
   const [intervieweeType, setIntervieweeType] = useState("EMPLOYEE");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [technicalPercentage, setTechnicalPercentage] = useState(60);
+  const [totalAutomatedQuestions, setTotalAutomatedQuestions] = useState(0);
   const [softSkillsPercentage, setSoftSkillsPercentage] = useState(40);
   const [useQuestionnaire, setUseQuestionnaire] = useState(true);
   const [newSoftSkill, setNewSoftSkill] = useState({
@@ -862,6 +864,7 @@ const CreateInterview = () => {
         ],
         interviewMedium: interviewMedium,
         isWithDevice: hasDevice,
+        isAutomated: hasAutomated,
         industry: relatedField,
         intervieweeType: intervieweeType,
         proficiencyLevel: proficiencyLevel,
@@ -1160,6 +1163,10 @@ const CreateInterview = () => {
     const newValue = value[0];
     setTechnicalPercentage(newValue);
     setSoftSkillsPercentage(100 - newValue);
+  };
+
+  const handleAutomatedQuestionsChange = (value) => {
+    setTotalAutomatedQuestions(value[0]); // Slider returns an array even with single value
   };
 
   const handleSoftSkillsPercentageChange = (value) => {
@@ -1902,6 +1909,108 @@ const CreateInterview = () => {
                           </div>
                         )}
 
+                        {interviewMedium === "VIRTUAL" && (
+                          <div className="space-y-3 ml-4 pl-4 border-l border-muted">
+                            <h3 className="text-lg font-medium">
+                             Human Interactions
+                            </h3>
+                            <RadioGroup
+                              value={hasAutomated}
+                              onValueChange={(value) => setHasAutomated(value)}
+                              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            >
+                              <div>
+                                <RadioGroupItem
+                                  value={false}
+                                  id="with-HumanInteractions"
+                                  className="peer sr-only"
+                                />
+                                <Label
+                                  htmlFor="with-HumanInteractions"
+                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:bg-blue-500/10 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:!bg-blue-500/10 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="rounded-full bg-blue-500/10 p-2">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-blue-500"
+                                      >
+                                        <rect x="3" y="11" width="18" height="10" rx="2" />
+                                        <circle cx="12" cy="5" r="2" />
+                                        <path d="M12 7v4" />
+                                        <line x1="8" y1="16" x2="8" y2="16" />
+                                        <line x1="16" y1="16" x2="16" y2="16" />
+                                        <circle cx="8" cy="16" r="1" />
+                                        <circle cx="16" cy="16" r="1" />
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">
+                                        With Human interactions
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        Interview has a human Interaction
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Label>
+                              </div>
+                              <div>
+                                <RadioGroupItem
+                                  value={true}
+                                  id="without-HumanInteractions"
+                                  className="peer sr-only"
+                                />
+                                <Label
+                                  htmlFor="without-HumanInteractions"
+                                  className="flex items-center justify-between rounded-md border border-muted bg-black p-3 hover:!bg-blue-500/10 hover:text-accent-foreground peer-data-[state=checked]:border-[#3b82f6] peer-data-[state=checked]:!bg-blue-500/10 [&:has([data-state=checked])]:border-[#3b82f6] cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="rounded-full bg-blue-500/10 p-2">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-blue-500"
+                                      >
+                                        <rect x="4" y="2" width="16" height="20" rx="2" />
+                                        <circle cx="12" cy="6" r="1" />
+                                        <circle cx="12" cy="18" r="1" />
+                                        <line x1="4" y1="9" x2="20" y2="9" />
+                                        <line x1="4" y1="14" x2="20" y2="14" />
+                                        <circle cx="8" cy="12" r="1" />
+                                        <circle cx="16" cy="12" r="1" />
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">
+                                        Without Human interactions
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                       Interview is fully Automatic
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Label>
+                              </div>
+                            </RadioGroup>
+                          </div>
+                        )}
+
                         <div className="space-y-4">
                           <h2 className="text-xl font-semibold">
                             Interviewee Type
@@ -2472,6 +2581,104 @@ const CreateInterview = () => {
                       </div>
                     </div>
 
+
+
+
+                    {hasAutomated && (
+                      <div className="space-y-6">
+                        <div>
+                          <span className="text-xl font-semibold">
+                            Select how many questions you want to ask from the candidate: {totalAutomatedQuestions}
+                          </span>
+                          <Slider
+                            id="automated-questions"
+                            min={0}
+                            max={10}
+                            step={1}
+                            value={[totalAutomatedQuestions]}
+                            onValueChange={handleAutomatedQuestionsChange}
+                            className="w-1/2 my-[20px] mx-auto"
+                          />
+                        </div>
+
+                        <div className="flex gap-6 justify-center">
+                          {/* Technical Questions Card */}
+                          <div className="border rounded-lg p-6 w-1/2">
+                            <div className="flex justify-between items-center mb-4">
+                              <h3 className="text-lg font-semibold">Technical Questions</h3>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                >
+                                  -
+                                </Button>
+                                <span className="w-8 text-center">5</span>
+                                <Button
+                                  type="button"  // Add this
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();  // Also add this for extra safety
+
+                                  }}
+
+                                >
+                                  +
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              Questions assessing technical knowledge and skills
+                            </p>
+                          </div>
+
+                          {/* Soft Skills Card */}
+                          <div className="border rounded-lg p-6 w-1/2">
+                            <div className="flex justify-between items-center mb-4">
+                              <h3 className="text-lg font-semibold">Soft Skills</h3>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  type="button"  // Add this
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();  // Also add this for extra safety
+                                  }}
+
+                                >
+                                  -
+                                </Button>
+                                <span className="w-8 text-center">4</span>
+                                <Button
+                                  type="button"  // Add this
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();  // Also add this for extra safety
+                                  }}
+                                >
+                                  +
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              Questions assessing communication and interpersonal skills
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+
+
+
+                    {!hasAutomated && (                    
+                    <div>
                     {/* Technical Expertise (Cat 1) */}
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -3756,6 +3963,8 @@ const CreateInterview = () => {
                         </Card>
                       )}
                     </div>
+                    </div>
+                    )}
                     <Card className="!bg-transparent border-0 px-0">
                       {/* <CardHeader>
                         <CardTitle>Interview Categories</CardTitle>
