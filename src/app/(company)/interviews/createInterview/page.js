@@ -2640,7 +2640,7 @@ const CreateInterview = () => {
                           {/* Soft Skills Card */}
                           <div className="border rounded-lg p-6 w-1/2">
                             <div className="flex justify-between items-center mb-4">
-                              <h3 className="text-lg font-semibold">Soft Skills</h3>
+                              <h3 className="text-lg font-semibold">Soft Skills Questions</h3>
                               <div className="flex items-center gap-2">
                                 <Button
                                   type="button"  // Add this
