@@ -2651,7 +2651,7 @@ const CreateInterview = () => {
                                 </Button>
                               </div>
                             </div>
-                            <p className="text-base text-gray-300">
+                            <p className="text-base text-gray-300 capitalize">
                               Questions assessing technical knowledge and skills
                             </p>
                           </div>
@@ -2685,7 +2685,7 @@ const CreateInterview = () => {
                                 </Button>
                               </div>
                             </div>
-                            <p className="text-base text-gray-300">
+                            <p className="text-base text-gray-300 capitalize">
                               Questions assessing communication and interpersonal skills
                             </p>
                           </div>
