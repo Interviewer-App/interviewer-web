@@ -2602,10 +2602,10 @@ const CreateInterview = () => {
 
 
                     {hasAutomated && (
-                      <div className="space-y-6 border-2 border-gray-600 p-4 rounded-xl">
+                      <div className="space-y-6 border-2 border-gray-600 p-5 rounded-lg">
                         <div>
-                          <span className="text-xl font-semibold">
-                            Select how many questions you want to ask from the candidate:
+                          <span className="text-xl font-semibold capitalize">
+                            Select how many questions you want to ask from the candidate
                           </span>
                           {/* <Slider
                             id="automated-questions"
@@ -2651,7 +2651,7 @@ const CreateInterview = () => {
                                 </Button>
                               </div>
                             </div>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-base text-gray-300">
                               Questions assessing technical knowledge and skills
                             </p>
                           </div>
@@ -2685,7 +2685,7 @@ const CreateInterview = () => {
                                 </Button>
                               </div>
                             </div>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-base text-gray-300">
                               Questions assessing communication and interpersonal skills
                             </p>
                           </div>
