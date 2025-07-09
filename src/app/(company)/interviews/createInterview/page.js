@@ -81,7 +81,9 @@ import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -264,6 +266,7 @@ const CreateInterview = () => {
   const [totalAutomatedQuestions, setTotalAutomatedQuestions] = useState(0);
   const [automatedTechnicalQuestions, setAutomatedTechnicalQuestions] =useState(0);
   const [automatedSoftQuestions, setAutomatedSoftQuestions] = useState(0);
+  const [selectedVoice, setSelectedVoice] = useState('MALE');
 
   useEffect(() => {
     if (technicalCategoryId && categoryList.length === 0) {
@@ -867,6 +870,7 @@ const CreateInterview = () => {
         interviewMedium: interviewMedium,
         isWithDevice: hasDevice,
         isAutomated: hasAutomated,
+        aiVoice:selectedVoice,
         noOfTeccnicalQuestions: automatedTechnicalQuestions,
         noOfSoftSkillQuestions:automatedSoftQuestions,
         industry: relatedField,
@@ -2602,7 +2606,7 @@ const CreateInterview = () => {
 
 
                     {hasAutomated && (
-                      <div className="space-y-6 border-2 border-gray-600 p-5 rounded-lg">
+                      <div className="space-y-4 border-2 border-gray-600 p-5 rounded-lg">
                         <div>
                           <span className="text-xl font-semibold capitalize">
                             Select how many automated questions you want to ask from the candidate
@@ -2618,7 +2622,7 @@ const CreateInterview = () => {
                           /> */}
                         </div>
 
-                        <div className="flex gap-6 justify-center">
+                        <div className="flex gap-6 justify-center !mb-16">
                           {/* Technical Questions Card */}
                           <div className="border rounded-lg p-6 w-1/2">
                             <div className="flex justify-between items-center mb-4">
@@ -2690,8 +2694,25 @@ const CreateInterview = () => {
                             </p>
                           </div>
                         </div>
+                        <span className="text-xl font-semibold capitalize">Select which voice you prefer for the AI interview questions</span>
+                        <Select onValueChange={(value) => setSelectedVoice(value)} value={selectedVoice}>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a Voice" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Voice Type</SelectLabel>
+                              <SelectItem value="MALE">MALE</SelectItem>
+                              <SelectItem value="FEMALE">FEMALE</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </div>
                     )}
+
+
+
+
 
 
 
