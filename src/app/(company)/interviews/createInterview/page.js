@@ -2605,7 +2605,7 @@ const CreateInterview = () => {
                       <div className="space-y-6 border-2 border-gray-600 p-5 rounded-lg">
                         <div>
                           <span className="text-xl font-semibold capitalize">
-                            Select how many questions you want to ask from the candidate
+                            Select how many automated questions you want to ask from the candidate
                           </span>
                           {/* <Slider
                             id="automated-questions"
