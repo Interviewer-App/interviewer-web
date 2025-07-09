@@ -262,7 +262,8 @@ const CreateInterview = () => {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [hasAutomated, setHasAutomated] = useState(false);
   const [totalAutomatedQuestions, setTotalAutomatedQuestions] = useState(0);
-
+  const [automatedTechnicalQuestions, setAutomatedTechnicalQuestions] =useState(0);
+  const [automatedSoftQuestions, setAutomatedSoftQuestions] = useState(0);
 
   useEffect(() => {
     if (technicalCategoryId && categoryList.length === 0) {
@@ -866,6 +867,8 @@ const CreateInterview = () => {
         interviewMedium: interviewMedium,
         isWithDevice: hasDevice,
         isAutomated: hasAutomated,
+        noOfTeccnicalQuestions: automatedTechnicalQuestions,
+        noOfSoftSkillQuestions:automatedSoftQuestions,
         industry: relatedField,
         intervieweeType: intervieweeType,
         proficiencyLevel: proficiencyLevel,
@@ -1616,10 +1619,22 @@ const CreateInterview = () => {
     setShowAnalysis(false);
   };
 
-
-  const handleAutomatedQuestionsChange = (value) => {
-    setTotalAutomatedQuestions(value[0]); // Slider returns an array even with single value
+  const handleTechnicalIncrement = (e) => {
+    setAutomatedTechnicalQuestions(prevCount => prevCount + 1);
   };
+
+  const handleTechnicalDecrement = (e) => {
+    setAutomatedTechnicalQuestions(prevCount => Math.max(0, prevCount - 1)); 
+  };
+
+  const handlesoftIncrement = (e) => {
+    setAutomatedSoftQuestions(prevCount => prevCount + 1);
+  };
+
+  const handlesoftDecrement = (e) => {
+    setAutomatedSoftQuestions(prevCount => Math.max(0, prevCount - 1));
+  };
+
 
   return (
     <>
@@ -2587,12 +2602,12 @@ const CreateInterview = () => {
 
 
                     {hasAutomated && (
-                      <div className="space-y-6">
+                      <div className="space-y-6 border-2 border-gray-600 p-4 rounded-xl">
                         <div>
                           <span className="text-xl font-semibold">
-                            Select how many questions you want to ask from the candidate: {totalAutomatedQuestions}
+                            Select how many questions you want to ask from the candidate:
                           </span>
-                          <Slider
+                          {/* <Slider
                             id="automated-questions"
                             min={1}
                             max={20}
@@ -2600,7 +2615,7 @@ const CreateInterview = () => {
                             value={[totalAutomatedQuestions]}
                             onValueChange={handleAutomatedQuestionsChange}
                             className="w-1/2 my-[20px] mx-auto"
-                          />
+                          /> */}
                         </div>
 
                         <div className="flex gap-6 justify-center">
@@ -2614,18 +2629,20 @@ const CreateInterview = () => {
                                   variant="outline"
                                   size="sm"
                                   onClick={(e) => {
-                                    e.preventDefault();
+                                    // e.preventDefault();
+                                    handleTechnicalDecrement(e);  // Pass the event
                                   }}
                                 >
                                   -
                                 </Button>
-                                <span className="w-8 text-center">5</span>
+                                <span className="w-8 text-center">{automatedTechnicalQuestions}</span>
                                 <Button
                                   type="button"  // Add this
                                   variant="outline"
                                   size="sm"
                                   onClick={(e) => {
-                                    e.preventDefault();  // Also add this for extra safety
+                                    // e.preventDefault();  // Also add this for extra safety
+                                    handleTechnicalIncrement();
 
                                   }}
 
@@ -2648,20 +2665,20 @@ const CreateInterview = () => {
                                   type="button"  // Add this
                                   variant="outline"
                                   size="sm"
-                                  onClick={(e) => {
-                                    e.preventDefault();  // Also add this for extra safety
+                                  onClick={() => {
+                                    handlesoftDecrement();  // Pass the event
                                   }}
 
                                 >
                                   -
                                 </Button>
-                                <span className="w-8 text-center">4</span>
+                                <span className="w-8 text-center">{automatedSoftQuestions}</span>
                                 <Button
                                   type="button"  // Add this
                                   variant="outline"
                                   size="sm"
-                                  onClick={(e) => {
-                                    e.preventDefault();  // Also add this for extra safety
+                                  onClick={() => {
+                                    handlesoftIncrement();  // Pass the event
                                   }}
                                 >
                                   +
