@@ -1960,13 +1960,13 @@ const CreateInterview = () => {
                                         strokeLinejoin="round"
                                         className="text-blue-500"
                                       >
-                                        <rect x="3" y="11" width="18" height="10" rx="2" />
-                                        <circle cx="12" cy="5" r="2" />
-                                        <path d="M12 7v4" />
-                                        <line x1="8" y1="16" x2="8" y2="16" />
-                                        <line x1="16" y1="16" x2="16" y2="16" />
-                                        <circle cx="8" cy="16" r="1" />
-                                        <circle cx="16" cy="16" r="1" />
+                                        <rect x="4" y="2" width="16" height="20" rx="2" />
+                                        <circle cx="12" cy="6" r="1" />
+                                        <circle cx="12" cy="18" r="1" />
+                                        <line x1="4" y1="9" x2="20" y2="9" />
+                                        <line x1="4" y1="14" x2="20" y2="14" />
+                                        <circle cx="8" cy="12" r="1" />
+                                        <circle cx="16" cy="12" r="1" />
                                       </svg>
                                     </div>
                                     <div>
@@ -2004,13 +2004,13 @@ const CreateInterview = () => {
                                         strokeLinejoin="round"
                                         className="text-blue-500"
                                       >
-                                        <rect x="4" y="2" width="16" height="20" rx="2" />
-                                        <circle cx="12" cy="6" r="1" />
-                                        <circle cx="12" cy="18" r="1" />
-                                        <line x1="4" y1="9" x2="20" y2="9" />
-                                        <line x1="4" y1="14" x2="20" y2="14" />
-                                        <circle cx="8" cy="12" r="1" />
-                                        <circle cx="16" cy="12" r="1" />
+                                        <rect x="3" y="11" width="18" height="10" rx="2" />
+                                        <circle cx="12" cy="5" r="2" />
+                                        <path d="M12 7v4" />
+                                        <line x1="8" y1="16" x2="8" y2="16" />
+                                        <line x1="16" y1="16" x2="16" y2="16" />
+                                        <circle cx="8" cy="16" r="1" />
+                                        <circle cx="16" cy="16" r="1" />
                                       </svg>
                                     </div>
                                     <div>
