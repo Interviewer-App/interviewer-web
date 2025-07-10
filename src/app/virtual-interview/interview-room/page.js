@@ -767,77 +767,90 @@ function Page() {
         </div>
       </div>
       <div className=" flex flex-col justify-center items-center h-dvh p-14">
-        <div className=" h-[50%] w-full p-4 overflow-y-scroll mb-10">
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
-            <p className=" text-gray-300/80">
-              Hello! Thank you for applying for the Software Engineering
-              Internship. Can you briefly introduce yourself?
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
-            <p className=" text-gray-300/80">
-              Hi! I&apos;m Induwara, a final-year software engineering student. I&apos;m
-              passionate about full-stack development and AI-based systems.
-              I&apos;ve worked on a few personal and academic projects using
-              React, Node.js, and Python, and I&apos;m currently researching
-              recommendation engines.
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
-            <p className=" text-gray-300/80">
-              That&apos;s great! Could you tell me about a project you&apos;re
-              proud of?
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
-            <p className=" text-gray-300/80">
-              Sure! Recently, I worked on a project called SmartGaming, a
-              unified platform that combines game streaming, training,
-              personalized recommendations, and secure purchasing. My role
-              focused on designing and implementing a custom recommendation
-              engine that uses player behavior and preferences to suggest games
-              and training modules.
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
-            <p className=" text-gray-300/80">
-              Nice work! Which programming languages and tools are you most
-              comfortable with?
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
-            <p className=" text-gray-300/80">
-              I&apos;m most comfortable with JavaScript/TypeScript, Python, and
-              Java. I often use React for frontend, Node.js and Express for
-              backend, and MongoDB or Firebase for databases. For version
-              control, I use Git and GitHub.
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
-            <p className=" text-gray-300/80">
-              Good. Have you ever worked in a team environment? How do you
-              handle collaboration?
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
-            <p className=" text-gray-300/80">
-              Yes, all my major projects were team-based. We used tools like
-              Trello, GitHub Projects, and Slack for coordination. I always try
-              to ensure open communication, give regular updates, and do code
-              reviews to keep everyone on the same page.
-            </p>
-          </div>
-          <div className=" mb-8">
-            <h1 className=" text-blue-500 font-bold mb-1">AI Interviewer</h1>
-            <p>Sounds like you have solid experience. Any questions for us?</p>
+        <div className=" h-[50%] w-full relative mb-10">
+          <div className=" h-full w-full p-4 overflow-y-scroll ">
+            <div className=" bg-gradient-to-b from-[#000000] to-[#00000010] h-[100px] w-full absolute top-0 left-0"></div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">
+                AI Interviewer
+              </h1>
+              <p className=" text-gray-300/80">
+                Hello! Thank you for applying for the Software Engineering
+                Internship. Can you briefly introduce yourself?
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
+              <p className=" text-gray-300/80">
+                Hi! I&apos;m Induwara, a final-year software engineering
+                student. I&apos;m passionate about full-stack development and
+                AI-based systems. I&apos;ve worked on a few personal and
+                academic projects using React, Node.js, and Python, and I&apos;m
+                currently researching recommendation engines.
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">
+                AI Interviewer
+              </h1>
+              <p className=" text-gray-300/80">
+                That&apos;s great! Could you tell me about a project you&apos;re
+                proud of?
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
+              <p className=" text-gray-300/80">
+                Sure! Recently, I worked on a project called SmartGaming, a
+                unified platform that combines game streaming, training,
+                personalized recommendations, and secure purchasing. My role
+                focused on designing and implementing a custom recommendation
+                engine that uses player behavior and preferences to suggest
+                games and training modules.
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">
+                AI Interviewer
+              </h1>
+              <p className=" text-gray-300/80">
+                Nice work! Which programming languages and tools are you most
+                comfortable with?
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
+              <p className=" text-gray-300/80">
+                I&apos;m most comfortable with JavaScript/TypeScript, Python,
+                and Java. I often use React for frontend, Node.js and Express
+                for backend, and MongoDB or Firebase for databases. For version
+                control, I use Git and GitHub.
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">
+                AI Interviewer
+              </h1>
+              <p className=" text-gray-300/80">
+                Good. Have you ever worked in a team environment? How do you
+                handle collaboration?
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
+              <p className=" text-gray-300/80">
+                Yes, all my major projects were team-based. We used tools like
+                Trello, GitHub Projects, and Slack for coordination. I always
+                try to ensure open communication, give regular updates, and do
+                code reviews to keep everyone on the same page.
+              </p>
+            </div>
+            <div className=" mb-8">
+              <h1 className=" text-blue-500 font-bold mb-1">AI Interviewer</h1>
+              <p>
+                Sounds like you have solid experience. Any questions for us?
+              </p>
+            </div>
           </div>
         </div>
         {isListening && (
