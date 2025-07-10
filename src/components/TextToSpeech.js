@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
-import SpeechAnimation from './SpeechAnimation';
+import { useState, useEffect, useRef } from "react";
 
 export default function TextToSpeech() {
   const [loading, setLoading] = useState(false);
-  const [text, setText] = useState('');
-  const [inputText, setInputText] = useState('');
+  const [text, setText] = useState("");
+  const [inputText, setInputText] = useState("");
   const [voices, setVoices] = useState([]);
-  const [selectedVoice, setSelectedVoice] = useState('');
+  const [selectedVoice, setSelectedVoice] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const speechAnimationRef = useRef(null);
 
@@ -18,27 +17,43 @@ export default function TextToSpeech() {
       setVoices(availableVoices);
 
       // Set default voice (prefer female voice)
-      const defaultVoice = availableVoices.find(voice =>
-        voice.name.toLowerCase().includes('female') ||
-        voice.name.toLowerCase().includes('zira') ||
-        voice.name.toLowerCase().includes('susan')
-      ) || availableVoices[0];
+      const defaultVoice =
+        availableVoices.find(
+          (voice) =>
+            voice.name.toLowerCase().includes("female") ||
+            voice.name.toLowerCase().includes("zira") ||
+            voice.name.toLowerCase().includes("susan")
+        ) || availableVoices[0];
 
-      setSelectedVoice(defaultVoice?.name || '');
+      setSelectedVoice(defaultVoice?.name || "");
     };
 
     loadVoices();
     speechSynthesis.onvoiceschanged = loadVoices;
   }, []);
 
+  useEffect(() => {
+    // Reset text and speaking state when inputText changes
+    if (inputText.trim()) {
+      setText("");
+      setIsSpeaking(false);
+      setLoading(false);
+      handleClick();
+    } else {
+      setText("");
+      setIsSpeaking(false);
+      setLoading(false);
+    }
+  }, [inputText]);
+
   const handleClick = async () => {
     if (!inputText.trim()) {
-      alert('Please enter some text to convert to speech');
+      alert("Please enter some text to convert to speech");
       return;
     }
 
     setLoading(true);
-    setText('');
+    setText("");
 
     try {
       // Use Web Speech API directly for text-to-speech
@@ -48,7 +63,7 @@ export default function TextToSpeech() {
       utterance.volume = 1;
 
       // Use selected voice
-      const voice = voices.find(v => v.name === selectedVoice);
+      const voice = voices.find((v) => v.name === selectedVoice);
       if (voice) {
         utterance.voice = voice;
       }
@@ -58,7 +73,10 @@ export default function TextToSpeech() {
         setIsSpeaking(true);
         setLoading(false);
         // Start the animation
-        if (speechAnimationRef.current && speechAnimationRef.current.handlePlay) {
+        if (
+          speechAnimationRef.current &&
+          speechAnimationRef.current.handlePlay
+        ) {
           speechAnimationRef.current.handlePlay();
         }
       };
@@ -66,7 +84,10 @@ export default function TextToSpeech() {
       utterance.onend = () => {
         setIsSpeaking(false);
         // Stop the animation
-        if (speechAnimationRef.current && speechAnimationRef.current.handleStop) {
+        if (
+          speechAnimationRef.current &&
+          speechAnimationRef.current.handleStop
+        ) {
           speechAnimationRef.current.handleStop();
         }
       };
@@ -75,7 +96,10 @@ export default function TextToSpeech() {
         setIsSpeaking(false);
         setLoading(false);
         // Stop the animation on error
-        if (speechAnimationRef.current && speechAnimationRef.current.handleStop) {
+        if (
+          speechAnimationRef.current &&
+          speechAnimationRef.current.handleStop
+        ) {
           speechAnimationRef.current.handleStop();
         }
       };
@@ -83,7 +107,7 @@ export default function TextToSpeech() {
       speechSynthesis.speak(utterance);
       setText(inputText);
     } catch (error) {
-      console.error('Error generating audio:', error);
+      console.error("Error generating audio:", error);
       setLoading(false);
     }
   };
@@ -124,7 +148,7 @@ export default function TextToSpeech() {
         >
           {voices.map((voice) => (
             <option key={voice.name} value={voice.name}>
-              {voice.name} ({voice.lang}) - {voice.gender || 'Unknown'}
+              {voice.name} ({voice.lang}) - {voice.gender || "Unknown"}
             </option>
           ))}
         </select>
@@ -136,7 +160,11 @@ export default function TextToSpeech() {
           disabled={loading || !inputText.trim() || isSpeaking}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
         >
-          {loading ? 'Starting...' : isSpeaking ? 'Speaking...' : 'Convert to Speech'}
+          {loading
+            ? "Starting..."
+            : isSpeaking
+            ? "Speaking..."
+            : "Convert to Speech"}
         </button>
 
         {isSpeaking && (
@@ -254,7 +282,7 @@ export default function TextToSpeech() {
 //               ))}
 //             </select>
 //           </div>
-          
+
 //           {text && (
 //             <div className="mb-4">
 //               <label className="block text-sm font-medium text-gray-700 mb-2">
