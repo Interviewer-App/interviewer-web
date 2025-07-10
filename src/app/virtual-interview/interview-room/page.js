@@ -23,7 +23,7 @@ import {
   CameraOff,
 } from "lucide-react";
 
-function page() {
+function Page() {
   const [isSubmitBtnAvailable, setIsSubmitBtnAvailable] = useState(true);
   const [questionType, setQuestionType] = useState("OPEN_ENDED"); // or "CODING"
   const [question, setQuestion] = useState({
@@ -778,7 +778,7 @@ function page() {
           <div className=" mb-8">
             <h1 className=" text-blue-500/70 font-bold mb-1">You</h1>
             <p className=" text-gray-300/80">
-              Hi! I'm Induwara, a final-year software engineering student. I'm
+              Hi! I&apos;m Induwara, a final-year software engineering student. I&apos;m
               passionate about full-stack development and AI-based systems.
               I&apos;ve worked on a few personal and academic projects using
               React, Node.js, and Python, and I&apos;m currently researching
@@ -938,4 +938,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

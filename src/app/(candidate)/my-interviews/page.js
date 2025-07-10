@@ -355,7 +355,13 @@ const MyInterviews = () => {
           router.push(
             `physical-interview/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
           );
-        } else {
+        } 
+        else if(interview.interview.interviewMedium === 'VIRTUAL' && interview.interview.isAutomated == true) {
+          router.push(
+            `virtual-interview/interview-room`
+          )
+        }
+        else {
           router.push(
             `interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
           );
