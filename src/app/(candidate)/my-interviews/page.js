@@ -357,8 +357,13 @@ const MyInterviews = () => {
           );
         } 
         else if(interview.interview.interviewMedium === 'VIRTUAL' && interview.interview.isAutomated == true) {
+          const socketData ={
+            sessionId: sessionId,
+            candidateId : session.user.candidateID,
+          }
+           socket.emit('startAutomatedInterview', socketData);
           router.push(
-            `virtual-interview/interview-room`
+            `virtual-interview/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
           )
         }
         else {
