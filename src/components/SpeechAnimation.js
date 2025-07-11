@@ -107,9 +107,9 @@ const SpeechAnimation = () => {
         <div ref={d3Ref} className={styles.box + ' ' + styles.visual + ' ' + styles.d3}>
           <div className={styles.box + ' ' + styles.p3d}></div>
         </div>
-        <div className=' bg-white rounded-md h-20 aspect-square'>
+        {/* <div className=' bg-white rounded-md h-20 aspect-square'>
           <Image src="/skillchecker.png" alt="Logo" width={100} height={100} className="w-full h-full object-cover rounded-md" />
-        </div>
+        </div> */}
       </div>
       
       {/* Control buttons */}
