@@ -510,6 +510,43 @@ function Page() {
     setTranscript('');
   };
 
+  const handleSkip = async () => {
+    const sessionId = searchParams.get('sessionID');
+  
+    // Find the latest question in the dialog to get the currentQuestionId
+    const latestQuestion = dialog
+      .slice()
+      .reverse()
+      .find((entry) => entry.type === 'interviewer' && entry.questionId);
+  
+    const currentQuestionId = latestQuestion ? latestQuestion.questionId : null;
+  
+    if (!sessionId || !currentQuestionId) {
+      console.error('Missing sessionId or currentQuestionId');
+      return;
+    }
+  
+    // Create new dialog entry for the candidate's answer
+    const newDialogEntry = {
+      type: 'candidate',
+      text: 'skip this question',
+    };
+  
+    // Update dialog state
+    setDialog((prev) => [...prev, newDialogEntry]);
+  
+    // Emit the answer to the server via socket.io
+    socket.emit('submitAutomatedInterviewAnswer', {
+      sessionId,
+      questionId: currentQuestionId,
+      answer: 'skip this question',
+    });
+  
+    // Clear the transcript
+    setTranscript('');
+  
+  }
+
   // Detect when video element is mounted and set the flag
   useEffect(() => {
     console.log("Checking for video element availability");
@@ -876,7 +913,7 @@ function Page() {
         <div className="flex justify-between items-center w-full">
           {isSubmitBtnAvailable && !interviewEnded && (
             <div className=" w-full flex justify-end items-center">
-              <button className="mt-5 mr-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg">
+              <button onClick={handleSkip} className="mt-5 mr-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg">
                 Skip
               </button>
               <button
