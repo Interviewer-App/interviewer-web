@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import socket from "../../src/lib/utils/socket";
 
-export default function TextToSpeech() {
+export default function TextToSpeech({dialog, setDialog}) {
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
   const [inputText, setInputText] = useState("");
@@ -31,6 +32,35 @@ export default function TextToSpeech() {
     loadVoices();
     speechSynthesis.onvoiceschanged = loadVoices;
   }, []);
+
+  useEffect(() => {
+    // Handle greeting messages
+    socket.on('greeting', (data) => {
+        console.log('greeting message passed');
+        console.log('Greeting message from server:', data.content);
+        setInputText(data.content);
+        const newDialogEntry = {
+            type: "interviewer",
+            text: data.content,
+        };
+        setDialog((prev) => [...prev, newDialogEntry]);
+    });
+
+    // Handle question messages
+    socket.on('question', (data) => {
+        console.log("Received question data:", data);
+        const newQuestionEntry = {
+            type:"interviewer",
+            questionId: data.questionId,
+            text: data.content,
+            questionType: data.questionType,
+            estimatedTimeMinutes: data.estimatedTimeMinutes,
+        };
+        setDialog((prev) => [...prev, newQuestionEntry]);
+    });
+}, []);
+
+
 
   useEffect(() => {
     // Reset text and speaking state when inputText changes
