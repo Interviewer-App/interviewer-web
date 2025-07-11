@@ -49,6 +49,7 @@ export default function TextToSpeech({dialog, setDialog}) {
     // Handle question messages
     socket.on('question', (data) => {
         console.log("Received question data:", data);
+        setInputText(data.content);
         const newQuestionEntry = {
             type:"interviewer",
             questionId: data.questionId,
