@@ -64,7 +64,7 @@ const ActionCell = ({ session }) => {
             Copy session ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          {session?.status != "completed" && (
+          {!session?.isAutomated && session?.status != "completed" && (
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={handleStartSession}
@@ -148,7 +148,7 @@ const GetStarted = ({ session }) => {
 
   return (
     <div className="flex items-center justify-center">
-      {session?.status !== "completed" ? (
+      {!session?.isAutomated && session?.status !== "completed" ? (
         <div
           onClick={handleStartSession}
           className={` flex cursor-pointer items-center gap-1 h-9 rounded-md text-sm px-3 bg-green-500 text-neutral-50 hover:bg-green-500/90 dark:bg-green-700 dark:text-neutral-50 dark:hover:bg-green-700/90`}
@@ -245,7 +245,6 @@ export const interviewSessionTableColumns = [
       return formattedScore;
     },
   },
-
   {
     id: "startBtn",
     cell: ({ row }) => {

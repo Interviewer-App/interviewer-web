@@ -24,8 +24,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { useToast } from "@/hooks/use-toast";
 
 export function DataTable({ columns, data }) {
@@ -33,7 +33,7 @@ export function DataTable({ columns, data }) {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const table = useReactTable({
     data,
@@ -54,7 +54,6 @@ export function DataTable({ columns, data }) {
     },
   });
 
-
   const exportToPDF = () => {
     try {
       // Initialize jsPDF document
@@ -63,12 +62,12 @@ export function DataTable({ columns, data }) {
         unit: "mm",
         format: "a4",
       });
-  
+
       // Add a title
       doc.setFontSize(18);
       doc.setFont("helvetica", "bold");
       doc.text("Data Report", 14, 20);
-  
+
       // Add metadata
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
@@ -78,50 +77,53 @@ export function DataTable({ columns, data }) {
         day: "numeric",
       });
       doc.text(`Generated on: ${currentDate}`, 14, 30);
-  
+
       // Get visible columns and their headers, excluding specific columns
-      const visibleColumns = table.getAllColumns()
+      const visibleColumns = table
+        .getAllColumns()
         .filter((column) => column.getIsVisible())
-        .filter((column) => !['select', 'startBtn', 'actions'].includes(column.id));
-  
-      const headers = visibleColumns.map(column => {
+        .filter(
+          (column) => !["select", "startBtn", "actions"].includes(column.id)
+        );
+
+      const headers = visibleColumns.map((column) => {
         // Use the column header or fallback to column ID
         const headerContent = column.columnDef.header;
-        if (typeof headerContent === 'string') return headerContent;
+        if (typeof headerContent === "string") return headerContent;
         // If header is a component, use column ID as fallback
         return column.id;
       });
-  
+
       // Extract data for each row
-      const body = table.getRowModel().rows.map(row => {
-        return visibleColumns.map(column => {
+      const body = table.getRowModel().rows.map((row) => {
+        return visibleColumns.map((column) => {
           const cellValue = row.getValue(column.id);
-          
+
           // Format dates if detected
           if (cellValue instanceof Date) {
             return cellValue.toLocaleString();
           }
-          
+
           // Handle other special formatting if needed
-          if (cellValue !== null && typeof cellValue === 'object') {
+          if (cellValue !== null && typeof cellValue === "object") {
             return JSON.stringify(cellValue);
           }
-          
-          return cellValue?.toString() || '';
+
+          return cellValue?.toString() || "";
         });
       });
-  
+
       // Calculate column widths dynamically based on content
       const pageWidth = doc.internal.pageSize.getWidth() - 28; // minus margins
       const columnCount = visibleColumns.length;
       const baseWidth = pageWidth / columnCount;
-      
+
       // Create column styles with dynamic widths
       const columnStyles = {};
       visibleColumns.forEach((column, index) => {
         columnStyles[index] = { cellWidth: baseWidth };
       });
-  
+
       // Add the table with custom styling
       autoTable(doc, {
         startY: 40, // Start table below the header
@@ -131,8 +133,8 @@ export function DataTable({ columns, data }) {
         styles: {
           fontSize: 10,
           cellPadding: 2,
-          overflow: 'linebreak',
-          halign: 'left'
+          overflow: "linebreak",
+          halign: "left",
         },
         headStyles: {
           fillColor: [41, 128, 185], // Blue header background
@@ -161,7 +163,7 @@ export function DataTable({ columns, data }) {
           );
         },
       });
-  
+
       // Add a summary section
       const finalY = doc.lastAutoTable.finalY || 40;
       doc.setFontSize(12);
@@ -170,17 +172,23 @@ export function DataTable({ columns, data }) {
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.text(`Total Records: ${body.length}`, 14, finalY + 16);
-      doc.text(`Selected Records: ${Object.keys(rowSelection).length}`, 14, finalY + 22);
-  
+      doc.text(
+        `Selected Records: ${Object.keys(rowSelection).length}`,
+        14,
+        finalY + 22
+      );
+
       // Save the PDF
-      doc.save(`InterviewSession_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
-      
+      doc.save(
+        `InterviewSession_Report_${new Date().toISOString().slice(0, 10)}.pdf`
+      );
+
       toast({
         title: "Exported to PDF",
         description: "The data has been successfully exported to PDF.",
       });
     } catch (error) {
-      console.error("Error exporting to PDF:", error);
+      console.log("Error exporting to PDF:", error);
       toast({
         title: "Export Failed",
         description: "There was an error while exporting to PDF.",
@@ -188,7 +196,6 @@ export function DataTable({ columns, data }) {
       });
     }
   };
-  
 
   return (
     <div className=" w-full">
@@ -201,47 +208,47 @@ export function DataTable({ columns, data }) {
           }
           className="max-w-sm"
         />
-         <div className="flex items-center space-x-4">
-                <Button 
-            variant="outline" 
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
             className="max-w-[120px]"
             onClick={exportToPDF}
           >
             Export PDF
           </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="max-w-[120px] ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="bg-black bg-opacity-100 shadow-lg"
-          >
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => {
-                      setColumnVisibility((prev) => ({
-                        ...prev,
-                        [column.id]: value,
-                      }));
-                      column.toggleVisibility(!!value);
-                    }}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="max-w-[120px] ml-auto">
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-black bg-opacity-100 shadow-lg"
+            >
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => {
+                        setColumnVisibility((prev) => ({
+                          ...prev,
+                          [column.id]: value,
+                        }));
+                        column.toggleVisibility(!!value);
+                      }}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

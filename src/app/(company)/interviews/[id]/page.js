@@ -625,7 +625,6 @@ export default function InterviewPreviewPage({ params }) {
   }, [categoryList]);
 
   useEffect(() => {
-    console.log("interviewSessions", interviewSessions);
     const sortedSessions = interviewSessions.map((session) => ({
       interviewId: session.interview.interviewID,
       sessionId: session.sessionId,
@@ -639,6 +638,7 @@ export default function InterviewPreviewPage({ params }) {
       status: session.interviewStatus,
       score: session.score ?? "N/A",
       userId: session.candidate.user.userID,
+      isAutomated: session.interview.isAutomated,
     }));
 
     setInterviewSessionsSort(sortedSessions);
@@ -650,7 +650,6 @@ export default function InterviewPreviewPage({ params }) {
         const response = await getInterviewById(interviewId);
         if (response.data) {
           setInterviewDetail(response.data);
-          console.log("interviewDetail", interviewDetail);
           if (response.data.CategoryAssignment) {
             const categories = response.data.CategoryAssignment.map(
               (category) => {
@@ -684,7 +683,6 @@ export default function InterviewPreviewPage({ params }) {
               from: new Date(response.data.startDate),
               to: new Date(response.data.endDate),
             });
-            console.log("date range", dateRange);
           }
         }
       } catch (error) {
@@ -1459,7 +1457,6 @@ export default function InterviewPreviewPage({ params }) {
       const response = await generateSoftSkills(data);
       if (response) {
         // const data = response.data.skills;
-        console.log("softskills", response.data.softskills);
         setSoftSkills(
           response.data.softskills.map((skill, index) => ({
             ...skill,
