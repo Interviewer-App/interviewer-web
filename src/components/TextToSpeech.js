@@ -8,7 +8,7 @@ export default function TextToSpeech({dialog, setDialog}) {
   const [text, setText] = useState("");
   const [inputText, setInputText] = useState("");
   const [voices, setVoices] = useState([]);
-  const [selectedVoice, setSelectedVoice] = useState("");
+  const [selectedVoice, setSelectedVoice] = useState("Microsoft David - English (United States)");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const speechAnimationRef = useRef(null);
 
@@ -21,9 +21,9 @@ export default function TextToSpeech({dialog, setDialog}) {
       const defaultVoice =
         availableVoices.find(
           (voice) =>
-            voice.name.toLowerCase().includes("female") ||
+            voice.name.toLowerCase().includes("David") ||
             voice.name.toLowerCase().includes("zira") ||
-            voice.name.toLowerCase().includes("susan")
+            voice.name.toLowerCase().includes("female")
         ) || availableVoices[0];
 
       setSelectedVoice(defaultVoice?.name || "");
@@ -143,6 +143,7 @@ export default function TextToSpeech({dialog, setDialog}) {
     }
   };
 
+
   const handleStop = () => {
     speechSynthesis.cancel();
     setIsSpeaking(false);
@@ -154,7 +155,7 @@ export default function TextToSpeech({dialog, setDialog}) {
   };
 
   return (
-    <div className=" hidden">
+    <div className="hidden">
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Enter text to convert to speech:
@@ -174,7 +175,9 @@ export default function TextToSpeech({dialog, setDialog}) {
         </label>
         <select
           value={selectedVoice}
-          onChange={(e) => setSelectedVoice(e.target.value)}
+          onChange={(e) => {setSelectedVoice(e.target.value) ;
+            console.log("Selected voice:", e.target.value);
+          }}
           className="w-full p-2 border border-gray-300 rounded-md text-black"
         >
           {voices.map((voice) => (
