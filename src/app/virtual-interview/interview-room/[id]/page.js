@@ -22,8 +22,11 @@ import {
   Camera,
   CameraOff,
 } from "lucide-react";
-import socket from "../../../../lib/utils/socket"
+import socket from "../../../../lib/utils/socket";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { getAutomatedTranscript } from "@/lib/api/interview-session";
+import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { useSearchParams,useRouter } from "next/navigation";
 
 
@@ -32,15 +35,13 @@ function Page() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const [isSubmitBtnAvailable, setIsSubmitBtnAvailable] = useState(true);
-  const [questionType, setQuestionType] = useState("OPEN_ENDED"); // or "CODING"
-  const [question, setQuestion] = useState({
-    questionText: "What is your opinion on the current state of AI?",
-    estimatedTimeMinutes: 2,
-  });
-  const [questionCountDown, setQuestionCountDown] = useState(120); // 2 minutes in seconds
+  const [questionType, setQuestionType] = useState("TECHNICAL_OPEN_ENDED"); // or "CODING"
+  const [question, setQuestion] = useState({});
+  const [questionCountDown, setQuestionCountDown] = useState(120); // Default 2 minutes, will be updated based on question.estimatedTimeMinutes
   const [text, setText] = useState(
     " Hello! I am a robot that can speak. Click on me to hear what I have to say."
   );
+  const questionTimerRef = useRef(null);
   const [interviewEnded, setInterviewEnded] = useState(false);
   const [showRecordingControls, setShowRecordingControls] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -50,16 +51,21 @@ function Page() {
   const [isVideoElementMounted, setIsVideoElementMounted] = useState(false);
   const [hasMicAccess, setHasMicAccess] = useState(false);
   const [micError, setMicError] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(1200); // 20 minutes in seconds
   const [dialog, setDialog] = useState([]);
+  const [sessionId, setSessionId] = useState(
+    searchParams.get("sessionID") || null
+  );
+  const timerRef = useRef(null);
+  // const [questionType, setQuestionType] = useState("TECHNICAL_CODING");
   // Create a ref for the video element
   const videoRef = useRef(null);
-
 
   // Mock interview and candidate IDs - replace with actual values from your auth system
   const [interviewId] = useState("interview_" + Date.now());
   const [candidateId] = useState("candidate_" + Date.now());
   const [automaticinterviewEnded, setAutomaticInterviewEnded] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const {
     isListening,
@@ -84,10 +90,6 @@ function Page() {
     clearRecording,
   } = useScreenRecording();
 
-  useEffect(() => {
-    console.log('dialog', dialog);
-  }, [dialog]);
-
   // Handle saving recording with loading state
   const handleSaveRecording = async () => {
     if (!recordedBlob) return;
@@ -103,6 +105,51 @@ function Page() {
       setIsSavingRecording(false);
     }
   };
+
+  useEffect(() => {
+    setElapsedTime(question.estimatedTimeMinutes * 60); // Convert minutes to seconds
+  }, [question]);
+
+  useEffect(() => {
+    const fetchAutomatedTranscript = async () => {
+      try {
+        const response = await getAutomatedTranscript(sessionId);
+        if (response.data) {
+          setDialog(response.data.transcript);
+        }
+      } catch (err) {
+        if (err.response) {
+          const { data } = err.response;
+
+          if (data && data.message) {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: `Transcription History Fetching Faild: ${data.message}`,
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "An unexpected error occurred. Please try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description:
+              "An unexpected error occurred. Please check your network and try again.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      }
+    };
+
+    if (sessionId) fetchAutomatedTranscript();
+  }, [sessionId]);
 
   // Request screen recording permission when component mounts
   // useEffect(() => {
@@ -446,6 +493,14 @@ function Page() {
       setHasMicAccess(false);
     }
 
+    // Clear timers
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    if (questionTimerRef.current) {
+      clearTimeout(questionTimerRef.current);
+    }
+
     // Wait a moment for recording to finalize
     setTimeout(async () => {
       try {
@@ -463,6 +518,58 @@ function Page() {
 
     }, 2000);
   };
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setElapsedTime((prev) => prev - 1);
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  // Question countdown timer with auto-submit
+  useEffect(() => {
+    if (questionCountDown > 0 && !interviewEnded) {
+      questionTimerRef.current = setTimeout(() => {
+        setQuestionCountDown((prev) => prev - 1);
+      }, 1000);
+    } else if (questionCountDown === 0 && !interviewEnded) {
+      // Auto-submit when countdown reaches 0
+      handleSubmit();
+    }
+
+    return () => {
+      if (questionTimerRef.current) {
+        clearTimeout(questionTimerRef.current);
+      }
+    };
+  }, [questionCountDown, interviewEnded]);
+
+  // Reset question countdown when a new question is received
+  useEffect(() => {
+    const latestQuestion = dialog
+      .slice()
+      .reverse()
+      .find((entry) => entry.role === "interviewer" && entry.questionId);
+
+    if (latestQuestion) {
+      // Use question's estimated time (convert minutes to seconds) or default to 2 minutes
+      const timeInSeconds = question.estimatedTimeMinutes ? question.estimatedTimeMinutes * 60 : 120;
+      setQuestionCountDown(timeInSeconds);
+    }
+  }, [dialog, question.estimatedTimeMinutes]);
+
+  // Update countdown timer when question changes (separate from dialog changes)
+  useEffect(() => {
+    if (question.estimatedTimeMinutes) {
+      const timeInSeconds = question.estimatedTimeMinutes * 60;
+      setQuestionCountDown(timeInSeconds);
+    }
+  }, [question]);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60)
@@ -482,77 +589,82 @@ function Page() {
 
   const handleSubmit = async () => {
     // Get sessionId from searchParams
-    const sessionId = searchParams.get('sessionID');
+    // const sessionId = searchParams.get('sessionID');
 
     // Find the latest question in the dialog to get the currentQuestionId
     const latestQuestion = dialog
       .slice()
       .reverse()
-      .find((entry) => entry.type === 'interviewer' && entry.questionId);
+      .find((entry) => entry.role === "interviewer" && entry.questionId);
 
     const currentQuestionId = latestQuestion ? latestQuestion.questionId : null;
 
     if (!sessionId || !currentQuestionId) {
-      console.error('Missing sessionId or currentQuestionId');
+      console.error("Missing sessionId or currentQuestionId");
       return;
     }
 
     // Create new dialog entry for the candidate's answer
     const newDialogEntry = {
-      type: 'candidate',
-      text: transcript,
+      role: "candidate",
+      content: transcript || "No answer provided (time expired)",
     };
 
     // Update dialog state
     setDialog((prev) => [...prev, newDialogEntry]);
 
     // Emit the answer to the server via socket.io
-    socket.emit('submitAutomatedInterviewAnswer', {
+    socket.emit("submitAutomatedInterviewAnswer", {
       sessionId,
       questionId: currentQuestionId,
-      answer: transcript,
+      answer: transcript || "No answer provided (time expired)",
     });
 
-    // Clear the transcript
-    setTranscript('');
+    // Clear the transcript and reset countdown
+    setTranscript("");
+    // Reset countdown based on question's estimated time or default to 2 minutes
+    const timeInSeconds = question.estimatedTimeMinutes ? question.estimatedTimeMinutes * 60 : 120;
+    setQuestionCountDown(timeInSeconds);
   };
 
   const handleSkip = async () => {
-    const sessionId = searchParams.get('sessionID');
+    // const sessionId = searchParams.get('sessionID');
 
     // Find the latest question in the dialog to get the currentQuestionId
     const latestQuestion = dialog
       .slice()
       .reverse()
-      .find((entry) => entry.type === 'interviewer' && entry.questionId);
+      .find((entry) => entry.role === "interviewer" && entry.questionId);
 
     const currentQuestionId = latestQuestion ? latestQuestion.questionId : null;
 
     if (!sessionId || !currentQuestionId) {
-      console.error('Missing sessionId or currentQuestionId');
+      console.error("Missing sessionId or currentQuestionId");
       return;
     }
 
     // Create new dialog entry for the candidate's answer
     const newDialogEntry = {
-      type: 'candidate',
-      text: 'skip this question',
+      role: "candidate",
+      content: "skip this question",
     };
 
     // Update dialog state
     setDialog((prev) => [...prev, newDialogEntry]);
 
     // Emit the answer to the server via socket.io
-    socket.emit('submitAutomatedInterviewAnswer', {
+    socket.emit("submitAutomatedInterviewAnswer", {
       sessionId,
       questionId: currentQuestionId,
-      answer: 'skip this question',
+      answer: "skip this question",
     });
 
-    // Clear the transcript
-    setTranscript('');
-
-  }
+    // Clear the transcript and reset countdown
+    setTranscript("");
+    // Reset countdown based on question's estimated time or default to 2 minutes
+    const timeInSeconds = question.estimatedTimeMinutes ? question.estimatedTimeMinutes * 60 : 120;
+    setQuestionCountDown(timeInSeconds);
+  };
 
   // Detect when video element is mounted and set the flag
   useEffect(() => {
@@ -597,21 +709,12 @@ function Page() {
   //   });
   // }, []);
 
-
-
-  socket.on('summary', (data) => {
-    console.log("Received summary data:", data);
-    setAutomaticInterviewEnded(true); // Set interview ended state
-  });
-
-
-
-
-
-
-
   return (
-    <div className=" w-full h-dvh grid grid-cols-3">
+    <div
+      className={` w-full bg-black h-dvh grid ${
+        questionType === "technical-coding" ? "grid-cols-1" : "grid-cols-3"
+      }`}
+    >
       {/* Recording Status Indicator */}
       {isRecording && (
         <div className="fixed top-4 left-4 z-50 bg-red-500/20 text-red-500 border border-red-700 font-semibold px-4 py-2 flex items-center rounded-lg">
@@ -751,237 +854,271 @@ function Page() {
           </div>
         )}
       </div> */}
-      <div className=" relative flex flex-col justify-center items-center h-dvh p-14">
-        <div className="absolute bottom-20 left-20 h-[250px] w-min-[400px] bg-slate-50 overflow-hidden rounded-lg shadow-lg">
-          {/* Always render the video element but hide it when not in use */}
-          <video
-            ref={videoRef}
-            className={`w-full h-full object-cover ${!hasWebcamAccess ? "hidden" : ""
-              }`}
-            autoPlay
-            playsInline
-            muted
-            onLoadedMetadata={() => {
-              console.log("Video element loaded metadata");
-              setIsVideoElementMounted(true);
-            }}
-          />
-
-          {webcamError ? (
-            <div className="w-full h-full absolute inset-0 bg-red-900/30 flex items-center justify-center text-center p-4">
-              <p className="text-white text-sm">
-                {webcamError}
-                <br />
-                <button
-                  onClick={toggleWebcam}
-                  className="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg"
-                >
-                  Try Again
-                </button>
-              </p>
-            </div>
-          ) : !hasWebcamAccess ? (
-            <div className="w-full h-full absolute inset-0 bg-gray-800 flex items-center justify-center">
-              <div className="flex flex-col items-center">
-                <button
-                  onClick={toggleWebcam}
-                  className="px-3 py-1 text-white rounded-lg"
-                >
-                  <Camera className="w-20 h-20 " />
-                </button>
-              </div>
-            </div>
-          ) : null}
-
-          {/* Microphone status indicator in video container */}
-          {hasWebcamAccess && (
-            <div
-              className={`absolute bottom-3 right-3 p-1.5 rounded-full ${hasMicAccess ? "bg-green-500/80" : "bg-red-500/80"
+      {questionType !== "technical-coding" ? (
+        <>
+          <div className=" relative flex flex-col justify-center items-center h-dvh p-14">
+            <div className="absolute bottom-20 left-20 h-[250px] w-min-[400px] bg-slate-50 overflow-hidden rounded-lg shadow-lg">
+              {/* Always render the video element but hide it when not in use */}
+              <video
+                ref={videoRef}
+                className={`w-full h-full object-cover ${
+                  !hasWebcamAccess ? "hidden" : ""
                 }`}
-            >
-              {hasMicAccess ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-white"
-                >
-                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                  <line x1="12" x2="12" y1="19" y2="22"></line>
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-white"
-                >
-                  <line x1="2" x2="22" y1="2" y2="22"></line>
-                  <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"></path>
-                  <path d="M5 10v2a7 7 0 0 0 12 7"></path>
-                  <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"></path>
-                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12"></path>
-                  <line x1="12" x2="12" y1="19" y2="22"></line>
-                </svg>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className=" h-dvh flex flex-col items-center justify-center gap-4 p-14">
-        <TextToSpeech dialog={dialog} setDialog={setDialog} />
-        <SpeechAnimation />
-        <div className=" flex items-center justify-center gap-3">
-          {isListening ? (
-            <button
-              onClick={stopListening}
-              className="mt-2 cursor-pointer p-5 m-auto flex items-center justify-center bg-red-800/30 border border-red-600 hover:bg-red-800/40 rounded-full focus:outline-none"
-            >
-              <Pause className="w-8 h-8" />
-            </button>
-          ) : (
-            <button
-              onClick={startListening}
-              className="mt-2 cursor-pointer p-5 m-auto flex items-center justify-center bg-blue-800/30 border border-blue-600 hover:bg-blue-800/40 rounded-full focus:outline-none"
-            >
-              <Mic className="w-8 h-8" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {automaticinterviewEnded ? (
-  <div className="fixed top-96 right-64 z-50 flex justify-center items-center">
-  <div className="bg-green-500/10 border border-green-700 rounded-lg shadow-lg p-6 max-w-md text-center">
-    <h2 className="text-green-600 font-bold text-xl mb-2">Interview Completed</h2>
-    <p className="text-green-500 text-sm">
-      Thank you for participating in the interview. You can now proceed to review your answers or download the recording.
-    </p>
-  </div>
-</div>
-      ) : (
-
-        <div className=" flex flex-col justify-center items-center h-dvh p-14">
-          <div className="h-[50%] w-full relative mb-10">
-            <div className="h-full w-full p-4 overflow-y-scroll">
-              <div className="bg-gradient-to-b from-[#000000] to-[#00000010] h-[30px] w-full absolute top-0 left-0"></div>
-              {dialog.length === 0 ? (
-                <div className="mb-8">
-                  <h1 className="text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
-                  <p className="text-gray-300/80">Waiting for the interview to start...</p>
-                </div>
-              ) : (
-                dialog.map((entry, index) => (
-                  <div key={index} className="mb-8">
-                    <h1 className="text-blue-500/70 font-bold mb-1">
-                      {entry.type === "interviewer" ? "AI Interviewer" : "You"}
-                    </h1>
-                    <p className="text-gray-300/80">{entry.text}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-          {isListening && (
-            <div className=" recording-indicator bg-red-500/20 text-red-500 border border-red-700 font-semibold px-20 py-3 flex justify-center items-center rounded-lg mb-4">
-              <div className=" h-3 aspect-square rounded-full animate-pulse bg-red-500 mr-2"></div>
-              <p>Recording your answer...</p>
-            </div>
-          )}
-          <div className="relative w-full rounded-xl h-auto border border-gray-700 text-white shadow-md">
-            <div>
-              <textarea
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
+                autoPlay
+                playsInline
+                muted
+                onLoadedMetadata={() => {
+                  console.log("Video element loaded metadata");
+                  setIsVideoElementMounted(true);
                 }}
-                onCopy={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                value={transcript}
-                onChange={handleAnswerChange}
-                placeholder="Your answer here..."
-                className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
               />
-            </div>
-            <div className="absolute bottom-2 right-2 flex items-center justify-center gap-3">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
+
+              {webcamError ? (
+                <div className="w-full h-full absolute inset-0 bg-red-900/30 flex items-center justify-center text-center p-4">
+                  <p className="text-white text-sm">
+                    {webcamError}
+                    <br />
                     <button
-                      onClick={() => setTranscript("")}
-                      className="mt-2 cursor-pointer m-auto flex items-center justify-center bg-green-800/30 border border-green-600 hover:bg-green-800/40 rounded-full h-8 aspect-square focus:outline-none"
+                      onClick={toggleWebcam}
+                      className="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg"
                     >
-                      <RefreshCw className="w-5 h-5" />
+                      Try Again
                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
-                    Clear Answer
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  </p>
+                </div>
+              ) : !hasWebcamAccess ? (
+                <div className="w-full h-full absolute inset-0 bg-gray-800 flex items-center justify-center">
+                  <div className="flex flex-col items-center">
+                    <button
+                      onClick={toggleWebcam}
+                      className="px-3 py-1 text-white rounded-lg"
+                    >
+                      <Camera className="w-20 h-20 " />
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* Microphone status indicator in video container */}
+              {hasWebcamAccess && (
+                <div
+                  className={`absolute bottom-3 right-3 p-1.5 rounded-full ${
+                    hasMicAccess ? "bg-green-500/80" : "bg-red-500/80"
+                  }`}
+                >
+                  {hasMicAccess ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-white"
+                    >
+                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                      <line x1="12" x2="12" y1="19" y2="22"></line>
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-white"
+                    >
+                      <line x1="2" x2="22" y1="2" y2="22"></line>
+                      <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"></path>
+                      <path d="M5 10v2a7 7 0 0 0 12 7"></path>
+                      <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"></path>
+                      <path d="M9 9v3a3 3 0 0 0 5.12 2.12"></path>
+                      <line x1="12" x2="12" y1="19" y2="22"></line>
+                    </svg>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-          <div className="flex justify-between items-center w-full">
-            {isSubmitBtnAvailable && !interviewEnded && (
-              <div className=" w-full flex justify-end items-center">
-                <button onClick={handleSkip} className="mt-5 mr-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg">
-                  Skip
-                </button>
+          <div className=" h-dvh flex flex-col items-center justify-center gap-4 p-14">
+            <SpeechAnimation />
+            <div className=" flex items-center justify-center gap-3">
+              {isListening ? (
                 <button
-                  onClick={handleSubmit}
-                  disabled={!transcript}
-                  className="mt-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg"
+                  onClick={stopListening}
+                  className="mt-2 cursor-pointer p-5 m-auto flex items-center justify-center bg-red-800/30 border border-red-600 hover:bg-red-800/40 rounded-full focus:outline-none"
                 >
-                  Submit Answer
+                  <Pause className="w-8 h-8" />
                 </button>
+              ) : (
+                <button
+                  onClick={startListening}
+                  className="mt-2 cursor-pointer p-5 m-auto flex items-center justify-center bg-blue-800/30 border border-blue-600 hover:bg-blue-800/40 rounded-full focus:outline-none"
+                >
+                  <Mic className="w-8 h-8" />
+                </button>
+              )}
+            </div>
+          </div>
+          <div className=" flex flex-col justify-center items-center h-dvh p-14">
+            <div className="h-[50%] w-full relative mb-10">
+              <div className="h-full w-full p-4 overflow-y-scroll">
+                <div className="bg-gradient-to-b from-[#000000] to-[#00000010] h-[30px] w-full absolute top-0 left-0"></div>
+                {dialog.length === 0 ? (
+                  <div className="mb-8">
+                    <h1 className="text-blue-500/70 font-bold mb-1">
+                      AI Interviewer
+                    </h1>
+                    <p className="text-gray-300/80">
+                      Waiting for the interview to start...
+                    </p>
+                  </div>
+                ) : (
+                  dialog.map((entry, index) => (
+                    <div key={index} className="mb-8">
+                      <h1 className="text-blue-500/70 font-bold mb-1">
+                        {entry.role === "interviewer"
+                          ? "AI Interviewer"
+                          : "You"}
+                      </h1>
+                      <p className="text-gray-300/80">{entry.content}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+            {isListening && (
+              <div className=" recording-indicator bg-red-500/20 text-red-500 border border-red-700 font-semibold px-20 py-3 flex justify-center items-center rounded-lg mb-4">
+                <div className=" h-3 aspect-square rounded-full animate-pulse bg-red-500 mr-2"></div>
+                <p>Recording your answer...</p>
               </div>
             )}
 
-            {interviewEnded && recordedBlob && (
-              <div className="mt-5 mb-24 flex gap-4">
-                <button
-                  onClick={() =>
-                    downloadRecording(`interview-${interviewId}.webm`)
-                  }
-                  className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Download Recording
-                </button>
-                <button
-                  onClick={() => saveRecording(interviewId, candidateId)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  {isSavingRecording ? "Saving..." : "Save to Server"}
-                </button>
-                <button
-                  onClick={() => setShowPreviewModal(true)}
-                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-                >
-                  Preview Recording
-                </button>
+            {/* Question Countdown Timer */}
+            {/* <div className="flex justify-center items-center mb-4">
+              <div className={`px-6 py-3 rounded-lg font-bold text-lg ${
+                questionCountDown <= 30
+                  ? 'bg-red-500/20 text-red-500 border border-red-700'
+                  : questionCountDown <= 60
+                  ? 'bg-yellow-500/20 text-yellow-500 border border-yellow-700'
+                  : 'bg-blue-500/20 text-blue-500 border border-blue-700'
+              }`}>
+                Time Remaining: {formatTime(questionCountDown)}
               </div>
-            )}
+            </div> */}
+            <div className="relative w-full rounded-xl h-auto border border-gray-700 text-white shadow-md">
+              <div>
+                <textarea
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    return false;
+                  }}
+                  onCopy={(e) => {
+                    e.preventDefault();
+                    return false;
+                  }}
+                  value={transcript}
+                  onChange={handleAnswerChange}
+                  placeholder="Your answer here..."
+                  className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
+                />
+              </div>
+              <div className="absolute bottom-2 right-2 flex items-center justify-center gap-3">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => setTranscript("")}
+                        className="mt-2 cursor-pointer m-auto flex items-center justify-center bg-green-800/30 border border-green-600 hover:bg-green-800/40 rounded-full h-8 aspect-square focus:outline-none"
+                      >
+                        <RefreshCw className="w-5 h-5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                      Clear Answer
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+            <div className="flex justify-between items-center w-full">
+              {isSubmitBtnAvailable && !interviewEnded && (
+                <div className=" w-full flex justify-end items-center">
+                  <button
+                    onClick={handleSkip}
+                    className="mt-5 mr-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg"
+                  >
+                    Skip
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!transcript}
+                    className="mt-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg"
+                  >
+                    Submit Answer
+                  </button>
+                </div>
+              )}
+
+              {interviewEnded && recordedBlob && (
+                <div className="mt-5 mb-24 flex gap-4">
+                  <button
+                    onClick={() =>
+                      downloadRecording(`interview-${interviewId}.webm`)
+                    }
+                    className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download Recording
+                  </button>
+                  <button
+                    onClick={() => saveRecording(interviewId, candidateId)}
+                    className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    {isSavingRecording ? "Saving..." : "Save to Server"}
+                  </button>
+                  <button
+                    onClick={() => setShowPreviewModal(true)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
+                  >
+                    Preview Recording
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </>
+      ) : (
+        <>
+          <CodeEditor
+            question={question}
+            handleSubmit={handleSubmit}
+            setTranscript={setTranscript}
+            isSubmitBtnAvailable={isSubmitBtnAvailable}
+            sessionID={sessionId}
+            socket={socket}
+            time={formatTime(elapsedTime)}
+            questionCountDown={questionCountDown}
+            questionTimer={formatTime(questionCountDown)}
+          />
+        </>
       )}
       {/* Recording Preview Modal */}
+      <TextToSpeech
+        dialog={dialog}
+        setDialog={setDialog}
+        setQuestion={setQuestion}
+        setQuestionType={setQuestionType}
+      />
       <RecordingPreviewModal
         isOpen={showPreviewModal}
         onClose={() => setShowPreviewModal(false)}

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import socket from "../../src/lib/utils/socket";
 
-export default function TextToSpeech({dialog, setDialog}) {
+export default function TextToSpeech({dialog, setDialog, setQuestion, setQuestionType}) {
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
   const [inputText, setInputText] = useState("");
@@ -50,10 +50,15 @@ export default function TextToSpeech({dialog, setDialog}) {
     socket.on('question', (data) => {
         console.log("Received question data:", data);
         setInputText(data.content);
+        setQuestion({
+          questionText: data.content,
+          estimatedTimeMinutes: data.estimatedTimeMinutes,
+        });
+        setQuestionType(data.questionType);
         const newQuestionEntry = {
-            type:"interviewer",
+            role:"interviewer",
             questionId: data.questionId,
-            text: data.content,
+            content: data.content,
             questionType: data.questionType,
             estimatedTimeMinutes: data.estimatedTimeMinutes,
         };
@@ -142,7 +147,6 @@ export default function TextToSpeech({dialog, setDialog}) {
       setLoading(false);
     }
   };
-
 
   const handleStop = () => {
     speechSynthesis.cancel();
