@@ -24,9 +24,11 @@ import {
 } from "lucide-react";
 import socket from "../../../../lib/utils/socket";
 import { useSession } from "next-auth/react";
-import { getAutomatedTranscript } from "@/lib/api/interview-session";
+// import { getAutomatedTranscript } from "@/lib/api/interview-session";
 import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { useSearchParams, useRouter } from "next/navigation";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
 
 
 
@@ -65,6 +67,7 @@ function Page() {
   const [candidateId] = useState("candidate_" + Date.now());
   const [automaticinterviewEnded, setAutomaticInterviewEnded] = useState(false);
   const router = useRouter();
+  const {toast} = useToast();
 
   const {
     isListening,
