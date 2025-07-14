@@ -24,7 +24,8 @@ import {
 } from "lucide-react";
 import socket from "../../../../lib/utils/socket"
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams,useRouter } from "next/navigation";
+
 
 
 function Page() {
@@ -57,6 +58,8 @@ function Page() {
   // Mock interview and candidate IDs - replace with actual values from your auth system
   const [interviewId] = useState("interview_" + Date.now());
   const [candidateId] = useState("candidate_" + Date.now());
+  const [automaticinterviewEnded, setAutomaticInterviewEnded] = useState(false);
+  const router = useRouter(); 
 
   const {
     isListening,
@@ -379,8 +382,8 @@ function Page() {
           err.name === "NotAllowedError"
             ? "Camera access denied. Please allow camera access in your browser settings."
             : err.name === "NotFoundError"
-            ? "No camera detected. Please connect a camera and try again."
-            : "Failed to access camera: " + err.message;
+              ? "No camera detected. Please connect a camera and try again."
+              : "Failed to access camera: " + err.message;
 
         setWebcamError(errorMessage);
       }
@@ -453,7 +456,11 @@ function Page() {
         alert(
           "Interview ended but failed to save recording. You can download it manually."
         );
+      } finally {
+        // Clear recording state
+        router.push("/");
       }
+
     }, 2000);
   };
 
@@ -476,75 +483,75 @@ function Page() {
   const handleSubmit = async () => {
     // Get sessionId from searchParams
     const sessionId = searchParams.get('sessionID');
-  
+
     // Find the latest question in the dialog to get the currentQuestionId
     const latestQuestion = dialog
       .slice()
       .reverse()
       .find((entry) => entry.type === 'interviewer' && entry.questionId);
-  
+
     const currentQuestionId = latestQuestion ? latestQuestion.questionId : null;
-  
+
     if (!sessionId || !currentQuestionId) {
       console.error('Missing sessionId or currentQuestionId');
       return;
     }
-  
+
     // Create new dialog entry for the candidate's answer
     const newDialogEntry = {
       type: 'candidate',
       text: transcript,
     };
-  
+
     // Update dialog state
     setDialog((prev) => [...prev, newDialogEntry]);
-  
+
     // Emit the answer to the server via socket.io
     socket.emit('submitAutomatedInterviewAnswer', {
       sessionId,
       questionId: currentQuestionId,
       answer: transcript,
     });
-  
+
     // Clear the transcript
     setTranscript('');
   };
 
   const handleSkip = async () => {
     const sessionId = searchParams.get('sessionID');
-  
+
     // Find the latest question in the dialog to get the currentQuestionId
     const latestQuestion = dialog
       .slice()
       .reverse()
       .find((entry) => entry.type === 'interviewer' && entry.questionId);
-  
+
     const currentQuestionId = latestQuestion ? latestQuestion.questionId : null;
-  
+
     if (!sessionId || !currentQuestionId) {
       console.error('Missing sessionId or currentQuestionId');
       return;
     }
-  
+
     // Create new dialog entry for the candidate's answer
     const newDialogEntry = {
       type: 'candidate',
       text: 'skip this question',
     };
-  
+
     // Update dialog state
     setDialog((prev) => [...prev, newDialogEntry]);
-  
+
     // Emit the answer to the server via socket.io
     socket.emit('submitAutomatedInterviewAnswer', {
       sessionId,
       questionId: currentQuestionId,
       answer: 'skip this question',
     });
-  
+
     // Clear the transcript
     setTranscript('');
-  
+
   }
 
   // Detect when video element is mounted and set the flag
@@ -589,6 +596,15 @@ function Page() {
   //     console.log("Received question data:", data);
   //   });
   // }, []);
+
+
+
+  socket.on('summary', (data) => {
+    console.log("Received summary data:", data);
+    setAutomaticInterviewEnded(true); // Set interview ended state
+  });
+
+
 
 
 
@@ -740,9 +756,8 @@ function Page() {
           {/* Always render the video element but hide it when not in use */}
           <video
             ref={videoRef}
-            className={`w-full h-full object-cover ${
-              !hasWebcamAccess ? "hidden" : ""
-            }`}
+            className={`w-full h-full object-cover ${!hasWebcamAccess ? "hidden" : ""
+              }`}
             autoPlay
             playsInline
             muted
@@ -781,9 +796,8 @@ function Page() {
           {/* Microphone status indicator in video container */}
           {hasWebcamAccess && (
             <div
-              className={`absolute bottom-3 right-3 p-1.5 rounded-full ${
-                hasMicAccess ? "bg-green-500/80" : "bg-red-500/80"
-              }`}
+              className={`absolute bottom-3 right-3 p-1.5 rounded-full ${hasMicAccess ? "bg-green-500/80" : "bg-red-500/80"
+                }`}
             >
               {hasMicAccess ? (
                 <svg
@@ -848,112 +862,125 @@ function Page() {
           )}
         </div>
       </div>
-      <div className=" flex flex-col justify-center items-center h-dvh p-14">
-        <div className="h-[50%] w-full relative mb-10">
-          <div className="h-full w-full p-4 overflow-y-scroll">
-            <div className="bg-gradient-to-b from-[#000000] to-[#00000010] h-[30px] w-full absolute top-0 left-0"></div>
-            {dialog.length === 0 ? (
-              <div className="mb-8">
-                <h1 className="text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
-                <p className="text-gray-300/80">Waiting for the interview to start...</p>
-              </div>
-            ) : (
-              dialog.map((entry, index) => (
-                <div key={index} className="mb-8">
-                  <h1 className="text-blue-500/70 font-bold mb-1">
-                    {entry.type === "interviewer" ? "AI Interviewer" : "You"}
-                  </h1>
-                  <p className="text-gray-300/80">{entry.text}</p>
+
+      {automaticinterviewEnded ? (
+  <div className="fixed top-96 right-64 z-50 flex justify-center items-center">
+  <div className="bg-green-500/10 border border-green-700 rounded-lg shadow-lg p-6 max-w-md text-center">
+    <h2 className="text-green-600 font-bold text-xl mb-2">Interview Completed</h2>
+    <p className="text-green-500 text-sm">
+      Thank you for participating in the interview. You can now proceed to review your answers or download the recording.
+    </p>
+  </div>
+</div>
+      ) : (
+
+        <div className=" flex flex-col justify-center items-center h-dvh p-14">
+          <div className="h-[50%] w-full relative mb-10">
+            <div className="h-full w-full p-4 overflow-y-scroll">
+              <div className="bg-gradient-to-b from-[#000000] to-[#00000010] h-[30px] w-full absolute top-0 left-0"></div>
+              {dialog.length === 0 ? (
+                <div className="mb-8">
+                  <h1 className="text-blue-500/70 font-bold mb-1">AI Interviewer</h1>
+                  <p className="text-gray-300/80">Waiting for the interview to start...</p>
                 </div>
-              ))
+              ) : (
+                dialog.map((entry, index) => (
+                  <div key={index} className="mb-8">
+                    <h1 className="text-blue-500/70 font-bold mb-1">
+                      {entry.type === "interviewer" ? "AI Interviewer" : "You"}
+                    </h1>
+                    <p className="text-gray-300/80">{entry.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          {isListening && (
+            <div className=" recording-indicator bg-red-500/20 text-red-500 border border-red-700 font-semibold px-20 py-3 flex justify-center items-center rounded-lg mb-4">
+              <div className=" h-3 aspect-square rounded-full animate-pulse bg-red-500 mr-2"></div>
+              <p>Recording your answer...</p>
+            </div>
+          )}
+          <div className="relative w-full rounded-xl h-auto border border-gray-700 text-white shadow-md">
+            <div>
+              <textarea
+                onPaste={(e) => {
+                  e.preventDefault();
+                  return false;
+                }}
+                onCopy={(e) => {
+                  e.preventDefault();
+                  return false;
+                }}
+                value={transcript}
+                onChange={handleAnswerChange}
+                placeholder="Your answer here..."
+                className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
+              />
+            </div>
+            <div className="absolute bottom-2 right-2 flex items-center justify-center gap-3">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setTranscript("")}
+                      className="mt-2 cursor-pointer m-auto flex items-center justify-center bg-green-800/30 border border-green-600 hover:bg-green-800/40 rounded-full h-8 aspect-square focus:outline-none"
+                    >
+                      <RefreshCw className="w-5 h-5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
+                    Clear Answer
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </div>
+          <div className="flex justify-between items-center w-full">
+            {isSubmitBtnAvailable && !interviewEnded && (
+              <div className=" w-full flex justify-end items-center">
+                <button onClick={handleSkip} className="mt-5 mr-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg">
+                  Skip
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={!transcript}
+                  className="mt-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg"
+                >
+                  Submit Answer
+                </button>
+              </div>
+            )}
+
+            {interviewEnded && recordedBlob && (
+              <div className="mt-5 mb-24 flex gap-4">
+                <button
+                  onClick={() =>
+                    downloadRecording(`interview-${interviewId}.webm`)
+                  }
+                  className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Recording
+                </button>
+                <button
+                  onClick={() => saveRecording(interviewId, candidateId)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {isSavingRecording ? "Saving..." : "Save to Server"}
+                </button>
+                <button
+                  onClick={() => setShowPreviewModal(true)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Preview Recording
+                </button>
+              </div>
             )}
           </div>
         </div>
-        {isListening && (
-          <div className=" recording-indicator bg-red-500/20 text-red-500 border border-red-700 font-semibold px-20 py-3 flex justify-center items-center rounded-lg mb-4">
-            <div className=" h-3 aspect-square rounded-full animate-pulse bg-red-500 mr-2"></div>
-            <p>Recording your answer...</p>
-          </div>
-        )}
-        <div className="relative w-full rounded-xl h-auto border border-gray-700 text-white shadow-md">
-          <div>
-            <textarea
-              onPaste={(e) => {
-                e.preventDefault();
-                return false;
-              }}
-              onCopy={(e) => {
-                e.preventDefault();
-                return false;
-              }}
-              value={transcript}
-              onChange={handleAnswerChange}
-              placeholder="Your answer here..."
-              className="w-full mb-10 h-32 outline-none focus:outline-none bg-transparent border-gray-600 rounded-lg px-6 py-4 text-white"
-            />
-          </div>
-          <div className="absolute bottom-2 right-2 flex items-center justify-center gap-3">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setTranscript("")}
-                    className="mt-2 cursor-pointer m-auto flex items-center justify-center bg-green-800/30 border border-green-600 hover:bg-green-800/40 rounded-full h-8 aspect-square focus:outline-none"
-                  >
-                    <RefreshCw className="w-5 h-5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent className="bg-gray-800 text-white p-2 rounded-md text-sm max-w-[200px] text-center">
-                  Clear Answer
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </div>
-        <div className="flex justify-between items-center w-full">
-          {isSubmitBtnAvailable && !interviewEnded && (
-            <div className=" w-full flex justify-end items-center">
-              <button onClick={handleSkip} className="mt-5 mr-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg">
-                Skip
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={!transcript}
-                className="mt-5 mb-24 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-2 px-6 rounded-lg"
-              >
-                Submit Answer
-              </button>
-            </div>
-          )}
-
-          {interviewEnded && recordedBlob && (
-            <div className="mt-5 mb-24 flex gap-4">
-              <button
-                onClick={() =>
-                  downloadRecording(`interview-${interviewId}.webm`)
-                }
-                className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Download Recording
-              </button>
-              <button
-                onClick={() => saveRecording(interviewId, candidateId)}
-                className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg flex items-center gap-2"
-              >
-                <Save className="w-4 h-4" />
-                {isSavingRecording ? "Saving..." : "Save to Server"}
-              </button>
-              <button
-                onClick={() => setShowPreviewModal(true)}
-                className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-              >
-                Preview Recording
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+      )}
       {/* Recording Preview Modal */}
       <RecordingPreviewModal
         isOpen={showPreviewModal}
