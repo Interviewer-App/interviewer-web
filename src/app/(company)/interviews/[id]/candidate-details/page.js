@@ -1409,27 +1409,73 @@ function CandidateDetailsProfile() {
                                       ).toFixed(2)
                                     )}
                                   />
-                                  <div className=" mt-5 w-full">
-                                    {sessionDetails?.questions?.map(
-                                      (question, index) => (
+                                  <div className="mt-10 w-full">
+                                    {sessionDetails?.isAutomated
+                                      ? sessionDetails?.aiquestions
+                                        ?.filter(item =>
+                                          item.type?.toLowerCase() === 'technical_coding' ||
+                                          item.type?.toLowerCase() === 'technical_open_ended'
+                                        )
+                                        ?.map((item) => (
+                                        <Card
+                                        key={item.questionId}
+                                        className="!bg-transparent mt-2 py-2"
+                                      >
+                                        <CardContent>
+                                          <div className="flex w-full justify-between items-center">
+                                            <span className="text-base">
+                                              {item.questionText}
+                                            </span>
+                                          </div>
+                                          <div className="w-full text-base items-center text-gray-500">
+                                            Answer:{" "}
+                                            <span className="text-white">
+                                              {item.answer || "no given answer"}
+                                            </span>
+                                          </div>
+                                          <div className="flex items-center gap-2 mt-5">
+                                            <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                              <Star className="h-3 w-3" />
+                                              <span className="font-bold">
+                                                {item.type
+                                                  ?.toLowerCase()
+                                                  .split("_")
+                                                  .map(
+                                                    (word) =>
+                                                      word.charAt(0).toUpperCase() +
+                                                      word.slice(1)
+                                                  )
+                                                  .join(" ")}
+                                              </span>
+                                            </Badge>
+                                            <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                              <Clock className="h-4 w-4" />
+                                              <span className="text-blue-500">
+                                                {item.estimatedTimeMinutes} minutes
+                                              </span>
+                                            </Badge>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    ))
+                                      : sessionDetails?.questions?.map((question, index) => (
                                         <Card
                                           key={question.questionID}
                                           className="!bg-transparent mt-2 py-2"
                                         >
                                           <CardContent>
-                                            <div className=" flex w-full justify-between items-center">
-                                              <span className=" text-base">
+                                            <div className="flex w-full justify-between items-center">
+                                              <span className="text-base">
                                                 {question.questionText}
                                               </span>
-                                              <span className=" text-base">
+                                              <span className="text-base">
                                                 23 / 25
                                               </span>
                                             </div>
-                                            <div className=" w-full text-sm items-center text-gray-500">
+                                            <div className="w-full text-sm items-center text-gray-500">
                                               Answer:{" "}
                                               <span>
-                                                {question.answer ||
-                                                  "no given answer"}
+                                                {question.answer || "no given answer"}
                                               </span>
                                             </div>
                                             <div className="flex items-center gap-2 mt-5">
@@ -1441,9 +1487,7 @@ function CandidateDetailsProfile() {
                                                     .split("_")
                                                     .map(
                                                       (word) =>
-                                                        word
-                                                          .charAt(0)
-                                                          .toUpperCase() +
+                                                        word.charAt(0).toUpperCase() +
                                                         word.slice(1)
                                                     )
                                                     .join(" ")}
@@ -1452,17 +1496,14 @@ function CandidateDetailsProfile() {
                                               <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
                                                 <Clock className="h-4 w-4" />
                                                 <span className="text-blue-500">
-                                                  {
-                                                    question.estimatedTimeMinutes
-                                                  }{" "}
-                                                  minutes
+                                                  {question.estimatedTimeMinutes} minutes
                                                 </span>
                                               </Badge>
                                             </div>
                                           </CardContent>
                                         </Card>
-                                      )
-                                    )}
+                                      ))
+                                    }
                                   </div>
                                 </CardContent>
                               </Card>
@@ -1519,30 +1560,100 @@ function CandidateDetailsProfile() {
                                       ).toFixed(2)
                                     )}
                                   />
-                                  <div className="mt-5 w-full">
-                                    {sessionhistory?.categoryScores
-                                      ?.find(cat => cat.categoryName === 'Soft')
-                                      ?.subCategoryScores?.map((subCategory, index) => (
-                                        <Card key={`soft-subcat-${index}`} className="!bg-transparent mt-3">
+                                  <div className="mt-10 w-full">
+                                    {sessionDetails?.isAutomated
+                                      ? sessionDetails?.aiquestions
+                                        ?.filter(item =>
+                                          item.type?.toLowerCase() === 'soft_skill'
+                                        )
+                                        ?.map((item) => (
+                                        <Card
+                                        key={item.questionId}
+                                        className="!bg-transparent mt-2 py-2"
+                                      >
+                                        <CardContent>
+                                          <div className="flex w-full justify-between items-center">
+                                            <span className="text-base">
+                                              {item.questionText}
+                                            </span>
+                                          </div>
+                                          <div className="w-full text-base items-center text-gray-500">
+                                            Answer:{" "}
+                                            <span className="text-white">
+                                              {item.answer || "no given answer"}
+                                            </span>
+                                          </div>
+                                          <div className="flex items-center gap-2 mt-5">
+                                            <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                              <Star className="h-3 w-3" />
+                                              <span className="font-bold">
+                                                {item.type
+                                                  ?.toLowerCase()
+                                                  .split("_")
+                                                  .map(
+                                                    (word) =>
+                                                      word.charAt(0).toUpperCase() +
+                                                      word.slice(1)
+                                                  )
+                                                  .join(" ")}
+                                              </span>
+                                            </Badge>
+                                            <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                              <Clock className="h-4 w-4" />
+                                              <span className="text-blue-500">
+                                                {item.estimatedTimeMinutes} minutes
+                                              </span>
+                                            </Badge>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    ))
+                                      : sessionDetails?.questions?.map((question, index) => (
+                                        <Card
+                                          key={question.questionID}
+                                          className="!bg-transparent mt-2 py-2"
+                                        >
                                           <CardContent>
-                                            <div className="my-2">
-                                              <div className="flex justify-between items-center">
-                                                <h3 className="font-medium">
-                                                  {subCategory.subCategoryName || 'Unnamed Subcategory'}
-                                                </h3>
-                                                <span className={`font-bold ${getScoreColor(subCategory.score)}`}>
-                                                  {(subCategory.score ?? 0).toFixed(2)}
+                                            <div className="flex w-full justify-between items-center">
+                                              <span className="text-base">
+                                                {question.questionText}
+                                              </span>
+                                              <span className="text-base">
+                                                23 / 25
+                                              </span>
+                                            </div>
+                                            <div className="w-full text-sm items-center text-gray-500">
+                                              Answer:{" "}
+                                              <span>
+                                                {question.answer || "no given answer"}
+                                              </span>
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-5">
+                                              <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                                <Star className="h-3 w-3" />
+                                                <span className="font-bold">
+                                                  {question.type
+                                                    .toLowerCase()
+                                                    .split("_")
+                                                    .map(
+                                                      (word) =>
+                                                        word.charAt(0).toUpperCase() +
+                                                        word.slice(1)
+                                                    )
+                                                    .join(" ")}
                                                 </span>
-                                              </div>
-                                              <Progress
-                                                value={subCategory.score ?? 0}
-                                                className="h-2"
-                                                indicatorclassname={getScoreBgColor(subCategory.score)}
-                                              />
+                                              </Badge>
+                                              <Badge className="flex items-center gap-2 !bg-blue-500/20 !text-blue-500 !border-blue-500">
+                                                <Clock className="h-4 w-4" />
+                                                <span className="text-blue-500">
+                                                  {question.estimatedTimeMinutes} minutes
+                                                </span>
+                                              </Badge>
                                             </div>
                                           </CardContent>
                                         </Card>
-                                      ))}
+                                      ))
+                                    }
                                   </div>
                                 </CardContent>
                               </Card>
