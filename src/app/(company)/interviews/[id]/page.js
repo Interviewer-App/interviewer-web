@@ -3214,6 +3214,7 @@ export default function InterviewPreviewPage({ params }) {
               </div>
 
               {/* Technical Expertise (Cat 1) */}
+              {!interviewDetail.isAutomated && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold">Technical Expertise</h2>
@@ -3749,7 +3750,7 @@ export default function InterviewPreviewPage({ params }) {
                             </>
                           )}
                         </Button>
-                        {/* )} */}
+        
                         <Button
                           variant="outline"
                           size="sm"
@@ -4094,7 +4095,7 @@ export default function InterviewPreviewPage({ params }) {
                                       {skill.description}
                                     </p>
 
-                                    {/* Add percentage slider for each skill */}
+                                
                                     <div className="mt-2">
                                       <div className="flex items-center justify-between">
                                         <span className="text-xs text-muted-foreground">
@@ -4201,6 +4202,11 @@ export default function InterviewPreviewPage({ params }) {
                   </div>
                 )}
               </div>
+              )}
+
+
+            {!interviewDetail.isAutomated && (
+
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -5136,6 +5142,9 @@ export default function InterviewPreviewPage({ params }) {
                   )}
                 </div>
               </div>
+              )}
+              
+              {!interviewDetail.isAutomated && (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">AI Analysis</h2>
@@ -5366,6 +5375,7 @@ export default function InterviewPreviewPage({ params }) {
                   </Card>
                 )}
               </div>
+              )}
 
               {/* <div className=" bg-slate-600/10 w-full h-fit p-9 rounded-lg mt-5">
                 <div className="flex space-x-4 bg-slate-600/20 w-fit p-1 md:p-2 mb-5 rounded-lg">
