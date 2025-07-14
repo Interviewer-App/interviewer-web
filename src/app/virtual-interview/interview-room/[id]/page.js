@@ -24,10 +24,9 @@ import {
 } from "lucide-react";
 import socket from "../../../../lib/utils/socket";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
 import { getAutomatedTranscript } from "@/lib/api/interview-session";
 import CodeEditor from "@/components/CodeEditor/CodeEditor";
-import { useSearchParams,useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 
 
