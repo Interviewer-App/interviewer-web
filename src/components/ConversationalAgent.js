@@ -369,11 +369,11 @@ const ConversationalAgent = () => {
       <div className="bg-gray-100 rounded-lg p-4">
         <h4 className="text-sm font-medium text-gray-800 mb-2">How to use:</h4>
         <ul className="text-sm text-gray-600 space-y-1">
-          <li>• Click "Start Voice Chat" to begin voice conversation</li>
+          <li>• Click &quot;Start Voice Chat&quot; to begin voice conversation</li>
           <li>• Speak naturally - the agent will listen and respond</li>
           <li>• You can also type messages in the text input</li>
           <li>• Select different voices for varied conversation experiences</li>
-          <li>• Use "Stop Audio" to interrupt the agent's response</li>
+          <li>• Use &quot;Stop Audio&quot; to interrupt the agent&apos;s response</li>
         </ul>
       </div>
     </div>
