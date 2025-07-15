@@ -48,7 +48,10 @@ import useVideoCallTranscript from "@/hooks/useVideoCallTranscript";
 import { useToast } from "@/hooks/use-toast";
 
 const VideoCall = forwardRef(
-  ({ sessionId, isCandidate, senderId, role, videoView, handleBackNavigation }, ref) => {
+  (
+    { sessionId, isCandidate, senderId, role, videoView, handleBackNavigation },
+    ref
+  ) => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const [peer, setPeer] = useState(null);
@@ -101,7 +104,22 @@ const VideoCall = forwardRef(
     } = useVideoCallTranscript(true, role, sessionId);
 
     const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
+    const [transcriptHistory, setTranscriptHistory] = useState([]);
     const { toast } = useToast();
+
+    // Function to submit new transcript entry - moved before useEffect
+    const submitTranscriptEntry = useCallback((text, speakerRole = null) => {
+      if (socket.current && sessionId && text.trim()) {
+        const transcriptData = {
+          sessionId: sessionId,
+          userId: senderId || "",
+          role: speakerRole || (isCandidate ? "CANDIDATE" : "COMPANY"),
+          text: text.trim(),
+        };
+        
+        socket.current.emit("submitTranscript", transcriptData);
+      }
+    }, [sessionId, senderId, isCandidate]);
 
     const handleDragStart = useCallback(
       (e, isCandidate) => {
@@ -210,11 +228,11 @@ const VideoCall = forwardRef(
                 transcript: videoCallTranscript,
                 lastUpdated: new Date().toISOString(),
                 sessionId: sessionId,
-                role: role
+                role: role,
               })
             );
           } catch (error) {
-            console.error('Failed to save transcript to localStorage:', error);
+            console.error("Failed to save transcript to localStorage:", error);
           }
         };
 
@@ -225,6 +243,17 @@ const VideoCall = forwardRef(
         return () => clearInterval(interval);
       }
     }, [videoCallTranscript, sessionId, role]);
+
+    // Auto-submit transcript entries to server
+    useEffect(() => {
+      if (videoCallTranscript.length > 0) {
+        const latestEntry = videoCallTranscript[videoCallTranscript.length - 1];
+        if (latestEntry && latestEntry.text) {
+          // Submit the latest transcript entry to the server
+          submitTranscriptEntry(latestEntry.text, latestEntry.type.toUpperCase());
+        }
+      }
+    }, [videoCallTranscript, submitTranscriptEntry]);
 
     useEffect(() => {
       if (typeof window !== "undefined") {
@@ -435,6 +464,34 @@ const VideoCall = forwardRef(
       };
     }, [isChatOpen]);
 
+    // Socket listener for transcript history
+    useEffect(() => {
+      if (socket.current && sessionId) {
+        // Listen for transcript history
+        socket.current.on("newTranscript", (data) => {
+          console.log(`New transcript received:`, data);
+          // Update transcript history with the received data
+          setTranscriptHistory(data.transcript || data || []);
+        });
+
+        // Request transcript history when component mounts
+        const requestData = {
+          sessionId: sessionId,
+          userId: senderId || "",
+          role: isCandidate ? "CANDIDATE" : "COMPANY",
+          text: "Transcript request",
+        };
+        
+        socket.current.emit("submitTranscript", requestData);
+
+        return () => {
+          if (socket.current) {
+            socket.current.off("newTranscript");
+          }
+        };
+      }
+    }, [sessionId, senderId, isCandidate]);
+
     useEffect(() => {
       const handleMouseMove = (e) => {
         if (window.innerHeight - e.clientY < 50) {
@@ -454,10 +511,12 @@ const VideoCall = forwardRef(
     useImperativeHandle(ref, () => ({
       endCall: handleEndCall,
       getTranscript: () => videoCallTranscript,
+      getTranscriptHistory: () => transcriptHistory,
       exportTranscript: () => exportTranscript(),
       startTranscriptRecording: () => startTranscriptRecording(),
       stopTranscriptRecording: () => stopTranscriptRecording(),
       isTranscriptRecording: () => isTranscriptRecording,
+      submitTranscriptEntry: submitTranscriptEntry,
     }));
 
     const toggleMic = () => {
@@ -945,9 +1004,9 @@ const VideoCall = forwardRef(
                 variant="ghost"
                 size="icon"
                 className={`h-12 w-12 rounded-full ${
-                  isTranscriptRecording 
-                    ? 'bg-red-600 hover:bg-red-700' 
-                    : 'bg-gray-800 hover:bg-gray-700'
+                  isTranscriptRecording
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-gray-800 hover:bg-gray-700"
                 }`}
               >
                 <FileText className="h-5 w-5" />
@@ -969,9 +1028,11 @@ const VideoCall = forwardRef(
                       onClick={() => {
                         toggleTranscriptRecording();
                         toast({
-                          title: isTranscriptRecording ? "Transcript Stopped" : "Transcript Started",
-                          description: isTranscriptRecording 
-                            ? "Conversation recording has been stopped" 
+                          title: isTranscriptRecording
+                            ? "Transcript Stopped"
+                            : "Transcript Started",
+                          description: isTranscriptRecording
+                            ? "Conversation recording has been stopped"
                             : "Now recording conversation to transcript",
                           duration: 3000,
                         });
@@ -979,9 +1040,9 @@ const VideoCall = forwardRef(
                       variant="ghost"
                       size="sm"
                       className={`text-xs ${
-                        isTranscriptRecording 
-                          ? 'bg-red-600 hover:bg-red-700 text-white' 
-                          : 'bg-green-600 hover:bg-green-700 text-white'
+                        isTranscriptRecording
+                          ? "bg-red-600 hover:bg-red-700 text-white"
+                          : "bg-green-600 hover:bg-green-700 text-white"
                       }`}
                     >
                       {isTranscriptRecording ? (
@@ -999,18 +1060,23 @@ const VideoCall = forwardRef(
                     <Button
                       onClick={() => {
                         const transcriptJson = exportTranscript();
-                        const blob = new Blob([transcriptJson], { type: 'application/json' });
+                        const blob = new Blob([transcriptJson], {
+                          type: "application/json",
+                        });
                         const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
+                        const a = document.createElement("a");
                         a.href = url;
-                        a.download = `transcript-${sessionId}-${new Date().toISOString().slice(0, 10)}.json`;
+                        a.download = `transcript-${sessionId}-${new Date()
+                          .toISOString()
+                          .slice(0, 10)}.json`;
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
                         URL.revokeObjectURL(url);
                         toast({
                           title: "Transcript Exported",
-                          description: "Conversation transcript has been downloaded as JSON",
+                          description:
+                            "Conversation transcript has been downloaded as JSON",
                           duration: 3000,
                         });
                       }}
@@ -1029,7 +1095,8 @@ const VideoCall = forwardRef(
               <div className="px-5 py-2 bg-gray-800/50 border-b border-gray-700">
                 <div className="flex items-center justify-between text-xs text-gray-300">
                   <span>
-                    Status: {isTranscriptRecording ? (
+                    Status:{" "}
+                    {isTranscriptRecording ? (
                       <span className="text-red-400 flex items-center gap-1">
                         <Circle className="h-2 w-2 fill-current animate-pulse" />
                         Recording
@@ -1050,39 +1117,142 @@ const VideoCall = forwardRef(
 
               {/* Transcript Content */}
               <div className="flex-1 pb-20 pt-4 overflow-y-auto overflow-x-hidden h-full w-full space-y-3 scrollbar-hidden">
-                {videoCallTranscript.length === 0 ? (
+                {/* Server Transcript History */}
+                {transcriptHistory.length > 0 && (
+                  <div className="mx-4 mb-4">
+                    <div className="text-xs text-gray-400 mb-2 px-2">
+                      Server Transcript History
+                    </div>
+                    {transcriptHistory.map((entry, index) => (
+                      <div key={`server-${index}`} className="mb-2">
+                        <div
+                          className={`p-3 rounded-lg ${
+                            entry.role === "COMPANY"
+                              ? "bg-blue-600/20 border-l-4 border-blue-500"
+                              : "bg-green-600/20 border-l-4 border-green-500"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span
+                              className={`text-xs font-semibold ${
+                                entry.role === "COMPANY"
+                                  ? "text-blue-400"
+                                  : "text-green-400"
+                              }`}
+                            >
+                              {entry.role === "COMPANY" ? "Interviewer" : "Candidate"}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              {entry.timestamp ? 
+                                new Date(entry.timestamp).toLocaleTimeString() : 
+                                'Server Data'
+                              }
+                            </span>
+                          </div>
+                          <p className="text-sm text-white break-words">
+                            {entry.text}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Live Transcript */}
+                {videoCallTranscript.length === 0 && transcriptHistory.length === 0 ? (
                   <div className="text-center text-gray-400 mt-10 px-4">
                     <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No transcript available yet.</p>
-                    <p className="text-xs mt-2">Start recording to capture the conversation.</p>
+                    <p className="text-xs mt-2">
+                      Start recording to capture the conversation.
+                    </p>
                   </div>
                 ) : (
-                  videoCallTranscript.map((entry, index) => (
-                    <div key={index} className="mx-4">
-                      <div className={`p-3 rounded-lg ${
-                        entry.type === 'interviewer' 
-                          ? 'bg-blue-600/20 border-l-4 border-blue-500' 
-                          : 'bg-green-600/20 border-l-4 border-green-500'
-                      }`}>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className={`text-xs font-semibold ${
-                            entry.type === 'interviewer' ? 'text-blue-400' : 'text-green-400'
-                          }`}>
-                            {entry.type === 'interviewer' ? 'Interviewer' : 'Candidate'}
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            {new Date(entry.timestamp).toLocaleTimeString()}
-                          </span>
+                  <>
+                    {videoCallTranscript.length > 0 && (
+                      <div className="mx-4">
+                        <div className="text-xs text-gray-400 mb-2 px-2">
+                          Live Recording
                         </div>
-                        <p className="text-sm text-white break-words">{entry.text}</p>
+                        {videoCallTranscript.map((entry, index) => (
+                          <div key={`live-${index}`} className="mb-2">
+                            <div
+                              className={`p-3 rounded-lg ${
+                                entry.type === "interviewer"
+                                  ? "bg-blue-600/20 border-l-4 border-blue-500"
+                                  : "bg-green-600/20 border-l-4 border-green-500"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span
+                                  className={`text-xs font-semibold ${
+                                    entry.type === "interviewer"
+                                      ? "text-blue-400"
+                                      : "text-green-400"
+                                  }`}
+                                >
+                                  {entry.type === "interviewer"
+                                    ? "Interviewer"
+                                    : "Candidate"}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {new Date(entry.timestamp).toLocaleTimeString()}
+                                </span>
+                              </div>
+                              <p className="text-sm text-white break-words">
+                                {entry.text}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                  ))
+                    )}
+                  </>
                 )}
               </div>
 
               {/* Transcript Footer */}
               <div className="p-4 w-full bg-[#1f2126] absolute bottom-0 border-t border-gray-700">
+                {/* Manual transcript entry */}
+                <div className="mb-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Add transcript entry..."
+                      className="flex-1 text-white bg-gray-800 rounded px-2 py-1 text-xs outline-none"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && e.target.value.trim()) {
+                          submitTranscriptEntry(e.target.value);
+                          e.target.value = '';
+                          toast({
+                            title: "Transcript Submitted",
+                            description: "Entry added to server transcript",
+                            duration: 2000,
+                          });
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={(e) => {
+                        const input = e.target.parentElement.querySelector('input');
+                        if (input.value.trim()) {
+                          submitTranscriptEntry(input.value);
+                          input.value = '';
+                          toast({
+                            title: "Transcript Submitted",
+                            description: "Entry added to server transcript",
+                            duration: 2000,
+                          });
+                        }
+                      }}
+                      size="sm"
+                      className="text-xs bg-green-600 hover:bg-green-700 text-white px-2"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
+                
                 <div className="flex justify-between items-center gap-2">
                   <Button
                     onClick={clearTranscript}
@@ -1090,13 +1260,18 @@ const VideoCall = forwardRef(
                     size="sm"
                     className="text-xs border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
                   >
-                    Clear All
+                    Clear Local
                   </Button>
-                  <div className="text-xs text-gray-400">
-                    {(() => {
-                      const summary = getTranscriptSummary();
-                      return `${summary.interviewerEntries} interviewer, ${summary.candidateEntries} candidate`;
-                    })()}
+                  <div className="text-xs text-gray-400 text-center">
+                    <div>
+                      Local: {(() => {
+                        const summary = getTranscriptSummary();
+                        return `${summary.interviewerEntries}I, ${summary.candidateEntries}C`;
+                      })()}
+                    </div>
+                    <div>
+                      Server: {transcriptHistory.length} entries
+                    </div>
                   </div>
                 </div>
               </div>
