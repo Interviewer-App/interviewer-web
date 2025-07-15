@@ -564,13 +564,11 @@ function CandidateDetailsProfile() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t">
+                {/* <div className="pt-4 border-t">
                   <h3 className="font-medium mb-3">Interviewer</h3>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      {/* <AvatarImage src={candidateDetails.interviewer.avatar} alt={candidateDetails.interviewer.name} /> */}
                       <AvatarFallback>
-                        {/* {candidateDetails?.user?.firstName.charAt(0)} */}
                         {"Ushan".charAt(0)}
                       </AvatarFallback>
                     </Avatar>
@@ -581,7 +579,7 @@ function CandidateDetailsProfile() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 
