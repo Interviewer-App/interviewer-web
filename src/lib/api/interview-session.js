@@ -189,6 +189,16 @@ export const addMarks = async (data) => {
   }
 }
 
+export const getAutomatedTranscript = async (sessionId) => {
+  try{
+      const response = await axiosInstance.get(`/interview-session/transcript/${sessionId}`);
+      return response;
+  } catch(error){
+      console.log('Error fetching meeting transcript:', error);
+      throw error;
+  }
+}
+
 
 
 
