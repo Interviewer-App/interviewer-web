@@ -23,6 +23,10 @@ import {
   MessageSquare,
   Maximize2,
   Minimize2,
+  FileText,
+  Download,
+  Circle,
+  Square,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -40,6 +44,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import socketChat from "@/lib/utils/socket";
+import useVideoCallTranscript from "@/hooks/useVideoCallTranscript";
+import { useToast } from "@/hooks/use-toast";
 
 const VideoCall = forwardRef(
   ({ sessionId, isCandidate, senderId, role, videoView, handleBackNavigation }, ref) => {
@@ -79,6 +85,23 @@ const VideoCall = forwardRef(
     const originalAudioTrack = useRef(null);
     const activeCalls = useRef([]);
     const dragStartPositionRef = useRef({ x: 0, y: 0 });
+
+    // Transcript functionality
+    const {
+      videoCallTranscript,
+      isTranscriptRecording,
+      isTranscriptListening,
+      currentTranscript,
+      startTranscriptRecording,
+      stopTranscriptRecording,
+      toggleTranscriptRecording,
+      clearTranscript,
+      exportTranscript,
+      getTranscriptSummary,
+    } = useVideoCallTranscript(true, role, sessionId);
+
+    const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
+    const { toast } = useToast();
 
     const handleDragStart = useCallback(
       (e, isCandidate) => {
@@ -158,6 +181,50 @@ const VideoCall = forwardRef(
       setIsDraggingCandidate(false);
       setIsDraggingInterviewer(false);
     }, []);
+
+    // Auto-start transcript recording when call begins
+    useEffect(() => {
+      if (localStream && !isTranscriptRecording) {
+        // Start transcript recording automatically after a short delay
+        const timer = setTimeout(() => {
+          startTranscriptRecording();
+          toast({
+            title: "Auto-Transcript Started",
+            description: "Conversation is now being automatically recorded",
+            duration: 4000,
+          });
+        }, 2000); // 2 second delay to ensure everything is set up
+
+        return () => clearTimeout(timer);
+      }
+    }, [localStream, isTranscriptRecording, startTranscriptRecording, toast]);
+
+    // Auto-save transcript to localStorage periodically
+    useEffect(() => {
+      if (videoCallTranscript.length > 0) {
+        const saveTranscript = () => {
+          try {
+            localStorage.setItem(
+              `transcript-${sessionId}`,
+              JSON.stringify({
+                transcript: videoCallTranscript,
+                lastUpdated: new Date().toISOString(),
+                sessionId: sessionId,
+                role: role
+              })
+            );
+          } catch (error) {
+            console.error('Failed to save transcript to localStorage:', error);
+          }
+        };
+
+        // Save immediately and then every 30 seconds
+        saveTranscript();
+        const interval = setInterval(saveTranscript, 30000);
+
+        return () => clearInterval(interval);
+      }
+    }, [videoCallTranscript, sessionId, role]);
 
     useEffect(() => {
       if (typeof window !== "undefined") {
@@ -386,6 +453,11 @@ const VideoCall = forwardRef(
 
     useImperativeHandle(ref, () => ({
       endCall: handleEndCall,
+      getTranscript: () => videoCallTranscript,
+      exportTranscript: () => exportTranscript(),
+      startTranscriptRecording: () => startTranscriptRecording(),
+      stopTranscriptRecording: () => stopTranscriptRecording(),
+      isTranscriptRecording: () => isTranscriptRecording,
     }));
 
     const toggleMic = () => {
@@ -498,6 +570,11 @@ const VideoCall = forwardRef(
     };
 
     const handleEndCall = () => {
+      // Stop transcript recording when call ends
+      if (isTranscriptRecording) {
+        stopTranscriptRecording();
+      }
+
       if (localStream) {
         localStream.getTracks().forEach((track) => track.stop());
       }
@@ -858,6 +935,171 @@ const VideoCall = forwardRef(
                   </Button>
                 </div>
               </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+          {/* Transcript Sheet */}
+          <Sheet open={isTranscriptOpen} onOpenChange={setIsTranscriptOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-12 w-12 rounded-full ${
+                  isTranscriptRecording 
+                    ? 'bg-red-600 hover:bg-red-700' 
+                    : 'bg-gray-800 hover:bg-gray-700'
+                }`}
+              >
+                <FileText className="h-5 w-5" />
+                {isTranscriptRecording && (
+                  <Circle className="absolute top-2 right-2 h-3 w-3 text-red-400 fill-current animate-pulse" />
+                )}
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent
+              side="right"
+              className="w-full z-[9999] sm:w-[400px] h-full !text-white !bg-[#1f2126] !p-0 border-l-2 border-gray-500/20"
+            >
+              <SheetHeader>
+                <SheetTitle className="text-xl font-bold text-white py-3 px-5 bg-[#1f2126] flex items-center justify-between">
+                  <span>Conversation Transcript</span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => {
+                        toggleTranscriptRecording();
+                        toast({
+                          title: isTranscriptRecording ? "Transcript Stopped" : "Transcript Started",
+                          description: isTranscriptRecording 
+                            ? "Conversation recording has been stopped" 
+                            : "Now recording conversation to transcript",
+                          duration: 3000,
+                        });
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className={`text-xs ${
+                        isTranscriptRecording 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-green-600 hover:bg-green-700 text-white'
+                      }`}
+                    >
+                      {isTranscriptRecording ? (
+                        <>
+                          <Square className="h-3 w-3 mr-1" />
+                          Stop
+                        </>
+                      ) : (
+                        <>
+                          <Circle className="h-3 w-3 mr-1" />
+                          Record
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        const transcriptJson = exportTranscript();
+                        const blob = new Blob([transcriptJson], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `transcript-${sessionId}-${new Date().toISOString().slice(0, 10)}.json`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        toast({
+                          title: "Transcript Exported",
+                          description: "Conversation transcript has been downloaded as JSON",
+                          duration: 3000,
+                        });
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Download className="h-3 w-3 mr-1" />
+                      Export
+                    </Button>
+                  </div>
+                </SheetTitle>
+              </SheetHeader>
+
+              {/* Transcript Status */}
+              <div className="px-5 py-2 bg-gray-800/50 border-b border-gray-700">
+                <div className="flex items-center justify-between text-xs text-gray-300">
+                  <span>
+                    Status: {isTranscriptRecording ? (
+                      <span className="text-red-400 flex items-center gap-1">
+                        <Circle className="h-2 w-2 fill-current animate-pulse" />
+                        Recording
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">Stopped</span>
+                    )}
+                  </span>
+                  <span>Entries: {videoCallTranscript.length}</span>
+                </div>
+                {isTranscriptListening && currentTranscript && (
+                  <div className="mt-2 p-2 bg-gray-700 rounded text-xs">
+                    <span className="text-gray-400">Live: </span>
+                    <span className="text-white">{currentTranscript}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Transcript Content */}
+              <div className="flex-1 pb-20 pt-4 overflow-y-auto overflow-x-hidden h-full w-full space-y-3 scrollbar-hidden">
+                {videoCallTranscript.length === 0 ? (
+                  <div className="text-center text-gray-400 mt-10 px-4">
+                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No transcript available yet.</p>
+                    <p className="text-xs mt-2">Start recording to capture the conversation.</p>
+                  </div>
+                ) : (
+                  videoCallTranscript.map((entry, index) => (
+                    <div key={index} className="mx-4">
+                      <div className={`p-3 rounded-lg ${
+                        entry.type === 'interviewer' 
+                          ? 'bg-blue-600/20 border-l-4 border-blue-500' 
+                          : 'bg-green-600/20 border-l-4 border-green-500'
+                      }`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className={`text-xs font-semibold ${
+                            entry.type === 'interviewer' ? 'text-blue-400' : 'text-green-400'
+                          }`}>
+                            {entry.type === 'interviewer' ? 'Interviewer' : 'Candidate'}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            {new Date(entry.timestamp).toLocaleTimeString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-white break-words">{entry.text}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Transcript Footer */}
+              <div className="p-4 w-full bg-[#1f2126] absolute bottom-0 border-t border-gray-700">
+                <div className="flex justify-between items-center gap-2">
+                  <Button
+                    onClick={clearTranscript}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                  >
+                    Clear All
+                  </Button>
+                  <div className="text-xs text-gray-400">
+                    {(() => {
+                      const summary = getTranscriptSummary();
+                      return `${summary.interviewerEntries} interviewer, ${summary.candidateEntries} candidate`;
+                    })()}
+                  </div>
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
 
