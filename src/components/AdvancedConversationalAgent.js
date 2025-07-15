@@ -499,7 +499,7 @@ const AdvancedConversationalAgent = ({
           <li>• Use the microphone in a quiet environment</li>
           <li>• Allow microphone permissions when prompted</li>
           <li>• Try different voices to find your preference</li>
-          <li>• Use text input if voice recognition isn't working</li>
+          <li>• Use text input if voice recognition isn&apos;t working</li>
         </ul>
       </div>
     </div>
