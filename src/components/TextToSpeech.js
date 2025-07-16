@@ -40,8 +40,8 @@ export default function TextToSpeech({dialog, setDialog, setQuestion, setQuestio
         console.log('Greeting message from server:', data.content);
         setInputText(data.content);
         const newDialogEntry = {
-            type: "interviewer",
-            text: data.content,
+            role: "interviewer",
+            content: data.content,
         };
         setDialog((prev) => [...prev, newDialogEntry]);
     });
