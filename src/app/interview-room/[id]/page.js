@@ -1258,7 +1258,7 @@ const InterviewRoomPage = ({ params }) => {
                       {numberOfAnswers} question
                     </p>
                   </div>
-                  <div className="flex items-center w-full">
+                  {/* <div className="flex items-center w-full">
                     {isListening ? (
                       <button
                         onClick={stopListening}
@@ -1292,7 +1292,7 @@ const InterviewRoomPage = ({ params }) => {
                         </svg>
                       </button>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ) : technicalStatus === "testEnd" ? (
