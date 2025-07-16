@@ -1230,7 +1230,7 @@ const VideoCall = forwardRef(
                   </div>
                 ) : (
                   <>
-                    {videoCallTranscript.length > 0 && (
+                    {/* {videoCallTranscript.length > 0 && (
                       <div className="mx-4">
                         <div className="text-xs text-gray-400 mb-2 px-2">
                           Live Recording
@@ -1260,7 +1260,7 @@ const VideoCall = forwardRef(
                                   {new Date(
                                     entry.timestamp
                                   ).toLocaleTimeString()}
-                                </span>
+                                </span>x
                               </div>
                               <p className="text-sm text-white break-words">
                                 {entry.text}
@@ -1269,7 +1269,7 @@ const VideoCall = forwardRef(
                           </div>
                         ))}
                       </div>
-                    )}
+                    )} */}
                   </>
                 )}
               </div>
