@@ -1072,7 +1072,8 @@ const UserProfile = () => {
                                       mode="single"
                                       selected={dob}
                                       onSelect={setDob}
-                                      initialFocus
+                                      className="rounded-md border shadow-sm"
+                                      captionLayout="dropdown"
                                     />
                                   </PopoverContent>
                                 </Popover>
