@@ -281,7 +281,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                         size="lg"
                         onClick={startTechnicalQuestions}
                       >
-                        Start technical test
+                        Move to technical test
                       </Button>
                     </div>
                   </div>
@@ -300,7 +300,7 @@ const InterviewRoomAnalizerDashboard = forwardRef(
                       size="lg"
                       onClick={startTechnicalQuestions}
                     >
-                      Start technical test
+                      Move to technical test
                     </Button>
                   </div>
                 )}
