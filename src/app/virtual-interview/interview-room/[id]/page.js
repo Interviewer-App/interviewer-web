@@ -31,8 +31,6 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { getAutomatedTranscript } from "@/lib/api/interview-session";
 
-
-
 function Page() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
@@ -68,7 +66,7 @@ function Page() {
   const [candidateId] = useState("candidate_" + Date.now());
   const [automaticinterviewEnded, setAutomaticInterviewEnded] = useState(false);
   const router = useRouter();
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const {
     isListening,
@@ -114,12 +112,11 @@ function Page() {
   }, [question]);
 
   useEffect(() => {
-    socket.on('summary', (data) => {
+    socket.on("summary", (data) => {
       setAutomaticInterviewEnded(true);
       console.log("Received summary data:", data);
-    })
-  },[]);
-
+    });
+  }, []);
 
   useEffect(() => {
     const fetchAutomatedTranscript = async () => {
@@ -346,7 +343,6 @@ function Page() {
     };
   }, []);
 
-
   // Add a retry button for manual webcam initialization if needed
   const retryWebcamAccess = () => {
     console.log("Manually retrying webcam access");
@@ -441,8 +437,8 @@ function Page() {
           err.name === "NotAllowedError"
             ? "Camera access denied. Please allow camera access in your browser settings."
             : err.name === "NotFoundError"
-              ? "No camera detected. Please connect a camera and try again."
-              : "Failed to access camera: " + err.message;
+            ? "No camera detected. Please connect a camera and try again."
+            : "Failed to access camera: " + err.message;
 
         setWebcamError(errorMessage);
       }
@@ -527,7 +523,6 @@ function Page() {
         // Clear recording state
         router.push("/my-interviews");
       }
-
     }, 2000);
   };
 
@@ -570,7 +565,9 @@ function Page() {
 
     if (latestQuestion) {
       // Use question's estimated time (convert minutes to seconds) or default to 2 minutes
-      const timeInSeconds = question.estimatedTimeMinutes ? question.estimatedTimeMinutes * 60 : 120;
+      const timeInSeconds = question.estimatedTimeMinutes
+        ? question.estimatedTimeMinutes * 60
+        : 120;
       setQuestionCountDown(timeInSeconds);
     }
   }, [dialog, question.estimatedTimeMinutes]);
@@ -635,8 +632,11 @@ function Page() {
     // Clear the transcript and reset countdown
     setTranscript("");
     // Reset countdown based on question's estimated time or default to 2 minutes
-    const timeInSeconds = question.estimatedTimeMinutes ? question.estimatedTimeMinutes * 60 : 120;
+    const timeInSeconds = question.estimatedTimeMinutes
+      ? question.estimatedTimeMinutes * 60
+      : 120;
     setQuestionCountDown(timeInSeconds);
+    stopListening();
   };
 
   const handleSkip = async () => {
@@ -674,8 +674,11 @@ function Page() {
     // Clear the transcript and reset countdown
     setTranscript("");
     // Reset countdown based on question's estimated time or default to 2 minutes
-    const timeInSeconds = question.estimatedTimeMinutes ? question.estimatedTimeMinutes * 60 : 120;
+    const timeInSeconds = question.estimatedTimeMinutes
+      ? question.estimatedTimeMinutes * 60
+      : 120;
     setQuestionCountDown(timeInSeconds);
+    stopListening();
   };
 
   // Detect when video element is mounted and set the flag
@@ -777,21 +780,22 @@ function Page() {
           </button>
         </div>
       )}
-
       {automaticinterviewEnded && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Interview Completed</h2>
-          <p className="text-gray-300 mb-6">You can now end the session.</p>
-          <button
-            onClick={handleEndInterview}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold"
-          >
-            End Session
-          </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Interview Completed
+            </h2>
+            <p className="text-gray-300 mb-6">You can now end the session.</p>
+            <button
+              onClick={handleEndInterview}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold"
+            >
+              End Session
+            </button>
+          </div>
         </div>
-      </div>
-    )}
+      )}
       {/* Recording Controls Toggle */}
       {/* <div className="fixed bottom-4 left-20 z-50 flex gap-2">
         <button
@@ -927,7 +931,7 @@ function Page() {
               ) : null}
 
               {/* Microphone status indicator in video container */}
-              {hasWebcamAccess && (
+              {/* {hasWebcamAccess && (
                 <div
                   className={`absolute bottom-3 right-3 p-1.5 rounded-full ${
                     hasMicAccess ? "bg-green-500/80" : "bg-red-500/80"
@@ -972,28 +976,11 @@ function Page() {
                     </svg>
                   )}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
           <div className=" h-dvh flex flex-col items-center justify-center gap-4 p-14">
             <SpeechAnimation />
-            <div className=" flex items-center justify-center gap-3">
-              {isListening ? (
-                <button
-                  onClick={stopListening}
-                  className="mt-2 cursor-pointer p-5 m-auto flex items-center justify-center bg-red-800/30 border border-red-600 hover:bg-red-800/40 rounded-full focus:outline-none"
-                >
-                  <Pause className="w-8 h-8" />
-                </button>
-              ) : (
-                <button
-                  onClick={startListening}
-                  className="mt-2 cursor-pointer p-5 m-auto flex items-center justify-center bg-blue-800/30 border border-blue-600 hover:bg-blue-800/40 rounded-full focus:outline-none"
-                >
-                  <Mic className="w-8 h-8" />
-                </button>
-              )}
-            </div>
           </div>
           <div className=" flex flex-col justify-center items-center h-dvh p-14">
             <div className="h-[50%] w-full relative mb-10">
@@ -1059,6 +1046,25 @@ function Page() {
                 />
               </div>
               <div className="absolute bottom-2 right-2 flex items-center justify-center gap-3">
+                <div className=" flex items-center justify-center gap-3">
+                  {isListening ? (
+                    <button
+                      onClick={stopListening}
+                      className="mt-2 cursor-pointer px-4 h-8 m-auto flex items-center justify-center bg-red-800/30 border border-red-600 hover:bg-red-800/40 rounded-full focus:outline-none"
+                    >
+                      <Pause className="w-5 h-5" />
+                      <span className=" ml-2 text-sm">Voice Input</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={startListening}
+                      className="mt-2 cursor-pointer px-4 h-8 m-auto flex items-center justify-center bg-blue-800/30 border border-blue-600 hover:bg-blue-800/40 rounded-full focus:outline-none"
+                    >
+                      <Mic className="w-5 h-5" />
+                      <span className=" ml-2 text-sm">Voice Input</span>
+                    </button>
+                  )}
+                </div>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
