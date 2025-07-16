@@ -46,6 +46,8 @@ import { Label } from "@/components/ui/label";
 import socketChat from "@/lib/utils/socket";
 import useVideoCallTranscript from "@/hooks/useVideoCallTranscript";
 import { useToast } from "@/hooks/use-toast";
+import { getAutomatedTranscript } from "@/lib/api/interview-session";
+import { ToastAction } from "../ui/toast";
 
 const VideoCall = forwardRef(
   (
@@ -108,18 +110,21 @@ const VideoCall = forwardRef(
     const { toast } = useToast();
 
     // Function to submit new transcript entry - moved before useEffect
-    const submitTranscriptEntry = useCallback((text, speakerRole = null) => {
-      if (socket.current && sessionId && text.trim()) {
-        const transcriptData = {
-          sessionId: sessionId,
-          userId: senderId || "",
-          role: speakerRole || (isCandidate ? "CANDIDATE" : "COMPANY"),
-          text: text.trim(),
-        };
-        
-        socket.current.emit("submitTranscript", transcriptData);
-      }
-    }, [sessionId, senderId, isCandidate]);
+    const submitTranscriptEntry = useCallback(
+      (text, speakerRole = null) => {
+        if (socket.current && sessionId && text.trim()) {
+          const transcriptData = {
+            sessionId: sessionId,
+            userId: senderId || "",
+            role: speakerRole || (isCandidate ? "CANDIDATE" : "COMPANY"),
+            text: text.trim(),
+          };
+
+          socket.current.emit("submitTranscript", transcriptData);
+        }
+      },
+      [sessionId, senderId, isCandidate]
+    );
 
     const handleDragStart = useCallback(
       (e, isCandidate) => {
@@ -200,6 +205,56 @@ const VideoCall = forwardRef(
       setIsDraggingInterviewer(false);
     }, []);
 
+    useEffect(() => {
+      const fetchAutomatedTranscript = async () => {
+        try {
+          const response = await getAutomatedTranscript(sessionId);
+          if (response.data) {
+            console.log("Automated transcript fetched:", response.data);
+            setTranscriptHistory(response.data.transcript.map((entry) => ({
+              text: entry.text,
+              role: entry.speaker.toUpperCase(),
+              timestamp: entry.timestamp,
+            })));
+          }
+        } catch (err) {
+          if (err.response) {
+            const { data } = err.response;
+
+            if (data && data.message) {
+              toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: `Transcription History Fetching Faild: ${data.message}`,
+                action: (
+                  <ToastAction altText="Try again">Try again</ToastAction>
+                ),
+              });
+            } else {
+              toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "An unexpected error occurred. Please try again.",
+                action: (
+                  <ToastAction altText="Try again">Try again</ToastAction>
+                ),
+              });
+            }
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description:
+                "An unexpected error occurred. Please check your network and try again.",
+              action: <ToastAction altText="Try again">Try again</ToastAction>,
+            });
+          }
+        }
+      };
+
+      if (sessionId) fetchAutomatedTranscript();
+    }, [sessionId]);
+
     // Auto-start transcript recording when call begins
     useEffect(() => {
       if (localStream && !isTranscriptRecording) {
@@ -250,7 +305,10 @@ const VideoCall = forwardRef(
         const latestEntry = videoCallTranscript[videoCallTranscript.length - 1];
         if (latestEntry && latestEntry.text) {
           // Submit the latest transcript entry to the server
-          submitTranscriptEntry(latestEntry.text, latestEntry.type.toUpperCase());
+          submitTranscriptEntry(
+            latestEntry.text,
+            latestEntry.type.toUpperCase()
+          );
         }
       }
     }, [videoCallTranscript, submitTranscriptEntry]);
@@ -465,32 +523,32 @@ const VideoCall = forwardRef(
     }, [isChatOpen]);
 
     // Socket listener for transcript history
-    useEffect(() => {
-      if (socket.current && sessionId) {
-        // Listen for transcript history
-        socket.current.on("newTranscript", (data) => {
-          console.log(`New transcript received:`, data);
-          // Update transcript history with the received data
-          setTranscriptHistory(data.transcript || data || []);
-        });
+    // useEffect(() => {
+    //   if (socket.current && sessionId) {
+    //     // Listen for transcript history
+    //     socket.current.on("newTranscript", (data) => {
+    //       console.log(`New transcript received:`, data);
+    //       // Update transcript history with the received data
+    //       setTranscriptHistory(data.transcript || data || []);
+    //     });
 
-        // Request transcript history when component mounts
-        const requestData = {
-          sessionId: sessionId,
-          userId: senderId || "",
-          role: isCandidate ? "CANDIDATE" : "COMPANY",
-          text: "Transcript request",
-        };
-        
-        socket.current.emit("submitTranscript", requestData);
+    //     // Request transcript history when component mounts
+    //     const requestData = {
+    //       sessionId: sessionId,
+    //       userId: senderId || "",
+    //       role: isCandidate ? "CANDIDATE" : "COMPANY",
+    //       text: "Transcript request",
+    //     };
 
-        return () => {
-          if (socket.current) {
-            socket.current.off("newTranscript");
-          }
-        };
-      }
-    }, [sessionId, senderId, isCandidate]);
+    //     socket.current.emit("submitTranscript", requestData);
+
+    //     return () => {
+    //       if (socket.current) {
+    //         socket.current.off("newTranscript");
+    //       }
+    //     };
+    //   }
+    // }, [sessionId, senderId, isCandidate]);
 
     useEffect(() => {
       const handleMouseMove = (e) => {
@@ -1024,7 +1082,7 @@ const VideoCall = forwardRef(
                 <SheetTitle className="text-xl font-bold text-white py-3 px-5 bg-[#1f2126] flex items-center justify-between">
                   <span>Conversation Transcript</span>
                   <div className="flex items-center gap-2">
-                    <Button
+                    {/* <Button
                       onClick={() => {
                         toggleTranscriptRecording();
                         toast({
@@ -1056,8 +1114,8 @@ const VideoCall = forwardRef(
                           Record
                         </>
                       )}
-                    </Button>
-                    <Button
+                    </Button> */}
+                    {/* <Button
                       onClick={() => {
                         const transcriptJson = exportTranscript();
                         const blob = new Blob([transcriptJson], {
@@ -1086,7 +1144,7 @@ const VideoCall = forwardRef(
                     >
                       <Download className="h-3 w-3 mr-1" />
                       Export
-                    </Button>
+                    </Button> */}
                   </div>
                 </SheetTitle>
               </SheetHeader>
@@ -1140,13 +1198,14 @@ const VideoCall = forwardRef(
                                   : "text-green-400"
                               }`}
                             >
-                              {entry.role === "COMPANY" ? "Interviewer" : "Candidate"}
+                              {entry.role === "COMPANY"
+                                ? "Interviewer"
+                                : "Candidate"}
                             </span>
                             <span className="text-xs text-gray-400">
-                              {entry.timestamp ? 
-                                new Date(entry.timestamp).toLocaleTimeString() : 
-                                'Server Data'
-                              }
+                              {entry.timestamp
+                                ? new Date(entry.timestamp).toLocaleTimeString()
+                                : "Server Data"}
                             </span>
                           </div>
                           <p className="text-sm text-white break-words">
@@ -1159,7 +1218,8 @@ const VideoCall = forwardRef(
                 )}
 
                 {/* Live Transcript */}
-                {videoCallTranscript.length === 0 && transcriptHistory.length === 0 ? (
+                {videoCallTranscript.length === 0 &&
+                transcriptHistory.length === 0 ? (
                   <div className="text-center text-gray-400 mt-10 px-4">
                     <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No transcript available yet.</p>
@@ -1196,7 +1256,9 @@ const VideoCall = forwardRef(
                                     : "Candidate"}
                                 </span>
                                 <span className="text-xs text-gray-400">
-                                  {new Date(entry.timestamp).toLocaleTimeString()}
+                                  {new Date(
+                                    entry.timestamp
+                                  ).toLocaleTimeString()}
                                 </span>
                               </div>
                               <p className="text-sm text-white break-words">
@@ -1214,64 +1276,55 @@ const VideoCall = forwardRef(
               {/* Transcript Footer */}
               <div className="p-4 w-full bg-[#1f2126] absolute bottom-0 border-t border-gray-700">
                 {/* Manual transcript entry */}
-                <div className="mb-3">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Add transcript entry..."
-                      className="flex-1 text-white bg-gray-800 rounded px-2 py-1 text-xs outline-none"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter' && e.target.value.trim()) {
-                          submitTranscriptEntry(e.target.value);
-                          e.target.value = '';
-                          toast({
-                            title: "Transcript Submitted",
-                            description: "Entry added to server transcript",
-                            duration: 2000,
-                          });
-                        }
-                      }}
-                    />
-                    <Button
-                      onClick={(e) => {
-                        const input = e.target.parentElement.querySelector('input');
-                        if (input.value.trim()) {
-                          submitTranscriptEntry(input.value);
-                          input.value = '';
-                          toast({
-                            title: "Transcript Submitted",
-                            description: "Entry added to server transcript",
-                            duration: 2000,
-                          });
-                        }
-                      }}
-                      size="sm"
-                      className="text-xs bg-green-600 hover:bg-green-700 text-white px-2"
-                    >
-                      Add
-                    </Button>
-                  </div>
-                </div>
-                
+
                 <div className="flex justify-between items-center gap-2">
-                  <Button
+                  {/* <Button
                     onClick={clearTranscript}
                     variant="outline"
                     size="sm"
                     className="text-xs border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
                   >
                     Clear Local
-                  </Button>
+                  </Button> */}
+                  <Button
+                      onClick={() => {
+                        const transcriptJson = exportTranscript();
+                        const blob = new Blob([transcriptJson], {
+                          type: "application/json",
+                        });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `transcript-${sessionId}-${new Date()
+                          .toISOString()
+                          .slice(0, 10)}.json`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        toast({
+                          title: "Transcript Exported",
+                          description:
+                            "Conversation transcript has been downloaded as JSON",
+                          duration: 3000,
+                        });
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Download className="h-3 w-3 mr-1" />
+                      Export
+                    </Button>
                   <div className="text-xs text-gray-400 text-center">
                     <div>
-                      Local: {(() => {
+                      Local:{" "}
+                      {(() => {
                         const summary = getTranscriptSummary();
                         return `${summary.interviewerEntries}I, ${summary.candidateEntries}C`;
                       })()}
                     </div>
-                    <div>
-                      Server: {transcriptHistory.length} entries
-                    </div>
+                    <div>Server: {transcriptHistory.length} entries</div>
                   </div>
                 </div>
               </div>
@@ -1298,6 +1351,7 @@ const VideoCall = forwardRef(
     );
   }
 );
+
 VideoCall.displayName = "VideoCall";
 
 export default VideoCall;

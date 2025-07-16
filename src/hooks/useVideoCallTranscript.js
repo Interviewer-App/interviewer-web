@@ -5,7 +5,7 @@ import useSpeechRecognition from "./useSpeechRecognition";
 
 export const useVideoCallTranscript = (isActive, role, sessionId) => {
     const [videoCallTranscript, setVideoCallTranscript] = useState([]);
-    const [isTranscriptRecording, setIsTranscriptRecording] = useState(false);
+    const [isTranscriptRecording, setIsTranscriptRecording] = useState(true);
     
     // Separate speech recognition for transcript (different from other TTS functionalities)
     const {

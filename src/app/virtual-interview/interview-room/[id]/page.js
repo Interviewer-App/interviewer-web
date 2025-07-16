@@ -29,6 +29,7 @@ import CodeEditor from "@/components/CodeEditor/CodeEditor";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
+import { getAutomatedTranscript } from "@/lib/api/interview-session";
 
 
 
