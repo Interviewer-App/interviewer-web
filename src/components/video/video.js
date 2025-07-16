@@ -523,32 +523,31 @@ const VideoCall = forwardRef(
     }, [isChatOpen]);
 
     // Socket listener for transcript history
-    // useEffect(() => {
-    //   if (socket.current && sessionId) {
-    //     // Listen for transcript history
-    //     socket.current.on("newTranscript", (data) => {
-    //       console.log(`New transcript received:`, data);
-    //       // Update transcript history with the received data
-    //       setTranscriptHistory(data.transcript || data || []);
-    //     });
+    useEffect(() => {
+      if (socket.current && sessionId) {
+        // Listen for transcript history
+        socket.current.on("newTranscript", (data) => {
+          console.log(`New transcript received:`, data);
+          // Update transcript history with the received data
+          setTranscriptHistory((prevHistory) => {
+            // Check if the new entry already exists
+            const exists = prevHistory.some(
+              (entry) => entry.text === data.text && entry.role === data.role
+            );
+            if (!exists) {
+              return [...prevHistory, data];
+            }
+            return prevHistory;
+          });
+        });
 
-    //     // Request transcript history when component mounts
-    //     const requestData = {
-    //       sessionId: sessionId,
-    //       userId: senderId || "",
-    //       role: isCandidate ? "CANDIDATE" : "COMPANY",
-    //       text: "Transcript request",
-    //     };
-
-    //     socket.current.emit("submitTranscript", requestData);
-
-    //     return () => {
-    //       if (socket.current) {
-    //         socket.current.off("newTranscript");
-    //       }
-    //     };
-    //   }
-    // }, [sessionId, senderId, isCandidate]);
+        return () => {
+          if (socket.current) {
+            socket.current.off("newTranscript");
+          }
+        };
+      }
+    }, [sessionId, senderId, isCandidate]);
 
     useEffect(() => {
       const handleMouseMove = (e) => {
@@ -1082,7 +1081,7 @@ const VideoCall = forwardRef(
                 <SheetTitle className="text-xl font-bold text-white py-3 px-5 bg-[#1f2126] flex items-center justify-between">
                   <span>Conversation Transcript</span>
                   <div className="flex items-center gap-2">
-                    {/* <Button
+                    <Button
                       onClick={() => {
                         toggleTranscriptRecording();
                         toast({
@@ -1114,7 +1113,7 @@ const VideoCall = forwardRef(
                           Record
                         </>
                       )}
-                    </Button> */}
+                    </Button>
                     {/* <Button
                       onClick={() => {
                         const transcriptJson = exportTranscript();
