@@ -44,6 +44,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import socketChat from "@/lib/utils/socket";
+import socket from "@/lib/utils/socket";
 import useVideoCallTranscript from "@/hooks/useVideoCallTranscript";
 import { useToast } from "@/hooks/use-toast";
 import { getAutomatedTranscript } from "@/lib/api/interview-session";
@@ -82,7 +83,7 @@ const VideoCall = forwardRef(
     const [isRemoteAudioOn, setIsRemoteAudioOn] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
-    const socket = useRef(null);
+    // const socket = useRef(null);
     const candidateVideoRef = useRef(null);
     const interviewerVideoRef = useRef(null);
     const messagesEndRef = useRef(null);
@@ -121,6 +122,7 @@ const VideoCall = forwardRef(
           };
 
           socket.current.emit("submitTranscript", transcriptData);
+          console.log("Transcript entry submitted:", transcriptData);
         }
       },
       [sessionId, senderId, isCandidate]
@@ -524,9 +526,9 @@ const VideoCall = forwardRef(
 
     // Socket listener for transcript history
     useEffect(() => {
-      if (socket.current && sessionId) {
+      if (socket && sessionId) {
         // Listen for transcript history
-        socket.current.on("newTranscript", (data) => {
+        socket.on("newTranscript", (data) => {
           console.log(`New transcript received:`, data);
           // Update transcript history with the received data
           setTranscriptHistory((prevHistory) => {
@@ -542,8 +544,8 @@ const VideoCall = forwardRef(
         });
 
         return () => {
-          if (socket.current) {
-            socket.current.off("newTranscript");
+          if (socket) {
+            socket.off("newTranscript");
           }
         };
       }
@@ -1173,7 +1175,7 @@ const VideoCall = forwardRef(
               </div>
 
               {/* Transcript Content */}
-              <div className="flex-1 pb-20 pt-4 overflow-y-auto overflow-x-hidden h-full w-full space-y-3 scrollbar-hidden">
+              <div className="flex-1 pb-52 pt-4 overflow-y-auto overflow-x-hidden h-full w-full space-y-3 scrollbar-hidden">
                 {/* Server Transcript History */}
                 {transcriptHistory.length > 0 && (
                   <div className="mx-4 mb-4">
@@ -1184,7 +1186,7 @@ const VideoCall = forwardRef(
                       <div key={`server-${index}`} className="mb-2">
                         <div
                           className={`p-3 rounded-lg ${
-                            entry.role === "COMPANY"
+                            entry.role === "INTERVIEWER"
                               ? "bg-blue-600/20 border-l-4 border-blue-500"
                               : "bg-green-600/20 border-l-4 border-green-500"
                           }`}
@@ -1192,12 +1194,12 @@ const VideoCall = forwardRef(
                           <div className="flex items-center justify-between mb-1">
                             <span
                               className={`text-xs font-semibold ${
-                                entry.role === "COMPANY"
+                                entry.role === "INTERVIEWER"
                                   ? "text-blue-400"
                                   : "text-green-400"
                               }`}
                             >
-                              {entry.role === "COMPANY"
+                              {entry.role === "INTERVIEWER"
                                 ? "Interviewer"
                                 : "Candidate"}
                             </span>
