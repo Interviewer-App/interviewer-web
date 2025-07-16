@@ -52,7 +52,7 @@ function Page() {
   const [isVideoElementMounted, setIsVideoElementMounted] = useState(false);
   const [hasMicAccess, setHasMicAccess] = useState(false);
   const [micError, setMicError] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(1200); // 20 minutes in seconds
+  const [elapsedTime, setElapsedTime] = useState(1200);
   const [dialog, setDialog] = useState([]);
   const [sessionId, setSessionId] = useState(
     searchParams.get("sessionID") || null
@@ -111,6 +111,14 @@ function Page() {
   useEffect(() => {
     setElapsedTime(question.estimatedTimeMinutes * 60); // Convert minutes to seconds
   }, [question]);
+
+  useEffect(() => {
+    socket.on('summary', (data) => {
+      setAutomaticInterviewEnded(true);
+      console.log("Received summary data:", data);
+    })
+  },[]);
+
 
   useEffect(() => {
     const fetchAutomatedTranscript = async () => {
@@ -336,6 +344,7 @@ function Page() {
       }
     };
   }, []);
+
 
   // Add a retry button for manual webcam initialization if needed
   const retryWebcamAccess = () => {
@@ -767,6 +776,21 @@ function Page() {
           </button>
         </div>
       )}
+
+      {automaticinterviewEnded && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Interview Completed</h2>
+          <p className="text-gray-300 mb-6">You can now end the session.</p>
+          <button
+            onClick={handleEndInterview}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold"
+          >
+            End Session
+          </button>
+        </div>
+      </div>
+    )}
       {/* Recording Controls Toggle */}
       {/* <div className="fixed bottom-4 left-20 z-50 flex gap-2">
         <button
