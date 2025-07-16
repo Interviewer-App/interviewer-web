@@ -1814,7 +1814,7 @@ function SessionHistoryPage() {
                                                   {question.questionText}
                                                 </span>
                                                 <span className=" text-base">
-                                                {question?.interviewResponses?.score?.score/ sessionDetails?.questions?.length || 0} / {100 / sessionDetails?.questions?.length}
+                                                {question?.interviewResponses?.score?.score || 0} / 100
                                                 </span>
                                               </div>
                                               <div className=" w-full text-sm items-center text-gray-500">
