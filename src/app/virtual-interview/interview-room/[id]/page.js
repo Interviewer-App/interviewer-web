@@ -888,7 +888,7 @@ function Page() {
       {questionType !== "technical-coding" ? (
         <>
           <div className=" relative flex flex-col justify-center items-center h-dvh p-14">
-            <div className="absolute bottom-20 left-20 h-[250px] w-min-[400px] bg-slate-50 overflow-hidden rounded-lg shadow-lg">
+            <div className="fixed bottom-20 left-20 h-[250px] w-min-[400px] bg-slate-50 overflow-hidden rounded-lg shadow-lg">
               {/* Always render the video element but hide it when not in use */}
               <video
                 ref={videoRef}
