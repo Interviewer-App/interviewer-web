@@ -525,7 +525,7 @@ function Page() {
         );
       } finally {
         // Clear recording state
-        router.push("/");
+        router.push("/my-interviews");
       }
 
     }, 2000);
