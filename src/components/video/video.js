@@ -213,11 +213,13 @@ const VideoCall = forwardRef(
           const response = await getAutomatedTranscript(sessionId);
           if (response.data) {
             console.log("Automated transcript fetched:", response.data);
-            setTranscriptHistory(response.data.transcript.map((entry) => ({
-              text: entry.text,
-              role: entry.speaker.toUpperCase(),
-              timestamp: entry.timestamp,
-            })));
+            setTranscriptHistory(
+              response.data.transcript.map((entry) => ({
+                text: entry.text,
+                role: entry.speaker.toUpperCase(),
+                timestamp: entry.timestamp,
+              }))
+            );
           }
         } catch (err) {
           if (err.response) {
@@ -255,6 +257,10 @@ const VideoCall = forwardRef(
       };
 
       if (sessionId) fetchAutomatedTranscript();
+    }, [sessionId]);
+
+    useEffect(() => {
+      if (sessionId) startTranscriptRecording();
     }, [sessionId]);
 
     // Auto-start transcript recording when call begins
@@ -1083,7 +1089,7 @@ const VideoCall = forwardRef(
                 <SheetTitle className="text-xl font-bold text-white py-3 px-5 bg-[#1f2126] flex items-center justify-between">
                   <span>Conversation Transcript</span>
                   <div className="flex items-center gap-2">
-                    <Button
+                    {/* <Button
                       onClick={() => {
                         toggleTranscriptRecording();
                         toast({
@@ -1115,7 +1121,7 @@ const VideoCall = forwardRef(
                           Record
                         </>
                       )}
-                    </Button>
+                    </Button> */}
                     {/* <Button
                       onClick={() => {
                         const transcriptJson = exportTranscript();
@@ -1288,35 +1294,35 @@ const VideoCall = forwardRef(
                     Clear Local
                   </Button> */}
                   <Button
-                      onClick={() => {
-                        const transcriptJson = exportTranscript();
-                        const blob = new Blob([transcriptJson], {
-                          type: "application/json",
-                        });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = `transcript-${sessionId}-${new Date()
-                          .toISOString()
-                          .slice(0, 10)}.json`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                        toast({
-                          title: "Transcript Exported",
-                          description:
-                            "Conversation transcript has been downloaded as JSON",
-                          duration: 3000,
-                        });
-                      }}
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      <Download className="h-3 w-3 mr-1" />
-                      Export
-                    </Button>
+                    onClick={() => {
+                      const transcriptJson = exportTranscript();
+                      const blob = new Blob([transcriptJson], {
+                        type: "application/json",
+                      });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `transcript-${sessionId}-${new Date()
+                        .toISOString()
+                        .slice(0, 10)}.json`;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      URL.revokeObjectURL(url);
+                      toast({
+                        title: "Transcript Exported",
+                        description:
+                          "Conversation transcript has been downloaded as JSON",
+                        duration: 3000,
+                      });
+                    }}
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Download className="h-3 w-3 mr-1" />
+                    Export
+                  </Button>
                   <div className="text-xs text-gray-400 text-center">
                     <div>
                       Local:{" "}

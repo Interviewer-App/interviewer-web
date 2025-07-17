@@ -885,53 +885,50 @@ function Page() {
           </div>
         )}
       </div> */}
-      {questionType !== "technical-coding" ? (
-        <>
-          <div className=" relative flex flex-col justify-center items-center h-dvh p-14">
-            <div className="fixed bottom-20 left-20 h-[250px] w-min-[400px] bg-slate-50 overflow-hidden rounded-lg shadow-lg">
-              {/* Always render the video element but hide it when not in use */}
-              <video
-                ref={videoRef}
-                className={`w-full h-full object-cover ${
-                  !hasWebcamAccess ? "hidden" : ""
-                }`}
-                autoPlay
-                playsInline
-                muted
-                onLoadedMetadata={() => {
-                  console.log("Video element loaded metadata");
-                  setIsVideoElementMounted(true);
-                }}
-              />
+      <div className="fixed bottom-20 left-20 h-[250px] w-min-[400px] bg-slate-50 overflow-hidden rounded-lg shadow-lg">
+        {/* Always render the video element but hide it when not in use */}
+        <video
+          ref={videoRef}
+          className={`w-full h-full object-cover ${
+            !hasWebcamAccess ? "hidden" : ""
+          }`}
+          autoPlay
+          playsInline
+          muted
+          onLoadedMetadata={() => {
+            console.log("Video element loaded metadata");
+            setIsVideoElementMounted(true);
+          }}
+        />
 
-              {webcamError ? (
-                <div className="w-full h-full absolute inset-0 bg-red-900/30 flex items-center justify-center text-center p-4">
-                  <p className="text-white text-sm">
-                    {webcamError}
-                    <br />
-                    <button
-                      onClick={toggleWebcam}
-                      className="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg"
-                    >
-                      Try Again
-                    </button>
-                  </p>
-                </div>
-              ) : !hasWebcamAccess ? (
-                <div className="w-full h-full absolute inset-0 bg-gray-800 flex items-center justify-center">
-                  <div className="flex flex-col items-center">
-                    <button
-                      onClick={toggleWebcam}
-                      className="px-3 py-1 text-white rounded-lg"
-                    >
-                      <Camera className="w-20 h-20 " />
-                    </button>
-                  </div>
-                </div>
-              ) : null}
+        {webcamError ? (
+          <div className="w-full h-full absolute inset-0 bg-red-900/30 flex items-center justify-center text-center p-4">
+            <p className="text-white text-sm">
+              {webcamError}
+              <br />
+              <button
+                onClick={toggleWebcam}
+                className="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg"
+              >
+                Try Again
+              </button>
+            </p>
+          </div>
+        ) : !hasWebcamAccess ? (
+          <div className="w-full h-full absolute inset-0 bg-gray-800 flex items-center justify-center">
+            <div className="flex flex-col items-center">
+              <button
+                onClick={toggleWebcam}
+                className="px-3 py-1 text-white rounded-lg"
+              >
+                <Camera className="w-20 h-20 " />
+              </button>
+            </div>
+          </div>
+        ) : null}
 
-              {/* Microphone status indicator in video container */}
-              {/* {hasWebcamAccess && (
+        {/* Microphone status indicator in video container */}
+        {/* {hasWebcamAccess && (
                 <div
                   className={`absolute bottom-3 right-3 p-1.5 rounded-full ${
                     hasMicAccess ? "bg-green-500/80" : "bg-red-500/80"
@@ -977,8 +974,10 @@ function Page() {
                   )}
                 </div>
               )} */}
-            </div>
-          </div>
+      </div>
+      {questionType !== "technical-coding" ? (
+        <>
+          <div className=" relative flex flex-col justify-center items-center h-dvh p-14"></div>
           <div className=" h-dvh flex flex-col items-center justify-center gap-4 p-14">
             <SpeechAnimation />
           </div>

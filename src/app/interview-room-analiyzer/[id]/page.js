@@ -76,7 +76,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const timerRef = useRef(null);
   const [candidateId, setCandidateId] = useState(null);
   const videoCallRef = useRef();
-    const [interviewStatus, setInterviewStatus] = useState(null);
+  const [interviewStatus, setInterviewStatus] = useState(null);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -103,7 +103,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   }, []);
 
   useEffect(() => {
-    if(interviewStatus?.isCandidateJoined){
+    if (interviewStatus?.isCandidateJoined) {
       toast({
         variant: "info",
         title: "Candidate Joined",
@@ -111,7 +111,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
       });
     }
-    if(!interviewStatus?.isCandidateJoined){
+    if (!interviewStatus?.isCandidateJoined) {
       toast({
         variant: "info",
         title: "Candidate Left",
