@@ -81,6 +81,7 @@ const VideoCall = forwardRef(
     const [isDraggingInterviewer, setIsDraggingInterviewer] = useState(false);
     const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(false);
     const [isRemoteAudioOn, setIsRemoteAudioOn] = useState(false);
+    const [isSocketConnected, setIsSocketConnected] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     // const socket = useRef(null);
@@ -257,6 +258,118 @@ const VideoCall = forwardRef(
       if (sessionId) fetchAutomatedTranscript();
     }, [sessionId]);
 
+    // Helper function to clean up remote stream
+    const cleanupRemoteStream = useCallback(() => {
+      console.log("Cleaning up remote stream");
+      setRemoteStream(null);
+      setIsRemoteVideoOn(false);
+      setIsRemoteAudioOn(false);
+      
+      if (remoteVideoRef.current) {
+        // Pause the video first to avoid play interruption
+        try {
+          remoteVideoRef.current.pause();
+        } catch (error) {
+          // Ignore pause errors
+        }
+        
+        // Then clear the source
+        remoteVideoRef.current.srcObject = null;
+      }
+    }, []);
+
+    // Helper function to safely update video element source
+    const safelyUpdateVideoSource = useCallback((videoElement, stream, isLocal = false) => {
+      if (!videoElement) return;
+      
+      try {
+        // Pause current playback if any
+        videoElement.pause();
+      } catch (error) {
+        // Ignore pause errors
+      }
+      
+      // Clear existing source
+      videoElement.srcObject = null;
+      
+      // Set new source
+      videoElement.srcObject = stream;
+      
+      // Handle play promise properly
+      const playVideo = async () => {
+        try {
+          if (videoElement.srcObject) {
+            await videoElement.play();
+            console.log(`${isLocal ? 'Local' : 'Remote'} video playing successfully`);
+          }
+        } catch (error) {
+          if (error.name !== 'AbortError') {
+            console.error(`Error playing ${isLocal ? 'local' : 'remote'} video:`, error);
+          }
+        }
+      };
+      
+      // Use loadedmetadata event for better timing
+      videoElement.addEventListener('loadedmetadata', playVideo, { once: true });
+      
+      // Fallback timeout
+      setTimeout(playVideo, isLocal ? 500 : 1000);
+    }, []);
+
+    // Helper function to setup remote stream
+    const setupRemoteStream = useCallback((incomingRemoteStream) => {
+      console.log("Setting up remote stream");
+      setRemoteStream(incomingRemoteStream);
+      
+      // Safely set video source using helper function
+      safelyUpdateVideoSource(remoteVideoRef.current, incomingRemoteStream, false);
+
+      // Set up track event listeners for remote stream
+      incomingRemoteStream.getVideoTracks().forEach((track) => {
+        const handleVideoEnabled = () => {
+          console.log("Remote video enabled");
+          setIsRemoteVideoOn(true);
+        };
+        const handleVideoDisabled = () => {
+          console.log("Remote video disabled");
+          setIsRemoteVideoOn(false);
+        };
+        const handleVideoEnded = () => {
+          console.log("Remote video track ended");
+          setIsRemoteVideoOn(false);
+        };
+
+        track.addEventListener("enabled", handleVideoEnabled);
+        track.addEventListener("disabled", handleVideoDisabled);
+        track.addEventListener("ended", handleVideoEnded);
+        
+        // Set initial state
+        setIsRemoteVideoOn(track.enabled && track.readyState === 'live');
+      });
+
+      incomingRemoteStream.getAudioTracks().forEach((track) => {
+        const handleAudioEnabled = () => {
+          console.log("Remote audio enabled");
+          setIsRemoteAudioOn(true);
+        };
+        const handleAudioDisabled = () => {
+          console.log("Remote audio disabled");
+          setIsRemoteAudioOn(false);
+        };
+        const handleAudioEnded = () => {
+          console.log("Remote audio track ended");
+          setIsRemoteAudioOn(false);
+        };
+
+        track.addEventListener("enabled", handleAudioEnabled);
+        track.addEventListener("disabled", handleAudioDisabled);
+        track.addEventListener("ended", handleAudioEnded);
+        
+        // Set initial state
+        setIsRemoteAudioOn(track.enabled && track.readyState === 'live');
+      });
+    }, [safelyUpdateVideoSource]);
+
     // Auto-start transcript recording when call begins
     useEffect(() => {
       if (localStream && !isTranscriptRecording) {
@@ -371,25 +484,78 @@ const VideoCall = forwardRef(
     useEffect(() => {
       if (remoteStream) {
         const videoTracks = remoteStream.getVideoTracks();
+        const audioTracks = remoteStream.getAudioTracks();
+        
         if (videoTracks.length > 0) {
           const track = videoTracks[0];
-          const handleTrackEnded = () => {
+          const handleTrackChange = () => {
             setIsRemoteVideoOn(track.enabled);
           };
+          const handleTrackEnded = () => {
+            setIsRemoteVideoOn(false);
+          };
 
-          track.addEventListener("enabled", handleTrackEnded);
-          track.addEventListener("disabled", handleTrackEnded);
+          track.addEventListener("enabled", handleTrackChange);
+          track.addEventListener("disabled", handleTrackChange);
+          track.addEventListener("ended", handleTrackEnded);
+          
+          // Set initial state
+          setIsRemoteVideoOn(track.enabled);
 
           return () => {
-            track.removeEventListener("enabled", handleTrackEnded);
-            track.removeEventListener("disabled", handleTrackEnded);
+            track.removeEventListener("enabled", handleTrackChange);
+            track.removeEventListener("disabled", handleTrackChange);
+            track.removeEventListener("ended", handleTrackEnded);
           };
         }
+        
+        if (audioTracks.length > 0) {
+          const track = audioTracks[0];
+          const handleAudioChange = () => {
+            setIsRemoteAudioOn(track.enabled);
+          };
+          const handleAudioEnded = () => {
+            setIsRemoteAudioOn(false);
+          };
+
+          track.addEventListener("enabled", handleAudioChange);
+          track.addEventListener("disabled", handleAudioChange);
+          track.addEventListener("ended", handleAudioEnded);
+          
+          // Set initial state
+          setIsRemoteAudioOn(track.enabled);
+
+          return () => {
+            track.removeEventListener("enabled", handleAudioChange);
+            track.removeEventListener("disabled", handleAudioChange);
+            track.removeEventListener("ended", handleAudioEnded);
+          };
+        }
+      } else {
+        // Reset states when no remote stream
+        setIsRemoteVideoOn(false);
+        setIsRemoteAudioOn(false);
       }
     }, [remoteStream]);
 
     useEffect(() => {
       socket.current = io(process.env.NEXT_PUBLIC_API_URL_SOCKET);
+
+      // Socket connection event handlers
+      socket.current.on("connect", () => {
+        console.log("Socket connected");
+        setIsSocketConnected(true);
+      });
+
+      socket.current.on("disconnect", () => {
+        console.log("Socket disconnected");
+        setIsSocketConnected(false);
+      });
+
+      socket.current.on("reconnect", () => {
+        console.log("Socket reconnected");
+        setIsSocketConnected(true);
+      });
 
       const startCall = async () => {
         try {
@@ -401,83 +567,119 @@ const VideoCall = forwardRef(
           originalVideoTrack.current = stream.getVideoTracks()[0];
           originalAudioTrack.current = stream.getAudioTracks()[0];
           setLocalStream(stream);
-          localVideoRef.current.srcObject = stream;
+          
+          // Safely set local video source using helper function
+          safelyUpdateVideoSource(localVideoRef.current, stream, true);
 
           const peerInstance = new Peer({ secure: true });
           setPeer(peerInstance);
 
           peerInstance.on("open", (id) => {
+            console.log("Peer opened with ID:", id);
             socket.current.emit("join-video-session", {
               sessionId,
               peerId: id,
             });
           });
 
+          // Handle incoming calls
           peerInstance.on("call", (call) => {
+            console.log("Receiving call from:", call.peer);
             call.answer(stream);
-            call.on("stream", (remoteStream) => {
-              setRemoteStream(remoteStream);
-              remoteVideoRef.current.srcObject = remoteStream;
-
-              remoteStream.getVideoTracks().forEach((track) => {
-                track.addEventListener("enabled", () =>
-                  setIsRemoteVideoOn(true)
-                );
-                track.addEventListener("disabled", () =>
-                  setIsRemoteVideoOn(false)
-                );
-                track.addEventListener("ended", () =>
-                  setIsRemoteVideoOn(false)
-                );
-              });
-
-              remoteStream.getAudioTracks().forEach((track) => {
-                track.addEventListener("enabled", () =>
-                  setIsRemoteAudioOn(true)
-                );
-                track.addEventListener("disabled", () =>
-                  setIsRemoteAudioOn(false)
-                );
-                track.addEventListener("ended", () =>
-                  setIsRemoteAudioOn(false)
-                );
-              });
+            
+            call.on("stream", (incomingRemoteStream) => {
+              console.log("Received remote stream from incoming call");
+              setupRemoteStream(incomingRemoteStream);
             });
+
             call.on("close", () => {
+              console.log("Call closed");
+              // Clean up remote stream
+              cleanupRemoteStream();
               activeCalls.current = activeCalls.current.filter(
                 (c) => c !== call
               );
             });
 
+            call.on("error", (error) => {
+              console.error("Call error:", error);
+            });
+
             activeCalls.current.push(call);
           });
 
+          // Handle peer connection events
+          peerInstance.on("error", (error) => {
+            console.error("Peer error:", error);
+          });
+
+          peerInstance.on("disconnected", () => {
+            console.log("Peer disconnected, attempting to reconnect...");
+            peerInstance.reconnect();
+          });
+
+          // Socket event for when someone joins
           socket.current.on("peer-joined", ({ joinedSessionId, peerId }) => {
-            if (sessionId === joinedSessionId && peerInstance) {
+            console.log("Peer joined:", peerId, "for session:", joinedSessionId);
+            if (sessionId === joinedSessionId && peerInstance && peerId !== peerInstance.id) {
+              // Check if we already have a call with this peer
+              const existingCall = activeCalls.current.find(call => call.peer === peerId);
+              if (existingCall) {
+                console.log("Call already exists with peer:", peerId);
+                return;
+              }
+              
+              console.log("Making call to:", peerId);
               const call = peerInstance.call(peerId, stream);
-              call.on("stream", (remoteStream) => {
-                setRemoteStream(remoteStream);
-                remoteVideoRef.current.srcObject = remoteStream;
+              
+              // Add timeout for call establishment
+              const callTimeout = setTimeout(() => {
+                if (!call.open) {
+                  console.log("Call timeout, closing call to:", peerId);
+                  call.close();
+                }
+              }, 10000); // 10 second timeout
+              
+              call.on("stream", (incomingRemoteStream) => {
+                console.log("Received remote stream from outgoing call");
+                clearTimeout(callTimeout); // Clear timeout on successful connection
+                setupRemoteStream(incomingRemoteStream);
               });
+
               call.on("close", () => {
+                console.log("Outgoing call closed");
+                clearTimeout(callTimeout); // Clear timeout on call close
+                cleanupRemoteStream();
                 activeCalls.current = activeCalls.current.filter(
                   (c) => c !== call
                 );
               });
+
+              call.on("error", (error) => {
+                console.error("Outgoing call error:", error);
+                clearTimeout(callTimeout); // Clear timeout on error
+              });
+
               activeCalls.current.push(call);
             }
           });
 
-          peerInstance.on("call", (call) => {
-            call.answer(stream);
-            call.on("stream", (remoteStream) => {
-              setRemoteStream(remoteStream);
-              remoteVideoRef.current.srcObject = remoteStream;
-              // Check if remote stream has video tracks
-              const hasVideo = remoteStream.getVideoTracks().length > 0;
-              setIsRemoteVideoOn(hasVideo);
-            });
+          // Handle peer leaving
+          socket.current.on("peer-left", ({ leftSessionId, peerId }) => {
+            console.log("Peer left:", peerId, "from session:", leftSessionId);
+            if (sessionId === leftSessionId) {
+              // Close calls with the leaving peer
+              activeCalls.current.forEach((call) => {
+                if (call.peer === peerId) {
+                  call.close();
+                }
+              });
+              
+              // Clean up remote stream if it was from the leaving peer
+              cleanupRemoteStream();
+            }
           });
+
         } catch (error) {
           console.error("Error accessing media devices:", error);
         }
@@ -486,14 +688,19 @@ const VideoCall = forwardRef(
       startCall();
 
       return () => {
+        // Cleanup function
+        console.log("Cleaning up video call component");
+        
         if (originalVideoTrack.current) originalVideoTrack.current.stop();
         if (originalAudioTrack.current) originalAudioTrack.current.stop();
-        if (peer) peer.destroy();
-        if (socket.current) socket.current.disconnect();
-
+        
         if (localStream) {
           localStream.getTracks().forEach((track) => track.stop());
         }
+
+        // Close all active calls
+        activeCalls.current.forEach((call) => call.close());
+        activeCalls.current = [];
 
         // Destroy peer instance
         if (peer) {
@@ -502,13 +709,15 @@ const VideoCall = forwardRef(
 
         // Disconnect socket
         if (socket.current) {
+          socket.current.off("connect");
+          socket.current.off("disconnect");
+          socket.current.off("reconnect");
+          socket.current.off("peer-joined");
+          socket.current.off("peer-left");
           socket.current.disconnect();
         }
-
-        // Close all active calls
-        activeCalls.current.forEach((call) => call.close());
       };
-    }, [sessionId]);
+    }, [sessionId, setupRemoteStream, cleanupRemoteStream, safelyUpdateVideoSource]);
 
     useEffect(() => {
       socketChat.on("receiveMessage", (data) => {
@@ -608,7 +817,7 @@ const VideoCall = forwardRef(
           ]);
 
           setLocalStream(newStream);
-          localVideoRef.current.srcObject = newStream;
+          safelyUpdateVideoSource(localVideoRef.current, newStream, true);
 
           // Update active calls with proper null checks
           activeCalls.current.forEach((call) => {
@@ -629,7 +838,7 @@ const VideoCall = forwardRef(
               originalVideoTrack.current,
             ]);
             setLocalStream(revertStream);
-            localVideoRef.current.srcObject = revertStream;
+            safelyUpdateVideoSource(localVideoRef.current, revertStream, true);
 
             // Update active calls with proper null checks
             activeCalls.current.forEach((call) => {
@@ -659,7 +868,7 @@ const VideoCall = forwardRef(
           originalVideoTrack.current,
         ]);
         setLocalStream(revertStream);
-        localVideoRef.current.srcObject = revertStream;
+        safelyUpdateVideoSource(localVideoRef.current, revertStream, true);
 
         // Update active calls with proper null checks
         activeCalls.current.forEach((call) => {
@@ -747,7 +956,16 @@ const VideoCall = forwardRef(
                   <video
                     ref={remoteVideoRef}
                     autoPlay
+                    playsInline
                     className="h-full w-auto object-contain rounded-lg"
+                    onLoadedMetadata={() => console.log("Remote video metadata loaded")}
+                    onCanPlay={() => console.log("Remote video can play")}
+                    onError={(e) => {
+                      if (e.target.error && e.target.error.code !== 4) { // Ignore MEDIA_ELEMENT_ERROR: MEDIA_ELEMENT_ERROR_SRC_NOT_SUPPORTED when clearing source
+                        console.error("Remote video error:", e.target.error);
+                      }
+                    }}
+                    onAbort={() => {}} // Ignore abort events
                   />
                   <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
                     You ({isCandidate ? "Interviewer" : "Candidate"})
@@ -758,7 +976,16 @@ const VideoCall = forwardRef(
                     ref={localVideoRef}
                     autoPlay
                     muted
+                    playsInline
                     className="h-full w-auto object-contain rounded-lg"
+                    onLoadedMetadata={() => console.log("Local video metadata loaded")}
+                    onCanPlay={() => console.log("Local video can play")}
+                    onError={(e) => {
+                      if (e.target.error && e.target.error.code !== 4) {
+                        console.error("Local video error:", e.target.error);
+                      }
+                    }}
+                    onAbort={() => {}} // Ignore abort events
                   />
                   <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
                     You ({isCandidate ? "Candidate" : "Interviewer"})
@@ -771,7 +998,16 @@ const VideoCall = forwardRef(
                   <video
                     ref={remoteVideoRef}
                     autoPlay
+                    playsInline
                     className="h-full w-auto object-contain rounded-lg"
+                    onLoadedMetadata={() => console.log("Remote video metadata loaded (fullscreen)")}
+                    onCanPlay={() => console.log("Remote video can play (fullscreen)")}
+                    onError={(e) => {
+                      if (e.target.error && e.target.error.code !== 4) {
+                        console.error("Remote video error (fullscreen):", e.target.error);
+                      }
+                    }}
+                    onAbort={() => {}} // Ignore abort events
                   />
                   <div className="absolute bottom-1 left-1 bg-black/70 px-1 py-0.5 rounded text-xs text-white">
                     You ({isCandidate ? "Interviewer" : "Candidate"})
@@ -850,7 +1086,16 @@ const VideoCall = forwardRef(
                   <video
                     ref={remoteVideoRef}
                     autoPlay
+                    playsInline
                     className="h-full w-auto object-contain rounded-lg"
+                    onLoadedMetadata={() => console.log("Remote video metadata loaded (candidate view)")}
+                    onCanPlay={() => console.log("Remote video can play (candidate view)")}
+                    onError={(e) => {
+                      if (e.target.error && e.target.error.code !== 4) {
+                        console.error("Remote video error (candidate view):", e.target.error);
+                      }
+                    }}
+                    onAbort={() => {}} // Ignore abort events
                   />
                 </div>
                 <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-xs text-white">
