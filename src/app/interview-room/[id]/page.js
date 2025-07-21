@@ -275,7 +275,7 @@ const InterviewRoomPage = ({ params }) => {
   useEffect(() => {
     const data = {
       sessionId: sessionID,
-      role: "COMPANY",
+      role: "CANDIDATE",
     };
 
     window.addEventListener("beforeunload", socket.emit("leaveSession", data));
