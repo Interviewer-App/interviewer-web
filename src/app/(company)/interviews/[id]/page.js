@@ -561,6 +561,12 @@ export default function InterviewPreviewPage({ params }) {
     };
 
     if (interviewId) fetchCandidatesData();
+
+    socket.on("updateCandidates", (data) => {
+      fetchCandidatesData();
+    });
+
+
   }, [interviewId, page, limit, inviteModalOpen]);
 
   const isToday = (dateString) => {

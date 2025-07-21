@@ -261,10 +261,10 @@ const MyInterviews = () => {
       );
       if (response) {
         setIsAccepted(true);
-        // socket.emit("InterviewStatus", {
-        //   interviewId: interviewId,
-        //   status: status,
-        // });
+        
+        socket.emit("InvitationStuatusUpdate", {
+          interviewId: interviewId,        
+        });
 
         // toast({
         //   title: `Interview ${status === "ACTIVE" ? "published" : "unpublished"
