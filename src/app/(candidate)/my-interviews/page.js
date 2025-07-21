@@ -23,7 +23,10 @@ import {
 import Loading from "@/app/loading";
 import { usePathname, useRouter, redirect } from "next/navigation";
 import { useSession, getSession } from "next-auth/react";
-import { getOverviewOfCandidateInterviews, getScheduledInterview } from "@/lib/api/interview";
+import {
+  getOverviewOfCandidateInterviews,
+  getScheduledInterview,
+} from "@/lib/api/interview";
 import { TimelineLayout } from "@/components/ui/timeline-layout";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -102,14 +105,13 @@ const MyInterviews = () => {
   const [scheduleInterviews, setScheduleInterviews] = useState([]); // Store scheduled interviews
   const [sortedScheduleInterviews, setSortedScheduleInterviews] = useState([]);
   const [overview, setOverview] = useState({});
-  const [loading, setLoading] = useState(false); // Loading state
+  // const [loading, setLoading] = useState(false); // Loading state
   const [page, setPage] = useState(1); // Page number
   const [limit, setLimit] = useState(10); // Limit of items per page
   const [showPastInterviews, setShowPastInterviews] = useState(false);
   const [isProfileComplete, setIsProfileComplete] = useState(true);
   const [scheduleData, setScheduleData] = useState({});
   const [isAccepted, setIsAccepted] = useState(false);
-
 
   const [isAnyInterviews, setIsAnyInterviews] = useState(false);
   const [sordBy, setSortBy] = useState("");
@@ -129,6 +131,7 @@ const MyInterviews = () => {
   const [candidateDetails, setCandidateDetails] = useState();
   const [interviewFilter, setInterviewFilter] = useState("upcoming");
   const [expandedInterviewIds, setExpandedInterviewIds] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(false);
 
   const requirements = [
     {
@@ -159,28 +162,25 @@ const MyInterviews = () => {
         const candidateId = session?.user?.candidateID;
 
         setCandidateId(candidateId);
-
       } catch (error) {
-        console.error('Error fetching candidate ID:', error);
+        console.error("Error fetching candidate ID:", error);
       }
-    }
+    };
     fetchCandidateId();
   }, []);
 
-
   useEffect(() => {
+    setIsLoading(true);
     const fetchUserJoinedInterviews = async () => {
       try {
-        setLoading(true);
         const response = await getScheduledInterview(candidateId);
         setScheduleData(response.data);
         setScheduleInterviews(response.data.schedules);
         setIsProfileComplete(response.data.isProfileCompleted);
-
       } catch (error) {
         console.error("Error fetching interviews:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -188,6 +188,7 @@ const MyInterviews = () => {
   }, [candidateId, isAccepted]);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchCandidateOverview = async () => {
       try {
         const response = await getOverviewOfCandidateInterviews(candidateId);
@@ -197,7 +198,7 @@ const MyInterviews = () => {
       } catch (error) {
         console.log("Error fetching interviews:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -218,7 +219,9 @@ const MyInterviews = () => {
 
         // Otherwise, filter out interviews that are in the past (both today and previous days)
         const isToday = interviewDate.getTime() === currentDate.getTime();
-        const isPast = interviewDate < currentDate || (isToday && new Date(interview.startTime) < new Date());
+        const isPast =
+          interviewDate < currentDate ||
+          (isToday && new Date(interview.startTime) < new Date());
 
         return !isPast;
       })
@@ -261,9 +264,9 @@ const MyInterviews = () => {
       );
       if (response) {
         setIsAccepted(true);
-        
+
         socket.emit("InvitationStuatusUpdate", {
-          interviewId: interviewId,        
+          interviewId: interviewId,
         });
 
         // toast({
@@ -351,27 +354,30 @@ const MyInterviews = () => {
           role: role,
         };
         // socket.emit('joinInterviewSession', data);
-        if (interview.interview.interviewMedium === 'PHYSICAL' && interview.interview.isWithDevice === false) {
+        if (
+          interview.interview.interviewMedium === "PHYSICAL" &&
+          interview.interview.isWithDevice === false
+        ) {
           router.push(
             `physical-interview/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
           );
-        } 
-        else if(interview.interview.interviewMedium === 'VIRTUAL' && interview.interview.isAutomated == true) {
-          const socketData ={
+        } else if (
+          interview.interview.interviewMedium === "VIRTUAL" &&
+          interview.interview.isAutomated == true
+        ) {
+          const socketData = {
             sessionId: sessionId,
-            candidateId : session.user.candidateID,
-          }
-           socket.emit('startAutomatedInterview', socketData);
+            candidateId: session.user.candidateID,
+          };
+          socket.emit("startAutomatedInterview", socketData);
           router.push(
             `virtual-interview/interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
-          )
-        }
-        else {
+          );
+        } else {
           router.push(
             `interview-room/${sessionId}?candidateId=${userId}&sessionID=${sessionId}`
           );
         }
-
       }
     } catch (err) {
       if (err.response) {
@@ -499,6 +505,10 @@ const MyInterviews = () => {
     redirect(loginURL);
   }
 
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
+
   return (
     <SidebarInset>
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -528,14 +538,14 @@ const MyInterviews = () => {
           <Card className="border-none shadow-sm bg-gradient-to-br from-gray-950 to-gray-900 mb-5">
             <CardContent className="p-6">
               <h1 className="text-2xl md:text-3xl font-bold">
-                {getTimeOfDay()}, {session?.user?.firstName || session?.user?.name}
+                {getTimeOfDay()},{" "}
+                {session?.user?.firstName || session?.user?.name}
               </h1>
               <p className="text-muted-foreground mt-1">
                 Welcome back to your interview dashboard
               </p>
             </CardContent>
           </Card>
-
 
           {!isProfileComplete && (
             <Alert className="mb-6 border-none shadow-md bg-amber-50 dark:border-l-4 border-l-warning dark:bg-[#2b2410] mt-5 animate-scale-in ">
@@ -546,7 +556,8 @@ const MyInterviews = () => {
                   <div>
                     <p className="text-sm font-medium">Profile Incomplete</p>
                     <p className="text-xs text-muted-foreground">
-                      Please update your experience, skills, and social profiles.
+                      Please update your experience, skills, and social
+                      profiles.
                     </p>
                   </div>
                 </div>
@@ -561,7 +572,6 @@ const MyInterviews = () => {
               </AlertDescription>
             </Alert>
           )}
-
 
           <div className="space-y-4">
             {sortedScheduleInterviews.length > 0 ? (
@@ -581,10 +591,10 @@ const MyInterviews = () => {
                 const timeBgColor = isClose
                   ? "bg-[#F4BB50]"
                   : isFar
-                    ? "bg-[#7DDA6A]"
-                    : isMedium
-                      ? "bg-[#F4BB50]"
-                      : "bg-gray-900";
+                  ? "bg-[#7DDA6A]"
+                  : isMedium
+                  ? "bg-[#F4BB50]"
+                  : "bg-gray-900";
 
                 return (
                   <Card
@@ -623,165 +633,170 @@ const MyInterviews = () => {
                               {formatTime(interview.startTime)}
                             </p>
                           </div>
-                          {interview.interviewSession?.interviewStatus !== "completed" && new Date(interview.startTime) > new Date() && (
-                            <>
-                              {interview.interview.interviewMedium === 'PHYSICAL' && interview.interview.isWithDevice === false ? (
-                                <>
-                                  {interview.invitation?.status === "APPROVED" || interview.invitation === null ? (
-                                    <>
-                                    <Badge
-                                    variant="secondary"
-                                    className="bg-cyan-900 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400"
-                                  >
-                                    {interview.interview.interviewMedium} INTERVIEW
-                                  </Badge>
-                                  
-                                  </>
-                                  ) : (
-                                    <div className="flex justify-start gap-3 items-center">
-                                      <Button
-                                        onClick={() =>
-                                          handleInterviewStatus(
-                                            interview,
-                                            "REJECTED"
-                                          )
-                                        }
-                                        variant="outline"
-                                        size="sm"
-                                        className="text-destructive border-destructive/50"
-                                      >
-                                        <XCircle className="h-4 w-4 mr-2" />
-                                        Reject
-                                      </Button>
-                                      <Button
-                                        onClick={() =>
-                                          handleInterviewStatus(
-                                            interview,
-                                            "APPROVED"
-                                          )
-                                        }
-                                        variant="outline"
-                                        size="sm"
-                                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                                      >
-                                        <LuCircleCheck className="h-4 w-4 mr-2" />
-                                        Accept
-                                      </Button>
-                                    </div>
-                                  )}
-
-                                </>
-
-                              ) : (
-                                <>
-                                  {interview.invitation?.status === "APPROVED" || interview.invitation === null ? (
-                                    <AlertDialog>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                          className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                                          size="sm"
+                          {interview.interviewSession?.interviewStatus !==
+                            "completed" &&
+                            new Date(interview.startTime) > new Date() && (
+                              <>
+                                {interview.interview.interviewMedium ===
+                                  "PHYSICAL" &&
+                                interview.interview.isWithDevice === false ? (
+                                  <>
+                                    {interview.invitation?.status ===
+                                      "APPROVED" ||
+                                    interview.invitation === null ? (
+                                      <>
+                                        <Badge
+                                          variant="secondary"
+                                          className="bg-cyan-900 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400"
                                         >
-                                          <VideoIcon className="h-4 w-4 mr-2" />
-                                          Join Interview
+                                          {interview.interview.interviewMedium}{" "}
+                                          INTERVIEW
+                                        </Badge>
+                                      </>
+                                    ) : (
+                                      <div className="flex justify-start gap-3 items-center">
+                                        <Button
+                                          onClick={() =>
+                                            handleInterviewStatus(
+                                              interview,
+                                              "REJECTED"
+                                            )
+                                          }
+                                          variant="outline"
+                                          size="sm"
+                                          className="text-destructive border-destructive/50"
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Reject
                                         </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle className="text-xl text-gray-100">
-                                            Ready to Join the Interview?
-                                          </AlertDialogTitle>
-                                          <AlertDialogDescription className="text-gray-400">
-                                            Please ensure you meet all requirements
-                                            before joining the live interview session.
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
-
-                                        <div className="space-y-4 my-4">
-                                          {requirements.map((req, index) => (
-                                            <div
-                                              key={index}
-                                              className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
-                                            >
-                                              <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
-                                                {req.icon}
-                                              </div>
-                                              <div className="flex-1">
-                                                <h4 className="text-sm font-medium text-gray-200">
-                                                  {req.text}
-                                                </h4>
-                                                <p className="text-xs text-gray-400 mt-0.5">
-                                                  {req.subtext}
-                                                </p>
-                                              </div>
-                                              <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                                            </div>
-                                          ))}
-                                        </div>
-
-                                        <AlertDialogFooter className="sm:space-x-2 justify-between">
-                                          <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
-                                            <X className="h-4 w-4 mr-2" />
-                                            Not Ready Yet
-                                          </AlertDialogCancel>
-                                          <AlertDialogAction
-                                            onClick={() => {
-                                              joinInterviewSession(interview);
-                                            }}
-                                            className="bg-emerald-600 text-white hover:bg-emerald-500"
+                                        <Button
+                                          onClick={() =>
+                                            handleInterviewStatus(
+                                              interview,
+                                              "APPROVED"
+                                            )
+                                          }
+                                          variant="outline"
+                                          size="sm"
+                                          className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                        >
+                                          <LuCircleCheck className="h-4 w-4 mr-2" />
+                                          Accept
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    {interview.invitation?.status ===
+                                      "APPROVED" ||
+                                    interview.invitation === null ? (
+                                      <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                          <Button
+                                            className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                            size="sm"
                                           >
-                                            <Check className="h-4 w-4 mr-2" />
+                                            <VideoIcon className="h-4 w-4 mr-2" />
                                             Join Interview
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
+                                          </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent className="max-w-md bg-gray-900 border-gray-800">
+                                          <AlertDialogHeader>
+                                            <AlertDialogTitle className="text-xl text-gray-100">
+                                              Ready to Join the Interview?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription className="text-gray-400">
+                                              Please ensure you meet all
+                                              requirements before joining the
+                                              live interview session.
+                                            </AlertDialogDescription>
+                                          </AlertDialogHeader>
 
-                                        <div className="mt-4 text-center">
-                                          <p className="text-xs text-gray-500">
-                                            By joining, you agree to our interview
-                                            guidelines and code of conduct. Your
-                                            session may be recorded for quality
-                                            assurance.
-                                          </p>
-                                        </div>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                  ) : (
-                                    <div className="flex justify-start gap-3 items-center">
-                                      <Button
-                                        onClick={() =>
-                                          handleInterviewStatus(
-                                            interview,
-                                            "REJECTED"
-                                          )
-                                        }
-                                        variant="outline"
-                                        size="sm"
-                                        className="text-destructive border-destructive/50"
-                                      >
-                                        <XCircle className="h-4 w-4 mr-2" />
-                                        Reject
-                                      </Button>
-                                      <Button
-                                        onClick={() =>
-                                          handleInterviewStatus(
-                                            interview,
-                                            "APPROVED"
-                                          )
-                                        }
-                                        variant="outline"
-                                        size="sm"
-                                        className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
-                                      >
-                                        <LuCircleCheck className="h-4 w-4 mr-2" />
-                                        Accept
-                                      </Button>
-                                    </div>
-                                  )}
+                                          <div className="space-y-4 my-4">
+                                            {requirements.map((req, index) => (
+                                              <div
+                                                key={index}
+                                                className="flex items-start gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700"
+                                              >
+                                                <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
+                                                  {req.icon}
+                                                </div>
+                                                <div className="flex-1">
+                                                  <h4 className="text-sm font-medium text-gray-200">
+                                                    {req.text}
+                                                  </h4>
+                                                  <p className="text-xs text-gray-400 mt-0.5">
+                                                    {req.subtext}
+                                                  </p>
+                                                </div>
+                                                <Check className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                                              </div>
+                                            ))}
+                                          </div>
 
-                                </>
-                              )}
+                                          <AlertDialogFooter className="sm:space-x-2 justify-between">
+                                            <AlertDialogCancel className="bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-gray-100">
+                                              <X className="h-4 w-4 mr-2" />
+                                              Not Ready Yet
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                              onClick={() => {
+                                                joinInterviewSession(interview);
+                                              }}
+                                              className="bg-emerald-600 text-white hover:bg-emerald-500"
+                                            >
+                                              <Check className="h-4 w-4 mr-2" />
+                                              Join Interview
+                                            </AlertDialogAction>
+                                          </AlertDialogFooter>
 
-                            </>
-                          )}
+                                          <div className="mt-4 text-center">
+                                            <p className="text-xs text-gray-500">
+                                              By joining, you agree to our
+                                              interview guidelines and code of
+                                              conduct. Your session may be
+                                              recorded for quality assurance.
+                                            </p>
+                                          </div>
+                                        </AlertDialogContent>
+                                      </AlertDialog>
+                                    ) : (
+                                      <div className="flex justify-start gap-3 items-center">
+                                        <Button
+                                          onClick={() =>
+                                            handleInterviewStatus(
+                                              interview,
+                                              "REJECTED"
+                                            )
+                                          }
+                                          variant="outline"
+                                          size="sm"
+                                          className="text-destructive border-destructive/50"
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Reject
+                                        </Button>
+                                        <Button
+                                          onClick={() =>
+                                            handleInterviewStatus(
+                                              interview,
+                                              "APPROVED"
+                                            )
+                                          }
+                                          variant="outline"
+                                          size="sm"
+                                          className="dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:text-white"
+                                        >
+                                          <LuCircleCheck className="h-4 w-4 mr-2" />
+                                          Accept
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            )}
                         </div>
                         <Collapsible
                           open={isExpanded}
@@ -793,7 +808,11 @@ const MyInterviews = () => {
                             <p
                               className={`
                                     text-sm text-muted-foreground leading-7 
-                                    ${!isExpanded ? "line-clamp-2" : "description"}
+                                    ${
+                                      !isExpanded
+                                        ? "line-clamp-2"
+                                        : "description"
+                                    }
                                   `}
                               dangerouslySetInnerHTML={{
                                 __html: interview.interview.jobDescription,
@@ -830,8 +849,9 @@ const MyInterviews = () => {
                     No Upcoming Interviews
                   </h3>
                   <p className="text-sm text-gray-400 mb-6 max-w-md">
-                    Ready to take the next step in your career? Explore available
-                    interview opportunities and find your perfect match.
+                    Ready to take the next step in your career? Explore
+                    available interview opportunities and find your perfect
+                    match.
                   </p>
                   <Button
                     size="lg"
@@ -848,6 +868,11 @@ const MyInterviews = () => {
           </div>
         </div>
       </div>
+      {isLoading && (
+        <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center bg-black/50">
+          <Loading />
+        </div>
+      )}
     </SidebarInset>
   );
 };
