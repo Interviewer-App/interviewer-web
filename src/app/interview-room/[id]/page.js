@@ -57,11 +57,11 @@ import { set } from "react-hook-form";
 import dynamic from 'next/dynamic';
 // import ZoomComponent from "@/components/Zoom/join";
 const ZoomComponent = dynamic(() => import('@/components/Zoom/join'), {
-  ssr: false, // ⛔ disables server-side rendering for Zoom component
+  ssr: false, 
 });
 
 const ZoomComponentView = dynamic(() => import('@/components/zoom'), {
-  ssr: false, // ⛔ disables server-side rendering for Zoom component
+  ssr: false, 
 });
 
 const ZoomWrapper = dynamic(
@@ -254,7 +254,9 @@ const InterviewRoomPage = ({ params }) => {
     });
 
     socket.on("hasOtherParticipants", (data) => {
+       if (data.role === "CANDIDATE") {
       setIsParticipantJoined(true);
+       }
     });
 
     return () => {
@@ -1024,9 +1026,9 @@ const InterviewRoomPage = ({ params }) => {
       </div> */}
       {isParticipantJoined ? (
         <div className=" flex flex-row justify-between items-center w-full h-lvh ">
-          {!interviewStatus?.isCompanyJoined && (<div className=" w-full h-lvh bg-black z-50 fixed top-0 left-0 ">
+          {/* {!interviewStatus?.isCompanyJoined && (<div className=" w-full h-lvh bg-black z-50 fixed top-0 left-0 ">
             <div className="flex flex-col h-full w-full justify-center items-center bg-background text-white">
-              {/* Header */}
+              
               <div className="mb-10 text-center">
                 <h1 className="text-2xl font-semibold">Host Disconnected</h1>
                 <p className="text-sm mt-2 text-gray-300">
@@ -1034,12 +1036,12 @@ const InterviewRoomPage = ({ params }) => {
                 </p>
               </div>
 
-              {/* Icon */}
+              
               <div className="mb-10">
                 <TriangleAlert className="text-yellow-500 w-12 h-12" />
               </div>
 
-              {/* Message */}
+            
               <div className="text-center w-[80%] md:w-[50%]">
                 <p className="text-lg font-medium mb-3">
                   It looks like the interviewer is experiencing connection
@@ -1051,7 +1053,7 @@ const InterviewRoomPage = ({ params }) => {
                 </p>
               </div>
             </div>
-          </div>)}
+          </div>)} */}
           <div className=" w-[80%]">
             {technicalStatus === "ongoing" ? (
               <div className=" bg-black h-lvh w-full">
