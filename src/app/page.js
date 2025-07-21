@@ -853,7 +853,7 @@ export default function Home() {
     <div className=" w-full bg-background">
       <div className=" w-full text-black dark:text-white">
         <header className=" w-full ">
-          <div className=" w-[90%] max-w-[1280px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-[65px] mx-auto">
+          <div className=" w-[90%] max-w-[1270px] flex items-center justify-between pt-14 md:pt-20 pb-[30px] md:pb-[65px] mx-auto">
             <div>
               <div className="hidden md:block">
                 {/* {isDarkMode ? (
@@ -923,7 +923,7 @@ export default function Home() {
               <div className="sm:flex justify-center items-center gap-[40px] hidden py-[16px] ">
                 <button
                   onClick={() => handleThemeChange("default")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#ffffff] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
+                  className={`w-8 h-8 rounded-lg border-2 border-[#000] dark:border-[#fff] bg-[#ffffff] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "default"
                       ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
                       : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none "
@@ -931,7 +931,7 @@ export default function Home() {
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme2")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#D1F8FF] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
+                  className={`w-8 h-8 rounded-lg border-2 border-[#000] dark:border-[#fff] bg-[#D1F8FF] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme2"
                       ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
                       : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -939,7 +939,7 @@ export default function Home() {
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme3")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#DDFFD1] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
+                  className={`w-8 h-8 rounded-lg border-2 border-[#000] dark:border-[#fff] bg-[#DDFFD1] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme3"
                       ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
                       : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -947,7 +947,7 @@ export default function Home() {
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme4")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FFF8D1] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
+                  className={`w-8 h-8 rounded-lg border-2 border-[#000] dark:border-[#fff] bg-[#FFF8D1] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme4"
                       ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
                       : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -955,7 +955,7 @@ export default function Home() {
                 ></button>
                 <button
                   onClick={() => handleThemeChange("theme5")}
-                  className={`w-8 h-8 rounded-full border-2 border-[#000] dark:border-[#fff] bg-[#FEDBDB] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
+                  className={`w-8 h-8 rounded-lg border-2 border-[#000] dark:border-[#fff] bg-[#FEDBDB] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "theme5"
                       ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
                       : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -963,7 +963,7 @@ export default function Home() {
                 ></button>
                 <button
                   onClick={() => handleThemeChange("dark")}
-                  className={`w-8 h-8 rounded-full border-[1px] border-[#000] dark:border-[#fff] bg-[#333333] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
+                  className={`w-8 h-8 rounded-lg border-[1px] border-[#000] dark:border-[#fff] bg-[#333333] active:translate-x-[3px] active:translate-y-[3px] transition-all ${
                     theme === "dark"
                       ? "border-2 border-[#000] translate-y-[3px] translate-x-[3px]"
                       : "shadow-[3px_3px_0px_#434343] dark:shadow-[3px_3px_0px_#525252] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -973,7 +973,7 @@ export default function Home() {
 
               <button
                 onClick={() => handleThemeChangeMobile()}
-                className="w-10 h-10 md:w-16 md:h-16 rounded-full flex border-2 border-black dark:border-white dark:shadow-[3px_3px_0px_#e7e7e7] shadow-[3px_3px_0px_#434343] active:shadow-none justify-center items-center transition-all duration-300 sm:hidden "
+                className="w-10 h-10 md:w-16 md:h-16 rounded-lg flex border-2 border-black dark:border-white dark:shadow-[3px_3px_0px_#e7e7e7] shadow-[3px_3px_0px_#434343] active:shadow-none justify-center items-center transition-all duration-300 sm:hidden "
                 style={{ backgroundColor: getButtonBgColor() }}
               >
                 <PiHandPointing
