@@ -767,6 +767,17 @@ const MyInterviews = () => {
                                           </div>
                                         </AlertDialogContent>
                                       </AlertDialog>
+                                    ) : interview.invitation?.status ===
+                                        "REJECTED" ||
+                                      interview.invitation === null ? (
+                                      <>
+                                        <Badge
+                                          variant="secondary"
+                                          className="!bg-red-900/40 !border-red-900 !text-red-700"
+                                        >
+                                          Invitation Rejected
+                                        </Badge>
+                                      </>
                                     ) : (
                                       <div className="flex justify-start gap-3 items-center">
                                         <Button
