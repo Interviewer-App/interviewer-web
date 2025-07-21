@@ -251,6 +251,7 @@ const InterviewRoomPage = ({ params }) => {
 
     socket.on("sessionStat", (data) => {
       setInterviewStatus(data);
+      localStorage.setItem("interviewStatus", JSON.stringify(data));
     });
 
     socket.on("hasOtherParticipants", (data) => {
@@ -284,6 +285,13 @@ const InterviewRoomPage = ({ params }) => {
         socket.emit("leaveSession", data)
       );
     };
+  }, []);
+
+  useEffect(() => {
+    const storedStatus = localStorage.getItem("interviewStatus");
+    if (storedStatus) {
+      setInterviewStatus(JSON.parse(storedStatus));
+    }
   }, []);
 
   useEffect(() => {
@@ -1026,7 +1034,7 @@ const InterviewRoomPage = ({ params }) => {
       </div> */}
       {isParticipantJoined ? (
         <div className=" flex flex-row justify-between items-center w-full h-lvh ">
-          {/* {!interviewStatus?.isCompanyJoined && (<div className=" w-full h-lvh bg-black z-50 fixed top-0 left-0 ">
+          {!interviewStatus?.isCompanyJoined && (<div className=" w-full h-lvh bg-black z-50 fixed top-0 left-0 ">
             <div className="flex flex-col h-full w-full justify-center items-center bg-background text-white">
               
               <div className="mb-10 text-center">
@@ -1053,7 +1061,7 @@ const InterviewRoomPage = ({ params }) => {
                 </p>
               </div>
             </div>
-          </div>)} */}
+          </div>)}
           <div className=" w-[80%]">
             {technicalStatus === "ongoing" ? (
               <div className=" bg-black h-lvh w-full">
