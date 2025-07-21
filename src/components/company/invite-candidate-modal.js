@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import Loading from "@/app/loading";
+import socket from "@/lib/utils/socket";
 
 function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
   const [email, setEmail] = useState("");
@@ -43,6 +44,10 @@ function InviteCandidateModal({ setInviteModalOpen, interviewId }) {
 
       if (response) {
         setInviteModalOpen(false);
+        socket.emit("SendInvitation", {
+          interviewId: interviewId,
+          candidateEmail: email,
+        });
       }
       setLoading(false);
     } catch (err) {

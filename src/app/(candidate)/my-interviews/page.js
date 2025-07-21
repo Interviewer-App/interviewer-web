@@ -185,6 +185,12 @@ const MyInterviews = () => {
     };
 
     if (candidateId) fetchUserJoinedInterviews();
+
+    socket.on("updateMyInterviews", (data) => {
+      if(data.candidateEmail === session?.user?.email) {
+        fetchUserJoinedInterviews();
+      }
+    })
   }, [candidateId, isAccepted]);
 
   useEffect(() => {
