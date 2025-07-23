@@ -264,8 +264,8 @@ const CreateInterview = () => {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [hasAutomated, setHasAutomated] = useState(false);
   const [totalAutomatedQuestions, setTotalAutomatedQuestions] = useState(0);
-  const [automatedTechnicalQuestions, setAutomatedTechnicalQuestions] = useState(0);
-  const [automatedSoftQuestions, setAutomatedSoftQuestions] = useState(0);
+  const [automatedTechnicalQuestions, setAutomatedTechnicalQuestions] = useState(7); // Default to 7 (medium)
+  const [automatedSoftQuestions, setAutomatedSoftQuestions] = useState(7); // Default to 7 (medium)
   const [selectedVoice, setSelectedVoice] = useState('MALE');
 
   useEffect(() => {
@@ -300,6 +300,24 @@ const CreateInterview = () => {
       )
     );
   };
+
+  // Handler for radio group change
+const handleAccuracyChange = (value) => {
+  let questionCount;
+  switch (value) {
+    case 'low':
+      questionCount = 5;
+      break;
+    case 'high':
+      questionCount = 10;
+      break;
+    case 'medium':
+    default:
+      questionCount = 7;
+  }
+  setAutomatedTechnicalQuestions(questionCount);
+  setAutomatedSoftQuestions(questionCount);
+};
 
   const handleGenerateSoftSkills = async (e) => {
     e.preventDefault();
@@ -2698,10 +2716,10 @@ const CreateInterview = () => {
                         </Select> */}
 
 <div className="space-y-3 border-l border-muted">
-  <RadioGroup
-    // value={hasAutomated}
-    // onValueChange={(value) => setHasAutomated(value)}
+<RadioGroup
     className="grid grid-cols-1 md:grid-cols-3 gap-4"
+    defaultValue="medium" // Set default to medium
+    onValueChange={handleAccuracyChange} // Add change handler
   >
     {/* Low Accuracy - Red */}
     <div>
@@ -2835,19 +2853,13 @@ const CreateInterview = () => {
   </RadioGroup>
 </div>
 
-                        <div>
 
+
+
+                        <div>
                         </div>
                       </div>
                     )}
-
-
-
-
-
-
-
-
                     {!hasAutomated && (
                       <div>
                         {/* Technical Expertise (Cat 1) */}
