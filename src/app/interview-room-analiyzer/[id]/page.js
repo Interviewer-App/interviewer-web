@@ -39,6 +39,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getInterviewSessionById } from "@/lib/api/interview-session";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import VideoCall from "@/components/video/video";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const InterviewRoomAnalizerPage = ({ params }) => {
   const { data: session, status } = useSession();
@@ -77,6 +78,7 @@ const InterviewRoomAnalizerPage = ({ params }) => {
   const [candidateId, setCandidateId] = useState(null);
   const videoCallRef = useRef();
   const [interviewStatus, setInterviewStatus] = useState(null);
+  const [isLookingOutOfBounds, setIsLookingOutOfBounds] = useState(false);
 
   const { toast } = useToast();
   useEffect(() => {
@@ -251,6 +253,11 @@ const InterviewRoomAnalizerPage = ({ params }) => {
 
     socket.on("typingUpdate", (data) => {
       setTypingAnswer(data.text);
+    });
+
+    socket.on("offScreenStatus", (data) => {
+      console.log(data);
+      setIsLookingOutOfBounds(data.isOffScreen);
     });
 
     return () => {
@@ -550,6 +557,24 @@ const InterviewRoomAnalizerPage = ({ params }) => {
         )}
         <div className=" h-[100px]"></div>
       </div>
+      {isLookingOutOfBounds && (
+        <div className="absolute bottom-24 left-5 z-50">
+          <Alert className="!bg-red-900/90 !border-red-600 text-white shadow-lg animate-pulse">
+            <AlertTitle className=" font-bold text-base">
+              Off-Screen Alert
+            </AlertTitle>
+            <AlertDescription className="text-lg font-semibold">
+              <div className=" flex items-start gap-2 flex-row justify-start w-full">
+                <div>⚠️</div>
+                <div className="text-base">
+                  The candidate appears to be looking off-screen. <br /> Please
+                  ensure they are focused on the interview.
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
       <VideoCall
         sessionId={sessionId}
         isCandidate={false}
