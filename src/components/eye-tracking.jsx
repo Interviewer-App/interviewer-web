@@ -452,7 +452,7 @@ export default function EyeTracking({ sessionId }) {
                 }}
               />
             )}
-            <div className="absolute top-[13.514dvh] left-1/2 transform -translate-x-1/2 z-40 text-center">
+            <div className="absolute top-[16.892vh] left-1/2 transform -translate-x-1/2 z-40 text-center">
               <Card className="bg-gray-800 border-gray-600">
                 <CardContent className="p-4">
                   {isCalibrating && (
